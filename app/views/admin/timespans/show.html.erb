@@ -1,0 +1,38 @@
+<%
+add_breadcrumb_item link_to (collection_name, collection_path)
+add_breadcrumb_item @object
+%>
+
+<fieldset>
+	
+	<legend>
+		<%= model_name.titleize %>
+		<%= link_to 'Edit', edit_object_path(@object) %>
+	</legend>
+
+	<div class="row">
+		<label>Is Current</label>
+		<span><%= yes_no @object.is_current %></span>
+	</div>
+
+	<div class="row">
+		<label>Start Date</label>
+		<span><%= def_if_blank @object, :start_date %></span>
+	</div>
+
+	<div class="row">
+		<label>Start Date Fuzz</label>
+		<span><%= def_if_blank @object, :start_date_fuzz %></span>
+	</div>
+
+	<div class="row">
+		<label>End Date</label>
+		<span><%= def_if_blank @object, :end_date %></span>
+	</div>
+	
+	<div class="row">
+		<label>End Date Fuzz</label>
+		<span><%= def_if_blank @object, :end_date_fuzz %></span>
+	</div>
+	
+</fieldset>

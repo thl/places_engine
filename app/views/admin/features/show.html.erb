@@ -1,0 +1,93 @@
+<%= stylesheet_link_tag 'thickbox' %>
+<%= javascript_include_tag 'thickbox-compressed' %>
+
+<% add_breadcrumb_items features_link, @object %>
+<div>
+<h1>THL Place Dictionary Entry for: <%= @object.name %></h1>
+</div>
+<br class="clear"/>
+<div id="featureShow">
+<fieldset>
+	<legend>General Information <%= link_to 'Edit', edit_admin_feature_path(@object) %></legend>
+	<div class="row">
+	  <label>THL ID: </label> <span><%= @object.pid %></span>
+	</div>
+<%  if !@object.old_pid.blank? %>
+	  <div class="row">
+		<label>Old THL ID: </label> <span><%= @object.old_pid %></span>
+	  </div>
+<%  end %>
+	<div class="row">
+		<label>Is Public?: </label> <span><%= @object.is_public? ? "Yes" : "No" %></span>
+	</div>
+
+</fieldset>
+
+<fieldset>
+	<legend>Names <%= link_to 'Change Prioritization of Names', admin_prioritize_feature_names_path(@object) %></legend>
+	<div class="left highlight">
+	  <%= link_to 'New name', new_admin_feature_feature_name_path(@object) %>
+	</div>
+	<br class="clear"/>
+	<%= render :partial => 'admin/feature_names/feature_names', :locals => { :list => @object.names } %>
+	<dl class="no-style">
+	<% @object.names.current_roots.each do |name| %>
+		<%= "<dt><strong>Etymology of #{name.name} (" + list_actions_for_item(name,
+			{
+			  :delete_path => admin_feature_feature_name_path(name.feature, name),
+			  :edit_path   => edit_admin_feature_feature_name_path(name.feature, name),
+			  :view_path   => admin_feature_feature_name_path(name.feature, name),
+			  :view_name   => 'manage',
+			  :hide_delete => true
+		    }
+		  ) + "):</strong></dt><dd>#{name.etymology}</dd>" unless name.etymology.blank? %>
+	<% end %>
+	</dl>
+</fieldset>
+
+<fieldset>
+	<legend>Feature Types <%= link_to 'Change Prioritization of Feature Types', admin_prioritize_feature_object_types_path(@object) %></legend>
+	<div class="left highlight">
+	  <%= link_to 'New type', new_admin_feature_feature_object_type_path(@object) %>
+	</div>
+	<br class="clear"/>
+	<%= render :partial => 'admin/feature_object_types/list', :locals => { :list => @object.feature_object_types, :hide_feature_id => true } %>
+</fieldset>
+  
+<fieldset>
+	<legend>Geo Codes</legend>
+	<div class="left highlight">
+	  <%= link_to 'New geo code', new_admin_feature_feature_geo_code_path(@object) %>
+	</div>
+	<br class="clear"/>
+	<%= render :partial => 'admin/feature_geo_codes/list', :locals => { :list => @object.geo_codes } %>
+
+</fieldset>
+
+<fieldset>
+	<legend>Locations <%= link_to 'Change Prioritization of Locations', admin_prioritize_feature_shapes_path(@object) %></legend>
+	<div class="left highlight">
+	  <%= link_to 'New location', new_admin_feature_shape_path(@object) %>
+	</div>
+	<br class="clear"/>
+	<%= render :partial => 'admin/shapes/list', :locals => { :list => @object.shapes } %>
+</fieldset>
+
+<fieldset>
+	<legend>Feature Relations</legend>
+	<div class="left highlight">
+	  <%= link_to 'New feature relation', locate_for_relation_admin_feature_path(@object) %>
+	</div>
+	<br class="clear"/>
+	<%= render :partial => 'admin/feature_relations/list', :locals => { :list => @object.relations, :parent => @object, :use_first => false, :use_names => true } %>
+</fieldset>
+
+<fieldset>
+	<legend>Descriptions</legend>
+	<div class="left highlight">
+	  <%= link_to 'New description', new_admin_feature_description_path(@object) %>
+	</div>
+	<br class="clear"/>
+	<%= render :partial => 'admin/descriptions/descriptions_list', :locals => { :list => @object.descriptions.find(:all, :order => 'is_primary DESC, title') } %>
+</fieldset>
+</div>

@@ -1,0 +1,149 @@
+<%= stylesheet_link_tag 'jquery-ui-tabs' %>
+<%= javascript_include_tag 'jquery-form' %>
+<%= javascript_include_tag 'jquery.livequery' %>
+<%= javascript_include_tag "sections/#{controller.controller_name}" %>
+<%= javascript_tag "var AUTH_TOKEN = #{form_authenticity_token.inspect};" if protect_against_forgery? %>
+<%= javascript_include_tag 'node-menu' %>
+<%= javascript_include_tag 'node-tree' %>
+<script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAAmlH3GDvD6dTOdZjfrfvLFxTkTKGJ2QQt6wuPk9SnktO8U_sCzxTyz_WwKoSJx63MPLV9q8gn8KCNtg"></script>
+<%= javascript_include_tag "http://openlayers.org/api/OpenLayers.js" %>
+<%= javascript_tag "var current_view_code = '#{current_view.code}';" %>
+<%= javascript_include_tag "#{thl_url}/places/maps/interactive/scripts/THLWMS.js" %>
+<%= javascript_include_tag "inset-map" %>
+<script type="text/javascript">
+<% if @context_feature.nil?
+     if @features.nil?
+       selected_tab = 0 #overview
+     else
+       selected_tab = 1 #global search results (no feature details nor contains)
+     end
+   else
+     if @features.nil?
+       selected_tab = 1 #feature details
+     else
+       selected_tab = 3 # contextual search results (there is also feature details)
+     end
+   end %>
+
+jQuery(document).ready(function(){
+	jQuery("#FeaturePanel").tabs({
+		selected: <%= selected_tab %>,
+		cache: true,
+		load: function() { NodeTree.reselectNode(); }
+	});
+	jQuery(window).unbind("scroll");
+	NodeTree.init("NodeTree", "NodeTreeList", "<%= features_path %>/");
+	NodeMenu.init("NodeMenu", "<%= features_path %>/");
+});
+
+function reset_advanced_search(){
+	// Select "Global" for search scope
+	$("input[name='search_scope']").removeAttr('checked');
+	$('#search_scope_global').attr('checked', 'checked');
+	// Select "Contains" for match
+	$("input[name='match']").removeAttr('checked');
+	$('#match_contains').attr('checked', 'checked');
+	// Select "Full Text" for text scope
+	$("input[name='scope']").removeAttr('checked');
+	$('#scope_full_text').attr('checked', 'checked');
+	// Reset all of the fields in the ModelSearcher
+	ModelSearcher.resetFields();
+}
+
+</script>
+<%= category_searcher(true, :category_id => 20, :field_name => 'object_type', :field_label => 'Feature type: ', :exclude_span => true, :options => {:hasTree => 'true'}) %>
+
+<h2>THL Place Dictionary of Tibet &amp; the Himalayas</h2>
+
+<div id="FeatureContainer">
+	<div id="FeaturePanelContainer">
+		<div id="NodeMenu">
+			<h2>Search</h2>
+			<div id="NodeSearch" class="default-item">
+				<% form_remote_for :feature,
+					:url => {:controller => :features, :action => :search },
+					:update => "NodeSearchResults",
+					:condition => "NodeMenu.checkForFidSearch()",
+					:loading => "NodeMenu.beginSearch()" do |form| %>
+					<%= text_field_tag :filter, h(params[:filter]), :class=>:text %>
+					<div style="float: right;">
+						<%= link_to_function "Advanced Search", "$('#advanced_search').show(); $(this).hide(); $('#hide_advanced_search_link').show()", :id => "show_advanced_search_link", :style => ("display:none;" if current_show_advanced_search) %>
+						<%= link_to_function "Hide Advanced Search", "$('#advanced_search').hide(); $(this).hide(); $('#show_advanced_search_link').show(); reset_advanced_search();", :id => "hide_advanced_search_link", :style => ("display:none;" unless current_show_advanced_search) %>
+					</div>
+					<div id="advanced_search" style="<%= "display:none;" unless current_show_advanced_search  %>">
+						<div>
+							<%=  radio_button_tag :scope, :full_text, true %> All Text
+							<%=  radio_button_tag :scope, :name %> Name
+						</div>
+						<div>
+							<%=  radio_button_tag :match, :contains, true %> Contains
+							<%=  radio_button_tag :match, :begins %> Starts with
+							<%=  radio_button_tag :match, :exactly %> Exactly
+						</div>
+						<span id="tmb_category_selector"></span>
+						<br />
+						Select Scope:
+						<%=  radio_button_tag :search_scope, :global, true %> Global
+						<%=  radio_button_tag :search_scope, :contextual %> Contextual
+						<%=  radio_button_tag :search_scope, :fid %> THL ID
+						<br />
+						<%=  hidden_field_tag :context_id, "" %>
+					</div>
+					<%= submit_tag 'search', :style => "margin-top: 4px;" %>
+					
+				<% end %>
+			</div>
+			<h2>Results</h2>
+			<div id="NodeSearchResults">
+				Use the search field above to search for features.
+			</div>
+			<h2>Options</h2>
+			<div id="NodeOptions">
+				<ul>
+					<li>
+					  Language:<br />
+					  <%= render(:partial => 'sessions/language_select') %>
+					  <% form_for :session, :url => session_path, :html => { :method => 'put' } do |f| %>
+					      Perspective:<br />
+						  <%= f.collection_select :perspective_id, @perspectives, :id, :name, {}, { :onchange => 'jQuery(this).parents("form:first").submit();' } %>
+						  <br />
+						  Place Name Language:<br />
+						  <%= f.collection_select :view_id, @views, :id, :name, {}, { :onchange => 'jQuery(this).parents("form:first").submit();' } %>
+						  <br />
+						  Show Feature Details:<br />
+						  <%= f.select :show_feature_details, [['Yes', true], ['No', false]], {:selected => current_show_feature_details}, { :onchange => 'jQuery(this).parents("form:first").submit();' } %>
+						  <br />
+						  Show Advanced Search:<br />
+						  <%= f.select :show_advanced_search, [['Yes', true], ['No', false]], {:selected => current_show_advanced_search}, { :onchange => 'jQuery(this).parents("form:first").submit();' } %>
+					  <% end %>
+					</li>
+				</ul>
+			</div>
+			<h2>Browse</h2>
+			<div id="NodeTree">
+				<div id="NodeTreeList">
+				<% if current_perspective %>
+					<%= render :partial => "node_tree", :locals => { :children => @top_level_nodes } %>
+				<% else %>
+					To see a list of features, please <%= link_to 'choose a perspective', edit_session_path %>.
+				<% end %>
+				</div>
+			</div>
+		</div>
+		<div id="FeaturePanel">
+  
+		  <!-- sets up the tabs for jquery -->
+		  <ul>
+		    <li><a href="#Overview"><span>Home</span></a></li>
+		  </ul>
+  
+		  <div class="left" id="Overview">
+			<div class="has-right-margin">
+		    <h2><%= @intro_blurb.title  %></h2>
+			<%= @intro_blurb.content  %>
+		    </div>
+		  </div>
+		</div><!-- FeaturePanel -->
+		<br class="clear"/>
+	</div><!-- FeaturePanelContainer -->
+</div><!-- FeatureContainer -->

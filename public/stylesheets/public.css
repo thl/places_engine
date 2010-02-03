@@ -1,0 +1,536 @@
+ul{
+	margin:1em;
+}
+
+h3{
+	color:darkred;
+	margin-top:1em;
+}
+
+input{
+	border:solid 1px gray;
+	padding:.1em;
+}
+
+/* Overwrite thdl-style.css to prevent decomposed Tibetan */
+h1, h1, h3, h4, h5, h6 {
+	letter-spacing: normal !important;
+}
+
+/* Overwrite thdl-style.css to allow for unstyled <dl/>s */
+dl.no-style {
+	margin:0;
+}
+dl.no-style dt, dl.no-style dd {
+	line-height:1em !important;
+	font-size:1em !important;
+	color:#404040 !important;
+	font-weight:normal !important;
+}
+dl.no-style p {
+	font-size:1em !important;
+}
+
+.text {
+	border:solid 1px gray;
+	padding:.1em;
+	display: inline-block;
+	border:none; 
+	padding:5px; 
+	font:normal normal normal 18px/18px verdana, arial, sans-serif;
+}
+
+.left{
+	float:left;
+}
+
+.leftText{
+	text-align:left;
+}
+
+.bottomText {
+  vertical-align:text-bottom;
+}
+
+.centerText{
+	text-align:center;
+}
+
+.right{
+	float:right;
+}
+
+.clear{
+	clear:both;
+}
+
+.pagination{
+	text-align:center;
+}
+
+.pagination .current{
+	background-color:#ddd;
+	padding:0 2px;
+}
+
+.rowHighlight{
+	background-color:lightyellow;
+}
+
+.bar{
+	background-color:#eee;
+	padding:.5em 1em;
+	color:black;
+	font-weight:bold;
+}
+.bar p, .bar div{
+	color:black;
+}
+.bar a {
+	color:#dedede;
+	text-decoration:none;
+}
+.bar a:hover {
+	background-color:inherit;
+	color:white;
+}
+
+#TB_ajaxContent{
+	padding:0;
+	margin:0 auto;
+}
+
+#TB_ajaxWindowTitle a, #TB_ajaxWindowTitle a:visited {
+	color:green;
+}
+#TB_ajaxWindowTitle a:hover {
+	color:darkgreen;
+}
+
+#TopBar .right{
+    margin-top:.3em;
+}
+
+#FeaturePanel{
+    background-color:#fff;
+}
+
+#FeaturePanel > div{
+	width:99%;
+	border-right:1px solid #ccc;
+}
+
+#FeaturePanel .has-right-margin{
+	padding-right: 270px !important;
+}
+
+#FeatureContainer{
+}
+
+#FeaturePanelContainer {
+    min-height:580px;
+    border:solid 1px #ccc;
+    position:relative;
+    overflow:hidden;
+}
+
+#FeatureTree{
+  background-color:#eee;
+  border:solid 1px gray;
+    width:40%;
+    padding:1em;
+}
+#FeatureTree h2 {
+    font-weight: bold;
+    font-size: 160%;
+}
+#FeatureTree ul li:before {
+    content: " \0020";
+    color:black;
+}
+#FeatureTree ul li.closed:before {
+    content: "+ \0020";
+}
+#FeatureTree ul li.opened:before {
+    content: "- \0020";
+}
+#FeatureTree ul li.single:before {
+    content: "◊ \0020";
+}
+#FeatureTree ul li{
+    list-style:none;
+    margin-top:.3em;
+    margin-bottom:.3em;
+    padding:0;
+    text-indent:-1em;
+    font-size: 130%;
+}
+
+#NodeMenu{
+	position:absolute;
+	right:0;
+}
+
+#NodeMenu .node-menu-content{
+	background-color:#fff;
+	border-style:double;
+	border-width:3px;
+	border-color:#777;
+	float:right;
+}
+
+#NodeMenu .node-menu-content > h2{
+	font-size:1.5em;
+	padding:2px 0 2px 7px;
+	background-color:#f9f9f9;
+    border-bottom:1px solid #ddd;
+    cursor:pointer;
+}
+
+#NodeMenu .node-menu-content > div{
+	padding: 3px;
+}
+
+#NodeMenu .node-menu-resize {
+	display: block;
+	width: 6px;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 17px;
+	cursor: w-resize;
+	-moz-user-select: none;
+	-khtml-user-select: none
+}
+
+#NodeMenu .node-menu-toggle{
+	cursor:pointer;
+	float:left;
+	background-color:#fff;
+	width:18px;
+	height:18px;
+	margin:6px 0 0 0;
+	border:0;
+	padding:0;
+}
+
+#NodeMenu .toggle-show{
+	background:transparent no-repeat url(/images/node-menu-plus.png);
+}
+
+#NodeMenu .toggle-hide{
+	background:transparent no-repeat url(/images/node-menu-minus.png);
+}
+
+#NodeMenu .text{
+	width:225px;
+}
+
+#session_view_id {
+	width: 200px;
+}
+
+#NodeTree{
+}
+
+#NodeTree ul{
+	margin:6px 0 0 12px;
+}
+
+#NodeTree .selected-node{
+	background-color:#faffa2;
+}
+
+#NodeTree .loading-node{
+	margin-left:3px;
+	padding-left:16px;
+	background:transparent url(http://thlib.org/global/images/ajax-loader.gif); 
+}
+
+#NodeTree .node-plus, #NodeTree .node-minus, #NodeTree .node-empty{
+	float:left;
+	width:11px;
+	height:11px;
+	margin:5px 6px 0 0;
+	border:0;
+}
+
+#NodeTree .node-plus{
+	background:transparent no-repeat url(http://thlib.org/global/images/btn-plus-lg.gif);
+}
+
+#NodeTree .node-minus{
+	background:transparent no-repeat url(http://thlib.org/global/images/btn-minus-lg.gif);
+}
+
+#NodeTree .node-empty{
+	background:transparent no-repeat url(http://thlib.org/global/images/btn-empty-lg.gif);
+}
+
+#NodeTreeList{
+    max-height:400px;
+    min-height:25px;
+    overflow:auto;
+	font-size:1.2em;
+}
+
+#NodeSearch{
+	line-height:1.8em;
+}
+
+#NodeSearchResults{
+	font-size: 1.2em;
+}
+
+#NodeSearchResults a{
+	color:#00f;
+}
+
+#NodeSearchResults table {
+    border-collapse: collapse;
+    width:100%;
+    line-height: 130%;
+}
+
+#NodeSearchResults table, #NodeSearchResults table tr, #NodeSearchResults table tr td, #NodeSearchResults table tr th {
+    margin:0;
+    padding:0;
+}
+
+#NodeSearchResults table tr td, #NodeSearchResults table tr th{
+    padding:0.2em;
+    border-bottom:solid 1px #ccc;
+}
+
+#NodeSearchResults table tr td.pagination-cell{
+	padding:0.5em 0.2em !important;
+    border-bottom:0;
+}
+
+#NodeSearchResults table tr td.pagination-info-cell{
+    border-bottom:0;
+}
+
+#FeatureDetails, #FeatureList{
+    background-color:#fff;
+}
+
+#FeatureList{
+    width:55%;
+    min-height:300px;
+}
+
+#FeatureDetail {
+	margin: 0 auto;
+	padding: 5px; 
+	width: 55%;
+	background-color: #fff;
+}
+
+#Overview {
+	margin: 0 auto;
+	padding: 5px; 
+	width: 99%;
+	background-color: #fff;
+}
+
+#Overview p {
+}
+
+#Overview ul {
+	font-size: 1.32em;
+	list-style-type: disc;
+    padding-left: 18px;
+    padding-bottom: 6px;
+}
+
+#FeatureList .FeatureListHeader {
+    font-weight: bold;
+    font-size: 130%; 
+    line-height: 140%;
+    margin-bottom: 1em; 
+    background-color: white; 
+    padding: .5em;
+}
+
+#FeatureList table {
+    border-collapse: collapse;
+    width:100%;
+    font-size: 130%;
+    line-height: 140%;
+}
+
+#FeatureList table, #FeatureList table tr, #FeatureList table tr td, #FeatureList table tr th {
+    margin:0;
+    padding:0;
+}
+
+#FeatureList table tr td, #FeatureList table tr th{
+    border:solid 1px black;
+    padding:.5em;
+}
+
+#FeatureList table th{
+    background-color:#cdcdcd;
+}
+
+.shell-1 #FeatureDetails {
+	font-size: 130%; 
+	line-height: 130%;
+	padding: 3px;
+	overflow: auto;
+}
+
+.shell-1 #FeatureDetails h1 {
+    padding-top: 6px;
+}
+
+.shell-1 #FeatureDetails h2 {
+    line-height: 160%;
+}
+
+.shell-1 #FeatureDetails h3 {
+    margin-top: 6px;
+}
+
+#FeatureDetails .breadcrumb {
+  color: red;
+}
+
+#FeatureDetails h1, h2, h3, h4 {
+    padding-left: 0px;
+	letter-spacing: normal !important;
+}
+
+#FeatureDetails h1 {
+    font-size: 125%;
+}
+
+#FeatureDetails h2 {
+    font-size: 120%;
+}
+
+#FeatureDetails h3 {
+    font-size: 115%;
+}
+
+#FeatureDetails p {
+    font-size: 100%;
+    margin-bottom: 0px;
+}
+
+#FeatureDetails ul {
+    list-style-type: disc;
+    padding-left: 18px;
+    padding-bottom: 6px;
+}
+
+#FeatureDetails ul li {
+    margin: 0px;
+    line-height: 180%;
+}
+
+#FeatureDetails .view-on-map {
+	display: block;
+    margin-top: 5px;
+}
+
+#FeatureDetails #inset_map {
+	width: 350px;
+	height: 200px;
+	margin-top: 5px !important;
+}
+
+#FeatureDetails .olControlMousePosition {
+	color: #fff;
+}
+
+#FeatureDetails .view-on-map img {
+    float: left;
+    margin-right: 5px;
+}
+
+#FeatureContains table {
+    border-collapse: collapse;
+    width:100%;
+    font-size: 130%;
+    line-height: 140%;
+}
+
+#FeatureContains table, #FeatureContains table tr, #FeatureContains table tr td, #FeatureContains table tr th {
+    margin:0;
+    padding:0;
+}
+
+#FeatureContains table tr td, #FeatureContains table tr th{
+    border:solid 1px black;
+    padding:.5em;
+}
+
+#FeatureContains table th{
+    background-color:#cdcdcd;
+}
+
+.tib, .tibetan {
+	font-size:130%;
+	line-height:0;
+}
+
+ul{
+	margin-top:0;
+	margin-bottom:0;
+}
+
+span.selected.feature_name {
+  background-color: white;
+	font-weight: bold;
+}
+
+span.arrow {
+  font-weight: bold;
+  color: #000;
+}
+
+#FeatureTree .selected_branch {
+	color:black;
+}
+
+/* description styling */
+#descriptions_div a.descriptionplus_icon { background:transparent url(http://thlib.org/global/images/btn-plus-lg.gif) no-repeat scroll 2px center; padding:0 0 0 12px; border-bottom:0px; color: white;}
+#descriptions_div a.descriptionminus_icon  { background:transparent url(http://thlib.org/global/images/btn-minus-lg.gif) no-repeat scroll 2px center; padding:0 0 0 12px; border-bottom:0px; color: white;}
+
+/* styling for descriptions */
+.title { font-size: 1.2em; color:black;}
+.by { font-size: 1.2em;}
+.content_by { font-size: 1.2em; font-variant:small-caps;}
+.last_updated { font-size: 1.15em;}
+.expanded { padding: 2px; text-align: justify; }
+
+#descriptions_div h1{ border-bottom: 0px; }
+#descriptions_div em{ font-size: 0.7em; line-height: normal;}
+#descriptions_div p{ text-align: justify;}
+
+hr {border-style: solid; border-color: color:#404040; border-width: 1px}
+
+#login-status {
+border-bottom-width:0pt;
+color:#606060;
+font-family:helvetica,arial,sans-serif;
+font-size:100%;
+font-weight:bold;
+margin:0pt;
+padding:0pt 7px 0pt 0pt;
+position:absolute;
+right:0px;
+top:100px;
+z-index:0;
+}
+
+#content .shell-1 {
+	margin-top: 0;
+}
+
+#content .shell-1 > .shell-1 {
+	margin: 0;
+	padding: 0;
+}

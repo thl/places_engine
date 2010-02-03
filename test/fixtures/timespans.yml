@@ -1,0 +1,34 @@
+# == Schema Information
+# Schema version: 20091102185045
+#
+# Table name: timespans
+#
+#  id              :integer         not null, primary key
+#  start_date      :date
+#  end_date        :date
+#  start_date_fuzz :integer
+#  end_date_fuzz   :integer
+#  is_current      :integer
+#  dateable_id     :integer
+#  dateable_type   :string(255)
+#  created_at      :timestamp
+#  updated_at      :timestamp
+#
+
+one:
+  start_date: 2007-12-11
+  start_date_fuzz: 1
+  end_date: 2007-12-11
+  end_date_fuzz: 1
+  dateable_type: FeatureRelation
+  dateable: tibet_partof_china
+  is_current: true
+
+two:
+  start_date: 2007-12-11
+  start_date_fuzz: 1
+  end_date: 2007-12-11
+  end_date_fuzz: 1
+  dateable_type: FeatureRelation
+  dateable: lhasa_partof_tibet
+  is_current: true

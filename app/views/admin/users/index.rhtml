@@ -1,0 +1,15 @@
+<h1>Listing Users</h1>
+<table border="1" class="userlist">
+  <tr>
+    <th>Login</th>
+  </tr>
+<% for user in @users %>
+  <tr>
+    <td><%= link_to h(user.login), admin_user_path(user) %></td>
+  </tr>
+<% end %>
+</table>
+<p>
+<%= link_to 'New user', new_admin_user_path %> |
+<%= link_to 'Back', admin_admin_path %>
+</p>

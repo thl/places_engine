@@ -1,0 +1,28 @@
+<fieldset>
+	<legend>Feature: <%= @object.name %></legend>
+	
+	<%= f.hidden_field :fid %>
+	
+	<% unless @object.new_record? %>
+		<div class="row">
+			<%= f.label :created_at %>
+			<%= @object.created_at.to_formatted_s(:us_datetime) %>
+		</div>
+		<div class="row">
+			<%= f.label :updated_at %>
+			<%= @object.updated_at.to_formatted_s(:us_datetime) %>
+		</div>
+	<% else %>
+		<% @object.is_public = true %>
+	<% end %>
+	
+	<div class="row">
+		<%= f.label :is_public, 'Public?' %>
+		<%= f.check_box :is_public %>
+	</div>
+	
+	<div class="row">
+		<%= f.label '' %>
+		<%= f.label '' %>		
+	</div>
+</fieldset>

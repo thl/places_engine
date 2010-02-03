@@ -1,0 +1,24 @@
+# == Schema Information
+# Schema version: 20091102185045
+#
+# Table name: cached_feature_names
+#
+#  id              :integer         not null, primary key
+#  feature_id      :integer         not null
+#  view_id         :integer         not null
+#  feature_name_id :integer
+#  created_at      :timestamp
+#  updated_at      :timestamp
+#
+
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  feature_id: 1
+  view_id: 1
+  feature_name_id: 1
+
+two:
+  feature_id: 1
+  view_id: 1
+  feature_name_id: 1

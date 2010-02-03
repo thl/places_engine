@@ -1,0 +1,32 @@
+<%
+# This template is used by other model views
+# 1. use a localized variable for this template: timespan (not @timespan)
+# 2. if timespan is not set (not being used as a partial from another model)
+#	 set the localized variable: timespan equal to the instance variable @timespan
+timespan = timespan.nil? ? @object : timespan
+
+# For some reason, this needs to be set here, and not checked in the conditional logic below
+timespan_form_field_name = timespan_form_field_name.nil? ? nil : timespan_form_field_name
+%>
+
+<%
+# don't show errors if we're working with a controller that's not the Timespans controller
+# This is NOT good solution, just a temporary one... :)
+%>
+<%= error_messages_for :timespan if @object.class==Timespan %>
+
+<fieldset>
+	<legend>Timespan</legend>
+	
+	<% if timespan_form_field_name.nil? %>
+		<% # the timespan controller/view is using this %>
+		<%= render :partial=>'form_field_body', :locals=>{:f=>f} %>
+	<% else %>
+		<% # another resource is using this view %>
+		<% fields_for timespan_form_field_name, timespan do |tsf| %>
+			<% # gotta use a full path for the partial %>
+			<%= render :partial=>'admin/timespans/form_field_body', :locals=>{:f=>tsf} %>
+		<% end %>
+	<% end %>
+	
+</fieldset>

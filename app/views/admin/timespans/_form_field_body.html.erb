@@ -1,0 +1,20 @@
+<div class="row">
+	<%= f.label :is_current %>
+	<%= f.check_box :is_current %>
+</div>
+<div class="row">
+	<%= f.label :start_date %>
+	<%= f.text_field :start_date, :class => :text %> (YYYY-MM-DD)
+</div>
+<div class="row">
+	<%= f.label :start_date_fuzz %>
+	<%= f.text_field :start_date_fuzz, :class => :text %>
+</div>
+<div class="row">
+	<%= f.label :end_date %>
+	<%= f.text_field :end_date, :class => :text %> (YYYY-MM-DD)
+</div>
+<div class="row">
+	<%= f.label :end_date_fuzz %>
+	<%= f.text_field :end_date_fuzz, :class => :text %>
+</div>

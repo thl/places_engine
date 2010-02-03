@@ -1,0 +1,28 @@
+<% if list.empty? %>
+	<%= empty_collection_message %>
+<% else %>
+
+<table class="listGrid">
+	
+	<tr>
+		<th class="listActionCol"></th>
+		<th>GID</th>
+		<th>Locations</th>
+		<th>Priority</th>
+	</tr>
+	
+	<% list = list.sort_by{|a| a.position} %>
+	<% list.each do |item| %>
+	<tr>
+		
+		<td class="listActionsCol"><%= link_to('edit', edit_object_path(item)) if item.is_point? %></td>
+		
+		<td><%= item.gid.to_s %></td>
+		<td><%=h shape_display_string(item) %></td>
+		<td><%= item.position.to_s %></td>
+		
+	</tr>
+	<% end %>
+</table>
+
+<% end %>

@@ -1,0 +1,10 @@
+<h1>Unused Feature IDs</h1>
+<p><%= 
+  # @feature_count
+  @features.collect(&:fid).sort.join('<br/>')
+%></p>
+<p>&nbsp;<br/>
+<%= link_to 'New feature range', new_admin_feature_pid_path %> |
+<%= link_to 'Back to Feature ID Generator', admin_feature_pids_path %> |
+<%= link_to 'Back to admin', admin_admin_path %>
+</p>

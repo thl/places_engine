@@ -1,0 +1,87 @@
+# == Schema Information
+# Schema version: 20091102185045
+#
+# Table name: feature_relations
+#
+#  id             :integer         not null, primary key
+#  child_node_id  :integer         not null
+#  parent_node_id :integer         not null
+#  ancestor_ids   :string(255)
+#  notes          :text
+#  role           :string(20)
+#  perspective_id :integer         not null
+#  created_at     :timestamp
+#  updated_at     :timestamp
+#
+
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+tibet_partof_china:
+  child_node: tibet
+  parent_node: china
+  role: 
+  notes: 
+  perspective: one
+#
+lhasa_partof_tibet:
+  child_node: lhasa
+  parent_node: tibet
+  role: 
+  notes: 
+  perspective: one
+#
+node_1_1_partof_node_1:
+  child_node: node_1_1
+  parent_node: node_1
+  role: 
+  notes: 
+  perspective: one
+#
+node_1_2_partof_node_1:
+  child_node: node_1_2
+  parent_node: node_1
+  role: 
+  notes: 
+  perspective: one
+#
+node_1_1_1_partof_node_1_1:
+  child_node: node_1_1_1
+  parent_node: node_1_1
+  role: 
+  notes: 
+  perspective: one
+#
+node_1_1_2_partof_node_1_1:
+  child_node: node_1_1_2
+  parent_node: node_1_1
+  role: 
+  notes: 
+  perspective: one
+#
+node_1_1_3_partof_node_1_1:
+  child_node: node_1_1_3
+  parent_node: node_1_1
+  role: 
+  notes: 
+  perspective: one
+#
+node_1_1_2_1_partof_node_1_1_2:
+  child_node: node_1_1_2_1
+  parent_node: node_1_1_2
+  role: 
+  notes: 
+  perspective: one
+#
+node_1_1_2_1_1_partof_node_1_1_2_1:
+  child_node: node_1_1_2_1_1
+  parent_node: node_1_1_2_1
+  role: 
+  notes: 
+  perspective: one
+#
+private_feature_partof_node_1_1_2_1:
+  child_node: private_feature
+  parent_node: node_1_1_2_1
+  role: 
+  notes: 
+  perspective: one
+#

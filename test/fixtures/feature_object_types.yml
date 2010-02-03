@@ -1,0 +1,23 @@
+# == Schema Information
+# Schema version: 20091102185045
+#
+# Table name: feature_object_types
+#
+#  id             :integer         not null, primary key
+#  feature_id     :integer         not null
+#  object_type_id :integer         not null
+#  perspective_id :integer
+#  created_at     :timestamp
+#  updated_at     :timestamp
+#
+
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+china:
+  feature: china
+  object_type: ot_country
+  perspective: one
+
+tibet:
+  feature_id: tibet
+  object_type: ot_aut_reg
+  perspective: one

@@ -1,0 +1,3 @@
+<%= CSV.generate_line ['features.fid', '1.feature_names.name'] %>
+<%= render :partial => 'feature', :object => @feature %>
+<%= render :partial => 'feature', :collection => @feature.current_children(current_perspective, current_view) %>

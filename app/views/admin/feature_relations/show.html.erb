@@ -1,0 +1,38 @@
+<% add_breadcrumb_items(
+	features_link,
+	feature_link(@object.child_node),
+	feature_relations_link(@object.child_node),
+	feature_relation_role_label(@object.child_node, @object, :use_first=>false, :link_relation=>false, :link_second=>false)
+) %>
+
+<fieldset>
+	
+	<legend>Feature Relation <%= link_to 'Edit', edit_admin_feature_feature_relation_path(@object.child_node, @object) %></legend>
+	
+	<div class="row">
+		<label>Relationship</label>: 
+		<span><%= feature_relation_role_label @object.child_node, @object, :link_relation=>false %></span>
+	</div>
+	
+	<div class="row">
+		<label>Perspective</label>: 
+		<span><%= @object.perspective.name %></span>
+	</div>
+	
+	<div class="row">
+		<label>Timespan</label>: 
+		<span><%= formatted_timespan @object.timespan %></span>
+	</div>
+	
+</fieldset>
+
+<fieldset>
+	
+	<legend>Citations</legend>
+	<div class="left highlight">
+	  <%= link_to 'New citation', new_admin_feature_relation_citation_path(object) %>
+	</div>
+	<br class="clear"/>
+	<%= render :partial => 'admin/citations/citations_list', :locals => { :list => @object.citations, :show_type => :feature_relation, :options => {:hide_type => true, :hide_type_value => true} } %>
+	
+</fieldset>

@@ -1,0 +1,41 @@
+<% hide_feature_id = hide_feature_id.nil? ? false : hide_feature_id %>
+
+<% if list.empty? %>
+	<%= empty_collection_message %>
+<% else %>
+
+<table class="listGrid">
+	
+	<%= pagination_row :colspan=>3 unless @collection.nil? %>
+	
+	<tr>
+		<th class="listActionCol"></th>
+		<%= '<th>THL Feature ID</th>' unless hide_feature_id %>
+		<th>Feature Type</th>
+		<th>Timespan</th>
+		<th>Priority</th>
+	</tr>
+	
+	<% list = list.sort_by{|a| a.position} %>
+	<% list.each do |item| 
+		 next if item.feature.nil? %>
+	<tr>
+		<td class="listActionsCol">
+			<%= list_actions_for_item(item,
+				{
+				  :delete_path => admin_feature_feature_object_type_path(item.feature, item),
+				  :edit_path   => edit_admin_feature_feature_object_type_path(item.feature, item),
+				  :view_path   => admin_feature_feature_object_type_path(item.feature, item),
+			  }
+			) %>
+		</td>
+		
+		<%= "<td>#{item.feature.pid}</td>" unless hide_feature_id %>
+		<td><%= item.object_type.title if !item.object_type.nil? %></td>
+		<td><%= formatted_timespan item.timespan %></td>
+		<td><%= item.position.to_s %></td>
+	</tr>
+	<% end %>
+</table>
+
+<% end %>

@@ -1,0 +1,32 @@
+<%
+#
+# if we're showing the descriptions of a particular Feature
+#
+if @feature
+	add_breadcrumb_item features_link
+	add_breadcrumb_item feature_link(@feature)
+	add_breadcrumb_item feature_descriptions_link(@feature)
+	add_breadcrumb_item 'set primary description'
+end
+%>
+
+<h1><%= 'Select Primary Description for '"<em>#{h(@feature)}</em>" %></h1>
+<%= error_messages_for :feature %>
+<% form_for @feature, :url=>admin_feature_path(@feature), :html=>{:method=>:put} do |f| %>
+       <%=    f.hidden_field :id %>
+<%    @feature.descriptions.find(:all, :order => 'is_primary DESC, title').each do |d| %>
+        <p>
+	<table class='descriptionlist'>
+	  <tr>
+		<td><%=     radio_button_tag :primary, d.id, d.is_primary?  %></td>
+		<td><%=     d.content %></td>
+	  </tr>
+	</table>
+        </p>
+<%    end %>
+<p>
+<%= submit_tag 'Set Primary' %> 
+</p>
+<% end %>
+
+<p><%= link_to 'Cancel Selecting Primary', admin_feature_path(@feature) %></p>

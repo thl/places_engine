@@ -1,0 +1,97 @@
+# == Schema Information
+# Schema version: 20091102185045
+#
+# Table name: features
+#
+#  id                         :integer         not null, primary key
+#  is_public                  :integer
+#  position                   :integer         default(0)
+#  ancestor_ids               :string(255)
+#  created_at                 :timestamp
+#  updated_at                 :timestamp
+#  old_pid                    :string(255)
+#  is_blank                   :boolean         not null
+#  fid                        :integer         not null
+#  is_name_position_overriden :boolean         not null
+#
+
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+china:
+  description: 
+  is_public: true
+  position: 1
+  pid: f0
+tibet:
+  description: 
+  is_public: true
+  position: 2
+  pid: f1
+lhasa:
+  description: 
+  is_public: true
+  position: 3
+  pid: f2
+#
+
+# "aac", "aaa", "aab", "aa", "ab"
+
+node_1:
+  description: root node 1
+  is_public: true
+  position: 4
+  pid: a
+#
+node_2:
+  description: root node 2
+  is_public: true
+  position: 5
+  pid: b
+#
+node_1_1:
+  description: first child of root node_1
+  is_public: true
+  position: 6
+  pid: aa
+#
+node_1_2:
+  description: second child of root node_1
+  is_public: true
+  position: 7
+  pid: ab
+#
+node_1_1_1:
+  description: first child of node_1_1
+  is_public: true
+  position: 8
+  pid: aaa
+#
+node_1_1_2:
+  description: second child of node_1_1
+  is_public: true
+  position: 9
+  pid: aab
+#
+node_1_1_3:
+  description: third child of node_1_1
+  is_public: true
+  position: 10
+  pid: aac
+#
+node_1_1_2_1:
+  description: first child of node_1_1_2
+  is_public: true
+  position: 12
+  pid: aaba
+#
+node_1_1_2_1_1:
+  description: first child of node_1_1_2_1
+  is_public: true
+  position: 13
+  pid: aabaa
+#
+private_feature:
+  description: a feature with it's is_public attr set to false
+  is_public: false
+  position: 14
+  pid: private
+#

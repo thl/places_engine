@@ -1,0 +1,10 @@
+<%
+add_breadcrumb_item link_to(collection_name, collection_path)
+add_breadcrumb_item link_to(@blurb.code, object_path(@blurb))
+add_breadcrumb_item 'edit'
+%>
+
+<% form_for [:admin, @blurb] do |f| %>
+	<%= render :partial=>'admin/blurbs/form_fields', :locals=>{:f=>f,:object=>@blurb} %>
+	<%= link_to 'Cancel', collection_path %> | <%= submit_tag 'Update' %>
+<% end %>

@@ -1,0 +1,11 @@
+<h1>Login</h1>
+<% form_for(:session, :url => session_path, :html => { :method => 'post' }) do |f| %>
+<p><label for="login">Login</label><br/>
+<%= f.text_field :login %></p>
+<p><label for="password">Password</label><br/>
+<%= f.password_field :password %></p>
+<!-- Uncomment this if you want this functionality -->
+<p><label for="remember_me">Remember me:</label>
+<%= f.check_box :remember_me %></p>
+<p><%= submit_tag 'Log in' %></p>
+<% end -%>

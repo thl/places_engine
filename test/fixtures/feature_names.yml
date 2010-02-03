@@ -1,0 +1,174 @@
+# == Schema Information
+# Schema version: 20091102185045
+#
+# Table name: feature_names
+#
+#  id                          :integer         not null, primary key
+#  feature_id                  :integer         not null
+#  name                        :string(255)     not null
+#  feature_name_type_id        :integer
+#  ancestor_ids                :string(255)
+#  position                    :integer         default(0)
+#  etymology                   :text
+#  writing_system_id           :integer
+#  language_id                 :integer         not null
+#  created_at                  :timestamp
+#  updated_at                  :timestamp
+#  is_primary_for_romanization :boolean
+#
+
+one:
+  feature: china
+  name: ཀྲུང་གོ
+  type: fnt_official
+  position: 1
+  etymology: 
+  writing_system: ws_tib
+  language: lang_tib
+  is_primary: true
+
+#
+#
+nine:
+  feature: china
+  name: krung go
+  type: fnt_official
+  position: 9
+  etymology: 
+  writing_system: ws_latin
+  language: lang_tib
+  is_primary: false
+
+two:
+  feature: china
+  name: 中国
+  type: fnt_official
+  position: 2
+  etymology: 
+  writing_system: ws_ch_sim
+  language: lang_chi
+  is_primary: true
+
+#
+ten:
+  feature: china
+  name: Zhongguo
+  type: fnt_official
+  position: 10
+  etymology: 
+  writing_system: ws_latin
+  language: lang_chi
+  is_primary: false
+
+three:
+  feature: china
+  name: 中國
+  type: fnt_official
+  position: 3
+  etymology: 
+  writing_system: ws_chi_trad
+  language: lang_chi
+  is_primary: true
+#
+eleven:
+  feature: china
+  name: Zhongguo
+  type: fnt_official
+  position: 10
+  etymology: 
+  writing_system: ws_latin
+  language: lang_chi
+  is_primary: false
+
+four:
+  feature: china
+  name: China
+  type: fnt_official
+  position: 4
+  etymology: 
+  writing_system: ws_latin
+  language: lan_eng
+  is_primary: true
+
+# For f1 ->
+five:
+  feature: tibet
+  name: བོད།
+  type: fnt_official
+  position: 5
+  etymology: 
+  writing_system: ws_tib
+  language: lang_tib
+  is_primary: true
+
+#
+bod:
+  feature: tibet
+  name: bod
+  type: fnt_official
+  position: 5
+  etymology: 
+  writing_system: latin
+  language: lang_tib
+  is_primary: true
+
+six:
+  feature: tibet
+  name: 西藏
+  type: fnt_official
+  position: 6
+  etymology: 
+  writing_system: ws_ch_sim
+  language: lang_chi
+  is_primary: true
+
+seven:
+  feature: tibet
+  name: Tibet Autonomous Region
+  type: fnt_official
+  position: 7
+  etymology: 
+  writing_system: ws_latin
+  language: lan_eng
+  is_primary: true
+#
+xizang:
+  feature: tibet
+  name: Xizang
+  type: fnt_official
+  position: 7
+  etymology: 
+  writing_system: ws_latin
+  language: lan_chi
+  is_primary: true
+
+# For f2
+eight:
+  feature: lhasa
+  name: ལྷ་ས།
+  type: fnt_official
+  position: 8
+  etymology: 
+  writing_system: ws_tib
+  language: lang_tib
+  is_primary: true
+#
+lha_sa:
+  feature: lhasa
+  name: lha sa
+  type: fnt_official
+  position: 9
+  etymology: 
+  writing_system: latin
+  language: lang_tib
+  is_primary: true
+#
+name_for_private_feature:
+  feature: private_feature
+  name: Private #1
+  type: fnt_official
+  position: 9
+  etymology: 
+  writing_system: latin
+  language: lang_tib
+  is_primary: true

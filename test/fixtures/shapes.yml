@@ -1,0 +1,24 @@
+# == Schema Information
+# Schema version: 20091102185045
+#
+# Table name: shapes
+#
+#  gid      :integer         not null, primary key
+#  geometry :geometry
+#  fid      :integer
+#
+
+point_one:
+  gid: 1
+  fid: f0
+  geometry: "0101000020E61000006502560E2DCA5640EBE4530E2DB23D40"
+  
+point_two:
+  gid: 2
+  fid: f1
+  geometry: "0101000020E6100000BF77E92631B056408E0E2F08ACBC3D40"
+  
+line_one:
+  gid: 3
+  fid: f0
+  geometry: <%=LineString.from_coordinates([[1.4,5.6],[2.7,8.9],[1.6,5.6]],4326).as_hex_ewkb %>

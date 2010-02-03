@@ -1,0 +1,26 @@
+<%= error_messages_for model_name %>
+<fieldset>
+	
+	<legend>
+		Feature Type
+	</legend>
+	
+	<div class="row">
+		<%= f.label :feature %>
+		<span><%= f_label(@object.feature) %></span>
+	</div>
+	
+	<div class="row">
+		<%= f.label :type %>
+		<%= category_selector(@parent_object_type, :feature_object_type, :object_type, true, :hasTree => 'true', :singleSelectionTree => 'true') %>
+	</div>
+	
+</fieldset>
+
+<%= render(
+	:partial=>'admin/timespans/form_fields',
+	:locals=>{
+		:timespan=>@object.timespan,
+		:timespan_form_field_name=>'feature_object_type[timespan_attributes]'
+	}
+) %>

@@ -1,0 +1,136 @@
+<% if feature.nil? %>
+<div class="left">
+  <h2>No Results</h2>
+  <p>There is no feature to display. Please select a feature from the tree.</p>
+</div>
+<% else
+@context_id = feature.id
+%>
+<div id="FeatureDetails" class="has-right-margin">
+  <%= content_tag :h2, feature_name_header(feature) %>
+  
+	<h3><%= current_perspective %> Location</h3>
+	<%= f_breadcrumb(feature) %>
+
+	<%= content_tag :h3, "Feature Types" unless feature.object_types.empty? %>
+	<% if defined? feature.object_types %>
+	  <%
+	  # This should probably be abstracted elsewhere
+	  hostname = Socket.gethostname.downcase
+	  if hostname == 'dev.thlib.org'
+	   tmb_base = 'http://dev.tmb.thlib.org'
+	  elsif hostname =~ /.local/
+	   tmb_base = 'http://localhost:3001'
+	  else
+	   tmb_base = 'http://tmb.thlib.org'
+	  end
+	  %>
+	  <ul id="FeatureTypesList">
+	<% feature.object_types.each do |ot| 
+		 if !ot.nil? %>
+		   <li><%= link_to ot.title, "#{tmb_base}/categories/iframe/#{ot.id}", :class => "thl-pop iframe no-view-alone overflow-y-auto width-850 height-488" %></li>
+	<%   end
+	   end %>
+	   <%= javascript_tag "$(document).ready(function(){ ActivateThlPopups('#FeatureTypesList'); });" %>
+	  </ul>
+	<% end %>
+		
+	<% if !feature.shapes.empty? %>
+		<h3>Interactive Map</h3>
+		<div id="inset_map" class="fid-<%= feature.fid.to_s %> language-<%= current_view.code %>"></div>
+		<%= javascript_tag "$(document).ready(function(){ InsetMap.init(); });" %>
+		<%= link_to image_tag("http://www.thlib.org/global/images/icon-map-simple.gif", :alt => "") + " View the full map", "http://www.thlib.org/places/maps/interactive/#fid:#{feature.fid};language:#{current_view.code}", :target => "_blank", :class => "view-on-map" %>
+		<%= link_to image_tag("http://www.thlib.org/global/images/icon-google-maps.png", :alt => "") + " View in Google Maps", "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => feature.fid, :format => "kmz"), :target => "_blank", :class => "view-on-map" %>
+		<%= link_to image_tag("http://www.thlib.org/global/images/icon-google-earth.png", :alt => "") + " View in Google Earth", {:action => :gis_resources, :fids => feature.fid, :format => "kmz"}, :target => "_blank", :class => "view-on-map" %>
+	<% end %>
+	
+	<%= content_tag :h3, "Descriptions" unless feature.descriptions.blank? %>
+	<%  if !feature.descriptions.empty? %>
+	      <div id='descriptions_div'>
+	<%=     render :partial => '/descriptions/index', :locals => {:feature => feature, :description => nil} %>
+	      </div>
+	<%  end %>
+	
+	<%= content_tag :h3, "Related Places" unless feature.parent.nil? %>
+	<% if feature.parent %>
+  	<p>This feature is contained within: </p>
+  	<ul><li><%= f_link(feature.parent, features_path(:anchor => feature.parent.id)) %></li></ul>
+	<% end %>
+	
+	<p>
+		<br />
+		<%= button_to_function "View More Feature Detail", "$('#more_feature_detail').show(); $(this).hide(); $('#less_feature_detail_button').show();", :id => "more_feature_detail_button", :style => ("display:none;" if current_show_feature_details) %>
+		<%= button_to_function "Hide Feature Detail", "$('#more_feature_detail').hide(); $(this).hide(); $('#more_feature_detail_button').show();", :id => "less_feature_detail_button", :style => ("display:none;" unless current_show_feature_details) %>
+	</p>
+
+<div id="more_feature_detail" style="<%= ("display: none;" unless current_show_feature_details) %>">
+
+	<h3>Names</h3>
+	<%= feature_name_ul(feature,false) %>
+	<dl class="no-style">
+	<% feature.names.current_roots.each do |name| %>
+		<%= "<dt><strong>Etymology of #{name.name}:</strong></dt><dd>#{name.etymology}</dd>" unless name.etymology.blank? %>
+	<% end %>
+	</dl>
+
+	<h3>Classifications/Codes</h3>
+<%  if show_old_pid %>
+      <p>CURRENT THL ID: <%= feature.pid %></p>
+      <p>OLD THL PID: <%= feature.old_pid %></p>
+<%  else %>
+      <p>THL ID: <%= feature.pid %></p>
+<%  end %>
+  	<% feature.geo_codes.each do |geo_code| %>
+			<p><%= geo_code %>: <%= geo_code.geo_code_value%></p>
+  	<% end %>
+	
+	<% if !feature.shapes.empty? %>
+		<%= content_tag :h3, "Locations" %>
+		<ul>
+		  <% feature.shapes.each do |shape| %>
+		    <li><%=h shape_display_string(shape) %></li>
+		  <% end %>	
+		</ul>
+
+			GIS Resources (feature alone)
+				<ul>
+					<li>
+						<%= link_to "GML", :action => :gis_resources, :fids => feature.fid, :format => "gml" %>
+					</li>
+					<li>
+						<%= link_to "KML", :action => :gis_resources, :fids => feature.fid, :format => "kml" %>
+					</li>
+					<li>
+						<%= link_to "Shapefile", :action => :gis_resources, :fids => feature.fid, :format => "shp" %>
+					</li>
+				</ul>
+			
+			<% if !feature.descendants.empty? %>
+				GIS Resources (including contained features)
+				<% # For features with > 550 descendants, the GeoServer URL will be > 8000 characters, which currently throws an error.
+				if feature.descendants.length < 550 %>
+				<ul>
+					<li>
+						<%= link_to "GML", :action => :gis_resources, :fids => feature.fid, :format => "gml", :contained => "1" %>
+					</li>
+					<li>
+						<%= link_to "KML", :action => :gis_resources, :fids => feature.fid, :format => "kml", :contained => "1" %>
+					</li>
+					<li>
+						<%= link_to "Shapefile", :action => :gis_resources, :fids => feature.fid, :format => "shp", :contained => "1" %>
+					</li>
+				</ul>
+				<% else %>
+				<ul>
+					<li>Sorry, this feature contains too many features for us to currently be able to provide this data.</li>
+				</ul>
+				<% end %>
+			<% end %>
+	<% end %>
+
+</div>
+	
+</div>
+
+<br class="clear"/>
+<% end %>

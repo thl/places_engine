@@ -1,0 +1,13 @@
+<ul>
+<% nodes = (defined? children) ? children : node.current_children(current_perspective, current_view)
+for child in nodes %>
+     <li id="<%= "node_#{child.id}_div" %>">
+<%   if @ancestors_for_current.nil? || @ancestors_for_current.empty? || (index = @ancestors_for_current.index(child.id)).nil? %>
+<%=    render :partial => 'contracted', :object => child, :locals => {:contracted => child} %>
+<%   else
+       @ancestors_for_current.delete_at(index) %>
+<%=    render :partial => 'expanded', :object => child, :locals => {:expanded => child} %>
+<%   end %>
+     </li>
+<% end %>
+</ul>

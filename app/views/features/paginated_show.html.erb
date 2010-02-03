@@ -1,0 +1,3 @@
+<%= javascript_include_tag "sections/#{controller.controller_name}" %>
+<%=  render :partial => 'feature', :collection => @features, :locals => {:show_old_pid => false} %>
+<p><%= will_paginate @features %></p>

@@ -1,0 +1,28 @@
+<%
+add_breadcrumb_item link_to (collection_name, collection_path)
+add_breadcrumb_item @object.code
+%>
+
+<fieldset>
+	
+	<legend>
+		<%= model_name.titleize %>
+		<%= link_to 'Edit', edit_object_path(@object) %>
+	</legend>
+	
+	<div class="row">
+		<label>Name</label>
+		<span><%= def_if_blank(@object, :title) %></span>
+	</div>
+	
+	<div class="row">
+		<label>Code</label>
+		<span><%= def_if_blank @object, :code %></span>
+	</div>
+	
+	<div class="row">
+		<label>Description</label>
+		<span><%= def_if_blank @object, :description %></span>
+	</div>
+	
+</fieldset>

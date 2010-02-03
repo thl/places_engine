@@ -1,0 +1,327 @@
+<script type="text/javascript">
+// Creates a new plugin class and a custom listbox
+tinymce.create('tinymce.plugins.ExamplePlugin', {
+    createControl: function(n, cm) {
+        switch (n) {
+			case 'mylistbox':
+			var c = cm.createSplitButton('mylistbox', {
+			                    title : 'Classes', image : '/images/TAG.gif',
+								icons : true
+			                    
+			                });
+
+			c.onRenderMenu.add(function(c, m) {
+			  m.add({ title : 'Event Tag', image : '/images/TAG.gif',
+						onclick : function(ed) {
+							var title_name = prompt("Type in ID (optional)", "Type ID here");
+							if (title_name != null){
+								ed.focus();
+								var current_selection = tinyMCE.activeEditor.selection.getContent({format : 'text'}); //ed.selection.getContent();
+								//ed.selection.setContent('<span class="event" title="' + title_name + '">' + current_selection + '</span>');
+								tinyMCE.activeEditor.selection.setContent('<span class="event" title="' + title_name + '">' + current_selection + '</span>');
+								
+							}	
+						}
+					}); //EventButton
+
+			  m.add({ title : 'Map Tag', image : '/images/Map.gif',
+						onclick : function() {
+							var title_name = prompt("Type in ID (optional)", "Type ID here");
+							if (title_name != null){
+								var current_selection = tinyMCE.activeEditor.selection.getContent({format : 'text'}); 
+								tinyMCE.activeEditor.selection.setContent('<span class="map" title="' + title_name + '">' + current_selection + '</span>');
+							}
+						}
+					}); //MapButton
+					
+			  m.add({ title : 'Ref Tag', image : '/images/Ref.gif',
+						onclick : function() {
+							var title_name = prompt("Type in ID (optional)", "Type ID here");
+							if (title_name != null){
+								var current_selection = tinyMCE.activeEditor.selection.getContent({format : 'text'}); 
+								tinyMCE.activeEditor.selection.setContent('<span class="ref" title="' + title_name + '">' + current_selection + '</span>');
+							}	
+						}
+					});	//RefButton
+					
+			  m.add({ title : 'Place Tag', image : '/images/place.gif',
+						onclick : function() {
+							var title_name = prompt("Type in ID (optional)", "Type ID here");
+							if (title_name != null){
+								var current_selection = tinyMCE.activeEditor.selection.getContent({format : 'text'}); 
+								tinyMCE.activeEditor.selection.setContent('<span class="place" title="' + title_name + '">' + current_selection + '</span>');
+						    }				
+						}
+					}); //PlaceButton
+					
+			  m.add({ title : 'Person Tag', image : '/images/Person.gif',
+						onclick : function() {
+							var title_name = prompt("Type in ID (optional)", "Type ID here");
+							if (title_name != null){
+								var current_selection = tinyMCE.activeEditor.selection.getContent({format : 'text'}); 
+								tinyMCE.activeEditor.selection.setContent('<span class="person" title="' + title_name + '">' + current_selection + '</span>');
+							}
+						}
+					});	//PersonButton
+					
+			  m.add({ title : 'Organization Tag', image : '/images/Org.gif',
+						onclick : function() {
+							var title_name = prompt("Type in ID (optional)", "Type ID here");
+							if (title_name != null){
+								var current_selection = tinyMCE.activeEditor.selection.getContent({format : 'text'}); 
+								tinyMCE.activeEditor.selection.setContent('<span class="org" title="' + title_name + '">' + current_selection + '</span>');
+							}
+						}
+					});	//OrgButton
+			
+			  m.add({ title : 'Project Tag', image : '/images/Project.gif',
+						onclick : function() {
+							var title_name = prompt("Type in ID (optional)", "Type ID here");
+							if (title_name != null){
+								var current_selection = tinyMCE.activeEditor.selection.getContent({format : 'text'}); 
+								tinyMCE.activeEditor.selection.setContent('<span class="project" title="' + title_name + '">' + current_selection + '</span>');
+							}
+						}
+					});	//ProjectButton
+					
+			  m.add({ title : 'Himalayan Tag', image : '/images/Himalayan.gif',	
+						onclick : function() {																																			
+							var title_name = prompt("Type in ID (optional)", "Type ID here");
+							if (title_name != null){
+								var current_selection = tinyMCE.activeEditor.selection.getContent({format : 'text'}); 
+								tinyMCE.activeEditor.selection.setContent('<span class="himalayan" title="' + title_name + '">' + current_selection + '</span>');
+							}																											
+						}
+					});	//HimalayanButton
+			  m.add({ title : 'Tibetan Tag', image : '/images/Tibetan.gif',
+						onclick : function() {
+							var title_name = prompt("Type in ID (optional)", "Type ID here");
+							if (title_name != null){
+								var current_selection = tinyMCE.activeEditor.selection.getContent({format : 'text'}); 
+								tinyMCE.activeEditor.selection.setContent('<span class="tibetan" title="' + title_name + '">' + current_selection + '</span>');
+							}
+						}
+					});	//TibetanButton
+					
+			  m.add({ title : 'Topic Tag', image : '/images/Topic.gif',
+						onclick : function() {
+							var title_name = prompt("Type in ID (optional)", "Type ID here");
+							if (title_name != null){
+								var current_selection = tinyMCE.activeEditor.selection.getContent({format : 'text'}); 
+								tinyMCE.activeEditor.selection.setContent('<span class="topic" title="' + title_name + '">' + current_selection + '</span>');
+							}	
+						}
+					});	//TopicButton
+					
+			  m.add({ title : 'TibText Tag', image : '/images/TibText.gif',
+						onclick : function() {
+							var title_name = prompt("Type in ID (optional)", "Type ID here");
+							if (title_name != null){
+								var current_selection = tinyMCE.activeEditor.selection.getContent({format : 'text'}); 
+								tinyMCE.activeEditor.selection.setContent('<span class="tibtext" title="' + title_name + '">' + current_selection + '</span>');
+							}	
+						}
+					});	//TibTextButton
+			
+			 });
+			 // Return the new menubutton instance
+			 return c;
+	
+        }
+
+        return null;
+    }
+});
+
+// Register plugin with a short name
+tinymce.PluginManager.add('example', tinymce.plugins.ExamplePlugin);
+
+//<![CDATA[
+tinyMCE.init({
+editor_selector : 'mceEditor2',
+height : '280px',
+mode : 'textareas',
+noneditable_leave_contenteditable : 'true',
+plugins : "example, contextmenu,paste,media,fullscreen,template,noneditable,code, table",
+template_external_list_url : '/templates/templates.js',
+content_css : '/stylesheets/customtinymce.css',
+theme : 'advanced',
+theme_advanced_blockformats : 'p,h1,h2,h3,h4,h5,h6',
+theme_advanced_buttons1 : " fullscreen,separator,bold,italic,underline,strikethrough,separator,undo,redo,separator,link,unlink,template,formatselect, code",
+theme_advanced_buttons2 : "cut,copy,paste,separator,pastetext,pasteword,separator,bullist,numlist,outdent,indent,separator,justifyleft,justifycenter,justifyright,justifiyfull,separator,removeformat,charmap",
+theme_advanced_buttons3 : "EventButton,HimalayanButton,MapButton,OrgButton,PersonButton,PlaceButton, ProjectButton,RefButton,TibetanButton,TibTextButton, TopicButton, separator, tablecontrols ",
+table_styles : "Header 1=header1;Header 2=header2;Header 3=header3",
+table_cell_styles : "Header 1=header1;Header 2=header2;Header 3=header3;Table Cell=tableCel1",
+table_row_styles : "Header 1=header1;Header 2=header2;Header 3=header3;Table Row=tableRow1",
+theme_advanced_resizing : 'true',
+theme_advanced_toolbar_align : 'left',
+theme_advanced_toolbar_location : 'top',
+width : '700px',
+setup : function(ed) {
+// Add Event button
+  ed.addButton('EventButton', { title : 'Event Tag', image : '/images/Evt3.gif',
+								onclick : function() {
+									var title_name = prompt("Type in ID (optional)", "Type ID here");
+									if (title_name != null){
+										ed.focus();
+										var current_selection = ed.selection.getContent();
+										ed.selection.setContent('<span class="event" title="' + title_name + '">' + current_selection + '</span>');
+									}	
+								}
+					});	//EventButton
+// Add Map button
+  ed.addButton('MapButton', { title : 'Map Tag', image : '/images/Map3.gif',
+								onclick : function() {
+									var title_name = prompt("Type in ID (optional)", "Type ID here");
+									if (title_name != null){
+										ed.focus();
+										var current_selection = ed.selection.getContent();
+										ed.selection.setContent('<span class="map" title="' + title_name + '">' + current_selection + '</span>');
+									}
+								}
+					});	//MapButton
+// Add Ref button
+  ed.addButton('RefButton', { title : 'Ref Tag', image : '/images/Ref3.gif',
+								onclick : function() {
+									var title_name = prompt("Type in ID (optional)", "Type ID here");
+									if (title_name != null){
+										ed.focus();
+										var current_selection = ed.selection.getContent();
+										ed.selection.setContent('<span class="ref" title="' + title_name + '">' + current_selection + '</span>');
+									}	
+								}
+					});	//RefButton
+						
+// Add Place button
+  ed.addButton('PlaceButton', { title : 'Place Tag', image : '/images/Pla3.gif',
+								onclick : function() {
+									var title_name = prompt("Type in ID (optional)", "Type ID here");
+									if (title_name != null){
+										ed.focus();
+										var current_selection = ed.selection.getContent();
+										ed.selection.setContent('<span class="place" title="' + title_name + '">' + current_selection + '</span>');
+									}	
+								}
+				}); //PlaceButton
+// Add Person button				
+  ed.addButton('PersonButton', { title : 'Person Tag', image : '/images/Per3.gif',
+								onclick : function() {
+									var title_name = prompt("Type in ID (optional)", "Type ID here");
+									if (title_name != null){
+										ed.focus();
+										var current_selection = ed.selection.getContent();
+										ed.selection.setContent('<span class="person" title="' + title_name + '">' + current_selection + '</span>');
+									}
+								}
+				});	//PersonButton
+// Add Org button
+  ed.addButton('OrgButton', { title : 'Organization Tag', image : '/images/Org3.gif',
+								onclick : function() {
+									var title_name = prompt("Type in ID (optional)", "Type ID here");
+									//if (title_name){
+									if (title_name != null){
+										ed.focus();
+										var current_selection = ed.selection.getContent();
+										ed.selection.setContent('<span class="org" title="' + title_name + '">' + current_selection + '</span>');
+									}	
+									//}
+								}
+				});	//OrgButton
+// Add Project button				
+  ed.addButton('ProjectButton', { title : 'Project Tag', image : '/images/Pro3.gif',
+								onclick : function() {
+									var title_name = prompt("Type in ID (optional)", "Type ID here");
+									if (title_name != null){
+										ed.focus();
+										var current_selection = ed.selection.getContent();
+										ed.selection.setContent('<span class="project" title="' + title_name + '">' + current_selection + '</span>');
+									}	
+								}
+				});	//ProjectButton															
+// Add Himalayan button				
+  ed.addButton('HimalayanButton', { title : 'Himalayan Tag', image : '/images/Him3.gif',
+								onclick : function() {
+									var title_name = prompt("Type in ID (optional)", "Type ID here");
+									if (title_name != null){
+										ed.focus();
+										var current_selection = ed.selection.getContent();
+										ed.selection.setContent('<span class="himalayan" title="' + title_name + '">' + current_selection + '</span>');
+									}	
+								}
+				});	//HimalayanButton							
+// Add Tibetan button				
+  ed.addButton('TibetanButton', { title : 'Tibetan Tag', image : '/images/Tib3.gif',
+								onclick : function() {
+									var title_name = prompt("Type in ID (optional)", "Type ID here");
+									if (title_name != null){
+										ed.focus();
+										var current_selection = ed.selection.getContent();
+										ed.selection.setContent('<span class="tibetan" title="' + title_name + '">' + current_selection + '</span>');
+									}
+								}
+				});	//TibetanButton	
+// Add Topic button				
+  ed.addButton('TopicButton', { title : 'Topic Tag', image : '/images/Top3.gif',
+								onclick : function() {
+									var title_name = prompt("Type in ID (optional)", "Type ID here");
+									if (title_name != null){
+										ed.focus();
+										var current_selection = ed.selection.getContent();
+										ed.selection.setContent('<span class="topic" title="' + title_name + '">' + current_selection + '</span>');
+									}	
+								}
+				});	//TopicButton				
+// Add TibText button				
+  ed.addButton('TibTextButton', { title : 'TibText Tag', image : '/images/Txt3.gif',
+								onclick : function() {
+									var title_name = prompt("Type in ID (optional)", "Type ID here");
+									if (title_name != null){
+										ed.focus();
+										var current_selection = ed.selection.getContent();
+										ed.selection.setContent('<span class="tibtext" title="' + title_name + '">' + current_selection + '</span>');
+									}	
+								}
+				});	//TibTextButton	
+																							
+			} //function(ed)
+});
+//]]>
+</script>
+	<%= error_messages_for model_name %>
+
+<fieldset>
+	
+	<legend>
+		<%= model_name.titleize %>
+	</legend>
+	
+	<%= f.hidden_field :id %>
+	
+	<div class="row">
+		<%= f.label :name %>
+		<%= f.text_field :name, :class => :text %>
+	</div>
+	
+	<div class="row">
+		<%= f.label :code %>
+		<%= f.text_field :code, :class => :text %>
+	</div>
+	
+	<div class="row">
+		<%= f.label :description %>
+	</div>
+	<div class="row">
+		<%= f.text_area :description, :rows=>4, :class => 'mceEditor2' %>
+	</div>
+
+	<div class="row">
+		<%= f.label :is_public, 'Public?' %>
+		<%= f.check_box :is_public %>
+	</div>
+	
+	<div class="row">
+		<%= f.label '' %>
+		<%= f.label '' %>		
+	</div>
+	
+</fieldset>

@@ -1,0 +1,51 @@
+<% if list.empty? %>
+	<%= empty_collection_message %>
+<% else %>
+
+<table class="listGrid">
+	
+	<%= pagination_row :colspan=>6 unless @collection.nil? %>
+	
+	<tr>
+		<th class="listActionsCol"></th>
+		<th>Name</th>
+		<th>Type</th>
+		<th>Language</th>
+		<th>Script</th>
+		<th>Relationship</th>
+		<th>Timespan</th>
+		<th>Priority</th>
+	</tr>
+	<% list.each do |item| %>
+	<tr>
+		<td class="centerText">
+			<% if @locating_relation %>
+			<%= form_tag new_admin_feature_name_feature_name_relation_path(@object), {:method=>:get} %>
+				<%= hidden_field_tag :target_id, item.id %>
+				<%= submit_tag 'Select' %>
+			</form>
+			<% else %>
+			<%= list_actions_for_item(item,
+				{
+				  :delete_path => admin_feature_feature_name_path(item.feature, item),
+				  :edit_path   => admin_feature_feature_name_path(item.feature, item),
+				  :view_path   => admin_feature_feature_name_path(item.feature, item),
+				  :hide_view   => true
+			  }
+			) %>
+			<% end %>
+		</td>
+		
+		<td><%= concise_fname_breadcrumb(item) %></td>
+		
+		<td><%= def_if_blank(item, :class) %></td>
+		<td><%= def_if_blank(item, :language) %></td>
+		<td><%= def_if_blank(item, :writing_system) %></td>
+		<td><%= fn_relationship(item) %></td>
+		<td><%= formatted_timespan item.timespan %></td>
+		<td><%= item.position.to_s %>
+		
+	</tr>
+	<% end %>
+</table>
+<% end %>

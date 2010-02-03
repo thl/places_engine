@@ -1,0 +1,33 @@
+<% if descendants and descendants.size > 0 %>
+	<div id="FeatureContains" class="has-right-margin">
+  	<%= content_tag :h3, "Contained Features"%>
+    <table>
+      <tr>
+        <td colspan="2" style="padding:.3em;"><%= will_paginate descendants, :custom => true %></td>
+      </tr>
+      <tr>
+        <th>Related Feature</th>
+        <th>Type</th>
+      </tr>
+    	<% descendants.each do |child| %>
+      <tr id="feature_<%= child.id %>">
+        <td><%= f_link(child, features_path(:anchor=>child.id)) %></td>
+        <td><%=h child.object_types.first.title rescue '' %></td>
+      </tr>
+    	<% end %>
+    </table>
+  </div>
+<script type="text/javascript">
+  $('.ajax_get').click(function() {
+    $.get($(this).attr('name'), function(data){
+      $('#FeatureContains').replaceWith(data);
+    });
+	return false;
+  });
+</script>
+<% else %>
+<div class="left">
+  <h2>No Contained Features</h2>
+  <p>This Feature does not contain other Features.</p>
+</div>
+<% end %>

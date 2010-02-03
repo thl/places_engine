@@ -1,0 +1,2 @@
+module Admin::FeatureNameTypesHelper
+end

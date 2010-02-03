@@ -1,0 +1,34 @@
+<%
+#
+# if we're showing the descriptions of a particular Feature
+#
+if @parent_object
+	add_breadcrumb_item features_link
+	add_breadcrumb_item feature_link(@parent_object)
+	add_breadcrumb_item 'descriptions'
+end
+%>
+
+<div>
+	<div class="left"></div>
+	<div class="right highlight">
+
+<% unless @locating_relation %>		
+	<% if parent? %>
+		<% # Don't show the new link if there is no @feature (a feature name must belong to a features) %>
+			<%= link_to 'New', new_admin_feature_description_path(@parent_object) %> description: <%= feature_link(@parent_object) %>	
+					
+  <% else %>
+		A Description can only be created from a resource that uses one.
+	<% end %>
+<% end %>
+<% if !@parent_object.descriptions.nil? %>
+	<%= link_to 'Set Primary Description', set_primary_description_admin_feature_path(@parent_object) %>
+<% end %>
+	</div>
+</div>
+<br class="clear"/>
+<br class="clear"/>
+
+
+<%= render :partial => 'descriptions_list', :locals => { :list => @collection } %>

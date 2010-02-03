@@ -1,0 +1,84 @@
+<%
+add_breadcrumb_item features_link
+add_breadcrumb_item feature_link(@object.feature)
+add_breadcrumb_item @object.name
+%>
+
+<div>
+<h1>Feature Name: <%= @object %></h1>
+</div>
+<br class="clear"/>
+<fieldset>
+	<legend>General Information <%= link_to 'Edit', edit_admin_feature_name_path(@object) %></legend>
+	<div class="row">
+		<label>Name: </label> <span><%= @object.name %></span>
+	</div>
+	<div class="row">
+		<label>Etymology: </label> <span><%= def_if_blank @object, :etymology %></span>
+	</div>
+	<div class="row">
+		<label>Name Type: </label> <span><%= def_if_blank @object, :class, :name %></span>
+	</div>
+	<div class="row">
+		 <label>Language: </label> <span><%= def_if_blank @object, :language, :name %></span>
+	</div>
+	<div class="row">
+		 <label>Writing System: </label> <span><%= def_if_blank @object, :writing_system, :name %></span>
+	</div>
+	<div class="row">
+		<label>Primary for Romanization View?</label> <span><%= yes_no @object.is_primary_for_romanization %></span>
+	</div>
+	<div class="row">
+		<label>Timespan: </label> <span><%= formatted_timespan @object.timespan %></span>
+	</div>
+	
+	<div class="row">
+		<label>Created at: </label> <span><%= @object.created_at.to_formatted_s(:us_datetime) %></span>
+	</div>
+	<div class="row">
+		<label>Update at: </label> <span><%= @object.updated_at.to_formatted_s(:us_datetime) %></span>
+	</div>
+	
+</fieldset>
+
+<fieldset>
+	<legend>Feature Name Relations <%#= link_to 'View', admin_feature_name_feature_name_relations_path(@object) %></legend>
+	<div class="left highlight">
+		<%= link_to 'Select', locate_for_relation_admin_feature_name_path(@object) %> 
+		a new Feature Name to relate to <%= highlight(@object.name) %>.
+	</div>
+	<br class="clear"/>
+	<% if object.parents.empty? && object.children.empty? %>
+  	<%= empty_collection_message("Currently not related to any other Feature Names.")%>
+	<% end %>
+
+  <% unless @object.parents.empty? %>
+  	<%= content_tag(:h3, 'Parents') %>
+  	<% (@object.parents).each do |parent| %>
+      <div class="row">
+    	  <%= render :partial => 'admin/feature_name_relations/relations_list', :locals => { :list => parent.relations.select {|r| r.child_node == @object}, :parent => parent, :options => {:hide_child => true, :hide_related_to => true} } %>
+      </div>
+  	<% end %>
+
+	<% end %>
+	
+	<% unless @object.children.empty? %>
+  	<%= content_tag(:h3, 'Children')%>
+  	<% (@object.children).each do |child| %>
+      <div class="row">
+        '<%= @object.name %>' Has a transliteration of <%= link_to child.name, admin_feature_name_path(child) %>
+      	<%= render :partial => 'admin/feature_name_relations/relations_list', :locals => { :list => child.relations.select {|r| r.parent_node == @object} } %>
+      </div>
+  	<% end %>
+	<% end %>
+
+</fieldset>
+
+<fieldset>
+	<legend>Citations</legend>
+	<div class="left highlight">
+	  <%= link_to('New Citation', new_admin_feature_name_citation_path(object)) %>
+	</div>
+	<br class="clear"/>
+	<%= render :partial => 'admin/citations/citations_list', :locals => { :list => @object.citations, :show_type => :feature_name } %>
+</fieldset>

@@ -1,0 +1,1 @@
+Currently, any model that is a sub-class of SimpleProp uses the templates in this directory.

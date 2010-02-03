@@ -1,0 +1,86 @@
+# == Schema Information
+# Schema version: 20091102185045
+#
+# Table name: feature_name_relations
+#
+#  id                     :integer         not null, primary key
+#  child_node_id          :integer         not null
+#  parent_node_id         :integer         not null
+#  ancestor_ids           :string(255)
+#  is_phonetic            :integer
+#  is_orthographic        :integer
+#  is_translation         :integer
+#  is_alt_spelling        :integer
+#  phonetic_system_id     :integer
+#  orthographic_system_id :integer
+#  alt_spelling_system_id :integer
+#  created_at             :timestamp
+#  updated_at             :timestamp
+#
+
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+one_to_nine:
+  child_node: nine
+  parent_node: one
+  is_phonetic: false
+  is_orthographic: true
+  is_translation: false
+  is_alt_spelling: false
+  phonetic_system: 
+  orthographic_system: ors_tib_wyl
+  alt_spelling_system: 
+
+two_to_ten:
+  child_node: ten
+  parent_node: two
+  is_phonetic: true
+  is_orthographic: false
+  is_translation: false
+  is_alt_spelling: false
+  phonetic_system: phs_pin
+  orthographic_system: 
+  alt_spelling_system: 
+#
+three_to_eleven:
+  child_node: eleven
+  parent_node: three
+  is_phonetic: true
+  is_orthographic: false
+  is_translation: false
+  is_alt_spelling: false
+  phonetic_system: phs_pin
+  orthographic_system: 
+  alt_spelling_system: 
+#
+bod_to_five:
+  child_node: bod
+  parent_node: five
+  is_phonetic: false
+  is_orthographic: true
+  is_translation: false
+  is_alt_spelling: false
+  phonetic_system: 
+  orthographic_system: ors_tib_wyl
+  alt_spelling_system: 
+#
+xizang_to_six:
+  child_node: xizang
+  parent_node: six
+  is_phonetic: true
+  is_orthographic: true
+  is_translation: false
+  is_alt_spelling: false
+  phonetic_system: phs_pin
+  orthographic_system: 
+  alt_spelling_system: 
+#
+lha_sa_to_eight:
+  child_node: lha_sa
+  parent_node: eight
+  is_phonetic: false
+  is_orthographic: true
+  is_translation: false
+  is_alt_spelling: false
+  phonetic_system: 
+  orthographic_system: ors_tib_wyl
+  alt_spelling_system: 

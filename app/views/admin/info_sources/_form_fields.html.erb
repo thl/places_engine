@@ -1,0 +1,29 @@
+<%= error_messages_for model_name %>
+
+<fieldset>
+	
+	<legend>
+		<%= model_name.titleize %>
+	</legend>
+	
+	<div class="row">
+		<%= f.label :code %>
+		<%= f.text_field :code, :class => :text %>
+	</div>
+
+	<div class="row">
+		<%= f.label :title %>
+		<%= f.text_field :title, :class => :text %>
+	</div>
+	
+	<div class="row">
+		<%= f.label :agent %>
+		<%= f.text_field :agent, :class => :text %>
+	</div>
+
+	<div class="row">
+		<%= f.label :date_published %>
+		<%= f.date_select(:date_published, :start_year=>1900, :use_month_numbers => true) %>
+	</div>
+
+</fieldset>

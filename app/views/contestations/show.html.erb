@@ -1,0 +1,23 @@
+<p>
+  <b>Feature:</b>
+  <%=h @contestation.feature_id %>
+</p>
+
+<p>
+  <b>Contested:</b>
+  <%=h @contestation.contested %>
+</p>
+
+<p>
+  <b>Administered by:</b>
+  <%=h @contestation.administered_by %>
+</p>
+
+<p>
+  <b>Claimed by:</b>
+  <%=h @contestation.claimed_by %>
+</p>
+
+
+<%= link_to 'Edit', edit_contestation_path(@contestation) %> |
+<%= link_to 'Back', contestations_path %>

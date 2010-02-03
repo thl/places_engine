@@ -1,0 +1,2 @@
+module ContestationsHelper
+end

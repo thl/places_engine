@@ -1,0 +1,12 @@
+<%
+add_breadcrumb_item features_link
+add_breadcrumb_item feature_link(@object.feature)
+add_breadcrumb_item link_to(collection_name, admin_feature_feature_geo_codes_path(@object.feature))
+add_breadcrumb_item link_to(@object.id, object_path)
+add_breadcrumb_item 'edit'
+%>
+
+<% form_for [:admin, @object] do |f| %>
+	<%= render :partial=>'form_fields', :locals=>{:f=>f,:object=>@object} %>
+	<%= link_to 'Cancel', collection_path %> | <%= submit_tag 'Create' %>
+<% end %>

@@ -1,0 +1,57 @@
+<% if list.empty? %>
+	<%= empty_collection_message %>
+<% else %>
+
+<% options ||= {} %>
+
+<table class="listGrid">
+	
+	<%= pagination_row :colspan=>7 unless @collection.nil? %>
+	
+	<tr>
+		<th class="listActionsCol"> </th>
+		<%= '<th>Child</th>' unless options[:hide_child] %>
+		<%= '<th>Related To</th>' unless options[:hide_related_to] %>
+		<th>Translation?</th>
+		<th>Phonetic?</th>
+		<th>Orthographic?</th>
+		<th>Alt. Spelling?</th>
+	</tr>
+
+	<% list.each do |item| %>
+	<tr>
+		<td class="listActionsCol">
+		  <%= list_actions_for_item(item,
+		    {
+				  :delete_path => admin_feature_name_feature_name_relation_path(item.child_node, item),
+				  :edit_path   => edit_admin_feature_name_feature_name_relation_path(item.child_node, item),
+				  :view_path   => admin_feature_name_feature_name_relation_path(item.child_node, item)
+		    }
+		  ) %>
+		</td>
+
+		<%= '<td>'+(item.child_node.name rescue 'child_node Ka-Blam!')+'</td>' unless options[:hide_child] %>
+	
+		<%= '<td>'+(item.parent_node.name rescue 'parent_node Ka-Blam!')+'</td>' unless options[:hide_related_to] %>
+	
+		<td>
+			<%= yes_no item.is_translation %>
+		</td>
+		<td>
+			<%= yes_no item.is_phonetic %><br/>
+			<%= def_if_blank(item, :phonetic_system, :display_string) { '' } %>
+		</td>
+		<td>
+			<%= yes_no item.is_orthographic %><br/>
+			<%= def_if_blank(item, :orthographic_system, :name) { '' } %>
+		</td>
+		<td>
+			<%= yes_no item.is_alt_spelling %><br/>
+			<%= def_if_blank(item, :alt_spelling_system, :name) { '' } %>
+		</td>
+		
+	</tr>
+	<% end %>
+</table>
+
+<% end %>

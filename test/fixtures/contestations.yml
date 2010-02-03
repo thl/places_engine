@@ -1,0 +1,27 @@
+# == Schema Information
+# Schema version: 20091102185045
+#
+# Table name: contestations
+#
+#  id               :integer         not null, primary key
+#  feature_id       :integer         not null
+#  contested        :boolean         default(TRUE), not null
+#  administrator_id :integer
+#  claimant_id      :integer
+#  created_at       :timestamp
+#  updated_at       :timestamp
+#
+
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  feature_id: 1
+  contested: false
+  administered_by: 1
+  claimed_by: 1
+
+two:
+  feature_id: 1
+  contested: false
+  administered_by: 1
+  claimed_by: 1

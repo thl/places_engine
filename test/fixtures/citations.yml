@@ -1,0 +1,35 @@
+# == Schema Information
+# Schema version: 20091102185045
+#
+# Table name: citations
+#
+#  id             :integer         not null, primary key
+#  info_source_id :integer
+#  citable_type   :string(255)
+#  citable_id     :integer
+#  pages          :string(255)
+#  notes          :text
+#  created_at     :timestamp
+#  updated_at     :timestamp
+#
+
+one:
+  info_source: one
+  citable_type: FeatureRelation
+  citable: tibet_partof_china
+  pages: page 1, page 2
+  notes: Blah blah
+
+two:
+  info_source: two
+  citable_type: FeatureRelation
+  citable: lhasa_partof_tibet
+  pages: pages 411 - pages 487
+  notes: Blah blah blah
+#
+three:
+  info_source: two
+  citable_type: Feature
+  citable: china
+  pages: pages 411 - pages 487
+  notes: Blah blah blah

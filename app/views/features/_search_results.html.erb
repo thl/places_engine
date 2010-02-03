@@ -1,0 +1,37 @@
+<% if !@features.nil? && @features.size > 0 %>
+<div>
+<table>
+  <tr>
+    <td colspan="2" class="pagination-info-cell">
+	  <%= page_entries_info @features %>
+	</td>
+  </tr>
+  <tr>
+    <td colspan="2" class="pagination-cell">
+	  <%= will_paginate @features, :params => @params %>
+	</td>
+  </tr>
+  <tr>
+    <th class="leftText">Name Variations</th>
+    <th class="leftText">Type</th>
+  </tr>
+  <% @features.each do |f| %>
+    <tr class="featureRow" id="feature_<%= f.id %>">
+      <td class="leftText">
+		<%= link_to_function h(feature_name_header(f)), "NodeTree.showNode("+f.id.to_s+"); NodeTree.loadExpandedTree("+f.id.to_s+")", { :href => features_url + "##{f.id}" } %>
+	</td>
+      <td class="leftText"><%=h f.object_types.first.title rescue '' %></td>
+    </tr>
+  <% end %>
+  <tr>
+    <td colspan="2" style="padding:0.5em;" class="pagination-cell">
+	  <%= will_paginate @features, :params => @params %>
+	</td>
+  </tr>
+</table>	
+</div>
+<% else %>
+<p>
+  No Features found.
+</p>
+<% end %>

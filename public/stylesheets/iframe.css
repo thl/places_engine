@@ -1,0 +1,18 @@
+#FeatureDetail, #Contains {
+	max-height: 450px !important;
+	width: 790px !important;
+}
+
+#FeatureDetails {
+	height: 440px !important;
+}
+
+#FeaturePanelContainer {
+	min-height: 500px !important;
+	max-height: 500px !important;
+	height: 500px !important;
+}
+
+#FeatureContainer {
+	width: 800px !important;
+}

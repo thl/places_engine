@@ -1,0 +1,8 @@
+<h1>Edit Session Preferences</h1>
+<% form_for(:session, :url => session_path, :html => { :method => 'put' }) do |f| %>
+<p><label for="perspective_id">Default Perspective</label><br/>
+<%= f.collection_select(:perspective_id, @perspectives, :id, :name) %></p>
+<p><label for="view_id">Default View</label><br/>
+<%= f.collection_select(:view_id, @views, :id, :name) %></p>
+<p><%= submit_tag 'Update' %></p>
+<% end -%>

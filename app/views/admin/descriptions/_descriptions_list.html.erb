@@ -1,0 +1,53 @@
+<% if list.empty? %>
+	<%= empty_collection_message %>
+<% else %>
+
+<table class="listGrid">
+	
+	<%= pagination_row :colspan=>6 unless @collection.nil? %>
+
+	<tr>
+		<th class="listActionsCol"></th>
+		<th> </th>
+		<th>Description</th>
+	</tr>
+	<% list.each do |item| %>
+	<tr>
+		
+		<td class="centerText vtopText">
+			<%= list_actions_for_item(item,
+				{
+				  :delete_path => admin_feature_description_path(item.feature, item),
+				  :edit_path   => edit_admin_feature_description_path(item.feature, item),
+				  :view_path   => admin_feature_description_path(item.feature, item)
+			  }
+			) %>
+		</td>
+		<td class="centerText vtopText"><%= '<b> * </b>' if item.is_primary? %></td>		
+		<td>
+		<% if !item.title.blank? %>  
+		<%   if !item.authors.empty? %>
+			   <span class='title'><%= item.title %></span>
+			   <span class='by'><%= ' by ' %></span>
+		       <span class='content_by'><%= "#{ join_with_and(item.authors.collect{|a| a.screen_name})}" %></span>
+		<%   else %>
+		       <span class='title'><%= item.title %></span>
+		<%   end %>
+		<% else %>     
+		<%   if !item.authors.empty? %>
+		       <span class='title'>Description</span>
+		       <span class='by'><%= ' by ' %></span>
+			   <span class='content_by'><%= "#{ join_with_and(item.authors.collect{|a| a.screen_name})}" %></span>
+		<%   end %>
+		<% end %>
+		  <span class='last_updated'>(<%= "#{h(item.updated_at.to_date.to_formatted_s(:long))}" %>)</span>
+		  <br />
+		  <%= truncate_html( def_if_blank(item, :content), 700,
+				'...' + link_to( 'View all', admin_feature_description_path(item.feature, item) ) ) %>
+		</td>
+		
+	</tr>
+	<% end %>
+</table>
+<sub>'*' denotes a primary description</sub>
+<% end %>

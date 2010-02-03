@@ -1,0 +1,23 @@
+<% if list.empty? %>
+	<%= empty_collection_message %>
+<% else %>
+
+<table class="listGrid">
+
+	<tr>
+		<th class="listActionsCol"></th>
+		<th>Name</th>
+		<th>Type</th>
+		<th>Language</th>
+		<th>Script</th>
+		<th>Relationship</th>
+		<th>Timespan</th>
+		<th>Priority</th>
+	</tr>
+
+	<%= pagination_row :colspan=>8 unless @collection.nil? %>
+
+	<%= feature_name_tr(@feature) %>
+
+</table>
+<% end %>

@@ -1,0 +1,49 @@
+<% add_breadcrumb_item collection_name %>
+
+<div>
+	<div class="left">
+		<%= resource_search_form %>
+	</div>
+	<div class="right highlight">
+	A Timespan can only be created from a resource that uses one.
+	</div>
+</div>
+
+<br class="clear"/>
+
+<% if @collection.empty? %>
+	<%= empty_collection_message %>
+<% else %>
+
+<table class="listGrid">
+	
+	<%= pagination_row :colspan=>6 %>
+	
+	<tr>
+		<th class="listActionCol"></th>
+		<th>Is Current</th>
+		<th>Start Date</th>
+		<th>Start Date Fuzz</th>
+		<th>End Date</th>
+		<th>End Date Fuzz</th>
+	</tr>
+	
+	<% @collection.each do |item| %>
+	<tr>
+		
+		<td class="listActionsCol"><%= list_actions_for_item(item) %></td>
+		
+		<td><%= item.is_current ? 'Yes' : 'No' %></td>
+		
+		<td><%= item.start_date %></td>
+		<td><%= item.start_date_fuzz %></td>
+	
+		<td><%= item.end_date %></td>
+		<td><%= item.end_date_fuzz %></td>
+		
+	</tr>
+	<% end %>
+	
+</table>
+
+<% end %>

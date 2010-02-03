@@ -1,0 +1,299 @@
+# == Schema Information
+# Schema version: 20091102185045
+#
+# Table name: simple_props
+#
+#  id          :integer         not null, primary key
+#  name        :string(255)
+#  code        :string(255)
+#  description :text
+#  notes       :text
+#  type        :string(255)
+#  created_at  :timestamp
+#  updated_at  :timestamp
+#
+
+#
+#
+# Languages
+#
+#
+lan_eng:
+  name: English
+  code: eng
+  description: 
+  notes: 
+  type: Language
+lang_nep:
+  name: Nepali
+  code: nep
+  description: 
+  notes: 
+  type: Language
+  created_at: 2007-11-26 16:06:01
+  updated_at: 2007-11-26 16:06:01
+lang_tib:
+  name: Tibetan
+  code: tib
+  description: 
+  notes: 
+  type: Language
+lang_chi:
+  name: Chinese
+  code: chi
+  description: 
+  notes: 
+  type: Language
+lang_urdu:
+  name: Urdu
+  code: urd
+  description: 
+  notes: 
+  type: Language
+#
+lang_dzo:
+  name: Dzongkha
+  code: dzo
+  description: 
+  notes: 
+  type: Language
+
+#
+#
+# WritingSystems
+#
+#
+
+#7
+ws_chi_trad:
+  name: Traditional Chinese
+  code: chi.traditional
+  description: 
+  notes: 
+  type: WritingSystem
+#8
+ws_ch_sim:
+  name: Simplified Chinese
+  code: chi.simplified
+  description: 
+  notes: 
+  type: WritingSystem
+#9
+ws_latin:
+  name: Latin
+  code: latin
+  description: This will account for pinyin, wylie and other transliterated-to-latin systems that don't need special characters
+  notes: 
+  type: WritingSystem
+#10
+ws_tib:
+  name: Tibetan
+  code: tibetan
+  description: 
+  notes: 
+  type: WritingSystem
+#11
+wes_nep:
+  name: Nepali (devenagari)
+  code: nepali
+  description: 
+  notes: 
+  type: WritingSystem
+#12
+ws_nep_d:
+  name: Nepali with Diacritics
+  code: nepali.diacritics
+  description: This is an extended Latin system that needs specification - has bars over vowels etc..
+  notes: 
+  type: WritingSystem
+#13
+ws_dzo:
+  name: Dzongkha
+  code: dzongkha
+  description: 
+  notes: 
+  type: WritingSystem      
+
+#
+#
+# FeatureNameType
+#
+#
+fnt_official:
+  code: official
+  name: Official
+  description: 
+  notes: 
+  type: FeatureNameType
+fnt_pop:
+  code: popular
+  name: Popular
+  description: 
+  notes: 
+  type: FeatureNameType
+
+#
+#
+# AltSpellingSystems
+#
+#
+alt_sp_mis:
+  code: mistake
+  name: Mistake
+  description: 
+  notes: 
+  type: AltSpellingSystem
+
+#
+#
+# OrthographicSystem
+#
+#
+ors_tib_wyl:
+  code: tib-wylie
+  name: Tibetan Wylie
+  description: 
+  notes: 
+  type: OrthographicSystem
+ors_pin:
+  code: pinyin
+  name: Pinyin
+  description: 
+  notes: 
+  type: OrthographicSystem
+#
+ors_ch_sim:
+  code: chi.simplified
+  name: Simplified Chinese
+  description: 
+  notes: 
+  type: OrthographicSystem
+
+#
+#
+# PhoneticSystem
+#
+#
+phs_pin:
+  code: pinyin
+  name: Pinyin
+  description: 
+  notes: 
+  type: PhoneticSystem
+
+#
+#
+# ObjectType
+#
+#
+ot_country:
+  name: Country
+  description: The top level of political / administrative organization, i.e. an independent political state.
+  notes: 
+  type: ObjectType
+ot_aut_reg:
+  name: Autonomous Region
+  description: Def of Autonomous Region
+  notes: 
+  type: ObjectType
+ot_nei_com:
+  name: Neighborhood Committee
+  description: Def of Neighborhood Committee
+  notes: 
+  type: ObjectType
+ot_urb_sub:
+  name: Urban Sub-District
+  description: Def of Urban Sub-District
+  notes: 
+  type: ObjectType
+ot_munic_prov:
+  name: Municipality, Provincial Capitol
+  description: Def of Municipality, Provincial Capitol
+  notes: 
+  type: ObjectType
+ot_prov:
+  name: Province
+  description: Def of Province
+  notes: 
+  type: ObjectType
+ot_pref:
+  name: Prefecture
+  description: Def of Prefecture
+  notes: 
+  type: ObjectType
+ot_county:
+  name: County
+  description: Def of County
+  notes: 
+  type: ObjectType
+ot_city:
+  name: City
+  description: Def of City
+  notes: 
+  type: ObjectType
+ot_dis:
+  name: District
+  description: 
+  notes: 
+  type: ObjectType
+ot_town:
+  name: Township (without urban registered population) administrative seat
+  description: 
+  notes: 
+  type: ObjectType
+ot_town_wo_urb:
+  name: Township (without urban registered population)
+  description: 
+  notes: 
+  type: ObjectType
+ot_vill:
+  name: Village Development Committee
+  description: 
+  notes: 
+  type: ObjectType
+ot_zone:
+  name: Zone
+  description: 
+  notes: 
+  type: ObjectType
+
+#
+#
+# FeatureRelationType
+#
+#
+#frt_partof:
+#  name: Part of
+#  code: partof
+#  description: 
+#  notes: 
+#  type: FeatureRelationType
+#
+#frt_contains:
+#  name: Contains
+#  code: contains
+#  description: 
+#  notes: 
+#  type: FeatureRelationType
+#
+#frt_adjacent:
+#  name: Adjacent
+#  code: adjacent
+#  description: 
+#  notes: 
+#  type: FeatureRelationType
+#
+#frt_near:
+#  name: Near
+#  code: near
+#  description: 
+#  notes: 
+#  type: FeatureRelationType
+#
+#frt_intersects:
+#  name: Intersects
+#  code: intersects
+#  description: 
+#  notes: 
+#  type: FeatureRelationType
+#

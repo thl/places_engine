@@ -1,0 +1,34 @@
+<%= error_messages_for :feature_relation %>
+
+<fieldset>
+	
+	<legend>Relation for Feature <%= @object.child_node.pid %></legend>
+	
+	<%= f.hidden_field :parent_node_id %>
+	<%= f.hidden_field :child_node_id %>
+	
+	<div class="row">
+		<%= f.label :role, 'Role' %>
+		<%
+		roles=FeatureRelation::POSSIBLE_ROLE_LABELS.collect do |k,v|
+			label=[@object.child_node.pid, v.join(' '), @object.parent_node.pid].join(' ')
+			[label,FeatureRelation::POSSIBLE_ROLES[k]]
+		end
+		%>
+		<%= f.select :role, roles %>
+	</div>
+	
+	<div class="row">
+		<%= f.label :perspective_id %>
+		<%= f.collection_select :perspective_id, Perspective.find(:all), :id, :name %>
+	</div>
+	
+</fieldset>
+
+<%= render(
+	:partial=>'admin/timespans/form_fields',
+	:locals=>{
+		:timespan=>@object.timespan,
+		:timespan_form_field_name=>'feature_relation[timespan_attributes]'
+	}
+) %>

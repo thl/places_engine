@@ -1,0 +1,28 @@
+<%
+if parent?
+	add_breadcrumb_item features_link
+	add_breadcrumb_item feature_link(@parent_object.feature)
+	add_breadcrumb_item link_to('names', admin_feature_feature_names_path(@parent_object.feature))
+	add_breadcrumb_item link_to(@parent_object.name, admin_feature_name_path(@parent_object))
+end
+add_breadcrumb_item 'relations'
+%>
+
+
+<div>
+	<div class="left">
+		<%= resource_search_form %>
+	</div>
+	<div class="right highlight">
+		<% if parent? %>
+  		<%= link_to 'Select', locate_for_relation_admin_feature_name_path(@parent_object) %> 
+  		a new Feature Name to relate to <%= highlight(@parent_object.name) %>.
+		<% else %>
+			Feature Name Relations are created from a Feature Name.
+		<% end %>
+	</div>
+</div>
+
+<br class="clear"/>
+
+<%= render :partial => 'relations_list', :locals => { :list => @collection } %>

@@ -1,0 +1,25 @@
+# == Schema Information
+# Schema version: 20091102185045
+#
+# Table name: info_sources
+#
+#  id             :integer         not null, primary key
+#  code           :string(255)     not null
+#  title          :string(255)
+#  agent          :string(255)
+#  date_published :date
+#  created_at     :timestamp
+#  updated_at     :timestamp
+#
+
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+one:
+  code: info_source_1
+  title: Info Source 1 Title
+  agent: Info Source 1 Agent
+  date_published: 2007-11-26
+two:
+  code: info_source_2
+  title: Info Source 2 Title
+  agent: Info Source 2 Agent
+  date_published: 2007-11-26

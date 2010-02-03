@@ -1,0 +1,38 @@
+# == Schema Information
+# Schema version: 20091102185045
+#
+# Table name: users
+#
+#  id                        :integer         not null, primary key
+#  login                     :string(255)     not null
+#  email                     :string(255)     not null
+#  person_id                 :integer
+#  crypted_password          :string(40)      not null
+#  salt                      :string(40)
+#  remember_token            :string(255)
+#  remember_token_expires_at :timestamp
+#  created_at                :timestamp
+#  updated_at                :timestamp
+#  identity_url              :string(255)
+#  fullname                  :string(255)
+#
+
+quentin:
+  id: 1
+  login: quentin
+  email: quentin@example.com
+  salt: 7e3041ebc2fc05a40c60028e2c4901a81035d3cd
+  crypted_password: 00742970dc9e6319f8019fd54864d3ea740f04b1 # test
+  created_at: <%= 5.days.ago.to_s :db %>
+
+
+
+aaron:
+  id: 2
+  login: aaron
+  email: aaron@example.com
+  salt: 7e3041ebc2fc05a40c60028e2c4901a81035d3cd
+  crypted_password: 00742970dc9e6319f8019fd54864d3ea740f04b1 # test
+  created_at: <%= 1.days.ago.to_s :db %>
+
+
