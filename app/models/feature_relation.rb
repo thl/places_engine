@@ -47,7 +47,8 @@ class FeatureRelation < ActiveRecord::Base
     'adjacent'=>'adjacent',
     'intersects'=>'intersects',
     'instantiation'=>'instantiation',
-    'near'=>'near'
+    'near'=>'near',
+    'located'=>'located'
   }
   
   ROLE_LABELS={
@@ -56,7 +57,8 @@ class FeatureRelation < ActiveRecord::Base
     'adjacent'=>['is','adjacent','to'],
     'intersects'=>['intersects','with'],
     'instantiation'=>['is','an','instantiation','of'],
-    'near'=>['is','near']
+    'near'=>['is','near'],
+    'located'=>['is','located','in']
   }
   
   #
