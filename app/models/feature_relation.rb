@@ -41,6 +41,7 @@ class FeatureRelation < ActiveRecord::Base
     
   #
   # Roles are used to describe relationship other than parent and child
+  # These need to be <= 20 characters, which is the length of the field in the database.
   #
   POSSIBLE_ROLES = {
     'child'=>'', # NOT saved in the role attribute
@@ -48,7 +49,11 @@ class FeatureRelation < ActiveRecord::Base
     'intersects'=>'intersects',
     'instantiation'=>'instantiation',
     'near'=>'near',
-    'located'=>'located'
+    'located'=>'located',
+    'part'=>'part',
+    'related'=>'related',
+    'admin_seat'=>'admin_seat',
+    'admin_headquarters'=>'admin_headquarters'
   }
   
   ROLE_LABELS={
@@ -58,7 +63,11 @@ class FeatureRelation < ActiveRecord::Base
     'intersects'=>['intersects','with'],
     'instantiation'=>['is','an','instantiation','of'],
     'near'=>['is','near'],
-    'located'=>['is','located','in']
+    'located'=>['is','located','in'],
+    'part'=>['is','part','of'],
+    'related'=>['is','related','to'],
+    'admin_seat'=>['is','administrative','seat','of'],
+    'admin_headquarters'=>['is','administrative','headquarters','of']
   }
   
   #
