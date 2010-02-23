@@ -40,6 +40,7 @@ class Feature < ActiveRecord::Base
   has_many :geo_code_types, :through=>:geo_codes
   has_many :cumulative_category_feature_associations, :dependent => :destroy
   has_many :cached_feature_names
+  has_many :shapes, :foreign_key => 'fid'
   
   # This fetches root *FeatureNames* (names that don't have parents),
   # within the scope of the current feature
@@ -257,11 +258,7 @@ class Feature < ActiveRecord::Base
   def self.find_by_shape(shape)
     Feature.get_by_fid(shape.fid)
   end
-  
-  def shapes
-    Shape.find_all_by_feature(self)
-  end
-  
+    
   def associated?
     @@associated_models.any?{|model| model.find_by_feature_id(self.id)} || !Shape.get_by_fid(self.fid).nil?
   end
