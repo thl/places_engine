@@ -13,6 +13,12 @@ module FeaturesHelper
   #
   include ::FeaturesTreeHelper
   
+  #
+  # Description partials in feature views are rendered without using
+  # DescriptionsHelper, so include it here.  Should this be handled in another way?
+  #
+  include ::DescriptionsHelper
+  
   def has_search_scope?
     !params[:search_scope].blank?
   end
