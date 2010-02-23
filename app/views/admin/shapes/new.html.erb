@@ -1,0 +1,9 @@
+<% add_breadcrumb_item features_link
+   add_breadcrumb_item feature_link(@object.feature)
+   add_breadcrumb_item link_to(collection_name, collection_path)
+   add_breadcrumb_item 'new'
+   form_for @object, :url => admin_feature_shapes_path(parent_object) do |f| %>
+<%=  f.hidden_field :fid, :value => @object.fid %>
+<%=  render :partial=>'form_fields', :locals=>{:f=>f,:object=>@object} %>
+<%=  link_to 'Cancel', collection_path %> | <%= submit_tag 'Create' %>
+<% end %>
