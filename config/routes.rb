@@ -34,7 +34,7 @@ ActionController::Routing::Routes.draw do |map|
     admin.prioritize_feature_shapes 'prioritize_feature_shapes/:id', :path_prefix => 'admin/features', :controller => 'shapes', :action => 'prioritize'
   end # end admin urls
   map.resources :features, :member => {:descendants => :get} do |feature|
-    feature.resources :descriptions, :member => {:expand => :get, :contract => :get}
+    feature.resources :descriptions, :member => {:expand => :get, :contract => :get, :show => :get}
   end
   #map.resources :descriptions, :member => {:expand => :get, :contract => :get}
   #map.feature_descendants 'feature/:id/descendants', :controller => 'features', :action => 'descendants'

@@ -499,6 +499,9 @@ span.arrow {
 #descriptions_div a.descriptionplus_icon { background:transparent url(http://thlib.org/global/images/btn-plus-lg.gif) no-repeat scroll 2px center; padding:0 0 0 12px; border-bottom:0px; color: white;}
 #descriptions_div a.descriptionminus_icon  { background:transparent url(http://thlib.org/global/images/btn-minus-lg.gif) no-repeat scroll 2px center; padding:0 0 0 12px; border-bottom:0px; color: white;}
 
+/* add a margin below each description to separate it from following content */ 
+#descriptions_div > div { margin-bottom: 1em; }
+
 /* styling for descriptions */
 .title { font-size: 1.2em; color:black;}
 .by { font-size: 1.2em;}
@@ -507,7 +510,6 @@ span.arrow {
 .expanded { padding: 2px; text-align: justify; }
 
 #descriptions_div h1{ border-bottom: 0px; }
-#descriptions_div em{ font-size: 0.7em; line-height: normal;}
 #descriptions_div p{ text-align: justify;}
 
 hr {border-style: solid; border-color: color:#404040; border-width: 1px}
