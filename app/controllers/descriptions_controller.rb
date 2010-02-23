@@ -11,6 +11,11 @@ class DescriptionsController < ApplicationController
     @description =  Description.find(params[:id])
     render_descriptions
   end
+  
+  def show
+    d = Description.find(params[:id])
+    render :partial => '/descriptions/show', :locals => {:feature => @feature, :d => d}
+  end
 
   private
   # This is tied to features
