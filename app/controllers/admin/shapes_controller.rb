@@ -4,8 +4,8 @@ class Admin::ShapesController < ResourceController::Base
   def update
     load_object
     geo = @object.geometry
-    geo.lat = params[:shape][:lat] if !params[:shape][:lat].blank? && params[:shape][:lat].to_f > 0.0
-    geo.lng = params[:shape][:lng] if !params[:shape][:lng].blank? && params[:shape][:lng].to_f > 0.0
+    geo.y = params[:shape][:lat] if !params[:shape][:lat].blank? && params[:shape][:lat].to_f > 0.0
+    geo.x = params[:shape][:lng] if !params[:shape][:lng].blank? && params[:shape][:lng].to_f > 0.0
     @object.geometry = geo
     if @object.save
       set_flash :update
@@ -14,6 +14,21 @@ class Admin::ShapesController < ResourceController::Base
     end
     redirect_to collection_path
   end
+
+  def create
+    @object = Shape.new(:geometry => GeoRuby::SimpleFeatures::Point.new, :fid => params[:shape])
+    geo = @object.geometry
+    geo.y = params[:shape][:lat] if !params[:shape][:lat].blank? && params[:shape][:lat].to_f > 0.0
+    geo.x = params[:shape][:lng] if !params[:shape][:lng].blank? && params[:shape][:lng].to_f > 0.0
+    @object.geometry = geo
+    if @object.save
+      set_flash :create
+    else
+      set_flash :create_fails
+    end
+    redirect_to collection_path
+  end
+
   
   # update.response do | wants |
   #   wants.html { redirect_to collection_path }
@@ -31,12 +46,12 @@ class Admin::ShapesController < ResourceController::Base
   
   protected
   
-    def object
-      @object = Shape.find(params[:id])
-      @parent_object = @object.feature
-      @object
-    end
-  
+    #def object
+    #  @object = Shape.find(params[:id])
+    #  @parent_object = @object.feature
+    #  @object
+    #end
+    
     # def parent_association
     #   @parent_object=parent_object # ResourceController normally sets this
     #   if params[:id].nil?

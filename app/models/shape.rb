@@ -10,14 +10,16 @@
 #
 
 class Shape < ActiveRecord::Base
+  belongs_to :feature, :foreign_key => 'fid'
+  
   set_primary_key "gid"
   
   def lat
-    geometry.lat
+    geometry.nil? ? nil : geometry.lat
   end
   
   def lng
-    geometry.lng
+    geometry.nil? ? nil : geometry.lng
   end
   
   def to_s
@@ -46,10 +48,6 @@ class Shape < ActiveRecord::Base
   
   def self.find_all_by_feature_id(feature_id)
     self.find_all_by_feature(Feature.find(feature_id))
-  end
-  
-  def feature
-    Feature.find_by_shape(self)
   end
   
   def after_save
