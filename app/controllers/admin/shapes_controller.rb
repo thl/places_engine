@@ -4,8 +4,8 @@ class Admin::ShapesController < ResourceController::Base
   def update
     load_object
     geo = @object.geometry
-    geo.y = params[:shape][:lat] if !params[:shape][:lat].blank? && params[:shape][:lat].to_f > 0.0
-    geo.x = params[:shape][:lng] if !params[:shape][:lng].blank? && params[:shape][:lng].to_f > 0.0
+    geo.lat = params[:shape][:lat] if !params[:shape][:lat].blank? && params[:shape][:lat].to_f > 0.0
+    geo.lng = params[:shape][:lng] if !params[:shape][:lng].blank? && params[:shape][:lng].to_f > 0.0
     @object.geometry = geo
     if @object.save
       set_flash :update
@@ -14,22 +14,6 @@ class Admin::ShapesController < ResourceController::Base
     end
     redirect_to collection_path
   end
-
-  def create
-    # Specify the SRID as 4326
-    @object = Shape.new(:geometry => GeoRuby::SimpleFeatures::Point.new(4326), :fid => params[:shape][:fid])
-    geo = @object.geometry
-    geo.y = params[:shape][:lat] if !params[:shape][:lat].blank? && params[:shape][:lat].to_f > 0.0
-    geo.x = params[:shape][:lng] if !params[:shape][:lng].blank? && params[:shape][:lng].to_f > 0.0
-    @object.geometry = geo
-    if @object.save
-      set_flash :create
-    else
-      set_flash :create_fails
-    end
-    redirect_to collection_path
-  end
-
   
   # update.response do | wants |
   #   wants.html { redirect_to collection_path }
