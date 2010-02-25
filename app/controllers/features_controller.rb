@@ -133,6 +133,7 @@ class FeaturesController < ApplicationController
       fids = fids | contained_fids
     end
     fids.collect!{|fid| "fid="+fid }
+    render :text => "Sorry, this request includes too many features for us to currently be able to provide this data." and return if fids.length > 550
     cql_filter = fids.join("+OR+")
     
   	general_params = "version=1.0.0&typename=thl:roman_popular_poly,thl:roman_popular_pt&layers=thl:roman_popular_poly,thl:roman_popular_pt&projection=EPSG%3A4326&srs=EPSG%3A4326&cql_filter=("+cql_filter+");("+cql_filter+")"
