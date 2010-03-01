@@ -503,7 +503,7 @@ span.arrow {
 #descriptions_div > div { margin-bottom: 1em; }
 
 /* styling for descriptions */
-.title { font-size: 1.2em; color:black;}
+.title { font-size: 1.2em; color:black;font-variant:small-caps;}
 .by { font-size: 1.2em;}
 .content_by { font-size: 1.2em; font-variant:small-caps;}
 .last_updated { font-size: 1.15em;}
