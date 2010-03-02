@@ -17,7 +17,7 @@ class Admin::ShapesController < ResourceController::Base
 
   def create
     # Specify the SRID as 4326
-    @object = Shape.new(:geometry => GeoRuby::SimpleFeatures::Point.new(4326), :fid => params[:shape])
+    @object = Shape.new(:geometry => GeoRuby::SimpleFeatures::Point.new(4326), :fid => params[:shape][:fid])
     geo = @object.geometry
     geo.y = params[:shape][:lat] if !params[:shape][:lat].blank? && params[:shape][:lat].to_f > 0.0
     geo.x = params[:shape][:lng] if !params[:shape][:lng].blank? && params[:shape][:lng].to_f > 0.0
