@@ -343,6 +343,13 @@ module AdminHelper
   def feature_name_label(feature_name)
     '<span class="featureNameLabel">' + feature_name.to_s + '</span>'
   end
+
+  #
+  #
+  #
+  def feature_shapes_link(feature=nil)
+    feature.nil? ? link_to('feature shapes', admin_feature_shapes_path) : link_to('shapes', admin_feature_shapes_path(feature))
+  end
   
   #
   # Express the relationship relative to the "feature" arg node
