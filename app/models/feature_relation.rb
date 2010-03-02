@@ -53,21 +53,25 @@ class FeatureRelation < ActiveRecord::Base
     'part'=>'part',
     'related'=>'related',
     'admin_seat'=>'admin_seat',
-    'admin_headquarters'=>'admin_headquarters'
+    'admin_headquarters'=>'admin_headquarters',
+    'conflict'=>'conflict',
+    'affiliated'=>'affiliated'
   }
   
   ROLE_LABELS={
     'parent'=>['is a','parent','of'],
-    'child'=>['is a','child','of'],
+    'child'=>['is','subordinate','to'],
     'adjacent'=>['is','adjacent','to'],
     'intersects'=>['intersects','with'],
     'instantiation'=>['is','an','instantiation','of'],
     'near'=>['is','near'],
-    'located'=>['is','located','in'],
+    'located'=>['is','contained','by'],
     'part'=>['is','part','of'],
     'related'=>['is','related','to'],
     'admin_seat'=>['is','administrative','seat','of'],
-    'admin_headquarters'=>['is','administrative','headquarters','of']
+    'admin_headquarters'=>['is','administrative','headquarters','of'],
+    'conflict'=>['is','in','conflict','with'],
+    'affiliated'=>['is','affiliated','with']
   }
   
   #
