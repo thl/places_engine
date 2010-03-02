@@ -66,6 +66,6 @@ class Admin::ShapesController < ResourceController::Base
     def collection
       # needed for the list view
       @parent_object = parent_object if parent?
-      @collection = Shape.find_all_by_feature_id(params[:feature_id])
+      @collection = Feature.find(params[:feature_id]).shapes
     end
 end
