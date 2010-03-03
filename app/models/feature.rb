@@ -40,7 +40,7 @@ class Feature < ActiveRecord::Base
   has_many :geo_code_types, :through=>:geo_codes
   has_many :cumulative_category_feature_associations, :dependent => :destroy
   has_many :cached_feature_names
-  has_many :shapes, :foreign_key => 'fid'
+  has_many :shapes, :foreign_key => 'fid', :primary_key => 'fid'
   
   # This fetches root *FeatureNames* (names that don't have parents),
   # within the scope of the current feature
