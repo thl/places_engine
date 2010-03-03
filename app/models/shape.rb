@@ -10,7 +10,7 @@
 #
 
 class Shape < ActiveRecord::Base
-  belongs_to :feature, :foreign_key => 'fid'
+  belongs_to :feature, :foreign_key => 'fid', :primary_key => 'fid'
   
   set_primary_key "gid"
   
