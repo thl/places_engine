@@ -107,8 +107,8 @@
 			
 			<% if !feature.descendants.empty? %>
 				GIS Resources (including contained features)
-				<% # For features with > 550 descendants, the GeoServer URL will be > 8000 characters, which currently throws an error.
-				if feature.descendants.length < 550 %>
+				<% # For features with roughly > 300 descendants, we're getting a timeout, so we'll temporarily fix this by not allowing these to be downloaded. 
+				if feature.descendants.length < 300 %>
 				<ul>
 					<li>
 						<%= link_to "GML", :action => :gis_resources, :fids => feature.fid, :format => "gml", :contained => "1" %>
