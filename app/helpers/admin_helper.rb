@@ -392,7 +392,7 @@ module AdminHelper
     html = "<fieldset>
     	<legend>Notes</legend>
     	<div class='left highlight'>
-    	  #{link_to('New Note', new_polymorphic_url([:admin, object, :note]))}
+    	  #{link_to('New Note', new_polymorphic_path([:admin, object, :note]))}
     	</div>
     	<br class='clear'/>
     	#{render :partial => 'admin/notes/list', :locals => { :list => object.notes }}
