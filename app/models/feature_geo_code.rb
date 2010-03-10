@@ -20,6 +20,7 @@ class FeatureGeoCode < ActiveRecord::Base
   belongs_to :info_source
   
   extend IsCitable
+  extend IsNotable
   extend HasTimespan
   
   def self.search(filter_value, options={})

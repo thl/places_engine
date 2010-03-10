@@ -133,6 +133,20 @@ module ApplicationHelper
   #
   #
   #
+  def note_popup_link_for(object, options={})
+    if object.respond_to?(:notes) && object.notes.length > 0
+      "<span class='has-thl-popups'>" +
+      link_to("(note available)", polymorphic_url([object, :notes]), :class => "note-popup-link thl-pop no-view-alone overflow-y-auto height-350") +
+      "</span>" +
+      "<script type='text/javascript'>jQuery(document).ready(function(){ActivateThlPopups('.has-thl-popups');})</script>"
+    else
+      ""
+    end
+  end
+    
+  #
+  #
+  #
   def yes_no(value)
     (value.nil? || value==0 || value=='false' || value == false) ? 'no' : 'yes'
   end

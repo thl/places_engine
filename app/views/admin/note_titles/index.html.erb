@@ -1,0 +1,37 @@
+<% add_breadcrumb_item collection_name %>
+
+<div>
+	<div class="left">
+		<%= resource_search_form %>
+	</div>
+	<div class="right highlight">
+		<%= link_to('New', new_object_url) %>
+	</div>
+</div>
+
+<br class="clear"/>
+
+<% if @collection.empty? %>
+	<%= empty_collection_message %>
+<% else %>
+
+<table class="listGrid">
+	
+	<%= pagination_row :colspan=>3 %>
+	
+	<tr>
+		<th class="listActionCol"></th>
+		<th>Title</th>
+	</tr>
+	<% @collection.each do |item| %>
+	<tr>
+		
+		<td class="listActionsCol"><%= list_actions_for_item(item) %></td>
+		
+		<td><%= item.title %></td>
+		
+	</tr>
+	<% end %>
+</table>
+
+<% end %>

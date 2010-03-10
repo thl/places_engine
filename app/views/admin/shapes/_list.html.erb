@@ -19,7 +19,7 @@
 			<%= list_actions_for_item(item,
 				:delete_path => item.feature ? admin_feature_shape_path(item.feature, item) : admin_shape_path(item),
 				:edit_path   => item.feature ? edit_admin_feature_shape_path(item.feature, item) : admin_shape_path(item),
-				:hide_view	 => true
+				:view_path	 => item.feature ? admin_feature_shape_path(item.feature, item) : admin_shape_path(item)
 			) if item.is_point? %>
 		</td>
 		

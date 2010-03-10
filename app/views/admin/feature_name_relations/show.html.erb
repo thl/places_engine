@@ -50,3 +50,5 @@ add_breadcrumb_item @object
 	<br class="clear"/>
 	<%= render :partial => 'admin/citations/citations_list', :locals => { :list => @object.citations, :show_type => :feature_name_relation } %>
 </fieldset>
+
+<%= note_list_fieldset %>

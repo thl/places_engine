@@ -95,6 +95,15 @@ dl.no-style p {
 	color:white;
 }
 
+.note-popup-link {
+	font-size:0.85em;
+	margin-left:5px;
+}
+
+.thl-popup-content > .thl-popup-padded-content {
+	padding:8px;
+}
+
 #TB_ajaxContent{
 	padding:0;
 	margin:0 auto;

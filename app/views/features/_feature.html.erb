@@ -26,9 +26,10 @@
 	  end
 	  %>
 	  <ul id="FeatureTypesList">
-	<% feature.object_types.each do |ot| 
+	<% feature.feature_object_types.each do |fot| 
+		 ot = fot.object_type
 		 if !ot.nil? %>
-		   <li><%= link_to ot.title, "#{tmb_base}/categories/iframe/#{ot.id}", :class => "thl-pop iframe no-view-alone overflow-y-auto width-850 height-488" %></li>
+		   <li><%= link_to ot.title, "#{tmb_base}/categories/iframe/#{ot.id}", :class => "thl-pop iframe no-view-alone overflow-y-auto width-850 height-488" %><%= note_popup_link_for(fot) %></li>
 	<%   end
 	   end %>
 	   <%= javascript_tag "$(document).ready(function(){ ActivateThlPopups('#FeatureTypesList'); });" %>
@@ -81,14 +82,14 @@
       <p>THL ID: <%= feature.pid %></p>
 <%  end %>
   	<% feature.geo_codes.each do |geo_code| %>
-			<p><%= geo_code %>: <%= geo_code.geo_code_value%></p>
+			<p><%= geo_code %>: <%= geo_code.geo_code_value%><%= note_popup_link_for(geo_code) %></p>
   	<% end %>
 	
 	<% if !feature.shapes.empty? %>
 		<%= content_tag :h3, "Locations" %>
 		<ul>
 		  <% feature.shapes.each do |shape| %>
-		    <li><%=h shape_display_string(shape) %></li>
+		    <li><%=h shape_display_string(shape) %><%= note_popup_link_for(shape) %></li>
 		  <% end %>	
 		</ul>
 

@@ -43,6 +43,8 @@ module AdminHelper
       'Info Sources'=>admin_info_sources_path,
       'Perspectives'=>admin_perspectives_path,
       'Languages'=>admin_languages_path,
+      'Notes'=>admin_notes_path,
+      'Note Titles'=>admin_note_titles_path,
       'Writing Systems'=>admin_writing_systems_path,
       'Phonetic Systems'=>admin_phonetic_systems_path,
       'Orthographic Systems'=>admin_orthographic_systems_path,
@@ -383,6 +385,19 @@ module AdminHelper
       end
       items.join(sep)
     end
+  end
+  
+  def note_list_fieldset(options={})
+    object = options[:object] || @object
+    html = "<fieldset>
+    	<legend>Notes</legend>
+    	<div class='left highlight'>
+    	  #{link_to('New Note', new_polymorphic_url([:admin, object, :note]))}
+    	</div>
+    	<br class='clear'/>
+    	#{render :partial => 'admin/notes/list', :locals => { :list => object.notes }}
+    </fieldset>"
+    html
   end
   
   def fn_relationship(feature_name)

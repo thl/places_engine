@@ -15,20 +15,33 @@ ActionController::Routing::Routes.draw do |map|
   end
   map.namespace(:admin) do |admin|
     admin.resources :alt_spelling_systems, :blurbs, :citations, :feature_name_types, :feature_relation_types, :feature_types,
-                    :geo_code_types, :languages, :info_sources, :object_types, :orthographic_systems, :perspectives,
+                    :geo_code_types, :languages, :info_sources, :note_titles, :notes, :object_types, :orthographic_systems, :perspectives,
                     :phonetic_systems, :timespans, :users, :writing_systems, :xml_documents, :views
     admin.openid_new 'openid_new', :controller => 'users', :action => 'openid_new'
     admin.openid_create 'openid_create', :controller => 'users', :action => 'create', :requirements => { :method => :post }
     admin.admin '', :controller=>'features', :action=>'index'
-    admin.resources :feature_geo_codes, :has_many=>[:citations]
-    admin.resources :feature_object_types, :has_many=>[:citations], :belongs_to=>:feature
-    admin.resources :feature_name_relations, :has_many=>[:citations], :belongs_to=>[:feature_name]
-    admin.resources :feature_names, :member=>{:locate_for_relation=>:get}, :has_many=>[:feature_name_relations, :citations], :belongs_to=>:feature
-    admin.resources :feature_relations, :has_many=>[:citations]
+    admin.resources :feature_geo_codes, :has_many=>[:citations] do |feature_geo_code|
+      feature_geo_code.resources :notes, :collection => {:add_author => :get}
+    end
+    admin.resources :feature_object_types, :has_many=>[:citations], :belongs_to=>:feature do |feature_object_type|
+      feature_object_type.resources :notes, :collection => {:add_author => :get}
+    end
+    admin.resources :feature_name_relations, :has_many=>[:citations], :belongs_to=>[:feature_name] do |feature_name_relation|
+      feature_name_relation.resources :notes, :collection => {:add_author => :get}
+    end
+    admin.resources :feature_names, :member=>{:locate_for_relation=>:get}, :has_many=>[:feature_name_relations, :citations], :belongs_to=>:feature do |feature_name|
+      feature_name.resources :notes, :collection => {:add_author => :get}
+    end
+    admin.resources :feature_relations, :has_many=>[:citations] do |feature_relation|
+      feature_relation.resources :notes, :collection => {:add_author => :get}
+    end
     admin.resources :features, :member=>{:locate_for_relation=>:get, :set_primary_description => :get}, :has_many => [ :feature_names, :feature_relations, :citations, :feature_object_types, :feature_geo_codes, :shapes] do |feature|
-      feature.resources :descriptions, :collection => {:add_author => :get} 
+      feature.resources :descriptions, :collection => {:add_author => :get}
     end
     admin.resources :feature_pids, :collection => {:available => :get}
+    admin.resources :shapes do |shape|
+      shape.resources :notes, :collection => {:add_author => :get}
+    end
     admin.prioritize_feature_names 'prioritize_feature_names/:id', :path_prefix => 'admin/features', :controller => 'feature_names', :action => 'prioritize'
     admin.prioritize_feature_object_types 'prioritize_feature_types/:id', :path_prefix => 'admin/features', :controller => 'feature_object_types', :action => 'prioritize'
     admin.prioritize_feature_shapes 'prioritize_feature_shapes/:id', :path_prefix => 'admin/features', :controller => 'shapes', :action => 'prioritize'
@@ -36,8 +49,13 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :features, :member => {:descendants => :get} do |feature|
     feature.resources :descriptions, :member => {:expand => :get, :contract => :get, :show => :get}
   end
+  map.resources :feature_geo_codes, :has_many => :notes
+  map.resources :feature_names, :has_many => :notes
+  map.resources :feature_name_relations, :has_many => :notes
+  map.resources :feature_object_types, :has_many => :notes
+  map.resources :feature_relations, :has_many => :notes
+  map.resources :shapes, :has_many => :notes
   #map.resources :descriptions, :member => {:expand => :get, :contract => :get}
-  #map.feature_descendants 'feature/:id/descendants', :controller => 'features', :action => 'descendants'
   map.with_options :path_prefix => 'features', :controller => 'features' do |features|
     features.by_fid 'by_fid/:fids.:format', :action => 'by_fid'
     features.by_old_pid 'by_old_pid/:old_pids', :action => 'by_old_pid'

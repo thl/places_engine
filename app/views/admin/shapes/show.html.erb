@@ -4,3 +4,24 @@ add_breadcrumb_item feature_link(@object.feature)
 add_breadcrumb_item feature_shapes_link(@object.feature)
 add_breadcrumb_item @object
 %>
+
+<fieldset>
+	
+	<legend>
+		<%= model_name.titleize %>
+		<%= link_to 'Edit', edit_object_path(@object) %>
+	</legend>
+	
+	<div class="row">
+		<label>Latitude</label>
+		<span><%= def_if_blank(@object, :lat) %></span>
+	</div>
+	
+	<div class="row">
+		<label>Longitude</label>
+		<span><%= def_if_blank @object, :lng %></span>
+	</div>
+	
+</fieldset>
+
+<%= note_list_fieldset %>

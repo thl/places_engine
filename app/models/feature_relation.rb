@@ -18,6 +18,7 @@ class FeatureRelation < ActiveRecord::Base
   
   extend HasTimespan
   extend IsCitable
+  extend IsNotable
   
   acts_as_family_tree :tree, :node_class=>'Feature'
   
