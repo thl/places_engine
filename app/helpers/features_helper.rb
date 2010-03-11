@@ -110,7 +110,7 @@ module FeaturesHelper
   
   def feature_name_display(name, options={})
     name_note_link = note_popup_link_for(name) if options[:show_note_links]
-    "#{name.name}#{name_note_link} (#{name.language}, #{name.writing_system}, #{name.pp_display_string})"
+    "#{name.name} (#{name.language}, #{name.writing_system}, #{name.pp_display_string})#{name_note_link}"
   end
   
   def feature_name_header(feature)

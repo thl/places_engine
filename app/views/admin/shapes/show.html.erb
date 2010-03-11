@@ -13,6 +13,12 @@ add_breadcrumb_item @object
 	</legend>
 	
 	<div class="row">
+		<label>GID</label>
+		<span><%= def_if_blank(@object, :gid) %></span>
+	</div>
+	
+	<% if @object.is_point? %>
+	<div class="row">
 		<label>Latitude</label>
 		<span><%= def_if_blank(@object, :lat) %></span>
 	</div>
@@ -21,6 +27,12 @@ add_breadcrumb_item @object
 		<label>Longitude</label>
 		<span><%= def_if_blank @object, :lng %></span>
 	</div>
+	<% else %>
+	<div class="row">
+		<label>Locations</label>
+		<span><%= shape_display_string(@object) %></span>
+	</div>
+	<% end %>
 	
 </fieldset>
 

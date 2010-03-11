@@ -55,7 +55,12 @@
 	<%= content_tag :h3, "Related Places" unless feature.parent.nil? %>
 	<% if feature.parent %>
   	<p>This feature is contained within: </p>
-  	<ul><li><%= f_link(feature.parent, features_path(:anchor => feature.parent.id)) %></li></ul>
+  	<ul>
+		<li>
+			<%= f_link(feature.parent, features_path(:anchor => feature.parent.id)) %>
+			<%= note_popup_link_for(FeatureRelation.find(:first, :conditions => {:child_node_id => feature.id, :parent_node_id => feature.parent.id, :role => nil})) %>
+		</li>
+	</ul>
 	<% end %>
 	
 	<p>

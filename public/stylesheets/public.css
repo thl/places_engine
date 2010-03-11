@@ -95,9 +95,14 @@ dl.no-style p {
 	color:white;
 }
 
+.note-popup-icon, .note-popup-icon:hover, .note-popup-icon:visited {
+	margin-left:10px;
+	padding-left:19px;
+	border-bottom:0;
+	background:transparent no-repeat url(http://thlib.org/global/images/icon-page-text.gif);
+}
 .note-popup-link {
-	font-size:0.85em;
-	margin-left:5px;
+	font-size:0.8em;
 }
 
 .thl-popup-content > .thl-popup-padded-content {
