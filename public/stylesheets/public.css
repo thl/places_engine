@@ -95,14 +95,14 @@ dl.no-style p {
 	color:white;
 }
 
-.note-popup-icon, .note-popup-icon:hover, .note-popup-icon:visited {
-	margin-left:10px;
-	padding-left:19px;
-	border-bottom:0;
-	background:transparent no-repeat url(http://thlib.org/global/images/icon-page-text.gif);
-}
 .note-popup-link {
 	font-size:0.8em;
+	margin-left:10px;
+}
+.note-popup-link-icon, .note-popup-link-icon:hover, .note-popup-link-icon:visited {
+	padding:2px 0 1px 19px;
+	border-bottom:0;
+	background:transparent no-repeat url(http://thlib.org/global/images/icon-page-text.gif);
 }
 
 .thl-popup-content > .thl-popup-padded-content {

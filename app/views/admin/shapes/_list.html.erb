@@ -9,6 +9,8 @@
 		<th>GID</th>
 		<th>Locations</th>
 		<th>Priority</th>
+		<th>Notes</th>
+		<th>Add Note</th>
 	</tr>
 	
 	<% list = list.sort_by{|a| a.position} %>
@@ -36,6 +38,8 @@
 		<td><%= item.gid.to_s %></td>
 		<td><%=h shape_display_string(item) %></td>
 		<td><%= item.position.to_s %></td>
+		<td><%= note_link_list_for item %></td>
+		<td><%= new_note_path_for item %></td>
 		
 	</tr>
 	<% end %>

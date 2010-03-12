@@ -254,6 +254,8 @@ module AdminHelper
     	html += '<td>' + fn_relationship(name).to_s + '</td>'
     	html += '<td>' + formatted_timespan(name.timespan).to_s + '</td>'
     	html += '<td>' + name.position.to_s + '</td>'
+    	html += '<td>' + note_link_list_for(name) + '</td>'
+    	html += '<td>' + new_note_path_for(name) + '</td>'
       html += '</tr>'
       html += feature_name_tr(nil, name.children, completed).to_s
     end
@@ -398,6 +400,24 @@ module AdminHelper
     	#{render :partial => 'admin/notes/list', :locals => { :list => object.notes }}
     </fieldset>"
     html
+  end
+  
+  def note_link_list_for(object)
+    if object.respond_to?(:notes) && object.notes.length > 0
+      object.notes.collect{|n|
+        note_title = n.title.nil? ? "Note" : n.title
+        note_authors = " by #{n.authors.collect{|a| a.fullname}.join(", ")}" if n.authors.length > 0
+        link_to "#{note_title} #{note_authors}", polymorphic_path([:admin, object, n])
+      }.join(", ").to_s
+    else
+      ""
+    end
+  end
+  
+  def new_note_path_for(object)
+    if object.respond_to?(:notes)
+      link_to "New Note", new_polymorphic_path([:admin, object, :note])
+    end
   end
   
   def fn_relationship(feature_name)
