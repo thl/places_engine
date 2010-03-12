@@ -33,7 +33,7 @@ when :shape
 	add_breadcrumb_item link_to(@parent_object.to_s, admin_feature_shape_path(@parent_object.feature, @parent_object))
 end
 add_breadcrumb_item link_to('notes', collection_path)
-add_breadcrumb_item @object.id
+add_breadcrumb_item @object.to_s
 %>
 
 <fieldset>

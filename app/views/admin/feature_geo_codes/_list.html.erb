@@ -4,13 +4,12 @@
 
 <table class="listGrid">
 	
-	<%= pagination_row :colspan=>6 unless @collection.nil? %>
+	<%= pagination_row :colspan=>7 unless @collection.nil? %>
 	
 	<tr>
 		<th class="listActionsCol"></th>
 		<th>Feature</th>
 		<th>Value</th>
-		<th>Notes</th>
 		<th>Geo Code Type</th>
 		<th>Timespan</th>
 		<th>Notes</th>
@@ -22,15 +21,14 @@
 		<td class="centerText">
 			<%= list_actions_for_item(item,
 				{
-				  :delete_path => "",#admin_feature_feature_geo_code_path(item.feature, item),
-				  :edit_path   => "",#edit_admin_feature_feature_geo_code_path(item.feature, item),
-				  :view_path   => ""#admin_feature_feature_geo_code_path(item.feature, item),
+				  :delete_path => item.feature.nil? ? admin_feature_geo_code_path(item) : admin_feature_feature_geo_code_path(item.feature, item),
+				  :edit_path   => item.feature.nil? ? edit_admin_feature_geo_code_path(item) : edit_admin_feature_feature_geo_code_path(item.feature, item),
+				  :view_path   => item.feature.nil? ? admin_feature_geo_code_path(item) : admin_feature_feature_geo_code_path(item.feature, item),
 			  }
 			) %>
 		</td>
 		<td><%= item.feature %></td>
 		<td><%= item.geo_code_value %></td>
-		<td><%= def_if_blank(item, :notes) %></td>
 		<td><%= def_if_blank(item, :class) %></td>
 		<td><%= formatted_timespan item.timespan %></td>
 		<td><%= note_link_list_for item %></td>

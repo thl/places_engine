@@ -24,6 +24,10 @@ class Note < ActiveRecord::Base
     self.custom_note_title.blank? ? self.note_title.title : self.custom_note_title
   end
   
+  def to_s
+    return self.title.nil? ? "Note" : self.title.to_s
+  end
+  
   def self.search(filter_value, options={})
     options[:conditions] = build_like_conditions(
       %W(notes.content notes.custom_note_title note_titles.title),
