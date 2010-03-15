@@ -174,21 +174,9 @@ module ApplicationHelper
   end
 
   def stylesheet_files
-    ['public', 'language_support']
+    super + ['public']
   end
-  
-  def javascript_files
-    ['application'] # 'jquery-ui', 'jrails'
-  end
-  
-  def stylesheets
-    return stylesheet_link_tag(*stylesheet_files)
-  end
-  
-  def javascripts
-    javascript_include_tag(*javascript_files)
-  end
-
+    
   def shape_display_string(shape)
     return shape.geo_type unless shape.is_point?
     "Latitude: #{shape.lat}; Longitude: #{shape.lng}"
