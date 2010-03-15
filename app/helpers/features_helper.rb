@@ -126,7 +126,11 @@ module FeaturesHelper
   
   
   def javascript_files
-	  super + ['treescroll']
-  end  
+	  super + ['treescroll', 'jquery.draggable.popup']
+  end
+
+  def stylesheet_files
+    super + ['jquery.draggable.popup']
+  end
 
 end

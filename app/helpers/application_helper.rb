@@ -137,12 +137,12 @@ module ApplicationHelper
     if object.respond_to?(:notes) && object.notes.length > 0
       link_title = object.notes.collect{|n| (n.title.nil? ? "Note" : n.title) + (" by #{n.authors.collect{|a| a.fullname}.join(", ")}" if n.authors.length > 0).to_s}.join(", ").to_s
       link_url = polymorphic_url([object, :notes])
-      link_classes = "thl-pop no-view-alone overflow-y-auto height-350"
-      "<span class='has-thl-popups note-popup-link'>(" +
+      link_classes = "draggable-pop no-view-alone overflow-y-auto height-350"
+      "<span class='has-draggable-popups note-popup-link'>(" +
         link_to("", link_url, :class => "note-popup-link-icon "+link_classes, :title => h(link_title)) +
         link_to("See Note", link_url, :class => "note-popup-link-text "+link_classes, :title => h(link_title)) +
       ")</span>" +
-      "<script type='text/javascript'>jQuery(document).ready(function(){ActivateThlPopups('.has-thl-popups');})</script>"
+      "<script type='text/javascript'>jQuery(document).ready(function(){ActivateDraggablePopups('.has-draggable-popups');})</script>"
     else
       ""
     end
