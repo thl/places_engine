@@ -195,6 +195,7 @@ dl.no-style p {
 
 #NodeMenu .node-menu-content > h2{
 	font-size:1.5em;
+	margin:0;
 	padding:2px 0 2px 7px;
 	background-color:#f9f9f9;
     border-bottom:1px solid #ddd;
@@ -238,6 +239,7 @@ dl.no-style p {
 
 #NodeMenu .text{
 	width:225px;
+	border:1px solid #CCCCCC;
 }
 
 #session_view_id {
@@ -249,6 +251,15 @@ dl.no-style p {
 
 #NodeTree ul{
 	margin:6px 0 0 12px;
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+}
+
+#NodeTree ul li{
+    list-style:none;
+    margin:0.3em 0;
+    padding:0;
 }
 
 #NodeTree .selected-node{
