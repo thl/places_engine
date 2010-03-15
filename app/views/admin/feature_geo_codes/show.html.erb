@@ -30,11 +30,6 @@ add_breadcrumb_item @object
 	</div>
 	
 	<div class="row">
-		<label>Notes</label>
-		<span><%= def_if_blank @object, :notes %></span>
-	</div>
-	
-	<div class="row">
 		<label>Timespan</label>: 
 		<span><%= formatted_timespan @object.timespan %></span>
 	</div>

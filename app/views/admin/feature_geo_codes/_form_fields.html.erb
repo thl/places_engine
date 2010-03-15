@@ -35,14 +35,6 @@ input[type=text] {
 		<%= f.text_field :geo_code_value, :class => :text %>
 	</div>
 	
-	<div class="row">
-		<%= f.label :notes %>
-	</div>
-	
-	<div class="row">
-		<%= admin_textarea(f, :notes, :class => 'mceEditor') %>
-	</div>
-	
 </fieldset>
 
 <%= render(

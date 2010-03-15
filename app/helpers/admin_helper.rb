@@ -404,10 +404,10 @@ module AdminHelper
   
   def note_link_list_for(object)
     if object.respond_to?(:notes) && object.notes.length > 0
-      object.notes.collect{|n|
+      object.notes.enum_with_index.collect{|n, i|
         note_title = n.title.nil? ? "Note" : n.title
         note_authors = " by #{n.authors.collect{|a| a.fullname}.join(", ")}" if n.authors.length > 0
-        link_to "#{note_title} #{note_authors}", polymorphic_path([:admin, object, n])
+        link_to "Note #{i+1}", polymorphic_path([:admin, object, n]), :title => h("#{note_title}#{note_authors}")
       }.join(", ").to_s
     else
       ""
