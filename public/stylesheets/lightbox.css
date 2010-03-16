@@ -76,7 +76,7 @@ Modified : February 1, 2006
     position: relative;
     margin-left: 150px;
     width: 120px;
-	background: url(/images/loadingAnimation2.gif) no-repeat center right;
+	background: url(../images/loadingAnimation2.gif) no-repeat center right;
 }
 
 #lightbox.done img{

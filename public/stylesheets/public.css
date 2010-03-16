@@ -224,11 +224,11 @@ dl.no-style p {
 }
 
 #NodeMenu .toggle-show{
-	background:transparent no-repeat url(/images/node-menu-plus.png);
+	background:transparent no-repeat url(../images/node-menu-plus.png);
 }
 
 #NodeMenu .toggle-hide{
-	background:transparent no-repeat url(/images/node-menu-minus.png);
+	background:transparent no-repeat url(../images/node-menu-minus.png);
 }
 
 #NodeMenu .text{

@@ -5,10 +5,15 @@ var InsetMap = {
 	language: null,
 	layer: null,
 	geoserverUrl: 'http://www.thlib.org:8080/thdl-geoserver',
-	proxyUrl: '/proxy_engine/utils/proxy/?proxy_url=',
+	proxyUrl: '',
 	nationObjectType: 29,
 	
-	init: function(){
+	init: function(options){
+		if(typeof options != 'undefined'){
+			if(typeof options['proxyUrl'] != 'undefined'){
+				this.proxyUrl = options['proxyUrl'];
+			}
+		}
 		this.fid = this.getFid();
 		if(this.fid){
 			InsetMap.initMap(fid);		
