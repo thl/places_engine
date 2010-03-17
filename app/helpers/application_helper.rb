@@ -291,9 +291,10 @@ module ApplicationHelper
    # This is currently used for loading JavaScript from the main THL site.
    def thl_url
      hostname = Socket.gethostname.downcase
+     debugger
      if hostname == 'dev.thlib.org'
        return 'http://dev.thlib.org'
-     elsif hostname =~ /\.local/
+     elsif hostname =~ /\.local/ && hostname !~ /^a/
        return 'http://localhost:90'
      else
        return 'http://www.thlib.org'

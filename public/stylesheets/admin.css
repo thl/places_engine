@@ -485,20 +485,6 @@ RE-USABLE CLASSES
 .content_by { font-size: 1.32em; font-variant:small-caps;}
 .last_updated { font-size: 1.25em;}
 
-#login-status {
-border-bottom-width:0pt;
-color:#606060;
-font-family:helvetica,arial,sans-serif;
-font-size:100%;
-font-weight:bold;
-margin:0pt;
-padding:0pt 7px 0pt 0pt;
-position:absolute;
-right:0px;
-top:100px;
-z-index:0;
-}
-
 #content .shell-1 {
 	margin-top: 5px;
 	padding-top: 5px;
