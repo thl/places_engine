@@ -14,7 +14,7 @@ ActionController::Routing::Routes.draw do |map|
     category.resources(:counts, :controller => 'cached_category_counts')
   end
   map.namespace(:admin) do |admin|
-    admin.resources :alt_spelling_systems, :blurbs, :citations, :feature_name_types, :feature_relation_types, :feature_types,
+    admin.resources :alt_spelling_systems, :association_notes, :blurbs, :citations, :feature_name_types, :feature_relation_types, :feature_types,
                     :geo_code_types, :languages, :info_sources, :note_titles, :notes, :object_types, :orthographic_systems, :perspectives,
                     :phonetic_systems, :timespans, :users, :writing_systems, :xml_documents, :views
     admin.openid_new 'openid_new', :controller => 'users', :action => 'openid_new'
@@ -37,6 +37,7 @@ ActionController::Routing::Routes.draw do |map|
     end
     admin.resources :features, :member=>{:locate_for_relation=>:get, :set_primary_description => :get}, :has_many => [ :feature_names, :feature_relations, :citations, :feature_object_types, :feature_geo_codes, :shapes] do |feature|
       feature.resources :descriptions, :collection => {:add_author => :get}
+      feature.resources :association_notes, :collection => {:add_author => :get}
     end
     admin.resources :feature_pids, :collection => {:available => :get}
     admin.resources :shapes do |shape|
@@ -46,7 +47,7 @@ ActionController::Routing::Routes.draw do |map|
     admin.prioritize_feature_object_types 'prioritize_feature_types/:id', :path_prefix => 'admin/features', :controller => 'feature_object_types', :action => 'prioritize'
     admin.prioritize_feature_shapes 'prioritize_feature_shapes/:id', :path_prefix => 'admin/features', :controller => 'shapes', :action => 'prioritize'
   end # end admin urls
-  map.resources :features, :member => {:descendants => :get} do |feature|
+  map.resources :features, :has_many => :association_notes, :member => {:descendants => :get} do |feature|
     feature.resources :descriptions, :member => {:expand => :get, :contract => :get, :show => :get}
   end
   map.resources :feature_geo_codes, :has_many => :notes

@@ -1,0 +1,51 @@
+<% show_type ||= nil %>
+<% options ||= {} %>
+<% if list.empty? %>
+	<%= empty_collection_message("No notes available.") %>
+<% else %>
+
+<table class="listGrid">
+
+	<%= pagination_row :colspan=>6 unless @collection.nil? %>
+
+	<tr>
+		<th class="listActionsCol"></th>
+		<%= "<th>Type</th>" unless options[:hide_type] %>
+		<%= "<th>Type Value</th>" unless options[:hide_type_value] %>
+		<%= "<th>About</th>" unless options[:hide_association_type] %>
+		<th>Title</th>
+		<th>Authors</th>
+		<th>Date</th>
+	</tr>
+
+	<% list.each do |item| %>
+	<tr>
+
+		<td class="listActionsCol">
+		  <%= list_actions_for_item(item,
+  		  {
+  		    :delete_path => polymorphic_path([:admin, item.notable, item]),
+  		    :edit_path => polymorphic_path([:admin, item.notable, item], :action => "edit"),
+  		    :view_path => polymorphic_path([:admin, item.notable, item])
+  		  }
+		  ) %>
+		</td>
+		
+		<%= "<td>#{item.notable_type.titleize}</td>" unless options[:hide_type] %>
+		
+		<%= "<td>#{item.notable}</td>" unless options[:hide_type_value] %>
+		
+		<%= "<td>#{item.association_type_name}</td>" unless options[:hide_association_type] %>
+		
+		<td><%= item.title %></td>
+		
+		<td><%= item.authors.collect{|a| a.fullname }.join("<br />") %></td>
+		
+		<td><%= formatted_date(item.updated_at) %></td>
+
+	</tr>
+	<% end %>
+	
+</table>
+
+<% end %>

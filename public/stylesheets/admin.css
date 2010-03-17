@@ -415,6 +415,11 @@ RE-USABLE CLASSES
 	border:solid 1px gray;
 }
 
+.new-object-icon{
+	color:#00bb66;
+	font-weight:bold;
+}
+
 .featureLabel, a.featureLabel{
 	color:darkred;
 	font-weight:bold;

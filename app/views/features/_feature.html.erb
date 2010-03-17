@@ -34,6 +34,7 @@
 	   end %>
 	   <%= javascript_tag "$(document).ready(function(){ ActivateDraggablePopups('#FeatureTypesList'); });" %>
 	  </ul>
+	  <%= note_popup_link_list_for(feature, {:association_type => FeatureObjectType.model_name}) %>
 	<% end %>
 		
 	<% if !feature.shapes.empty? %>
@@ -61,6 +62,7 @@
 			<%= note_popup_link_for(FeatureRelation.find(:first, :conditions => {:child_node_id => feature.id, :parent_node_id => feature.parent.id, :role => nil})) %>
 		</li>
 	</ul>
+	<%= note_popup_link_list_for(feature, {:association_type => FeatureRelation.model_name}) %>
 	<% end %>
 	
 	<p>
@@ -78,6 +80,7 @@
 		<%= "<dt><strong>Etymology of #{name.name}:</strong></dt><dd>#{name.etymology}</dd>" unless name.etymology.blank? %>
 	<% end %>
 	</dl>
+	<%= note_popup_link_list_for(feature, {:association_type => FeatureName.model_name}) %>
 
 	<h3>Classifications/Codes</h3>
 <%  if show_old_pid %>
@@ -89,6 +92,7 @@
   	<% feature.geo_codes.each do |geo_code| %>
 			<p><%= geo_code %>: <%= geo_code.geo_code_value%><%= note_popup_link_for(geo_code) %></p>
   	<% end %>
+	<%= note_popup_link_list_for(feature, {:association_type => FeatureGeoCode.model_name}) %>
 	
 	<% if !feature.shapes.empty? %>
 		<%= content_tag :h3, "Locations" %>
@@ -132,6 +136,7 @@
 				</ul>
 				<% end %>
 			<% end %>
+		<%= note_popup_link_list_for(feature, {:association_type => Shape.model_name}) %>
 	<% end %>
 
 </div>

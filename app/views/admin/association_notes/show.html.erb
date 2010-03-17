@@ -1,0 +1,35 @@
+<%= render :partial => "breadcrumbs" %>
+<%
+add_breadcrumb_item @object.to_s
+%>
+
+<fieldset>
+	
+	<legend>Note for <%= @object.notable %>'s <%= @object.association_type_name %> <%= link_to 'Edit', edit_object_path(@object) %></legend>
+	
+	<div class="row">
+		<label>Title</label>
+		<span><%= def_if_blank @object, :title %></span>
+	</div>
+		
+	<div class="row">
+		<label>Note</label>
+		<span><%= def_if_blank @object, :content %></span>
+	</div>
+	
+	<div class="row">
+		<table>
+			<tr>
+				<td valign="top">
+					<label>Authors</label>
+				</td>
+				<td>
+					<span>
+						<%= @object.authors.blank? ? "-" : @object.authors.collect{|a| a.fullname }.join("<br />") %>
+					</span>
+				</td>
+			</tr>
+		</table>
+	</div>
+	
+</fieldset>

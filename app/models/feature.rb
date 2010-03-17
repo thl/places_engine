@@ -30,6 +30,7 @@ class Feature < ActiveRecord::Base
   has_one :xml_document, :class_name=>'XmlDocument', :dependent => :destroy
   has_many :citations, :as => :citable, :dependent => :destroy
   has_many :feature_object_types, :order => :position
+  has_many :association_notes, :foreign_key => "notable_id"
   has_many :contestations
   
   # Multiple descriptions for features
@@ -281,6 +282,10 @@ class Feature < ActiveRecord::Base
     obj
   end
   
+  def association_notes_for(association_type)
+    AssociationNote.find(:all, :conditions => {:notable_type => self.class.name, :notable_id => self.id, :association_type => association_type})
+  end
+    
   def update_object_type_positions
     feature_object_types.find(:all, :conditions => {:position => 0}, :order => 'created_at').inject(feature_object_types.maximum(:position)+1) do |pos, fot|
       fot.update_attribute(:position, pos)

@@ -177,6 +177,25 @@ module AdminHelper
   end
   
   #
+  #
+  #
+  def new_object_link(text, path, options={})
+    "<span class='new-object-link'>
+      #{link_to '+', path, :class => 'new-object-icon', :title => 'Add new'}
+      #{(link_to text, path, :class => 'new-object-text', :title => 'Add new') unless text.blank?}
+    </span>"
+  end
+  
+  #
+  #
+  #
+  def highlighted_new_object_link(text, path, options={})
+    "<div class='left highlight'>
+      #{new_object_link text, path}
+    </div>"
+  end
+  
+  #
   # Wraps the block contents in a div
   # and adds a "Feature: " start crumb
   #
@@ -255,7 +274,7 @@ module AdminHelper
     	html += '<td>' + formatted_timespan(name.timespan).to_s + '</td>'
     	html += '<td>' + name.position.to_s + '</td>'
     	html += '<td>' + note_link_list_for(name) + '</td>'
-    	html += '<td>' + new_note_path_for(name) + '</td>'
+    	html += '<td>' + new_note_link_for(name) + '</td>'
       html += '</tr>'
       html += feature_name_tr(nil, name.children, completed).to_s
     end
@@ -389,6 +408,13 @@ module AdminHelper
     end
   end
   
+  def association_note_list_fieldset(association_type, options={})
+    "<h4>General Notes</h4>
+  	  #{highlighted_new_object_link 'New note', new_polymorphic_path([:admin, @object, :association_note], :association_type => association_type)}
+    	<br class='clear'/>
+  	  #{render :partial => 'admin/association_notes/list', :locals => { :list => @object.association_notes_for(association_type), :options => {:hide_type => true, :hide_type_value => true, :hide_association_type => true} }}"
+  end
+  
   def note_list_fieldset(options={})
     object = options[:object] || @object
     html = "<fieldset>
@@ -414,9 +440,11 @@ module AdminHelper
     end
   end
   
-  def new_note_path_for(object)
+  def new_note_link_for(object, options={})
     if object.respond_to?(:notes)
-      link_to "New Note", new_polymorphic_path([:admin, object, :note])
+      new_object_link options[:include_text] ? "New Note" : "", new_polymorphic_path([:admin, object, :note])
+    else
+      ""
     end
   end
   

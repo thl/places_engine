@@ -43,6 +43,7 @@
 		  ) + "):</strong></dt><dd>#{name.etymology}</dd>" unless name.etymology.blank? %>
 	<% end %>
 	</dl>
+	<%= association_note_list_fieldset(FeatureName.model_name) %>
 </fieldset>
 
 <fieldset>
@@ -52,6 +53,7 @@
 	</div>
 	<br class="clear"/>
 	<%= render :partial => 'admin/feature_object_types/list', :locals => { :list => @object.feature_object_types, :hide_feature_id => true } %>
+	<%= association_note_list_fieldset(FeatureObjectType.model_name) %>
 </fieldset>
   
 <fieldset>
@@ -61,7 +63,7 @@
 	</div>
 	<br class="clear"/>
 	<%= render :partial => 'admin/feature_geo_codes/list', :locals => { :list => @object.geo_codes } %>
-
+	<%= association_note_list_fieldset(FeatureGeoCode.model_name) %>
 </fieldset>
 
 <fieldset>
@@ -71,6 +73,7 @@
 	</div>
 	<br class="clear"/>
 	<%= render :partial => 'admin/shapes/list', :locals => { :list => @object.shapes } %>
+	<%= association_note_list_fieldset(Shape.model_name) %>
 </fieldset>
 
 <fieldset>
@@ -80,6 +83,7 @@
 	</div>
 	<br class="clear"/>
 	<%= render :partial => 'admin/feature_relations/list', :locals => { :list => @object.relations, :parent => @object, :use_first => false, :use_names => true } %>
+	<%= association_note_list_fieldset(FeatureRelation.model_name) %>
 </fieldset>
 
 <fieldset>
