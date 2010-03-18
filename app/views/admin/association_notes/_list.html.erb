@@ -1,7 +1,8 @@
-<% show_type ||= nil %>
 <% options ||= {} %>
 <% if list.empty? %>
-	<%= empty_collection_message("No notes available.") %>
+	<% unless options[:hide_empty_collection_message] %>
+		<%= empty_collection_message("No notes available.") %>
+	<% end %>
 <% else %>
 
 <table class="listGrid">
