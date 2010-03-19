@@ -20,6 +20,10 @@ class Note < ActiveRecord::Base
   
   before_save :determine_title
   
+  # AssociationNote uses single-table inheritance from Note, so we need to make sure that no AssociationNotes are
+  # returned by .find. 
+  default_scope :conditions => {:association_type => nil}
+  
   def title
     self.custom_note_title.blank? ? self.note_title.title : self.custom_note_title
   end
