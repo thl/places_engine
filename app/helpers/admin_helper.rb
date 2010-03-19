@@ -179,7 +179,7 @@ module AdminHelper
   #
   #
   #
-  def new_item_link(path, text, options={})
+  def new_item_link(path, text="", options={})
     link_to(text, path, :class => 'new-item-icon', :title => options[:title] || (text.blank? ? nil : text) || "New")
   end
   
@@ -196,7 +196,7 @@ module AdminHelper
   #
   #
   def highlighted_new_item_link(path, text="", options={})
-    "<div class='left highlight'>
+    "<div class='#{options[:align] || 'left'} highlight'>
       #{new_item_link path, text, options}
     </div>"
   end

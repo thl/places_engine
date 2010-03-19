@@ -11,7 +11,7 @@ add_breadcrumb_item collection_name %>
 	<div class="right highlight">
 		
 		<% if parent? %>
-			<%= link_to('New', new_object_path) %>
+			<%= new_item_link new_object_path, 'New' %>
 		<% else %>
 			Feature Types can only be created from a Feature.
 		<% end %>
