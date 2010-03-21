@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100305012933) do
+ActiveRecord::Schema.define(:version => 20100315223628) do
 
   create_table "authors_descriptions", :id => false, :force => true do |t|
     t.column "author_id", :integer, :null => false
@@ -210,6 +210,7 @@ ActiveRecord::Schema.define(:version => 20100305012933) do
     t.column "content", :text
     t.column "created_at", :timestamp
     t.column "updated_at", :timestamp
+    t.column "association_type", :string
   end
 
 # Could not dump table "open_id_authentication_associations" because of following StandardError

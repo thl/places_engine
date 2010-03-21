@@ -24,7 +24,7 @@ module AdminHelper
     items=[]
     items << link_to(options[:edit_name] || 'edit', options[:edit_path]) unless options[:hide_edit]
     items << link_to(options[:view_name] || 'view', options[:view_path]) unless options[:hide_view]
-    items << link_to(options[:delete_name] || 'x', options[:delete_path], :method=>:delete, :confirm=>'WAIT! Are you sure you want to DELETE this item?') unless options[:hide_delete]
+    items << delete_item_link(options[:delete_path], options[:delete_name]) unless options[:hide_delete]
     '<span class="listActions">'+items.join(' | ')+'</span>'
   end
   
@@ -177,6 +177,31 @@ module AdminHelper
   end
   
   #
+  #
+  #
+  def new_item_link(path, text="", options={})
+    link_to(text, path, :class => 'new-item-icon', :title => options[:title] || (text.blank? ? nil : text) || "New")
+  end
+  
+  #
+  #
+  #
+  def delete_item_link(path_or_object, text="", options={})
+    path = path_or_object.is_a?(String) ? path_or_object : object_path(path_or_object)
+    text = "" if text.nil?
+    link_to(text, path, :class => 'delete-item-icon', :title => options[:title] || (text.blank? ? nil : text)  || "Delete", :method=>:delete, :confirm=>'WAIT! Are you sure you want to DELETE this item?')
+  end
+    
+  #
+  #
+  #
+  def highlighted_new_item_link(path, text="", options={})
+    "<div class='#{options[:align] || 'left'} highlight'>
+      #{new_item_link path, text, options}
+    </div>"
+  end
+  
+  #
   # Wraps the block contents in a div
   # and adds a "Feature: " start crumb
   #
@@ -255,7 +280,7 @@ module AdminHelper
     	html += '<td>' + formatted_timespan(name.timespan).to_s + '</td>'
     	html += '<td>' + name.position.to_s + '</td>'
     	html += '<td>' + note_link_list_for(name) + '</td>'
-    	html += '<td>' + new_note_path_for(name) + '</td>'
+    	html += '<td>' + new_note_link_for(name) + '</td>'
       html += '</tr>'
       html += feature_name_tr(nil, name.children, completed).to_s
     end
@@ -389,15 +414,35 @@ module AdminHelper
     end
   end
   
+  def association_note_list_fieldset(association_type, options={})
+    "<h4>General Notes</h4>
+  	  #{highlighted_new_item_link new_polymorphic_path([:admin, @object, :association_note], :association_type => association_type), 'New note'}
+    	<br class='clear'/>
+  	  #{render :partial => 'admin/association_notes/list', :locals => { :list => @object.association_notes_for(association_type), :options => {:hide_type => true, :hide_type_value => true, :hide_association_type => true, :hide_empty_collection_message => true} }}"
+  end
+  
   def note_list_fieldset(options={})
     object = options[:object] || @object
     html = "<fieldset>
     	<legend>Notes</legend>
     	<div class='left highlight'>
-    	  #{link_to('New Note', new_polymorphic_path([:admin, object, :note]))}
+    	  #{new_item_link(new_polymorphic_path([:admin, object, :note]), 'New Note')}
     	</div>
     	<br class='clear'/>
     	#{render :partial => 'admin/notes/list', :locals => { :list => object.notes }}
+    </fieldset>"
+    html
+  end
+  
+  def citation_list_fieldset(options={})
+    object = options[:object] || @object
+    html = "<fieldset>
+    	<legend>Citations</legend>
+    	<div class='left highlight'>
+    	  #{new_item_link(new_polymorphic_path([:admin, object, :citation]), 'New Citation')}
+    	</div>
+    	<br class='clear'/>
+    	#{render :partial => 'admin/citations/citations_list', :locals => { :list => object.citations, :options => {:hide_type => true, :hide_type_value => true} }}
     </fieldset>"
     html
   end
@@ -414,9 +459,11 @@ module AdminHelper
     end
   end
   
-  def new_note_path_for(object)
+  def new_note_link_for(object, options={})
     if object.respond_to?(:notes)
-      link_to "New Note", new_polymorphic_path([:admin, object, :note])
+      new_item_link new_polymorphic_path([:admin, object, :note]), options[:include_text] ? "New Note" : ""
+    else
+      ""
     end
   end
   

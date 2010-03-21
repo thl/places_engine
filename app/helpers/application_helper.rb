@@ -134,9 +134,19 @@ module ApplicationHelper
   #
   #
   def note_popup_link_for(object, options={})
-    if object.respond_to?(:notes) && object.notes.length > 0
-      link_title = object.notes.collect{|n| (n.title.nil? ? "Note" : n.title) + (" by #{n.authors.collect{|a| a.fullname}.join(", ")}" if n.authors.length > 0).to_s}.join(", ").to_s
-      link_url = polymorphic_url([object, :notes])
+    unless options[:association_type].blank?
+      if object.respond_to?(:association_notes_for) && object.association_notes_for(options[:association_type]).length > 0
+        notes = object.association_notes_for(options[:association_type])
+        link_url = polymorphic_url([object, :association_notes], :association_type => options[:association_type])
+      end
+    else
+      if object.respond_to?(:notes) && object.notes.length > 0
+        notes = object.notes
+        link_url = polymorphic_url([object, :notes])
+      end
+    end
+    unless notes.nil?
+      link_title = notes.collect{|n| (n.title.nil? ? "Note" : n.title) + (" by #{n.authors.collect{|a| a.fullname}.join(", ")}" if n.authors.length > 0).to_s}.join(", ").to_s
       link_classes = "draggable-pop no-view-alone overflow-y-auto height-350"
       "<span class='has-draggable-popups note-popup-link'>(" +
         link_to("", link_url, :class => "note-popup-link-icon "+link_classes, :title => h(link_title)) +
@@ -147,7 +157,47 @@ module ApplicationHelper
       ""
     end
   end
-    
+  
+  #
+  #
+  #
+  def note_popup_link_list_for(object, options={})
+    unless options[:association_type].blank?
+      if object.respond_to?(:association_notes_for) && object.association_notes_for(options[:association_type]).length > 0
+        notes = object.association_notes_for(options[:association_type])
+      end
+    else
+      if object.respond_to?(:notes) && object.notes.length > 0
+        notes = object.notes
+        link_url = polymorphic_url([object, :notes])
+      end
+    end
+    if !notes.nil? && notes.length > 0 
+      '<p>
+      Notes:
+      <ul class="note-popup-link-list">' +
+        notes.collect{|n| "<li>#{note_popup_link(n)}</li>" }.join() +
+      '</ul>
+      </p>'
+    end
+  end
+  
+  #
+  #
+  #
+  def note_popup_link(note)
+    note_title = note.title.nil? ? "Note" : note.title
+    note_authors = " by #{note.authors.collect{|a| a.fullname}.join(", ")}" if note.authors.length > 0
+    note_date = " (#{formatted_date(note.updated_at)})"
+    link_title = "#{note_title}#{note_authors}#{note_date}"
+    link_url = polymorphic_url([note.notable, note])
+    link_classes = "draggable-pop no-view-alone overflow-y-auto height-350"
+    "<span class='has-draggable-popups'>
+      #{link_to(link_title, link_url, :class => link_classes, :title => h(link_title))}
+    </span>
+    <script type='text/javascript'>jQuery(document).ready(function(){ActivateDraggablePopups('.has-draggable-popups');})</script>"
+  end
+  
   #
   #
   #

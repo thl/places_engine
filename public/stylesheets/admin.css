@@ -415,6 +415,26 @@ RE-USABLE CLASSES
 	border:solid 1px gray;
 }
 
+.new-item-icon{
+	padding:0 0 0 18px;
+	background:transparent no-repeat url(../images/new-item.png) 2px 2px;
+}
+.delete-item-icon{
+	padding:0 0 0 18px;
+	background:transparent no-repeat url(../images/delete-item.png) 2px 2px;
+}
+.listActions .delete-item-icon{
+	background-position:2px 4px;
+	margin-left:3px;
+	margin-right:10px;
+}
+.highlight .new-item-icon{
+	background-position:2px 0;
+}
+fieldset .highlight .new-item-icon{
+	background-position:2px 2px;
+}
+
 .featureLabel, a.featureLabel{
 	color:darkred;
 	font-weight:bold;

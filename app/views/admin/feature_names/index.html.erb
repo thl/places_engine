@@ -26,7 +26,7 @@ end
 		<div class="highlight left">	
 		<% if parent? %>
 			<% # Don't show the new link if there is no @feature (a feature name must belong to a features) %>
-				<%= link_to 'New', new_admin_feature_feature_name_path(@parent_object) %> name for: <%= feature_link(@parent_object) %>			
+				<%= new_item_link new_admin_feature_feature_name_path(@parent_object), 'New' %> name for: <%= feature_link(@parent_object) %>			
 		<% else %>
 			A Feature Name can only be created from a resource that uses one.
 		<% end %>

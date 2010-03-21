@@ -1,4 +1,3 @@
-<% show_type ||= nil %>
 <% options ||= {} %>
 <% if list.empty? %>
 	<%= empty_collection_message("No citations available.") %>
@@ -18,38 +17,15 @@
 	</tr>
 
 	<% list.each do |item| %>
-	<%
-	  if show_type && !show_type.blank?
-	    if show_type == :feature_name
-	      delete_path = admin_feature_name_citation_path(item.citable, item)
-	      edit_path = edit_admin_feature_name_citation_path(item.citable, item)
-	      view_path = admin_feature_name_citation_path(item.citable, item)
-      end
-      if show_type == :feature_name_relation
-	      delete_path = admin_feature_name_relation_citation_path(item.citable, item)
-	      edit_path = edit_admin_feature_name_relation_citation_path(item.citable, item)
-	      view_path = admin_feature_name_relation_citation_path(item.citable, item)
-      end
-   	  if show_type == :feature_type
-      	  delete_path = admin_feature_object_type_citation_path(item.citable, item)
-      	  edit_path = edit_admin_feature_object_type_citation_path(item.citable, item)
-      	  view_path = admin_feature_object_type_citation_path(item.citable, item)
-      end
-    else
-      delete_path = object_path(item)
-      edit_path = edit_object_path(item)
-      view_path = object_path(item)
-    end
-	%>
 	
 	<tr>
 
 		<td class="listActionsCol">
 		  <%= list_actions_for_item(item,
   		  {
-  		    :delete_path => delete_path,
-  		    :edit_path => edit_path,
-  		    :view_path => view_path
+  		    :delete_path => polymorphic_path([:admin, item.citable, item]),
+  		    :edit_path => edit_polymorphic_path([:admin, item.citable, item]),
+  		    :view_path => polymorphic_path([:admin, item.citable, item])
   		  }
 		  ) %>
 		</td>

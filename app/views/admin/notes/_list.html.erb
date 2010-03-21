@@ -22,9 +22,9 @@
 		<td class="listActionsCol">
 		  <%= list_actions_for_item(item,
   		  {
-  		    :delete_path => polymorphic_path([:admin, item.notable, item]),
-  		    :edit_path => polymorphic_path([:admin, item.notable, item], :action => "edit"),
-  		    :view_path => polymorphic_path([:admin, item.notable, item])
+  		    :delete_path => item.notable.nil? ? polymorphic_path([:admin, item]) : polymorphic_path([:admin, item.notable, item]),
+  		    :edit_path => item.notable.nil? ? edit_polymorphic_path([:admin, item]) : edit_polymorphic_path([:admin, item.notable, item], :action => "edit"),
+  		    :view_path => item.notable.nil? ? polymorphic_path([:admin, item]) : polymorphic_path([:admin, item.notable, item])
   		  }
 		  ) %>
 		</td>
