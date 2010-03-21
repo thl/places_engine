@@ -291,13 +291,21 @@ module ApplicationHelper
    # This is currently used for loading JavaScript from the main THL site.
    def thl_url
      hostname = Socket.gethostname.downcase
-     debugger
      if hostname == 'dev.thlib.org'
        return 'http://dev.thlib.org'
      elsif hostname =~ /\.local/ && hostname !~ /^a/
        return 'http://localhost:90'
      else
        return 'http://www.thlib.org'
+     end
+   end
+   
+   def google_maps_key
+     hostname = Socket.gethostname.downcase
+     if hostname== 'e-bhutan.bt'
+       'ABQIAAAA-y3Dt_UxbO4KSyjAYViOChQYlycRhKSCRlUWwdm5YkcOv9JZvxQ7K1N-weCz0Vvcplc8v8TOVZ4lEQ'
+     else
+       'ABQIAAAAmlH3GDvD6dTOdZjfrfvLFxTkTKGJ2QQt6wuPk9SnktO8U_sCzxTyz_WwKoSJx63MPLV9q8gn8KCNtg'
      end
    end
   
