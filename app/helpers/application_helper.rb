@@ -353,5 +353,14 @@ module ApplicationHelper
        return 'http://www.thlib.org'
      end
    end
-  
+   
+   def google_maps_key
+     hostname = Socket.gethostname.downcase
+     if hostname== 'e-bhutan.bt'
+       'ABQIAAAA-y3Dt_UxbO4KSyjAYViOChQYlycRhKSCRlUWwdm5YkcOv9JZvxQ7K1N-weCz0Vvcplc8v8TOVZ4lEQ'
+     else
+       'ABQIAAAAmlH3GDvD6dTOdZjfrfvLFxTkTKGJ2QQt6wuPk9SnktO8U_sCzxTyz_WwKoSJx63MPLV9q8gn8KCNtg'
+     end
+   end
+     
 end
