@@ -9,6 +9,8 @@
 		<th>GID</th>
 		<th>Locations</th>
 		<th>Priority</th>
+		<th>Notes</th>
+		<th>Add Note</th>
 	</tr>
 	
 	<% list = list.sort_by{|a| a.position} %>
@@ -16,16 +18,28 @@
 	<tr>
 		
 		<td class="listActionsCol">
-			<%= list_actions_for_item(item,
-				:delete_path => item.feature ? admin_feature_shape_path(item.feature, item) : admin_shape_path(item),
-				:edit_path   => item.feature ? edit_admin_feature_shape_path(item.feature, item) : admin_shape_path(item),
-				:hide_view	 => true
-			) if item.is_point? %>
+			<%= 
+				if item.is_point?
+					list_actions_for_item(item,
+						:delete_path => item.feature ? admin_feature_shape_path(item.feature, item) : admin_shape_path(item),
+						:edit_path   => item.feature ? edit_admin_feature_shape_path(item.feature, item) : admin_shape_path(item),
+						:view_path	 => item.feature ? admin_feature_shape_path(item.feature, item) : admin_shape_path(item)
+					)
+				else
+					list_actions_for_item(item,
+						:hide_delete => true,
+						:hide_edit   => true,
+						:view_path	 => item.feature ? admin_feature_shape_path(item.feature, item) : admin_shape_path(item)
+					)
+				end
+  			%>
 		</td>
 		
 		<td><%= item.gid.to_s %></td>
 		<td><%=h shape_display_string(item) %></td>
 		<td><%= item.position.to_s %></td>
+		<td><%= note_link_list_for item %></td>
+		<td><%= new_note_link_for item %></td>
 		
 	</tr>
 	<% end %>

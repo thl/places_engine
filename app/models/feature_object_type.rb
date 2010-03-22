@@ -25,6 +25,7 @@ class FeatureObjectType < ActiveRecord::Base
   
   extend HasTimespan
   extend IsCitable
+  extend IsNotable
   
   def to_s
     "#{object_type.title}"

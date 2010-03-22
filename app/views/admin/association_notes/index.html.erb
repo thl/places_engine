@@ -1,0 +1,22 @@
+<%
+if parent_type.to_s =~ /feature/
+	add_breadcrumb_item features_link
+end
+if parent_type==:feature
+	add_breadcrumb_item feature_link(@parent_object)
+end
+add_breadcrumb_item 'general notes'
+%>
+
+<div>
+	<div class="left">
+	<%= resource_search_form %>
+	</div>
+	<div class="right highlight">
+		<%= parent_resource_dependency_message %>
+	</div>
+</div>
+
+<br class="clear"/>
+
+<%= render :partial => 'list', :locals => { :list => @collection } %>

@@ -10,6 +10,8 @@
 #
 
 class Shape < ActiveRecord::Base
+  extend IsNotable
+  
   belongs_to :feature, :foreign_key => 'fid', :primary_key => 'fid'
   
   set_primary_key "gid"

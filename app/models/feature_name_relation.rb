@@ -41,6 +41,7 @@ class FeatureNameRelation < ActiveRecord::Base
   #
   extend HasTimespan
   extend IsCitable
+  extend IsNotable
   
   belongs_to :perspective
   belongs_to :phonetic_system

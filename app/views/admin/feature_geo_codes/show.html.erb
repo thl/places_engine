@@ -30,24 +30,11 @@ add_breadcrumb_item @object
 	</div>
 	
 	<div class="row">
-		<label>Notes</label>
-		<span><%= def_if_blank @object, :notes %></span>
-	</div>
-	
-	<div class="row">
 		<label>Timespan</label>: 
 		<span><%= formatted_timespan @object.timespan %></span>
 	</div>
 	
 </fieldset>
 
-<fieldset>
-	
-	<legend>Citations</legend>
-	<div class="left highlight">
-	  <%= link_to 'New citation', new_admin_feature_geo_code_citation_path(@object) %>
-	</div>
-	<br class="clear"/>
-	<%= render :partial => 'admin/citations/citations_list', :locals => { :list => @object.citations, :options => {:hide_type => true, :hide_type_value => true} } %>
-	
-</fieldset>
+<%= citation_list_fieldset %>
+<%= note_list_fieldset %>

@@ -26,13 +26,5 @@
 	
 </fieldset>
 
-<fieldset>
-	
-	<legend>Citations</legend>
-	<div class="left highlight">
-	  <%= link_to 'New citation', new_admin_feature_relation_citation_path(object) %>
-	</div>
-	<br class="clear"/>
-	<%= render :partial => 'admin/citations/citations_list', :locals => { :list => @object.citations, :show_type => :feature_relation, :options => {:hide_type => true, :hide_type_value => true} } %>
-	
-</fieldset>
+<%= citation_list_fieldset %>
+<%= note_list_fieldset %>

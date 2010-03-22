@@ -16,6 +16,8 @@
 		<th>Phonetic?</th>
 		<th>Orthographic?</th>
 		<th>Alt. Spelling?</th>
+		<th>Notes</th>
+		<th>Add Note</th>
 	</tr>
 
 	<% list.each do |item| %>
@@ -49,6 +51,8 @@
 			<%= yes_no item.is_alt_spelling %><br/>
 			<%= def_if_blank(item, :alt_spelling_system, :name) { '' } %>
 		</td>
+		<td><%= note_link_list_for item %></td>
+		<td><%= new_note_link_for item %></td>
 		
 	</tr>
 	<% end %>

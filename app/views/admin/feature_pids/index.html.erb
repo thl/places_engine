@@ -2,6 +2,6 @@
 <p><%= @message %></p>
 <p>&nbsp;<br/>
 <%= link_to 'See unused Feature IDs', available_admin_feature_pids_path %> |
-<%= link_to 'New feature range', new_admin_feature_pid_path %> |
+<%= new_item_link new_admin_feature_pid_path, 'New feature range' %> |
 <%= link_to 'Back to admin', admin_admin_path %>
 </p>
