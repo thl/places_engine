@@ -427,11 +427,14 @@ dl.no-style p {
 
 #FeatureDetails ul {
     list-style-type: disc;
+}
+
+#FeatureDetails ul, #FeatureDetails ol {
     padding-left: 18px;
     padding-bottom: 6px;
 }
 
-#FeatureDetails ul li {
+#FeatureDetails li {
     margin: 0px;
     line-height: 180%;
 }
