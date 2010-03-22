@@ -1,7 +1,19 @@
 <p class='description-author'>
-	<% if strip_tags(d.content).length < 1000 %>
-		<%= link_to_remote "<span class='descriptionplus_icon'>.</span> #{description_name(d)}", {:url => expand_feature_description_path(feature,d),  :method => 'get'} %>
-	<% else %>
-		<%= link_to_function "<span class='descriptionplus_icon'>.</span> #{description_name(d)}", "ThlTabs.addAndSelectTab('essays', 'Essays', '#{feature_description_url(feature.id, d.id)}');NodeMenu.hideMenu()" %>
-	<% end %>	
+	<%= link_to_remote '.', {:url => expand_feature_description_path(feature,d),  :method => 'get'},  { :class => 'descriptionplus_icon' } %>       
+	<% if !d.title.blank? %>  
+	<%   if !d.authors.empty? %>
+		     <span class='title'><%= d.title %></span>
+		     <span class='by'><%= ' by ' %></span>
+	         <span class='content_by'><%= "#{ join_with_and(d.authors.collect{|a| a.screen_name})}" %></span>
+	<%   else %>
+	         <span class='title'><%= d.title %></span>
+	<%   end %>
+	<% else %>     
+	<%   if !d.authors.empty? %>
+	         <span class='title'>Description</span>
+	         <span class='by'><%= ' by ' %></span>
+		     <span class='content_by'><%= "#{ join_with_and(d.authors.collect{|a| a.screen_name})}" %></span>
+	<%   end %>
+	<% end %>
+	<span class='last_updated'>(<%= "#{h(d.updated_at.to_date.to_formatted_s(:long))}" %>)...</span>	
 </p>
