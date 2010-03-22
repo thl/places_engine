@@ -191,6 +191,7 @@ dl.no-style p {
 #NodeMenu .node-menu-content > h2{
 	margin:0;
 	padding:2px 0 2px 7px;
+	font-size:16px;
 	background-color:#f9f9f9;
     border-bottom:1px solid #ddd;
     cursor:pointer;
@@ -402,14 +403,17 @@ dl.no-style p {
 
 .shell-1 #FeatureDetails h1 {
     padding-top: 6px;
+    font-size: 19px;
 }
 
 .shell-1 #FeatureDetails h2 {
     line-height: 160%;
+    font-size: 17px;
 }
 
 .shell-1 #FeatureDetails h3 {
-    margin-top: 6px;
+    margin-top: 9px;
+    font-size: 15px;
 }
 
 #FeatureDetails .breadcrumb {
@@ -423,6 +427,7 @@ dl.no-style p {
 
 #FeatureDetails p {
     margin-bottom: 0px;
+    font-size: 14px;
 }
 
 #FeatureDetails ul {
@@ -513,14 +518,15 @@ span.arrow {
 #descriptions_div > div { margin-bottom: 1em; }
 
 /* styling for descriptions */
-.title { font-size: 13px; color:black;font-variant:small-caps;}
-.by { font-size: 13px;}
-.content_by { font-size: 13px; font-variant:small-caps;}
-.last_updated { font-size: 12px;}
+.title { font-size: 15px; color:black;font-variant:small-caps;}
+.by { font-size: 14px;}
+.content_by { font-size: 14px; font-variant:small-caps;}
+.last_updated { font-size: 13px;}
 .expanded { padding: 2px; text-align: justify; }
 
 #descriptions_div h1{ border-bottom: 0px; }
-#descriptions_div p{ text-align: justify;}
+#descriptions_div p{ text-align: justify; font-size: 13px; }
+#descriptions_div .description-author{ font-size: 14px; }
 
 hr {border-style: solid; border-color: color:#404040; border-width: 1px}
 
