@@ -1,0 +1,18 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  title: MyString
+
+two:
+  title: MyString
+
+# == Schema Information
+#
+# Table name: note_titles
+#
+#  id         :integer         not null, primary key
+#  title      :string(255)
+#  created_at :timestamp
+#  updated_at :timestamp
+#
+

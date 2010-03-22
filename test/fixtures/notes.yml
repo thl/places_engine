@@ -1,0 +1,30 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  notable_type: MyString
+  notable_id: 1
+  note_title_id: 1
+  custom_note_title: MyString
+  content: MyText
+
+two:
+  notable_type: MyString
+  notable_id: 1
+  note_title_id: 1
+  custom_note_title: MyString
+  content: MyText
+
+# == Schema Information
+#
+# Table name: notes
+#
+#  id                :integer         not null, primary key
+#  notable_type      :string(255)
+#  notable_id        :integer
+#  note_title_id     :integer
+#  custom_note_title :string(255)
+#  content           :text
+#  created_at        :timestamp
+#  updated_at        :timestamp
+#
+

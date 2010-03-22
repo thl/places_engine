@@ -20,6 +20,7 @@
 require 'digest/sha1'
 class User < ActiveRecord::Base
   has_and_belongs_to_many :descriptions, :join_table => 'authors_descriptions'
+  has_and_belongs_to_many :notes, :join_table => 'authors_notes', :association_foreign_key => 'note_id'
  
   # Virtual attribute for the unencrypted password
   attr_accessor :password

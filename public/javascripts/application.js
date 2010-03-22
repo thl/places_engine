@@ -1,7 +1,10 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 jQuery(document).ready(function(){
-	ToggleSideMenu();
+
+	if(typeof(ToggleSideMenu) != "undefined"){
+		ToggleSideMenu();
+	}
 
 	// Add authentication to AJAX POSTs made by jQuery 
 	jQuery(document).ajaxSend(function(event, request, settings) {

@@ -33,6 +33,7 @@ class FeatureName < ActiveRecord::Base
   
   extend HasTimespan
   extend IsCitable
+  extend IsNotable
   
   #
   # Associations

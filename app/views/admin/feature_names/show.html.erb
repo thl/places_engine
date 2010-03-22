@@ -26,7 +26,7 @@ add_breadcrumb_item @object.name
 		 <label>Writing System: </label> <span><%= def_if_blank @object, :writing_system, :name %></span>
 	</div>
 	<div class="row">
-		<label>Primary for Romanization View?</label> <span><%= yes_no @object.is_primary_for_romanization %></span>
+		<label>Primary for Popular Romanization View?</label> <span><%= yes_no @object.is_primary_for_romanization %></span>
 	</div>
 	<div class="row">
 		<label>Timespan: </label> <span><%= formatted_timespan @object.timespan %></span>
@@ -74,11 +74,5 @@ add_breadcrumb_item @object.name
 
 </fieldset>
 
-<fieldset>
-	<legend>Citations</legend>
-	<div class="left highlight">
-	  <%= link_to('New Citation', new_admin_feature_name_citation_path(object)) %>
-	</div>
-	<br class="clear"/>
-	<%= render :partial => 'admin/citations/citations_list', :locals => { :list => @object.citations, :show_type => :feature_name } %>
-</fieldset>
+<%= citation_list_fieldset %>
+<%= note_list_fieldset %>

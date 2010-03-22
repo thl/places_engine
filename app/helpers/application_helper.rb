@@ -133,6 +133,74 @@ module ApplicationHelper
   #
   #
   #
+  def note_popup_link_for(object, options={})
+    unless options[:association_type].blank?
+      if object.respond_to?(:association_notes_for) && object.association_notes_for(options[:association_type]).length > 0
+        notes = object.association_notes_for(options[:association_type])
+        link_url = polymorphic_url([object, :association_notes], :association_type => options[:association_type])
+      end
+    else
+      if object.respond_to?(:notes) && object.notes.length > 0
+        notes = object.notes
+        link_url = polymorphic_url([object, :notes])
+      end
+    end
+    unless notes.nil?
+      link_title = notes.collect{|n| (n.title.nil? ? "Note" : n.title) + (" by #{n.authors.collect{|a| a.fullname}.join(", ")}" if n.authors.length > 0).to_s}.join(", ").to_s
+      link_classes = "draggable-pop no-view-alone overflow-y-auto height-350"
+      "<span class='has-draggable-popups note-popup-link'>(" +
+        link_to("", link_url, :class => "note-popup-link-icon "+link_classes, :title => h(link_title)) +
+        link_to("See Note", link_url, :class => "note-popup-link-text "+link_classes, :title => h(link_title)) +
+      ")</span>" +
+      "<script type='text/javascript'>jQuery(document).ready(function(){ActivateDraggablePopups('.has-draggable-popups');})</script>"
+    else
+      ""
+    end
+  end
+  
+  #
+  #
+  #
+  def note_popup_link_list_for(object, options={})
+    unless options[:association_type].blank?
+      if object.respond_to?(:association_notes_for) && object.association_notes_for(options[:association_type]).length > 0
+        notes = object.association_notes_for(options[:association_type])
+      end
+    else
+      if object.respond_to?(:notes) && object.notes.length > 0
+        notes = object.notes
+        link_url = polymorphic_url([object, :notes])
+      end
+    end
+    if !notes.nil? && notes.length > 0 
+      '<p>
+      Notes:
+      <ul class="note-popup-link-list">' +
+        notes.collect{|n| "<li>#{note_popup_link(n)}</li>" }.join() +
+      '</ul>
+      </p>'
+    end
+  end
+  
+  #
+  #
+  #
+  def note_popup_link(note)
+    note_title = note.title.nil? ? "Note" : note.title
+    note_authors = " by #{note.authors.collect{|a| a.fullname}.join(", ")}" if note.authors.length > 0
+    note_date = " (#{formatted_date(note.updated_at)})"
+    link_title = "#{note_title}#{note_authors}#{note_date}"
+    link_url = polymorphic_url([note.notable, note])
+    link_classes = "draggable-pop no-view-alone overflow-y-auto height-350"
+    "<span class='has-draggable-popups'>
+      #{link_to(link_title, link_url, :class => link_classes, :title => h(link_title))}
+    </span>
+    <script type='text/javascript'>jQuery(document).ready(function(){ActivateDraggablePopups('.has-draggable-popups');})</script>"
+  end
+  
+  #
+  #
+  #
   def yes_no(value)
     (value.nil? || value==0 || value=='false' || value == false) ? 'no' : 'yes'
   end
@@ -156,21 +224,9 @@ module ApplicationHelper
   end
 
   def stylesheet_files
-    ['public', 'language_support']
+    super + ['public']
   end
-  
-  def javascript_files
-    ['application'] # 'jquery-ui', 'jrails'
-  end
-  
-  def stylesheets
-    return stylesheet_link_tag(*stylesheet_files)
-  end
-  
-  def javascripts
-    javascript_include_tag(*javascript_files)
-  end
-
+    
   def shape_display_string(shape)
     return shape.geo_type unless shape.is_point?
     "Latitude: #{shape.lat}; Longitude: #{shape.lng}"
@@ -220,13 +276,17 @@ module ApplicationHelper
   
   # Custom HTML truncate for PD descriptions, which don't always validate
   def truncate_html(input, len = 30, extension = "...")
-    input.gsub!(/<\/p>\s*<p>/is, "<br /><br />")
-    input = sanitize(input, :tags => %w(br h1 h2 h3 h4 h5 h6))
-    input.gsub!(/<br.*?>/, "\v")
-    input = truncate(input, :length => len, :omission => extension)
-    input.strip!
-    input.gsub!(/\v/, "<br />")
-    input
+    output = input
+    output.gsub!(/<\/p>\s*<p>/is, "<br /><br />")
+    output = sanitize(input, :tags => %w(br h1 h2 h3 h4 h5 h6 ul ol li))
+    output.gsub!(/<br.*?>/, "\v")
+    if output.length < len
+      return input
+    end
+    output = truncate(input, :length => len, :omission => extension)
+    output.strip!
+    output.gsub!(/\v/, "<br />")
+    output
   end
   
   # HTML truncate for valid HTML, requires REXML::Parsers::PullParser
@@ -287,11 +347,20 @@ module ApplicationHelper
      hostname = Socket.gethostname.downcase
      if hostname == 'dev.thlib.org'
        return 'http://dev.thlib.org'
-     elsif hostname =~ /\.local/
+     elsif hostname =~ /\.local/ && hostname !~ /^a/
        return 'http://localhost:90'
      else
        return 'http://www.thlib.org'
      end
    end
-  
+   
+   def google_maps_key
+     hostname = Socket.gethostname.downcase
+     if hostname== 'e-bhutan.bt'
+       'ABQIAAAA-y3Dt_UxbO4KSyjAYViOChQYlycRhKSCRlUWwdm5YkcOv9JZvxQ7K1N-weCz0Vvcplc8v8TOVZ4lEQ'
+     else
+       'ABQIAAAAmlH3GDvD6dTOdZjfrfvLFxTkTKGJ2QQt6wuPk9SnktO8U_sCzxTyz_WwKoSJx63MPLV9q8gn8KCNtg'
+     end
+   end
+     
 end
