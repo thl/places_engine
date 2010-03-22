@@ -26,7 +26,7 @@ add_breadcrumb_item @object.name
 		 <label>Writing System: </label> <span><%= def_if_blank @object, :writing_system, :name %></span>
 	</div>
 	<div class="row">
-		<label>Primary for Romanization View?</label> <span><%= yes_no @object.is_primary_for_romanization %></span>
+		<label>Primary for Popular Romanization View?</label> <span><%= yes_no @object.is_primary_for_romanization %></span>
 	</div>
 	<div class="row">
 		<label>Timespan: </label> <span><%= formatted_timespan @object.timespan %></span>
