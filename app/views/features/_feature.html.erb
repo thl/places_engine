@@ -12,7 +12,7 @@
 	<h3><%= current_perspective %> Location</h3>
 	<%= f_breadcrumb(feature) %>
 
-	<%= content_tag :h3, "Feature Types" unless feature.object_types.empty? %>
+	<%= content_tag :h3, "Types" unless feature.object_types.empty? %>
 	<% if defined? feature.object_types %>
 	  <%
 	  # This should probably be abstracted elsewhere
@@ -38,7 +38,7 @@
 	<% end %>
 		
 	<% if !feature.shapes.empty? %>
-		<h3>Interactive Map</h3>
+		<h3>Map</h3>
 		<div id="inset_map" class="fid-<%= feature.fid.to_s %> language-<%= current_view.code %>"></div>
 		<%= javascript_tag "$(document).ready(function(){ InsetMap.init({proxyUrl: '#{ActionController::Base.relative_url_root}/proxy_engine/utils/proxy/?proxy_url='}); });" %>
 		<%= link_to image_tag("http://www.thlib.org/global/images/icon-map-simple.gif", :alt => "") + " View the full map", "http://www.thlib.org/places/maps/interactive/#fid:#{feature.fid};language:#{current_view.code}", :target => "_blank", :class => "view-on-map" %>
@@ -46,7 +46,7 @@
 		<%= link_to image_tag("http://www.thlib.org/global/images/icon-google-earth.png", :alt => "") + " View in Google Earth", {:action => :gis_resources, :fids => feature.fid, :format => "kmz"}, :target => "_blank", :class => "view-on-map" %>
 	<% end %>
 	
-	<%= content_tag :h3, "Descriptions" unless feature.descriptions.blank? %>
+	<%= content_tag :h3, "Essays" unless feature.descriptions.blank? %>
 	<%  if !feature.descriptions.empty? %>
 	      <div id='descriptions_div'>
 	<%=     render :partial => '/descriptions/index', :locals => {:feature => feature, :description => nil} %>
@@ -82,7 +82,7 @@
 	</dl>
 	<%= note_popup_link_list_for(feature, {:association_type => FeatureName.model_name}) %>
 
-	<h3>Classifications/Codes</h3>
+	<h3>IDs</h3>
 <%  if show_old_pid %>
       <p>CURRENT THL ID: <%= feature.pid %></p>
       <p>OLD THL PID: <%= feature.old_pid %></p>
