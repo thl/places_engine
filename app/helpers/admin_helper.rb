@@ -165,6 +165,20 @@ module AdminHelper
   end
   
   #
+  # Allows for specification of what model names should be displayed as to users (e.g. "location" instead of "shape")
+  #
+  def model_display_name(str)
+    names = {
+      'association_note' => 'note',
+      'feature_geo_code' => 'geo_code',
+      'feature_name' => 'name',
+      'feature_object_type' => 'feature_type',
+      'shape' => 'location'
+    }
+    names[str].nil? ? str : names[str]
+  end
+    
+  #
   #
   #
   def model_link(model)
@@ -177,14 +191,29 @@ module AdminHelper
   end
   
   #
+  # Usage: new_item_link(new_admin_blurb_url, "New Blurb"), new_item_link([:blurb]), new_item_link([@parent_object, :citation])
   #
-  #
-  def new_item_link(path, text="", options={})
-    link_to(text, path, :class => 'new-item-icon', :title => options[:title] || (text.blank? ? nil : text) || "New")
+  def new_item_link(path_or_array, text=nil, options={})
+    if path_or_array.is_a?(String)
+      path = path_or_array
+    elsif path_or_array.is_a?(Array)
+      # We need to give polymorphic_path an instantiation of a model instead of a symbol if there isn't
+      # a parent: [:admin, Feature.new] instead of [:admin, :feature]:
+      path_or_array[0] = path_or_array[0].to_s.classify.constantize.new if path_or_array.length == 1
+      # All new actions are within the admin namespace, so :admin is added here:
+      path_or_array.insert(0, :admin)
+      path = new_polymorphic_path path_or_array
+      # If text is nil, set it to "New " + model name. For no text, the argument should be set to "". 
+      if text.nil?
+        model_name = path_or_array.last.is_a?(Symbol) ? path_or_array.last.to_s : path_or_array.last.class.name.tableize.singularize
+        text = "New " + model_display_name(model_name).titleize
+      end
+    end
+    link_to(text, path, :class => 'new-item-icon', :title => options[:title] || text || "New")
   end
   
   #
-  #
+  # Usage: delete_item_link(object_path(@object), "Remove"), delete_item_link(@object)
   #
   def delete_item_link(path_or_object, text="", options={})
     path = path_or_object.is_a?(String) ? path_or_object : object_path(path_or_object)
@@ -195,9 +224,9 @@ module AdminHelper
   #
   #
   #
-  def highlighted_new_item_link(path, text="", options={})
+  def highlighted_new_item_link(path_or_array, text=nil, options={})
     "<div class='#{options[:align] || 'left'} highlight'>
-      #{new_item_link path, text, options}
+      #{new_item_link path_or_array, text, options}
     </div>"
   end
   
@@ -416,7 +445,7 @@ module AdminHelper
   
   def association_note_list_fieldset(association_type, options={})
     "<h4>General Notes</h4>
-  	  #{highlighted_new_item_link new_polymorphic_path([:admin, @object, :association_note], :association_type => association_type), 'New note'}
+  	  #{highlighted_new_item_link new_polymorphic_path([:admin, @object, :association_note], :association_type => association_type), 'New Note'}
     	<br class='clear'/>
   	  #{render :partial => 'admin/association_notes/list', :locals => { :list => @object.association_notes_for(association_type), :options => {:hide_type => true, :hide_type_value => true, :hide_association_type => true, :hide_empty_collection_message => true} }}"
   end

@@ -16,7 +16,7 @@ add_breadcrumb_item 'feature geo codes'
 	<div class="right highlight">
 		
     <% if parent? %>
-      <%= new_item_link new_admin_feature_feature_geo_code_path(@parent_object), 'New' %> Geo Code for: <%= feature_link(@parent_object) %>			
+      <%= new_item_link [@parent_object, :feature_geo_code] %> for: <%= feature_link(@parent_object) %>			
     <% else %>
       A Feature Geo Code can only be created from a resource that uses one.
     <% end %>

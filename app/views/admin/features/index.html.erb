@@ -19,7 +19,7 @@ end %>
 				<% if @locating_relation %>
 					Locating relation for <%= feature_link(object) %>
 				<% else %>
-					<%= new_item_link new_object_path, 'New' %>
+					<%= new_item_link [:feature] %>
 				<% end %>
 			</div>
 			<%#= context_search_message(@context_feature) %>
