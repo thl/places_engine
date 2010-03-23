@@ -50,7 +50,7 @@ add_breadcrumb_item 'citations'
 	</div>
 	<div class="right highlight">
 	<% if parent? %>
-		<%= new_item_link new_object_path, 'New' %>
+		<%= new_item_link [@parent_object, :citation] %>
 	<% else %>
 		<%= parent_resource_dependency_message %>
 	<% end %>		
