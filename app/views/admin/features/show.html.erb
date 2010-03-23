@@ -25,7 +25,7 @@
 
 <fieldset>
 	<legend>Names <%= link_to 'Change Prioritization of Names', admin_prioritize_feature_names_path(@object) %></legend>
-	<%= highlighted_new_item_link new_admin_feature_feature_name_path(@object), 'New name' %>
+	<%= highlighted_new_item_link [@object, :feature_name] %>
 	<br class="clear"/>
 	<%= render :partial => 'admin/feature_names/feature_names', :locals => { :list => @object.names } %>
 	<dl class="no-style">
@@ -46,7 +46,7 @@
 
 <fieldset>
 	<legend>Feature Types <%= link_to 'Change Prioritization of Feature Types', admin_prioritize_feature_object_types_path(@object) %></legend>
-	<%= highlighted_new_item_link new_admin_feature_feature_object_type_path(@object), 'New type' %>
+	<%= highlighted_new_item_link [@object, :feature_object_type] %>
 	<br class="clear"/>
 	<%= render :partial => 'admin/feature_object_types/list', :locals => { :list => @object.feature_object_types, :hide_feature_id => true } %>
 	<%= association_note_list_fieldset(FeatureObjectType.model_name) %>
@@ -54,7 +54,7 @@
   
 <fieldset>
 	<legend>Geo Codes</legend>
-	<%= highlighted_new_item_link new_admin_feature_feature_geo_code_path(@object), 'New geo code' %>
+	<%= highlighted_new_item_link [@object, :feature_geo_code] %>
 	<br class="clear"/>
 	<%= render :partial => 'admin/feature_geo_codes/list', :locals => { :list => @object.geo_codes } %>
 	<%= association_note_list_fieldset(FeatureGeoCode.model_name) %>
@@ -62,7 +62,7 @@
 
 <fieldset>
 	<legend>Locations <%= link_to 'Change Prioritization of Locations', admin_prioritize_feature_shapes_path(@object) %></legend>
-	<%= highlighted_new_item_link new_admin_feature_shape_path(@object), 'New location' %>
+	<%= highlighted_new_item_link [@object, :shape] %>
 	<br class="clear"/>
 	<%= render :partial => 'admin/shapes/list', :locals => { :list => @object.shapes } %>
 	<%= association_note_list_fieldset(Shape.model_name) %>
@@ -70,7 +70,7 @@
 
 <fieldset>
 	<legend>Feature Relations</legend>
-	<%= highlighted_new_item_link locate_for_relation_admin_feature_path(@object), 'New feature relation' %>
+	<%= highlighted_new_item_link locate_for_relation_admin_feature_path(@object), 'New Feature Relation' %>
 	<br class="clear"/>
 	<%= render :partial => 'admin/feature_relations/list', :locals => { :list => @object.relations, :parent => @object, :use_first => false, :use_names => true } %>
 	<%= association_note_list_fieldset(FeatureRelation.model_name) %>
@@ -78,7 +78,7 @@
 
 <fieldset>
 	<legend>Descriptions</legend>
-	<%= highlighted_new_item_link new_admin_feature_description_path(@object), 'New description' %>
+	<%= highlighted_new_item_link [@object, :description] %>
 	<br class="clear"/>
 	<%= render :partial => 'admin/descriptions/descriptions_list', :locals => { :list => @object.descriptions.find(:all, :order => 'is_primary DESC, title') } %>
 </fieldset>
