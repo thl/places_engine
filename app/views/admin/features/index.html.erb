@@ -46,7 +46,7 @@ end %>
 						<%= submit_tag 'Select' %>
 					</form>
 					<% else %>
-					<%= list_actions_for_item(item, :edit_path => object_path(item)) %>
+					<%= list_actions_for_item(item, :hide_edit => true) %>
 					<% end %>
 				</td>
 				
