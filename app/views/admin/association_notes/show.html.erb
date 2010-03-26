@@ -5,7 +5,7 @@ add_breadcrumb_item @object.to_s
 
 <fieldset>
 	
-	<legend>Note for <%= @object.notable %>'s <%= @object.association_type_name %> <%= link_to 'Edit', edit_object_path(@object) %> <%= delete_item_link(@object) %></legend>
+	<legend>Note for <%= @object.notable %>'s <%= @object.association_type_name %> <%= edit_item_link @object %> <%= delete_item_link @object %></legend>
 	
 	<div class="row">
 		<label>Title</label>

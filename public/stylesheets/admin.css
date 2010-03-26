@@ -415,23 +415,35 @@ RE-USABLE CLASSES
 	border:solid 1px gray;
 }
 
-.new-item-icon{
+.item-icon-delete{
 	padding:0 0 0 18px;
-	background:transparent no-repeat url(../images/new-item.png) 2px 2px;
+	background:transparent no-repeat url(../images/item-delete.png) 2px 2px;
 }
-.delete-item-icon{
+.item-icon-edit{
 	padding:0 0 0 18px;
-	background:transparent no-repeat url(../images/delete-item.png) 2px 2px;
+	background:transparent no-repeat url(../images/item-edit.png) 2px 2px;
 }
-.listActions .delete-item-icon{
+.item-icon-manage{
+	padding:0 0 0 18px;
+	background:transparent no-repeat url(../images/item-manage.png) 2px 2px;
+}
+.item-icon-new{
+	padding:0 0 0 18px;
+	background:transparent no-repeat url(../images/item-new.png) 2px 2px;
+}
+.item-icon-view{
+	padding:0 0 0 22px;
+	background:transparent no-repeat url(../images/item-view.png) 2px 2px;
+}
+.listActions .item-icon-delete{
 	background-position:2px 4px;
 	margin-left:3px;
 	margin-right:10px;
 }
-.highlight .new-item-icon{
+.highlight .item-icon-new{
 	background-position:2px 0;
 }
-fieldset .highlight .new-item-icon{
+fieldset .highlight .item-icon-new{
 	background-position:2px 2px;
 }
 

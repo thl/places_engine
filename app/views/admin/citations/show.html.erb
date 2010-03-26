@@ -35,7 +35,7 @@ add_breadcrumb_item @object.id
 
 <fieldset>
 	
-	<legend>Citation for <%= @object.citable_type.titleize %> <%= link_to 'Edit', edit_object_path(@object) %></legend>
+	<legend>Citation for <%= @object.citable_type.titleize %> <%= edit_item_link @object %> <%= delete_item_link @object %></legend>
 	
 	<div class="row">
 		<label>Info Source</label>

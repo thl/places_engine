@@ -8,7 +8,7 @@
 <br class="clear"/>
 <div id="featureShow">
 <fieldset>
-	<legend>General Information <%= link_to 'Edit', edit_admin_feature_path(@object) %></legend>
+	<legend>General Information <%= edit_item_link @object %></legend>
 	<div class="row">
 	  <label>THL ID: </label> <span><%= @object.pid %></span>
 	</div>
@@ -34,8 +34,8 @@
 			{
 			  :delete_path => admin_feature_feature_name_path(name.feature, name),
 			  :edit_path   => edit_admin_feature_feature_name_path(name.feature, name),
-			  :view_path   => admin_feature_feature_name_path(name.feature, name),
-			  :view_name   => 'manage',
+			  :manage_path => admin_feature_feature_name_path(name.feature, name),
+			  :hide_view   => true,
 			  :hide_delete => true
 		    }
 		  ) + "):</strong></dt><dd>#{name.etymology}</dd>" unless name.etymology.blank? %>

@@ -38,7 +38,7 @@ add_breadcrumb_item @object.to_s
 
 <fieldset>
 	
-	<legend>Note for <%= @object.notable_type.titleize %> <%= link_to 'Edit', edit_object_path(@object) %> <%= delete_item_link(@object) %></legend>
+	<legend>Note for <%= @object.notable_type.titleize %> <%= edit_item_link @object %> <%= delete_item_link @object %></legend>
 	
 	<div class="row">
 		<label>Title</label>

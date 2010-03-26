@@ -9,7 +9,7 @@ add_breadcrumb_item @object.name
 </div>
 <br class="clear"/>
 <fieldset>
-	<legend>General Information <%= link_to 'Edit', edit_admin_feature_name_path(@object) %></legend>
+	<legend>General Information <%= edit_item_link @object %></legend>
 	<div class="row">
 		<label>Name: </label> <span><%= @object.name %></span>
 	</div>

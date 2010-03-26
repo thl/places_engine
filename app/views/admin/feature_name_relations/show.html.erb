@@ -8,7 +8,7 @@ add_breadcrumb_item @object
 %>
 
 <fieldset>
-	<legend>General Information <%= link_to 'Edit', edit_admin_feature_name_relation_path(@object) %></legend>
+	<legend>General Information <%= edit_item_link @object %></legend>
 	<div class="inlineRow">
 		<label>Is <%= feature_name_label(@object.child_node) %> translation of <%= feature_name_label(@object.parent_node) %>?</label>
 		<div><%= yes_no @object.is_translation %></div>

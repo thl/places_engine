@@ -10,7 +10,7 @@ add_breadcrumb_item @object.id
 </div>
 <br class="clear"/>
 <fieldset>
-	<legend>Description <%= link_to 'Edit', edit_admin_feature_description_path(parent_object,@object) %></legend>
+	<legend>Description <%= edit_item_link @object %></legend>
 
 	<% if !@object.title.blank? %>  
 	<%   if !@object.authors.empty? %>

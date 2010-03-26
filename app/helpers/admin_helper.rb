@@ -22,8 +22,11 @@ module AdminHelper
     options[:view_path] ||= object_path(item)
     options[:delete_path] ||= object_path(item)
     items=[]
-    items << link_to(options[:edit_name] || 'edit', options[:edit_path]) unless options[:hide_edit]
-    items << link_to(options[:view_name] || 'view', options[:view_path]) unless options[:hide_view]
+    items << edit_item_link(options[:edit_path], options[:edit_name]) unless options[:hide_edit]
+    if !options[:manage_path].blank?
+      items << manage_item_link(options[:manage_path], options[:manage_name]) unless options[:hide_manage]
+    end
+    items << view_item_link(options[:view_path], options[:view_name]) unless options[:hide_view]
     items << delete_item_link(options[:delete_path], options[:delete_name]) unless options[:hide_delete]
     '<span class="listActions">'+items.join(' | ')+'</span>'
   end
@@ -209,7 +212,7 @@ module AdminHelper
         text = "New " + model_display_name(model_name).titleize
       end
     end
-    link_to(text, path, :class => 'new-item-icon', :title => options[:title] || text || "New")
+    link_to(text, path, :class => 'item-icon-new', :title => options[:title] || text || "New")
   end
   
   #
@@ -218,9 +221,36 @@ module AdminHelper
   def delete_item_link(path_or_object, text="", options={})
     path = path_or_object.is_a?(String) ? path_or_object : object_path(path_or_object)
     text = "" if text.nil?
-    link_to(text, path, :class => 'delete-item-icon', :title => options[:title] || (text.blank? ? nil : text)  || "Delete", :method=>:delete, :confirm=>'WAIT! Are you sure you want to DELETE this item?')
+    link_to(text, path, :class => 'item-icon-delete', :title => options[:title] || (text.blank? ? nil : text)  || "Delete", :method=>:delete, :confirm=>'WAIT! Are you sure you want to DELETE this item?')
   end
-    
+  
+  #
+  # Usage: edit_item_link(edit_object_path(@object), "Edit"), edit_item_link(@object)
+  #
+  def edit_item_link(path_or_object, text="", options={})
+    path = path_or_object.is_a?(String) ? path_or_object : edit_object_path(path_or_object)
+    text = "" if text.nil?
+    link_to(text, path, :class => 'item-icon-edit', :title => options[:title] || (text.blank? ? nil : text)  || "Edit")
+  end
+  
+  #
+  # Usage: manage_item_link(object_path(@object), "Manage"), manage_item_link(@object)
+  #
+  def manage_item_link(path_or_object, text="", options={})
+    path = path_or_object.is_a?(String) ? path_or_object : object_path(path_or_object)
+    text = "" if text.nil?
+    link_to(text, path, :class => 'item-icon-manage', :title => options[:title] || (text.blank? ? nil : text)  || "Manage")
+  end
+  
+  #
+  # Usage: view_item_link(object_path(@object), "View"), view_item_link(@object)
+  #
+  def view_item_link(path_or_object, text="", options={})
+    path = path_or_object.is_a?(String) ? path_or_object : object_path(path_or_object)
+    text = "" if text.nil?
+    link_to(text, path, :class => 'item-icon-view', :title => options[:title] || (text.blank? ? nil : text)  || "View")
+  end
+      
   #
   #
   #
@@ -293,8 +323,8 @@ module AdminHelper
     				{
     				  :delete_path => admin_feature_feature_name_path(name.feature, name),
     				  :edit_path   => edit_admin_feature_feature_name_path(name.feature, name),
-    				  :view_path   => admin_feature_feature_name_path(name.feature, name),
-    				  :view_name   => 'manage'
+    				  :manage_path => admin_feature_feature_name_path(name.feature, name),
+    				  :hide_view   => true
     			  }
     			)
     	end
