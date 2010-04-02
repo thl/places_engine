@@ -21,6 +21,7 @@ class FeatureGeoCode < ActiveRecord::Base
   
   extend IsCitable
   extend IsNotable
+  extend IsDateable
   extend HasTimespan
   
   def self.search(filter_value, options={})

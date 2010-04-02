@@ -440,6 +440,19 @@ module AdminHelper
     html
   end
   
+  def time_unit_list_fieldset(options={})
+    object = options[:object] || @object
+    html = "<fieldset>
+    	<legend>Dates</legend>
+    	<div class='left highlight'>
+    	  #{new_item_link(new_polymorphic_path([:admin, object, :time_unit]), 'New Date')}
+    	</div>
+    	<br class='clear'/>
+    	#{render :partial => 'admin/time_units/list', :locals => { :list => object.time_units }}
+    </fieldset>"
+    html
+  end
+    
   def note_link_list_for(object)
     if object.respond_to?(:notes) && object.notes.length > 0
       object.notes.enum_with_index.collect{|n, i|

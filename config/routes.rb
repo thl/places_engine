@@ -16,12 +16,13 @@ ActionController::Routing::Routes.draw do |map|
   map.namespace(:admin) do |admin|
     admin.resources :alt_spelling_systems, :association_notes, :blurbs, :citations, :feature_name_types, :feature_relation_types, :feature_types,
                     :geo_code_types, :languages, :info_sources, :note_titles, :notes, :object_types, :orthographic_systems, :perspectives,
-                    :phonetic_systems, :timespans, :users, :writing_systems, :xml_documents, :views
+                    :phonetic_systems, :timespans, :time_units, :users, :writing_systems, :xml_documents, :views
     admin.openid_new 'openid_new', :controller => 'users', :action => 'openid_new'
     admin.openid_create 'openid_create', :controller => 'users', :action => 'create', :requirements => { :method => :post }
     admin.admin '', :controller=>'features', :action=>'index'
     admin.resources :feature_geo_codes, :has_many=>[:citations] do |feature_geo_code|
       feature_geo_code.resources :notes, :collection => {:add_author => :get}
+      feature_geo_code.resources :time_units, :collection => {:new_form => :get}
     end
     admin.resources :feature_object_types, :has_many=>[:citations], :belongs_to=>:feature do |feature_object_type|
       feature_object_type.resources :notes, :collection => {:add_author => :get}
