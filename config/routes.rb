@@ -44,6 +44,9 @@ ActionController::Routing::Routes.draw do |map|
     admin.resources :shapes do |shape|
       shape.resources :notes, :collection => {:add_author => :get}
     end
+    admin.resources :time_units do |time_unit|
+      time_unit.resources :notes, :collection => {:add_author => :get}
+    end
     admin.prioritize_feature_names 'prioritize_feature_names/:id', :path_prefix => 'admin/features', :controller => 'feature_names', :action => 'prioritize'
     admin.prioritize_feature_object_types 'prioritize_feature_types/:id', :path_prefix => 'admin/features', :controller => 'feature_object_types', :action => 'prioritize'
     admin.prioritize_feature_shapes 'prioritize_feature_shapes/:id', :path_prefix => 'admin/features', :controller => 'shapes', :action => 'prioritize'
