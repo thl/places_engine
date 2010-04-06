@@ -177,7 +177,8 @@ module AdminHelper
       'feature_geo_code' => 'geo_code',
       'feature_name' => 'name',
       'feature_object_type' => 'feature_type',
-      'shape' => 'location'
+      'shape' => 'location',
+      'time_unit' => 'date'
     }
     names[str].nil? ? str : names[str]
   end
@@ -414,8 +415,8 @@ module AdminHelper
   	  #{render :partial => 'admin/association_notes/list', :locals => { :list => @object.association_notes_for(association_type), :options => {:hide_type => true, :hide_type_value => true, :hide_association_type => true, :hide_empty_collection_message => true} }}"
   end
   
-  def note_list_fieldset(options={})
-    object = options[:object] || @object
+  def note_list_fieldset(object=nil)
+    object ||= @object
     html = "<fieldset>
     	<legend>Notes</legend>
     	<div class='left highlight'>
