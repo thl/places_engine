@@ -201,6 +201,19 @@ module ApplicationHelper
   #
   #
   #
+  def time_units_for(object, options={})
+    if object.respond_to?(:time_units)
+      time_units = object.time_units_ordered_by_date
+      if time_units.length > 0
+        time_units_list = time_units.collect{|tu| "#{tu}#{note_popup_link_for(tu)}" }.reject{|str| str.blank?}.join("; ")
+        "<span class='time-units'>(#{time_units_list})</span>"
+      end
+    end
+  end
+  
+  #
+  #
+  #
   def yes_no(value)
     (value.nil? || value==0 || value=='false' || value == false) ? 'no' : 'yes'
   end

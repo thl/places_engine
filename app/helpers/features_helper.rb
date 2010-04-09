@@ -95,7 +95,7 @@ module FeaturesHelper
       completed << name
       html += '<li style="margin-left:1em; list-style:none;">'
       html += '<b>&gt;</b>&nbsp;' unless name.is_original?
-      html += (use_links ? link_to(feature_name_display(name), admin_feature_name_path(name)) : feature_name_display(name, {:show_note_links => true}))
+      html += (use_links ? link_to(feature_name_display(name), admin_feature_name_path(name)) : feature_name_display(name, {:show_association_links => true}))
       html += feature_name_ul(nil, use_links, name.children.find(:all, :order => 'position'), completed)
       html += '</li>'
     end
@@ -103,8 +103,11 @@ module FeaturesHelper
   end
   
   def feature_name_display(name, options={})
-    name_note_link = note_popup_link_for(name) if options[:show_note_links]
-    "#{name.name} (#{name.language}, #{name.writing_system}, #{name.pp_display_string})#{name_note_link}"
+    if options[:show_association_links]
+      name_notes_link = note_popup_link_for(name)
+      name_time_units_link = time_units_for(name)
+    end
+    "#{name.name} (#{name.language}, #{name.writing_system}, #{name.pp_display_string})#{name_notes_link}#{name_time_units_link}"
   end
   
   def feature_name_header(feature)

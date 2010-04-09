@@ -17,6 +17,7 @@
 	<% end %>
 	<span class='last_updated'>(<%= "#{h(d.updated_at.to_date.to_formatted_s(:long))}" %>)</span>	
 </p>
+<%= time_units_for d %>
 <div class='expanded' id="desc_truncated_<%= d.id %>">
 	<%= truncate_html(d.content, 700,
 		'... ' + link_to_function( 'Read more', "$('#desc_truncated_#{d.id}').hide();$('#desc_full_#{d.id}').show()" )) %>

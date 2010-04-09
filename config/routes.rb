@@ -68,6 +68,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :feature_object_types, :has_many => :notes
   map.resources :feature_relations, :has_many => :notes
   map.resources :shapes, :has_many => :notes
+  map.resources :time_units, :has_many => :notes
   #map.resources :descriptions, :member => {:expand => :get, :contract => :get}
   map.with_options :path_prefix => 'features', :controller => 'features' do |features|
     features.by_fid 'by_fid/:fids.:format', :action => 'by_fid'

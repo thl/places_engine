@@ -101,6 +101,12 @@ dl.no-style p {
 	background:transparent no-repeat url(http://thlib.org/global/images/icon-page-text.gif);
 }
 
+.time-units {
+	font-size:0.9em;
+	margin-left:5px;
+	color:#777;
+}
+
 .thl-popup-content > .thl-popup-padded-content {
 	padding:8px;
 }
