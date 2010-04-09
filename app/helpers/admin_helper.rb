@@ -275,6 +275,8 @@ module AdminHelper
     	html += '<td>' + name.position.to_s + '</td>'
     	html += '<td>' + note_link_list_for(name) + '</td>'
     	html += '<td>' + new_note_link_for(name) + '</td>'
+    	html += '<td>' + time_unit_link_list_for(name) + '</td>'
+    	html += '<td>' + new_time_unit_link_for(name) + '</td>'
       html += '</tr>'
       html += feature_name_tr(nil, name.children, completed).to_s
     end
@@ -457,7 +459,7 @@ module AdminHelper
   def note_link_list_for(object)
     if object.respond_to?(:notes) && object.notes.length > 0
       object.notes.enum_with_index.collect{|n, i|
-        note_title = n.title.nil? ? "Note" : n.title
+        note_title = n.title.blank? ? "Note" : n.title
         note_authors = " by #{n.authors.collect{|a| a.fullname}.join(", ")}" if n.authors.length > 0
         link_to "Note #{i+1}", polymorphic_path([:admin, object, n]), :title => h("#{note_title}#{note_authors}")
       }.join(", ").to_s
@@ -466,6 +468,22 @@ module AdminHelper
     end
   end
   
+  def time_unit_link_list_for(object)
+    if object.respond_to?(:time_units)
+      time_units = object.time_units_ordered_by_date
+      if time_units.length > 0
+        time_units.enum_with_index.collect{|tu, i|
+          time_unit_title = tu.to_s.blank? ? "Date" : tu.to_s
+          link_to "Date #{i+1}", polymorphic_path([:admin, object, tu]), :title => h("#{time_unit_title}")
+        }.join(", ").to_s
+      else
+        ""
+      end
+    else
+      ""
+    end
+  end
+    
   def new_note_link_for(object, options={})
     if object.respond_to?(:notes)
       new_item_link new_polymorphic_path([:admin, object, :note]), options[:include_text] ? "New Note" : ""
@@ -473,7 +491,15 @@ module AdminHelper
       ""
     end
   end
-  
+
+  def new_time_unit_link_for(object, options={})
+    if object.respond_to?(:time_units)
+      new_item_link new_polymorphic_path([:admin, object, :time_unit]), options[:include_text] ? "New Date" : ""
+    else
+      ""
+    end
+  end
+    
   def fn_relationship(feature_name)
     feature_name.display_string
   end

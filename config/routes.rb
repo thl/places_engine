@@ -20,29 +20,37 @@ ActionController::Routing::Routes.draw do |map|
     admin.openid_new 'openid_new', :controller => 'users', :action => 'openid_new'
     admin.openid_create 'openid_create', :controller => 'users', :action => 'create', :requirements => { :method => :post }
     admin.admin '', :controller=>'features', :action=>'index'
+    admin.resources :descriptions do |description|
+      description.resources :time_units, :collection => {:new_form => :get}
+    end
     admin.resources :feature_geo_codes, :has_many=>[:citations] do |feature_geo_code|
       feature_geo_code.resources :notes, :collection => {:add_author => :get}
       feature_geo_code.resources :time_units, :collection => {:new_form => :get}
     end
     admin.resources :feature_object_types, :has_many=>[:citations], :belongs_to=>:feature do |feature_object_type|
       feature_object_type.resources :notes, :collection => {:add_author => :get}
+      feature_object_type.resources :time_units, :collection => {:new_form => :get}
     end
     admin.resources :feature_name_relations, :has_many=>[:citations], :belongs_to=>[:feature_name] do |feature_name_relation|
       feature_name_relation.resources :notes, :collection => {:add_author => :get}
     end
     admin.resources :feature_names, :member=>{:locate_for_relation=>:get}, :has_many=>[:feature_name_relations, :citations], :belongs_to=>:feature do |feature_name|
       feature_name.resources :notes, :collection => {:add_author => :get}
+      feature_name.resources :time_units, :collection => {:new_form => :get}
     end
     admin.resources :feature_relations, :has_many=>[:citations] do |feature_relation|
       feature_relation.resources :notes, :collection => {:add_author => :get}
+      feature_relation.resources :time_units, :collection => {:new_form => :get}
     end
     admin.resources :features, :member=>{:locate_for_relation=>:get, :set_primary_description => :get}, :has_many => [ :feature_names, :feature_relations, :citations, :feature_object_types, :feature_geo_codes, :shapes] do |feature|
-      feature.resources :descriptions, :collection => {:add_author => :get}
       feature.resources :association_notes, :collection => {:add_author => :get}
+      feature.resources :descriptions, :collection => {:add_author => :get}
+      feature.resources :time_units, :collection => {:new_form => :get}
     end
     admin.resources :feature_pids, :collection => {:available => :get}
     admin.resources :shapes do |shape|
       shape.resources :notes, :collection => {:add_author => :get}
+      shape.resources :time_units, :collection => {:new_form => :get}
     end
     admin.resources :time_units do |time_unit|
       time_unit.resources :notes, :collection => {:add_author => :get}

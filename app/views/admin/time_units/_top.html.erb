@@ -4,6 +4,11 @@ if parent_type.to_s =~ /feature/
 	add_breadcrumb_item features_link
 end
 case parent_type
+when :description
+	add_breadcrumb_item features_link
+	add_breadcrumb_item feature_link(@object.dateable.feature)
+	add_breadcrumb_item feature_descriptions_link(@object.dateable.feature)
+	add_breadcrumb_item link_to(@object.dateable.id, admin_feature_description_path(@object.dateable.feature,@object.dateable))
 when :feature
 	add_breadcrumb_item feature_link(@object.dateable)
 when :feature_object_type

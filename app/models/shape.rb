@@ -10,6 +10,7 @@
 #
 
 class Shape < ActiveRecord::Base
+  extend IsDateable
   extend IsNotable
   
   belongs_to :feature, :foreign_key => 'fid', :primary_key => 'fid'

@@ -17,6 +17,7 @@
 
 class Feature < ActiveRecord::Base
   include FeatureExtensionForNamePositioning
+  extend IsDateable
   
   validates_presence_of :fid
   validates_uniqueness_of :fid

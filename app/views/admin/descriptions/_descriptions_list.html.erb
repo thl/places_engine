@@ -10,6 +10,8 @@
 		<th class="listActionsCol"></th>
 		<th> </th>
 		<th>Description</th>
+		<th>Dates</th>
+		<th>Add Date</th>
 	</tr>
 	<% list.each do |item| %>
 	<tr>
@@ -45,7 +47,9 @@
 		  <%= truncate_html( def_if_blank(item, :content), 700,
 				'...' + link_to( 'View all', admin_feature_description_path(item.feature, item) ) ) %>
 		</td>
-		
+		<td><%= time_unit_link_list_for item %></td>
+		<td><%= new_time_unit_link_for item %></td>
+				
 	</tr>
 	<% end %>
 </table>
