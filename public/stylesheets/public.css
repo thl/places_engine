@@ -16,12 +16,18 @@ h1, h1, h3, h4, h5, h6 {
 /* Overwrite thdl-style.css to allow for unstyled <dl/>s */
 dl.no-style {
 	margin:0;
+	padding:0;
 }
 dl.no-style dt, dl.no-style dd {
+	margin:0;
+	padding:0;
 	line-height:1em !important;
 	font-size:1em !important;
 	color:#404040 !important;
 	font-weight:normal !important;
+}
+dl.no-style dd {
+	margin-left:1em;
 }
 dl.no-style p {
 	font-size:1em !important;

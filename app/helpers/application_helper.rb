@@ -173,12 +173,13 @@ module ApplicationHelper
       end
     end
     if !notes.nil? && notes.length > 0 
-      '<p>
-      Notes:
+      # Wrapping this in a <p /> makes its font size incorrect, so for now, we'll achieve the top margin with
+      # a <br />.
+      '<br />
+      <strong>Notes:</strong>
       <ul class="note-popup-link-list">' +
         notes.collect{|n| "<li>#{note_popup_link(n)}</li>" }.join() +
-      '</ul>
-      </p>'
+      '</ul>'
     end
   end
   
