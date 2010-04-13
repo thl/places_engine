@@ -35,7 +35,6 @@ add_breadcrumb_item "Change Prioritization of Feature Types"
 	<tr>
 		<th class="listActionsCol"></th>
 		<th>Feature Type</th>
-		<th>Timespan</th>
 		<th>Priority</th>
 	</tr>
 	<% list.sort!{ |a,b| a.position <=> b.position } %>
@@ -51,7 +50,6 @@ add_breadcrumb_item "Change Prioritization of Feature Types"
 			) %>
 		</td>
 		<td><%= item.object_type.title %></td>
-		<td><%= formatted_timespan item.timespan %></td>
 		<td class="sortable-priority-value"><%= item.position.to_s %></td>
 		
 	</tr>

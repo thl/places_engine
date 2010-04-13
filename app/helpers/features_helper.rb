@@ -88,7 +88,7 @@ module FeaturesHelper
   # "completed" is used only by this method
   #
   def feature_name_ul(feature, use_links=true, root_names=nil, completed=[])
-    root_names = feature.names.current_roots if feature
+    root_names = feature.names.roots if feature
     html=''
     root_names.each do |name|
       next if completed.include? name

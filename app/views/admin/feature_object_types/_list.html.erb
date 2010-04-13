@@ -12,7 +12,6 @@
 		<th class="listActionCol"></th>
 		<%= '<th>THL Feature ID</th>' unless hide_feature_id %>
 		<th>Feature Type</th>
-		<th>Timespan</th>
 		<th>Priority</th>
 		<th>Notes</th>
 		<th>Add Note</th>
@@ -36,7 +35,6 @@
 		
 		<%= "<td>#{item.feature.pid}</td>" unless hide_feature_id %>
 		<td><%= item.object_type.title if !item.object_type.nil? %></td>
-		<td><%= formatted_timespan item.timespan %></td>
 		<td><%= item.position.to_s %></td>
 		<td><%= note_link_list_for item %></td>
 		<td><%= new_note_link_for item %></td>

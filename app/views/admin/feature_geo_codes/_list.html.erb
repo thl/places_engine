@@ -11,7 +11,6 @@
 		<th>Feature</th>
 		<th>Value</th>
 		<th>Geo Code Type</th>
-		<th>Timespan</th>
 		<th>Notes</th>
 		<th>Add Note</th>
 		<th>Dates</th>
@@ -32,7 +31,6 @@
 		<td><%= item.feature %></td>
 		<td><%= item.geo_code_value %></td>
 		<td><%= def_if_blank(item, :class) %></td>
-		<td><%= formatted_timespan item.timespan %></td>
 		<td><%= note_link_list_for item %></td>
 		<td><%= new_note_link_for item %></td>
 		<td><%= time_unit_link_list_for item %></td>

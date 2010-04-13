@@ -83,7 +83,7 @@
 	<h3>Names</h3>
 	<%= feature_name_ul(feature,false) %>
 	<dl class="no-style">
-	<% feature.names.current_roots.each do |name| %>
+	<% feature.names.roots.each do |name| %>
 		<%= "<dt><strong>Etymology of #{name.name}:</strong></dt><dd>#{name.etymology}</dd>" unless name.etymology.blank? %>
 	<% end %>
 	</dl>

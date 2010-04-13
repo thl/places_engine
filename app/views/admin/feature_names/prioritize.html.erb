@@ -39,7 +39,6 @@ add_breadcrumb_item "Change Prioritization of Names"
 		<th>Language</th>
 		<th>Script</th>
 		<th>Relationship</th>
-		<th>Timespan</th>
 		<th>Priority</th>
 	</tr>
 	<% list.sort!{ |a,b| a.position <=> b.position } %>
@@ -69,7 +68,6 @@ add_breadcrumb_item "Change Prioritization of Names"
 		<td><%= def_if_blank(item, :language) %></td>
 		<td><%= def_if_blank(item, :writing_system) %></td>
 		<td><%= fn_relationship(item) %></td>
-		<td><%= formatted_timespan item.timespan %></td>
 		<td class="sortable-priority-value"><%= item.position.to_s %></td>
 		
 	</tr>

@@ -21,7 +21,6 @@ class FeatureName < ActiveRecord::Base
   
   acts_as_family_tree :node, :tree_class=>'FeatureNameRelation'
   
-  # after_save :init_timespan
   after_save { |record| record.feature.update_cached_feature_names} #{ |record| record.update_hierarchy }
   
   after_create do |record|
@@ -54,11 +53,6 @@ class FeatureName < ActiveRecord::Base
   #
   validates_presence_of :feature_id, :name, :language_id
   validates_numericality_of :position
-  
-  def is_current?
-    self.timespan.is_current
-  end
-  
   
   def to_s
     name

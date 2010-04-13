@@ -61,43 +61,6 @@ class Feature < ActiveRecord::Base
       options[:order] ||= 'position'
       proxy_reflection.class_name.constantize.roots(options) #.sort !!! See the FeatureName.<=> method
     end
-    
-    #
-    #
-    #
-    def current_roots(options = {})
-      # proxy_target, proxy_owner, proxy_reflection - See Rails "Association Extensions"
-      if options[:include].nil?
-        options[:include] = [:timespan]
-      else
-        options[:include] << :timespan
-      end
-      if options[:conditions].nil?
-        options[:conditions] = {'feature_names.feature_id' => proxy_owner.id, 'timespans.is_current' => 1}
-      else
-        options[:conditions].merge!({'feature_names.feature_id' => proxy_owner.id, 'timespans.is_current' => 1})
-      end
-      options[:order] ||= 'position'
-      proxy_reflection.class_name.constantize.roots(options) #.sort !!! See the FeatureName.<=> method
-    end
-    
-    #
-    #
-    #
-    def current(options ={})
-      if options[:include].nil?
-        options[:include] = [:timespan]
-      else
-        options[:include] << :timespan
-      end
-      if options[:conditions].nil?
-        options[:conditions] = {'feature_names.feature_id' => proxy_owner.id, 'timespans.is_current' => 1}
-      else
-        options[:conditions].merge!({'feature_names.feature_id' => proxy_owner.id, 'timespans.is_current' => 1})
-      end
-      options[:order] ||= 'position'
-      proxy_reflection.class_name.constantize.find(:all, options) #.sort !!! See the FeatureName.<=> method
-    end
   end
   
   #
@@ -107,7 +70,7 @@ class Feature < ActiveRecord::Base
     with_scope(:find => {:include => {:cached_feature_names => :feature_name}, :conditions => {'features.is_blank' => false, 'cached_feature_names.view_id' => current_view.id}, :order => 'feature_names.name'}) do
       roots.select do |r|
         # if ANY of the child relations are current, return true to nab this Feature
-        r.child_relations.any? {|cr|cr.is_current_admin? && cr.perspective==current_perspective }
+        r.child_relations.any? {|cr| cr.perspective==current_perspective }
       end
     end
   end
@@ -117,7 +80,7 @@ class Feature < ActiveRecord::Base
   #
   def current_children(current_perspective, current_view)
     return children.find(:all, :include => {:cached_feature_names => :feature_name}, :conditions => {'cached_feature_names.view_id' => current_view.id}, :order => 'feature_names.name').select do |c| # children(:include => [:names, :parent_relations])
-      c.parent_relations.any? {|cr|cr.is_current_admin? && cr.perspective==current_perspective}
+      c.parent_relations.any? {|cr| cr.perspective==current_perspective}
     end
   end
   
@@ -133,7 +96,7 @@ class Feature < ActiveRecord::Base
   #
   def current_parents(current_perspective, current_view)
     return parents.find(:all, :include => {:cached_feature_names => :feature_name}, :conditions => {'cached_feature_names.view_id' => current_view.id}, :order => 'feature_names.name').select do |c| # parents(:include => [:names, :child_relations])
-      c.child_relations.any? {|cr|cr.is_current_admin? && cr.perspective==current_perspective}
+      c.child_relations.any? {|cr| cr.perspective==current_perspective}
     end
   end
   
@@ -151,7 +114,7 @@ class Feature < ActiveRecord::Base
   #
   def current_ancestors(current_perspective, current_view)
     return ancestors(:include => {:cached_feature_names => :feature_name}, :conditions => {'cached_feature_names.view_id' => current_view.id}, :order => 'feature_names.name').select do |c|
-      c.child_relations.any? {|cr|cr.is_current_admin? && cr.perspective==current_perspective}
+      c.child_relations.any? {|cr| cr.perspective==current_perspective}
     end
   end
     

@@ -79,19 +79,6 @@ module ApplicationHelper
   #
   #
   #
-  def formatted_timespan(timespan)
-    val = blank_label
-    items=[]
-    if timespan && timespan.start_date && timespan.end_date
-      items << formatted_date(timespan.start_date, timespan.end_date)
-    end
-    items << (timespan && timespan.is_current ? ' [is current]' : '')
-    items.join('-')
-  end
-  
-  #
-  #
-  #
   def f_label(feature, html_attrs={})
     html_attrs[:class] = "#{html_attrs[:class]} feature_name"
     html_attrs[:title] ||= h(feature.name)

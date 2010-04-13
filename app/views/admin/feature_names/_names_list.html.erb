@@ -13,7 +13,6 @@
 		<th>Language</th>
 		<th>Script</th>
 		<th>Relationship</th>
-		<th>Timespan</th>
 		<th>Priority</th>
 		<th>Notes</th>
 		<th>Add Note</th>
@@ -46,7 +45,6 @@
 		<td><%= def_if_blank(item, :language) %></td>
 		<td><%= def_if_blank(item, :writing_system) %></td>
 		<td><%= fn_relationship(item) %></td>
-		<td><%= formatted_timespan item.timespan %></td>
 		<td><%= item.position.to_s %></td>
 		<td><%= note_link_list_for item %></td>
 		<td><%= new_note_link_for item %></td>

@@ -16,11 +16,3 @@
 	</div>
 	
 </fieldset>
-
-<%= render(
-	:partial=>'admin/timespans/form_fields',
-	:locals=>{
-		:timespan=>@object.timespan,
-		:timespan_form_field_name=>'feature_object_type[timespan_attributes]'
-	}
-) %>

@@ -40,11 +40,3 @@
 	    <%= radio_button(:feature_name, :is_primary_for_romanization, :false ) %><b>No</b>
 	</div>
 </fieldset>
-
-<%= render(
-	:partial=>'admin/timespans/form_fields',
-	:locals=>{
-		:timespan=>@object.timespan,
-		:timespan_form_field_name=>'feature_name[timespan_attributes]'
-	}
-) %>

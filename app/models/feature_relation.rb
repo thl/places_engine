@@ -119,17 +119,6 @@ class FeatureRelation < ActiveRecord::Base
     role_of? parent_node, *args, &block
   end
   
-  #
-  # TODO: figure out a cleaner way to handle this logic
-  # seems that mysql is happy with timespan.is_current == true, but postgres is not
-  #
-  def is_current_admin?
-    # FIXME: FeatureRelation should not know what signifies 'current' for a Timespan
-    # timespan_is_current = ['1', 1, 'true', true].include?(self.timespan.is_current)
-    # correct_perspective = (CURRENT_PERSPECTIVE == self.perspective)
-    self.timespan.is_current? # and correct_perspective
-  end
-  
   def to_s
     "#{parent_node.fid} > #{child_node.fid}"
   end

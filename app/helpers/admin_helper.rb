@@ -219,11 +219,10 @@ module AdminHelper
   # "completed" is used only by this method
   #
   def feature_name_ul(feature, use_links=true, root_names=nil, completed=[])
-    root_names = feature.names.current_roots if feature
+    root_names = feature.names.roots if feature
     html=''
     root_names.each do |name|
       next if completed.include? name
-      next unless name.is_current?
       completed << name
       html += '<li style="margin-left:1em; list-style:square;">'
       html += (use_links ? link_to(name.name, admin_feature_name_path(name)) : name.name)
@@ -244,7 +243,6 @@ module AdminHelper
     html=''
     root_names.each do |name|
       next if completed.include? name
-      next unless name.is_current?
       completed << name
       
     	html += '<tr id="feature_name_'+name.id.to_s+'"><td class="centerText">';
@@ -271,7 +269,6 @@ module AdminHelper
     	html += '<td>' + def_if_blank(name, :language).to_s + '</td>'
     	html += '<td>' + def_if_blank(name, :writing_system).to_s + '</td>'
     	html += '<td>' + fn_relationship(name).to_s + '</td>'
-    	html += '<td>' + formatted_timespan(name.timespan).to_s + '</td>'
     	html += '<td>' + name.position.to_s + '</td>'
     	html += '<td>' + note_link_list_for(name) + '</td>'
     	html += '<td>' + new_note_link_for(name) + '</td>'
@@ -303,13 +300,6 @@ module AdminHelper
   #
   #
   #
-  def timespans_link
-    link_to 'timespans', admin_timespans_path
-  end
-  
-  #
-  #
-  #
   def feature_label(feature)
     "<span class='featureLabel' title='#{h feature.name}'>#{fname_labels(feature)}</span>"
   end
@@ -323,7 +313,7 @@ module AdminHelper
   
   def feature_names_sorted(feature_names)
     list = []
-    feature_names.current_roots.each do |r|
+    feature_names.roots.each do |r|
       list << r
       load_child_names(r, list)
     end

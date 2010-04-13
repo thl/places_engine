@@ -28,9 +28,6 @@ add_breadcrumb_item @object.name
 	<div class="row">
 		<label>Primary for Popular Romanization View?</label> <span><%= yes_no @object.is_primary_for_romanization %></span>
 	</div>
-	<div class="row">
-		<label>Timespan: </label> <span><%= formatted_timespan @object.timespan %></span>
-	</div>
 	
 	<div class="row">
 		<label>Created at: </label> <span><%= @object.created_at.to_formatted_s(:us_datetime) %></span>
