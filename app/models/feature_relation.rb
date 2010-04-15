@@ -24,6 +24,7 @@ class FeatureRelation < ActiveRecord::Base
   acts_as_family_tree :tree, :node_class=>'Feature'
   
   after_save do |record|
+    [record.parent_node, record.child_node].each { |r| r.update_related_cached_feature_relation_categories if !r.nil? }
     # we could update this object's (a FeatureRelation) hierarchy but the THL Places-app doesn't use that info in any way yet
     [record.parent_node, record.child_node].each { |r| r.update_hierarchy if !r.nil? }
   end
@@ -125,6 +126,11 @@ class FeatureRelation < ActiveRecord::Base
   
   def other_node(node)
     node == self.child_node ? self.parent_node : self.child_node
+  end
+  
+  def self.label_of(role)
+    role = 'child' if role.eql?('')
+    ROLE_LABELS[role].join(' ') unless ROLE_LABELS[role].nil?
   end
   
   def self.search(filter_value, options={})

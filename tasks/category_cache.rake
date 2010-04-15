@@ -18,5 +18,15 @@ namespace :db do
         puts 'Finished successfully.'
       end
     end
+    namespace :feature_relation_category do
+      desc 'Run to empty and repopulate cached feature relation categories for the first time.'
+      task :create do
+        puts 'Clearing up caching...'
+        CategoryCachingUtils.clear_feature_relation_category_table
+        puts 'Creating cache...'
+        CategoryCachingUtils.create_feature_relation_categories
+        puts 'Finished successfully.'
+      end
+    end
   end
 end

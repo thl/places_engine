@@ -1,0 +1,10 @@
+<p>
+<ul class="normal">
+<% @relations.each do |relation| %>
+  <li>
+      <%= "#{f_link(relation.related_feature, features_path(:anchor => relation.related_feature_id))} (#{FeatureRelation.label_of(relation.role).capitalize} &#8212; #{relation.perspective})" %>
+  </li>
+<% end %>
+</ul>
+<%= will_paginate @relations, :params => @params %>
+</p>

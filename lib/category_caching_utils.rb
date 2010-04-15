@@ -10,4 +10,12 @@ module CategoryCachingUtils
       ([category] + category.ancestors).each {|c| feature_ids.each {|feature_id| CumulativeCategoryFeatureAssociation.create(:category => c, :feature_id => feature_id) if (c.id==category.id || c.cumulative?) && CumulativeCategoryFeatureAssociation.find(:first, :conditions => {:category_id => c.id, :feature_id => feature_id}).nil?}}
     end
   end
+  
+  def self.clear_feature_relation_category_table
+    CachedFeatureRelationCategory.connection.execute('TRUNCATE TABLE cached_feature_relation_categories')
+  end
+  
+  def self.create_feature_relation_categories
+    Feature.find(:all).each{|f| f.update_cached_feature_relation_categories}
+  end
 end
