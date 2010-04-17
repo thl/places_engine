@@ -43,7 +43,6 @@
 	</dl>
 	<%= association_note_list_fieldset(FeatureName.model_name) %>
 </fieldset>
-
 <fieldset>
 	<legend>Feature Types <%= link_to 'Change Prioritization of Feature Types', admin_prioritize_feature_object_types_path(@object) %></legend>
 	<%= highlighted_new_item_link [@object, :feature_object_type] %>
@@ -51,7 +50,13 @@
 	<%= render :partial => 'admin/feature_object_types/list', :locals => { :list => @object.feature_object_types, :hide_feature_id => true } %>
 	<%= association_note_list_fieldset(FeatureObjectType.model_name) %>
 </fieldset>
-  
+<fieldset>
+	<legend>Kmap Categories</legend>
+	<%= highlighted_new_item_link [@object, :category_feature] %>
+	<br class="clear"/>
+	<%= render :partial => 'admin/category_features/list', :locals => { :list => @object.category_features, :hide_feature_id => true } %>
+	<%= association_note_list_fieldset(CategoryFeature.model_name) %>
+</fieldset>
 <fieldset>
 	<legend>Geo Codes</legend>
 	<%= highlighted_new_item_link [@object, :feature_geo_code] %>

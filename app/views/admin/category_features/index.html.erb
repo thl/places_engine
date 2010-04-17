@@ -4,9 +4,9 @@ add_breadcrumb_item collection_name %>
 <div>
 	<div class="right highlight">
 		<% if parent? %>
-			<%= new_item_link [@parent_object, :feature_object_type] %>
+			<%= new_item_link [@parent_object, :category_feature] %>
 		<% else %>
-			Feature Types can only be created from a Feature.
+			Knowledge Map categories can only be associated from a feature.
 		<% end %>
 	</div>
 </div>

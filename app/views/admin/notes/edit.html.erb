@@ -1,8 +1,11 @@
-<%
-if parent_type.to_s =~ /feature/
-	add_breadcrumb_item features_link
-end
+<% if parent_type.to_s =~ /feature/
+     add_breadcrumb_item features_link
+   end
 case parent_type
+when :category_feature
+	add_breadcrumb_item feature_link(@object.notable.feature)
+	add_breadcrumb_item link_to('kmap categories', admin_feature_category_features_path(@object.notable.feature))
+	add_breadcrumb_item link_to(@parent_object, admin_category_feature_path(@parent_object))
 when :feature
 	add_breadcrumb_item feature_link(@object.notable)
 when :feature_object_type
@@ -38,9 +41,7 @@ end
 add_breadcrumb_item link_to('notes', collection_path)
 add_breadcrumb_item link_to(@object.to_s, object_path(@object))
 add_breadcrumb_item 'edit'
-%>
-
-<% form_for :note, @object, :url=>object_path, :html=>{:method=>:put} do |f| %>
+  form_for :note, @object, :url=>object_path, :html=>{:method=>:put} do |f| %>
 	<%= render :partial=>'form_fields', :locals=>{:f=>f,:object=>@object} %>
 	<%= link_to 'Cancel', collection_path %> | <%= submit_tag 'Update' %>
 <% end %>

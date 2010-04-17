@@ -5,8 +5,8 @@ module CategoryCachingUtils
   end
   
   def self.create_cumulative_feature_associations
-    FeatureObjectType.find(:all, :select =>'DISTINCT(object_type_id)', :order => 'object_type_id').collect(&:object_type).each do |category|
-      feature_ids = FeatureObjectType.find(:all, :conditions => {:object_type_id => category.id}, :order => 'feature_id').collect(&:feature_id)
+    FeatureObjectType.find(:all, :select =>'DISTINCT(category_id)', :order => 'category_id').collect(&:category).each do |category|
+      feature_ids = FeatureObjectType.find(:all, :conditions => {:category_id => category.id}, :order => 'feature_id').collect(&:feature_id)
       ([category] + category.ancestors).each {|c| feature_ids.each {|feature_id| CumulativeCategoryFeatureAssociation.create(:category => c, :feature_id => feature_id) if (c.id==category.id || c.cumulative?) && CumulativeCategoryFeatureAssociation.find(:first, :conditions => {:category_id => c.id, :feature_id => feature_id}).nil?}}
     end
   end

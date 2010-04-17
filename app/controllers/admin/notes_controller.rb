@@ -1,5 +1,5 @@
 class Admin::NotesController < ResourceController::Base
-  belongs_to :feature_geo_code, :feature_name, :feature_name_relation, :feature_object_type, :feature_relation, :shape, :time_unit
+  belongs_to :category_feature, :feature_geo_code, :feature_name, :feature_name_relation, :feature_object_type, :feature_relation, :shape, :time_unit
 
   before_filter :collection
 

@@ -13,25 +13,14 @@
 	<h3><%= current_perspective %> Location</h3>
 	<%= f_breadcrumb(feature) %>
 
-	<%= content_tag :h3, "Types" unless feature.object_types.empty? %>
 	<% if defined? feature.object_types %>
-	  <%
-	  # This should probably be abstracted elsewhere
-	  hostname = Socket.gethostname.downcase
-	  if hostname == 'dev.thlib.org'
-	   tmb_base = 'http://dev.tmb.thlib.org'
-	  elsif hostname =~ /.local/
-	   tmb_base = 'http://localhost:3001'
-	  else
-	   tmb_base = 'http://tmb.thlib.org'
-	  end
-	  %>
+	<%= content_tag :h3, "Types" unless feature.object_types.empty? %>
 	  <ul id="FeatureTypesList">
 	<% feature.feature_object_types.each do |fot| 
-		 ot = fot.object_type
+		 ot = fot.category
 		 if !ot.nil? %>
 		 	<li>
-				<%= link_to ot.title, "#{tmb_base}/categories/iframe/#{ot.id}", :class => "draggable-pop iframe no-view-alone overflow-y-auto width-850 height-488" %>
+				<%= link_to ot.title, "#{Category.site.to_s}categories/iframe/#{ot.id}", :class => "draggable-pop iframe no-view-alone overflow-y-auto width-850 height-488" %>
 				<%= note_popup_link_for(fot) %>
 				<%= time_units_for(fot) %>
 			</li>
@@ -41,7 +30,23 @@
 	  </ul>
 	  <%= note_popup_link_list_for(feature, {:association_type => FeatureObjectType.model_name}) %>
 	<% end %>
-		
+	<% if defined? feature.category_features %>
+	<%= content_tag :h3, "Categories" unless feature.object_types.empty? %>
+	  <ul id="CategoryFeaturesList">
+	<% feature.category_features.each do |cfs| 
+		 cf = cfs.category
+		 if !cf.nil? %>
+		 	<li>
+				<%= cf.root.title %>: <%= link_to(cf.title, "#{Category.site.to_s}categories/iframe/#{cf.id}", :class => "draggable-pop iframe no-view-alone overflow-y-auto width-850 height-488") %>
+				<%= note_popup_link_for(cf) %>
+				<%= time_units_for(cf) %>
+			</li>
+	<%   end
+	   end %>
+	   <%= javascript_tag "$(document).ready(function(){ ActivateDraggablePopups('#CategoryFeatureList'); });" %>
+	  </ul>
+	  <%= note_popup_link_list_for(feature, {:association_type => CategoryFeature.model_name}) %>
+	<% end %>
 	<% if !feature.shapes.empty? %>
 		<h3>Map</h3>
 		<div id="inset_map" class="fid-<%= feature.fid.to_s %> language-<%= current_view.code %>"></div>

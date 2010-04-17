@@ -2,12 +2,16 @@
 	 add_breadcrumb_item features_link
    end
 case parent_type
+when :category_feature
+	add_breadcrumb_item feature_link(@object.citable.feature)
+	add_breadcrumb_item link_to('kmap categories', admin_feature_category_features_path(@object.citable.feature))
+	add_breadcrumb_item link_to(@parent_object.category.title, admin_category_feature_path(@parent_object))
 when :feature
 	add_breadcrumb_item feature_link(@object.citable)
 when :feature_object_type
 	add_breadcrumb_item feature_link(@object.citable.feature)
 	add_breadcrumb_item link_to('feature object types', admin_feature_feature_object_types_path(@object.citable.feature))
-	add_breadcrumb_item link_to(@parent_object.object_type.title, admin_feature_object_type_path(@parent_object))
+	add_breadcrumb_item link_to(@parent_object.category.title, admin_feature_object_type_path(@parent_object))
 when :feature_geo_code
 	# @parent_object is FeatureGeoCode
 	add_breadcrumb_item feature_link(@parent_object.feature)

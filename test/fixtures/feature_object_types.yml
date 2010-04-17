@@ -14,10 +14,10 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 china:
   feature: china
-  object_type: ot_country
+  category: ot_country
   perspective: one
 
 tibet:
   feature_id: tibet
-  object_type: ot_aut_reg
+  category: ot_aut_reg
   perspective: one

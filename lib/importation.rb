@@ -207,8 +207,8 @@ module Importation
           puts "Category (feature object type) #{category_title} not found."
         else
           feature_object_types = feature.feature_object_types
-          feature_object_type = feature_object_types.find(:first, :conditions => {:object_type_id => category.id})
-          feature_object_type = feature_object_types.create(:object_type => category) if feature_object_type.nil?
+          feature_object_type = feature_object_types.find(:first, :conditions => {:category_id => category.id})
+          feature_object_type = feature_object_types.create(:category => category) if feature_object_type.nil?
           timespan_start_date = fields['categories.timespan.start_date']
           if !timespan_start_date.blank?
             timespan = feature_object_type.timespan
@@ -301,7 +301,7 @@ module Importation
         if administrator_name.blank?
           administrator = nil
         else
-          administrator = Feature.find(:first, :include => [:names, :feature_object_types], :conditions => ['feature_names.name = ? AND feature_object_types.object_type_id = ?', administrator_name, country_type_id])
+          administrator = Feature.find(:first, :include => [:names, :feature_object_types], :conditions => ['feature_names.name = ? AND feature_object_types.category_id = ?', administrator_name, country_type_id])
           if administrator.nil?
             puts "Administrator country #{administrator_name} not found."
           else
@@ -312,7 +312,7 @@ module Importation
         if claimant_name.blank?
           claimant = nil
         else
-          claimant = Feature.find(:first, :include => [:names, :feature_object_types], :conditions => ['feature_names.name = ? AND feature_object_types.object_type_id = ?', claimant_name, country_type_id])
+          claimant = Feature.find(:first, :include => [:names, :feature_object_types], :conditions => ['feature_names.name = ? AND feature_object_types.category_id = ?', claimant_name, country_type_id])
           if claimant.nil?
             puts "Claimant country #{claimant_name} not found."
           else

@@ -15,7 +15,7 @@ ActionController::Routing::Routes.draw do |map|
   end
   map.namespace(:admin) do |admin|
     admin.resources :alt_spelling_systems, :association_notes, :blurbs, :citations, :feature_name_types, :feature_relation_types, :feature_types,
-                    :geo_code_types, :languages, :info_sources, :note_titles, :notes, :object_types, :orthographic_systems, :perspectives,
+                    :geo_code_types, :languages, :info_sources, :note_titles, :notes, :orthographic_systems, :perspectives,
                     :phonetic_systems, :timespans, :users, :writing_systems, :xml_documents, :views
     admin.openid_new 'openid_new', :controller => 'users', :action => 'openid_new'
     admin.openid_create 'openid_create', :controller => 'users', :action => 'create', :requirements => { :method => :post }
@@ -31,6 +31,10 @@ ActionController::Routing::Routes.draw do |map|
       feature_object_type.resources :notes, :collection => {:add_author => :get}
       feature_object_type.resources :time_units, :collection => {:new_form => :get}
     end
+    admin.resources :category_features, :has_many=>[:citations], :belongs_to=>:feature do |feature_object_type|
+      feature_object_type.resources :notes, :collection => {:add_author => :get}
+      feature_object_type.resources :time_units, :collection => {:new_form => :get}
+    end
     admin.resources :feature_name_relations, :has_many=>[:citations], :belongs_to=>[:feature_name] do |feature_name_relation|
       feature_name_relation.resources :notes, :collection => {:add_author => :get}
     end
@@ -42,7 +46,7 @@ ActionController::Routing::Routes.draw do |map|
       feature_relation.resources :notes, :collection => {:add_author => :get}
       feature_relation.resources :time_units, :collection => {:new_form => :get}
     end
-    admin.resources :features, :member=>{:locate_for_relation=>:get, :set_primary_description => :get}, :has_many => [ :feature_names, :feature_relations, :citations, :feature_object_types, :feature_geo_codes, :shapes] do |feature|
+    admin.resources :features, :member=>{:locate_for_relation=>:get, :set_primary_description => :get}, :has_many => [ :category_features, :feature_names, :feature_relations, :citations, :feature_object_types, :feature_geo_codes, :shapes] do |feature|
       feature.resources :association_notes, :collection => {:add_author => :get}
       feature.resources :descriptions, :collection => {:add_author => :get}
       feature.resources :time_units, :collection => {:new_form => :get}

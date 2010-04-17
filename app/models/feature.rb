@@ -31,6 +31,7 @@ class Feature < ActiveRecord::Base
   has_one :xml_document, :class_name=>'XmlDocument', :dependent => :destroy
   has_many :citations, :as => :citable, :dependent => :destroy
   has_many :feature_object_types, :order => :position
+  has_many :category_features, :conditions => {:type => nil}
   has_many :association_notes, :foreign_key => "notable_id"
   has_many :contestations
   
@@ -213,7 +214,7 @@ class Feature < ActiveRecord::Base
   # Shortcut for getting all feature_object_types.object_types
   #
   def object_types
-    feature_object_types.collect{ |f| f.object_type }
+    feature_object_types.collect{ |f| f.category }
   end
   
   #= Shapes ==============================

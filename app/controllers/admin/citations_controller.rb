@@ -1,6 +1,6 @@
 class Admin::CitationsController < ResourceController::Base
   
-  belongs_to :feature, :feature_name, :feature_relation, :feature_name_relation, :feature_object_type, :feature_geo_code
+  belongs_to :category_feature, :feature, :feature_name, :feature_relation, :feature_name_relation, :feature_object_type, :feature_geo_code
   
   protected
   

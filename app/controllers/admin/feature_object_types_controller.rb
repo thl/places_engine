@@ -1,4 +1,5 @@
-class Admin::FeatureObjectTypesController < ResourceController::Base  
+class Admin::FeatureObjectTypesController < ResourceController::Base
+  helper :admin, 'admin/category_features'  
   belongs_to :feature
   
   new_action.before do

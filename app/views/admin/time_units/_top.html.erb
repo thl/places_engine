@@ -1,9 +1,12 @@
-<%
-@object = @time_unit
+<% @object = @time_unit
 if parent_type.to_s =~ /feature/
 	add_breadcrumb_item features_link
 end
 case parent_type
+when :category_feature
+	add_breadcrumb_item feature_link(@object.dateable.feature)
+	add_breadcrumb_item link_to('kmap categories', admin_feature_category_features_path(@object.dateable.feature))
+	add_breadcrumb_item link_to(@parent_object, admin_category_feature_path(@parent_object))
 when :description
 	add_breadcrumb_item features_link
 	add_breadcrumb_item feature_link(@object.dateable.feature)

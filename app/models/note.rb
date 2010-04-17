@@ -25,7 +25,7 @@ class Note < ActiveRecord::Base
   default_scope :conditions => {:association_type => nil}
   
   def title
-    self.custom_note_title.blank? ? self.note_title.title : self.custom_note_title
+    self.custom_note_title.blank? ? (self.note_title.nil? ? nil : self.note_title.title) : self.custom_note_title
   end
   
   def to_s

@@ -108,8 +108,9 @@ class FeaturesController < ApplicationController
     }
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
     if !params[:feature_type].blank?
-      options[:joins] = 'LEFT JOIN feature_object_types fot ON fot.feature_id = features.id'
-      options[:conditions]['fot.object_type_id'] = params[:feature_type].split(',')
+      options[:joins] = "LEFT JOIN category_features cf ON cf.feature_id = features.id"
+      options[:conditions]['cf.category_id'] = params[:feature_type].split(',')
+      options[:conditions]['cf.type'] = 'FeatureObjectType'
       options[:conditions]['features.is_public'] = 1
       options[:conditions].delete(:is_public)
     end
@@ -197,8 +198,8 @@ class FeaturesController < ApplicationController
         end
       when 'contextual'
         if !params[:object_type].blank?
-          options[:joins] = 'LEFT JOIN feature_object_types fot ON fot.feature_id = features.id'
-          options[:conditions]['fot.object_type_id'] = params[:object_type].split(',')
+          options[:joins] = 'LEFT JOIN category_features cf ON cf.feature_id = features.id'
+          options[:conditions]['cf.category_id'] = params[:object_type].split(',')
           options[:conditions]['features.is_public'] = 1
           options[:conditions].delete(:is_public)
         end
@@ -211,8 +212,8 @@ class FeaturesController < ApplicationController
         @features = Feature.name_search(params[:filter])
       else
         if !params[:object_type].blank?
-          options[:joins] = 'LEFT JOIN feature_object_types fot ON fot.feature_id = features.id'
-          options[:conditions]['fot.object_type_id'] = params[:object_type].split(',')
+          options[:joins] = 'LEFT JOIN category_features cf ON cf.feature_id = features.id'
+          options[:conditions]['cf.category_id'] = params[:object_type].split(',')
           options[:conditions]['features.is_public'] = 1
           options[:conditions].delete(:is_public)
         end

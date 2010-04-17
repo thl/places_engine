@@ -314,7 +314,7 @@ class FeatureData
     # Create a FeatureObjectType to tie this feature to an ObjectType
     fot = FeatureObjectType.new
     fot.feature_id = feature.id
-    fot.object_type_id = ot.id
+    fot.category_id = ot.id
     fot.perspective = @current_perspective#Perspective.find_or_create_by_code(@current_perspective_code)
     raise "FeatureObjectType not saved!" unless fot.save
     

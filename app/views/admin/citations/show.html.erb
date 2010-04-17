@@ -1,14 +1,17 @@
-<%
-if parent_type.to_s =~ /feature/
-	add_breadcrumb_item features_link
-end
+<% if parent_type.to_s =~ /feature/
+	 add_breadcrumb_item features_link
+   end
 case parent_type
+when :category_feature
+	add_breadcrumb_item feature_link(@object.citable.feature)
+	add_breadcrumb_item link_to('kmap categories', admin_feature_category_features_path(@object.citable.feature))
+	add_breadcrumb_item link_to(@parent_object.category.title, admin_category_feature_path(@parent_object))
 when :feature
 	add_breadcrumb_item feature_link(@object.citable)
 when :feature_object_type
 	add_breadcrumb_item feature_link(@object.citable.feature)
 	add_breadcrumb_item link_to('feature object types', admin_feature_feature_object_types_path(@object.citable.feature))
-	add_breadcrumb_item link_to(@parent_object.object_type.title, admin_feature_object_type_path(@parent_object))
+	add_breadcrumb_item link_to(@parent_object.category.title, admin_feature_object_type_path(@parent_object))
 when :feature_geo_code
 	# @parent_object is FeatureGeoCode
 	add_breadcrumb_item feature_link(@parent_object.feature)
@@ -30,26 +33,19 @@ when :feature_name_relation
 	add_breadcrumb_item link_to(@parent_object.id, admin_feature_name_relation_path(@parent_object))
 end
 add_breadcrumb_item link_to('citations', collection_path)
-add_breadcrumb_item @object.id
-%>
-
-<fieldset>
-	
+add_breadcrumb_item @object.id %>
+<fieldset>	
 	<legend>Citation for <%= @object.citable_type.titleize %> <%= edit_item_link @object %> <%= delete_item_link @object %></legend>
-	
 	<div class="row">
 		<label>Info Source</label>
 		<span><%= def_if_blank @object, :info_source, :code %></span>
-	</div>
-	
+	</div>	
 	<div class="row">
 		<label>Pages</label>
 		<span><%= def_if_blank @object, :pages %></span>
 	</div>
-	
 	<div class="row">
 		<label>Notes</label>
 		<span><%= def_if_blank @object, :notes %></span>
 	</div>
-	
 </fieldset>
