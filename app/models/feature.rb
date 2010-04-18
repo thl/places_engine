@@ -217,6 +217,13 @@ class Feature < ActiveRecord::Base
     feature_object_types.collect{ |f| f.category }
   end
   
+  #
+  # Find all features that are related through a FeatureRelation
+  #
+  def related_features
+    relations.collect{|relation| relation.parent_node_id == self.id ? relation.child_node : relation.parent_node}
+  end
+  
   #= Shapes ==============================
   # A Feature has_many Shapes
   # A Shape belongs_to (a) Feature
@@ -264,7 +271,43 @@ class Feature < ActiveRecord::Base
       pos + 1
     end
   end
-    
+
+  def update_cached_feature_relation_categories
+    CachedFeatureRelationCategory.destroy_all(:feature_id => self.id)
+  	self.parent_relations.each do |relation|
+  		relation.parent_node.feature_object_types.each do |fot|
+  		  CachedFeatureRelationCategory.create({
+  		    :feature_id => relation.child_node_id,
+  		    :related_feature_id => relation.parent_node_id,
+  		    :category_id => fot.category_id,
+  		    :role => relation.role.blank? ? 'child': relation.role,
+  		    :perspective_id => relation.perspective_id
+  		  })
+  		end
+  	end
+  	self.child_relations.each do |relation|
+  		relation.child_node.feature_object_types.each do |fot|
+  		  CachedFeatureRelationCategory.create({
+  		    :feature_id => relation.parent_node_id,
+  		    :related_feature_id => relation.child_node_id,
+  		    :category_id => fot.category_id,
+  		    :role => relation.role.blank? ? 'parent' : relation.role,
+  		    :perspective_id => relation.perspective_id
+  		  })
+  		end
+  	end
+  end
+  
+  # Performs update_cached_feature_relation_categories for the feature itself and 
+  # for all of its related features.  Should be called whenever a FeatureObjectType
+  # or FeatureRelation is saved.
+  def update_related_cached_feature_relation_categories
+    self.update_cached_feature_relation_categories
+    related_features.each do |feature|
+      feature.update_cached_feature_relation_categories
+    end
+  end
+      
   private
   
   def self.name_search_options(filter_value, options = {})

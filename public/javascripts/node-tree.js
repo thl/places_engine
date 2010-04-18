@@ -152,16 +152,16 @@ var NodeTree = {
 	
 	loadFeatureTabs: function(id){
 		var panel = jQuery("#FeaturePanel");
-		// If the Feature Detail and Contains tabs haven't been added yet, add them
+		// If the Feature Detail and Related Features tabs haven't been added yet, add them
 		if(panel.tabs("length") < 2){
 			panel.tabs("add", "#FeatureTab1", "Feature Detail", 1);
-			panel.tabs("add", "#FeatureTab2", "Contains", 2);
+			panel.tabs("add", "#FeatureTab2", "Related Features", 2);
 		}
 		panel.tabs("select", 1);
 		panel.find("> div").eq(1).html('<img src="http://thlib.org/global/images/ajax-loader.gif" alt="Loading..." style="margin: 15px;" />');
 		
 		panel.tabs("url", 1, this.controller+"feature/"+id);
-		panel.tabs("url", 2, this.controller+id+"/descendants");
+		panel.tabs("url", 2, this.controller+"related/"+id);
 		if(panel.tabs("option", "selected") != 1){
 			panel.tabs("select", 1);
 		}else{

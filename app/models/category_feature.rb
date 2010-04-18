@@ -44,6 +44,7 @@ class CategoryFeature < ActiveRecord::Base
     end
     FeatureObjectType.update_latest
     self.feature.update_object_type_positions
+    self.feature.update_related_cached_feature_relation_categories
   end
   
   def self.latest_update

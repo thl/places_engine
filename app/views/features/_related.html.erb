@@ -1,0 +1,55 @@
+<script type="text/javascript">
+jQuery(document).ready(function(){
+  
+  // Ajaxify the pagination for lists of features
+  jQuery('.has-ajax-pagination .pagination a').live('click', function() {
+    var this_link = this;
+    jQuery.ajax({
+      type: 'POST',
+      url: this.href,
+      success: function(html){
+        jQuery(this_link).parents('.pagination-click-results:first').html(html);
+      }
+    });
+    return false;
+  });
+
+  // Since clicking on links of the form "/features#59" would normally just change the url
+  // hash and not change the page content, we need to send these links to NodeTree.showNode(id),
+  // which opens up the specified feature. 
+  jQuery('.has-hash-feature-links a[href*=features#]').live('click', function(){
+    var id = this.href.match(/features#([\d]+)$/);
+    if(id){
+      id = id[1];
+      NodeTree.showNode(id);
+    }
+    return true;
+  });
+});
+</script>
+
+<% feature_label = f_label(@feature) %>
+<% role_counts = CachedFeatureRelationCategory.count(:related_feature_id, :distinct => true, :group => 'role', :conditions => {:feature_id => @feature.id}) %>
+
+<% if role_counts.length > 0 %>
+<div class="has-ajax-pagination has-hash-feature-links">
+<% role_counts.each do |role_count| %>
+  <% role, count = role_count %>
+  <h3><%= feature_label %> <%= "#{FeatureRelation.label_of(role)}"%> the following features (<%= count %>):</h3>
+  <% CachedFeatureRelationCategory.count(:all, :group => 'category_id', :conditions => {:feature_id => @feature.id, :role => role}).each do |c| %>
+    <% category_id, count = c %>
+    <% div_id = "list_#{category_id}_#{role}" %>
+    <p>
+    <strong><%= link_to_remote Category.find(category_id).title, :url => {:action => :related_list, :id => @feature.id, :category_id => category_id, :role => role}, :update => div_id,
+      :before => "$('##{div_id}').toggle();if($('##{div_id}').css('display') == 'none'){return false};"
+      %></strong> (<%= count %>)
+  </p>
+    <div id="<%= div_id %>" style="display:none;" class="pagination-click-results"></div>
+  <% end %>
+<% end %>
+</div>
+<% else %>
+<p>
+  Sorry, this feature does not currently have any related features.
+</p>
+<% end %>
