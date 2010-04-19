@@ -28,11 +28,11 @@ class CategoryFeature < ActiveRecord::Base
   end
 
   def after_destroy
-    FeatureObjectType.delete_cumulative_information(self.category, self.feature_id)
+    CategoryFeature.delete_cumulative_information(self.category, self.feature_id)
   end
   
   def before_save
-    FeatureObjectType.delete_cumulative_information(Category.find(self.category_id_was), self.feature_id_was) if self.changed? && !self.category_id_was.nil? && (self.category_id_changed? || self.feature_id_changed?)
+    CategoryFeature.delete_cumulative_information(Category.find(self.category_id_was), self.feature_id_was) if self.changed? && !self.category_id_was.nil? && (self.category_id_changed? || self.feature_id_changed?)
   end
   
   def after_save
@@ -42,8 +42,7 @@ class CategoryFeature < ActiveRecord::Base
         CumulativeCategoryFeatureAssociation.create(:category => c, :feature_id => self.feature_id)
       end
     end
-    FeatureObjectType.update_latest
-    self.feature.update_object_type_positions
+    CategoryFeature.update_latest
     self.feature.update_related_cached_feature_relation_categories
   end
   

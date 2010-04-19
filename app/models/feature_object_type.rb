@@ -20,4 +20,9 @@ class FeatureObjectType < CategoryFeature
   #
   #
   belongs_to :perspective
+  
+  def after_save
+    super
+    self.feature.update_object_type_positions
+  end
 end

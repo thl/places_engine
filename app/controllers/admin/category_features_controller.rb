@@ -12,4 +12,14 @@ class Admin::CategoryFeaturesController < ResourceController::Base
       @collection = CategoryFeature.search(filter, :page=>page)
     end
   end
+  
+  private
+  
+  def build_object
+    if object_params.nil?
+      @object ||= end_of_association_chain.send :build
+    else
+      @object ||= end_of_association_chain.send :build, object_params
+    end
+  end
 end
