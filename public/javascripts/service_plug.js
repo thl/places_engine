@@ -24,7 +24,7 @@ var bookmarker = {
 			container_dims = target.getDimensions() ;	// for placing the link on the right
 			bm_html = "<div id=\"bookmark\" name=\"bookmark\" style=\"position: absolute; z-index: 1; top: 0px; left:" + 
 			(container_dims.width - 80) + 
-			"px\"><a href=\"javascript:void(bookmarker.set());\"><img src=\"/images/bookmark_add.png\" alt=\"bookmark\" width=\"14\" height=\"14\" border=\"0\" align=\"left\" />&nbsp;" + this.label + "</a></div>" ;
+			"px\"><a href=\"javascript:void(bookmarker.set());\"><img src=\"../images/bookmark_add.png\" alt=\"bookmark\" width=\"14\" height=\"14\" border=\"0\" align=\"left\" />&nbsp;" + this.label + "</a></div>" ;
 			target.insert( {before: bm_html} ) ; 
 		}
 	},
