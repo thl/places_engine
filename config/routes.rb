@@ -70,6 +70,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :feature_names, :has_many => :notes
   map.resources :feature_name_relations, :has_many => :notes
   map.resources :feature_object_types, :has_many => :notes
+  map.resources :category_features, :has_many => :notes
   map.resources :feature_relations, :has_many => :notes
   map.resources :shapes, :has_many => :notes
   map.resources :time_units, :has_many => :notes
