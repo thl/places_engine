@@ -178,7 +178,8 @@ module AdminHelper
       'feature_name' => 'name',
       'feature_object_type' => 'feature_type',
       'shape' => 'location',
-      'time_unit' => 'date'
+      'time_unit' => 'date',
+      'category_feature' => 'kmap_characteristic'
     }
     names[str].nil? ? str : names[str]
   end

@@ -9,7 +9,7 @@ case parent_type
 when :category_feature
   # @parent_object is FeatureObjectType
   add_breadcrumb_item feature_link(@parent_object.feature)
-  add_breadcrumb_item link_to('kmap categories', admin_feature_category_features_path(@parent_object.feature))
+  add_breadcrumb_item link_to('kmap characteristics', admin_feature_category_features_path(@parent_object.feature))
   add_breadcrumb_item link_to(@parent_object, admin_category_feature_path(@parent_object))
 when :feature
   add_breadcrumb_item feature_link(@parent_object)

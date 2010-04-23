@@ -219,7 +219,7 @@ module ApplicationHelper
 	    str += "<li>#{link_to 'Help', '#wiki=/access/wiki/site/c06fa8cf-c49c-4ebc-007f-482de5382105/thl%20place%20dictionary%20end%20user%20manual.html', {:hreflang => 'End User Manual'}}</li>"
     str += "<li>#{link_to 'Edit', admin_admin_path, {:hreflang => 'Manage places.'}}</li>\n" if logged_in?
     str += "<li>#{link_to 'Editing Help', '#wiki=/access/wiki/site/c06fa8cf-c49c-4ebc-007f-482de5382105/thl%20place%20dictionary%20editorial%20manual.html', {:hreflang => 'Editorial Manual'}}</li>" if logged_in?
-    str += "<li>#{link_to 'Feature Thesaurus', '#iframe=http://tmb.thlib.org/categories/20/children', {:hreflang => 'Feature Thesaurus'}}</li>"
+    str += "<li>#{link_to 'Feature Thesaurus', "#iframe=#{Category.get_url('20/children')}", {:hreflang => 'Feature Thesaurus'}}</li>"
     str += "</ul>"
     return str
   end

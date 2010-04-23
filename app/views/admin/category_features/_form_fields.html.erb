@@ -1,14 +1,14 @@
 <%= error_messages_for model_name %>
 <fieldset>
 	<legend>
-		Knowledge Map Category
+		Knowledge Map Characteristic
 	</legend>
 	<div class="row">
 		<%= f.label :feature %>
 		<span><%= f_label(@object.feature) %></span>
 	</div>
 	<div class="row">
-		<%= f.label :category %>
+		<%= f.label :characteristic %>
 		<%= category_selector(nil, :category_feature, :category, false, :hasTree => 'true', :singleSelectionTree => 'true') %>
 	</div>
 </fieldset>

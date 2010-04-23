@@ -4,7 +4,7 @@ end
 case parent_type
 when :category_feature
 	add_breadcrumb_item feature_link(@object.notable.feature)
-	add_breadcrumb_item link_to('kmap categories', admin_feature_category_features_path(@object.notable.feature))
+	add_breadcrumb_item link_to('kmap characteristics', admin_feature_category_features_path(@object.notable.feature))
 	add_breadcrumb_item link_to(@parent_object.category.title, admin_category_feature_path(@parent_object))
 when :feature
 	add_breadcrumb_item feature_link(@object.notable)

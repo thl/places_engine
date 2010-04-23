@@ -4,7 +4,7 @@
    add_breadcrumb_item @object %>
 <fieldset>
 	<legend>
-		Knowledge Map Category
+		Knowledge Map Characteristic
 		<%= edit_item_link @object %>
 	</legend>
 	<div class="row">
@@ -12,7 +12,7 @@
 		<span><%= def_if_blank(@object, :feature, :name) %></span>
 	</div>
 	<div class="row">
-		<label>Category</label>
+		<label>Characteristic</label>
 		<span><%= "#{@object.category.root.title}: #{def_if_blank @object, :category, :title}" %></span>
 	</div>
 </fieldset>
