@@ -496,7 +496,7 @@ module AdminHelper
   end
 
   def stylesheet_files
-    super + ['yui','admin']
+    ['yui','admin'] + super
   end
   
   def javascript_files
