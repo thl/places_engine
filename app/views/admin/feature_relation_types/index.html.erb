@@ -1,0 +1,14 @@
+<%
+	add_breadcrumb_item 'feature relation types'
+%>
+
+<div>
+	<div class="left"><%= resource_search_form %></div>
+	<div class="right highlight">
+      <%= new_item_link [:feature_relation_type] %>
+	</div>
+</div>
+
+<br class="clear"/>
+
+<%= render :partial => 'list', :locals => { :list => @collection, :parent => @parent_object } %>

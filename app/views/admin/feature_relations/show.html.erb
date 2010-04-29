@@ -1,8 +1,8 @@
 <% add_breadcrumb_items(
 	features_link,
-	feature_link(@object.child_node),
-	feature_relations_link(@object.child_node),
-	feature_relation_role_label(@object.child_node, @object, :use_first=>false, :link_relation=>false, :link_second=>false)
+	feature_link(@parent_object),
+	feature_relations_link(@parent_object),
+	feature_relation_role_label(@parent_object, @object, :use_first=>false, :link_relation=>false, :link_second=>true)
 ) %>
 
 <fieldset>
@@ -11,7 +11,7 @@
 	
 	<div class="row">
 		<label>Relationship</label>: 
-		<span><%= feature_relation_role_label @object.child_node, @object, :link_relation=>false %></span>
+		<span><%= feature_relation_role_label @parent_object, @object, :link_relation=>false %></span>
 	</div>
 	
 	<div class="row">

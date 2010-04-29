@@ -29,23 +29,46 @@ jQuery(document).ready(function(){
 </script>
 
 <% feature_label = f_label(@feature) %>
-<% role_counts = CachedFeatureRelationCategory.count(:related_feature_id, :distinct => true, :group => 'role', :conditions => {:feature_id => @feature.id}) %>
+<% relation_counts = CachedFeatureRelationCategory.find(:all, :select => "feature_relation_type_id, feature_is_parent, COUNT(DISTINCT related_feature_id) AS count", :group => "feature_relation_type_id, feature_is_parent", :conditions => {:feature_id => @feature.id}, :order => :feature_relation_type_id) %>
 
-<% if role_counts.length > 0 %>
+<% if relation_counts.length > 0 %>
 <div class="has-ajax-pagination has-hash-feature-links">
-<% role_counts.each do |role_count| %>
-  <% role, count = role_count %>
-  <h3><%= feature_label %> <%= "#{FeatureRelation.label_of(role)}"%> the following features (<%= count %>):</h3>
-  <% CachedFeatureRelationCategory.count(:all, :group => 'category_id', :conditions => {:feature_id => @feature.id, :role => role}).each do |c| %>
+<% relation_counts.each do |rc| %>
+
+  <%
+	feature_relation_type = FeatureRelationType.find(rc[:feature_relation_type_id])
+	feature_is_parent = rc[:feature_is_parent]
+	count = rc[:count]
+  %>
+
+  <h3><%= feature_label %> <%= "#{feature_is_parent ? feature_relation_type.label : feature_relation_type.asymmetric_label}" %> the following features (<%= count %>):</h3>
+  <% # Is there a way to :include => categories and use an :order instead of this .sort{}? %>
+  <% CachedFeatureRelationCategory.count(:all, :group => 'category_id', :conditions => {:feature_id => @feature.id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent}).sort{|a,b| Category.find(a[0]).title.casecmp(Category.find(b[0]).title)}.each do |c| %>
     <% category_id, count = c %>
-    <% div_id = "list_#{category_id}_#{role}" %>
+    <% div_id = "list_#{category_id}_#{feature_relation_type.id}_#{feature_is_parent}" %>
+
     <p>
-    <strong><%= link_to_remote Category.find(category_id).title, :url => {:action => :related_list, :id => @feature.id, :category_id => category_id, :role => role}, :update => div_id,
-      :before => "$('##{div_id}').toggle();if($('##{div_id}').css('display') == 'none'){return false};"
-      %></strong> (<%= count %>)
-  </p>
-    <div id="<%= div_id %>" style="display:none;" class="pagination-click-results"></div>
+      <strong>
+  	  <% if count == 1 %>
+		<%= Category.find(category_id).title %>
+	  <% else %>
+  	    <%= link_to_remote Category.find(category_id).title, :url => {:action => :related_list, :id => @feature.id, :category_id => category_id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent.to_s}, :update => div_id,
+        :before => "$('##{div_id}').toggle();if($('##{div_id}').css('display') == 'none'){return false};"
+          %>
+	  <% end %>
+  	  </strong> (<%= count %>)
+    </p>
+
+	<% if count == 1 %>
+	  <div id="<%= div_id %>"></div>
+	  <% # Is there a way to render this action instead of inserting it with Ajax? %>
+	  <%= javascript_tag remote_function(:update => div_id, :url => {:action => :related_list, :id => @feature.id, :category_id => category_id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent.to_s}) %>
+	<% else %>
+      <div id="<%= div_id %>" style="display:none;" class="pagination-click-results"></div>
+	<% end %>
+	
   <% end %>
+
 <% end %>
 </div>
 <% else %>

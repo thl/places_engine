@@ -26,7 +26,10 @@ class Feature < ActiveRecord::Base
   # after_save {|record| record.update_hierarchy}  
   # acts_as_solr :fields=>[:pid]
   
-  acts_as_family_tree(:node, :tree_class=>'FeatureRelation')
+  acts_as_family_tree :node, :tree_class => 'FeatureRelation', :conditions => {'feature_relations.feature_relation_type_id' => FeatureRelationType.hierarchy_id}
+  # These are distinct from acts_as_family_tree's parent/child_relations, which only include hierarchical parent/child relations.
+  has_many :all_parent_relations, :class_name => 'FeatureRelation', :foreign_key => 'child_node_id'
+  has_many :all_child_relations, :class_name => 'FeatureRelation', :foreign_key => 'parent_node_id'
     
   has_one :xml_document, :class_name=>'XmlDocument', :dependent => :destroy
   has_many :citations, :as => :citable, :dependent => :destroy
@@ -117,6 +120,17 @@ class Feature < ActiveRecord::Base
     return ancestors(:include => {:cached_feature_names => :feature_name}, :conditions => {'cached_feature_names.view_id' => current_view.id}, :order => 'feature_names.name').select do |c|
       c.child_relations.any? {|cr| cr.perspective==current_perspective}
     end
+  end
+  
+  #
+  # This is distinct from acts_as_family_tree's relations method, which only finds hierarchical child and parent relations.
+  #
+  def all_relations
+    FeatureRelation.find(:all, :conditions => ['child_node_id = ? OR parent_node_id = ?', id, id])
+  end
+  
+  def feature_relations
+    all_relations
   end
     
   #
@@ -274,38 +288,30 @@ class Feature < ActiveRecord::Base
 
   def update_cached_feature_relation_categories
     CachedFeatureRelationCategory.destroy_all(:feature_id => self.id)
-  	self.parent_relations.each do |relation|
-  		relation.parent_node.feature_object_types.each do |fot|
-  		  CachedFeatureRelationCategory.create({
-  		    :feature_id => relation.child_node_id,
-  		    :related_feature_id => relation.parent_node_id,
-  		    :category_id => fot.category_id,
-  		    :role => relation.role.blank? ? 'child': relation.role,
-  		    :perspective_id => relation.perspective_id
-  		  })
-  		end
-  	end
-  	self.child_relations.each do |relation|
+    CachedFeatureRelationCategory.destroy_all(:related_feature_id => self.id)
+ 	
+  	self.all_relations.each do |relation|
   		relation.child_node.feature_object_types.each do |fot|
   		  CachedFeatureRelationCategory.create({
   		    :feature_id => relation.parent_node_id,
   		    :related_feature_id => relation.child_node_id,
   		    :category_id => fot.category_id,
-  		    :role => relation.role.blank? ? 'parent' : relation.role,
+  		    :feature_relation_type_id => relation.feature_relation_type_id,
+  		    :feature_is_parent => true,
+  		    :perspective_id => relation.perspective_id
+  		  })
+  		end
+  		relation.parent_node.feature_object_types.each do |fot|
+  		  CachedFeatureRelationCategory.create({
+  		    :feature_id => relation.child_node_id,
+  		    :related_feature_id => relation.parent_node_id,
+  		    :category_id => fot.category_id,
+  		    :feature_relation_type_id => relation.feature_relation_type_id,
+  		    :feature_is_parent => false,
   		    :perspective_id => relation.perspective_id
   		  })
   		end
   	end
-  end
-  
-  # Performs update_cached_feature_relation_categories for the feature itself and 
-  # for all of its related features.  Should be called whenever a FeatureObjectType
-  # or FeatureRelation is saved.
-  def update_related_cached_feature_relation_categories
-    self.update_cached_feature_relation_categories
-    related_features.each do |feature|
-      feature.update_cached_feature_relation_categories
-    end
   end
       
   private

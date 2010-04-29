@@ -247,11 +247,12 @@ class FeaturesController < ApplicationController
       :conditions => {
           :feature_id => params[:id],
           :category_id => params[:category_id],
-          'cached_feature_relation_categories.role' => params[:role],
+          'cached_feature_relation_categories.feature_relation_type_id' => params[:feature_relation_type_id],
+          'cached_feature_relation_categories.feature_is_parent' => params[:feature_is_parent],
           'cached_feature_names.view_id' => current_view.id
       },
       # Should associations be set up to allow for this to be handled with :include instead?
-      :joins => 'INNER JOIN "cached_feature_names" ON "cached_feature_relation_categories".feature_id = "cached_feature_names".feature_id INNER JOIN "feature_names" ON "cached_feature_names".feature_name_id = "feature_names".id',
+      :joins => 'INNER JOIN "cached_feature_names" ON "cached_feature_relation_categories".related_feature_id = "cached_feature_names".feature_id INNER JOIN "feature_names" ON "cached_feature_names".feature_name_id = "feature_names".id',
       :order => 'feature_names.name'
     )
     @relations = @relations.paginate(:page => params[:page] || 1, :per_page => 8)
