@@ -1,3 +1,3 @@
 <span class="node-name">
-<%= link_to_remote h(feature_name_header(node)), { :url => { :action => :expand_and_show, :id => node.id }, :loading => "NodeTree.addNodeLoading("+node.id.to_s+")"}, { :href => features_url + "##{node.id}" } %>
+<%= link_to_remote h(feature_name_header(node)).s, { :url => { :action => :expand_and_show, :id => node.id }, :loading => "NodeTree.addNodeLoading("+node.id.to_s+")"}, { :href => features_url + "##{node.id}" } %>
 </span>
