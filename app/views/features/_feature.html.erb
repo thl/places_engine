@@ -63,20 +63,6 @@
 	      </div>
 	<%  end %>
 	
-	<%= content_tag :h3, "Related Places" unless feature.parent.nil? %>
-	<% if feature.parent %>
-		<% parent_feature_relation = FeatureRelation.find(:first, :conditions => {:child_node_id => feature.id, :parent_node_id => feature.parent.id, :role => nil}) %>
-  	<p>This feature is contained within: </p>
-  	<ul>
-		<li>
-			<%= f_link(feature.parent, features_path(:anchor => feature.parent.id)) %>
-			<%= note_popup_link_for(parent_feature_relation) %>
-			<%= time_units_for(parent_feature_relation) %>
-		</li>
-	</ul>
-	<%= note_popup_link_list_for(feature, {:association_type => FeatureRelation.model_name}) %>
-	<% end %>
-	
 	<p>
 		<br />
 		<%= button_to_function "View More Feature Detail", "$('#more_feature_detail').show(); $(this).hide(); $('#less_feature_detail_button').show();", :id => "more_feature_detail_button", :style => ("display:none;" if current_show_feature_details) %>
