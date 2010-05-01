@@ -8,6 +8,7 @@
 		<th class="listActionCol"></th>
 		<%= '<th>THL Feature ID</th>' unless hide_feature_id %>
 		<th>Characteristic</th>
+		<th>Label</th>
 		<th>Notes</th>
 		<th>Add Note</th>
 		<th>Dates</th>
@@ -28,6 +29,10 @@
 		</td>		
 		<%= "<td>#{item.feature.pid}</td>" unless hide_feature_id %>
 		<td><%= "#{category.root.title}: #{category.title}" if !item.category.nil? %></td>
+		<% values = [] 
+		   values << item.string_value if !item.string_value.blank?  
+		   values << item.numeric_value if !item.numeric_value.nil? %>
+		<td><%= values.join(', ') if !values.empty? %></td>
 		<td><%= note_link_list_for item %></td>
 		<td><%= new_note_link_for item %></td>
 		<td><%= time_unit_link_list_for item %></td>

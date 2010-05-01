@@ -1,22 +1,3 @@
-# == Schema Information
-# Schema version: 20091102185045
-#
-# Table name: feature_names
-#
-#  id                          :integer         not null, primary key
-#  feature_id                  :integer         not null
-#  name                        :string(255)     not null
-#  feature_name_type_id        :integer
-#  ancestor_ids                :string(255)
-#  position                    :integer         default(0)
-#  etymology                   :text
-#  writing_system_id           :integer
-#  language_id                 :integer         not null
-#  created_at                  :timestamp
-#  updated_at                  :timestamp
-#  is_primary_for_romanization :boolean
-#
-
 class FeatureName < ActiveRecord::Base
   
   acts_as_family_tree :node, :tree_class=>'FeatureNameRelation'
@@ -99,3 +80,22 @@ class FeatureName < ActiveRecord::Base
     paginate(options)
   end  
 end
+
+
+# == Schema Info
+# Schema version: 20100428184445
+#
+# Table name: feature_names
+#
+#  id                          :integer         not null, primary key
+#  feature_id                  :integer         not null
+#  feature_name_type_id        :integer
+#  language_id                 :integer         not null
+#  writing_system_id           :integer
+#  ancestor_ids                :string(255)
+#  etymology                   :text
+#  is_primary_for_romanization :boolean
+#  name                        :string(255)     not null
+#  position                    :integer         default(0)
+#  created_at                  :timestamp
+#  updated_at                  :timestamp

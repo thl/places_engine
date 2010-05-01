@@ -11,4 +11,12 @@
 		<%= f.label :characteristic %>
 		<%= category_selector(nil, :category_feature, :category, false, :hasTree => 'true', :singleSelectionTree => 'true') %>
 	</div>
+	<div class="row">
+		<%= f.label :text_label %>
+		<%= f.text_field :string_value, :class => :text %>
+	</div>
+	<div class="row">
+		<%= f.label :numeric_label %>
+		<%= f.text_field :numeric_value, :class => :text %>
+	</div>
 </fieldset>

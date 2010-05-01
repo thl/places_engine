@@ -1,17 +1,3 @@
-# == Schema Information
-# Schema version: 20100201224350
-#
-# Table name: blurbs
-#
-#  id          :integer         not null, primary key
-#  code        :string(255)
-#  title       :string(255)
-#  content     :text
-#  created_at  :timestamp
-#  updated_at  :timestamp
-#
-
-
 class Blurb < ActiveRecord::Base
   
   #
@@ -34,3 +20,16 @@ class Blurb < ActiveRecord::Base
     paginate(options)
   end
 end
+
+
+# == Schema Info
+# Schema version: 20100428184445
+#
+# Table name: blurbs
+#
+#  id         :integer         not null, primary key
+#  code       :string(255)
+#  content    :text
+#  title      :string(255)
+#  created_at :timestamp
+#  updated_at :timestamp

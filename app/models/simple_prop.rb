@@ -1,18 +1,3 @@
-# == Schema Information
-# Schema version: 20091102185045
-#
-# Table name: simple_props
-#
-#  id          :integer         not null, primary key
-#  name        :string(255)
-#  code        :string(255)
-#  description :text
-#  notes       :text
-#  type        :string(255)
-#  created_at  :timestamp
-#  updated_at  :timestamp
-#
-
 # now Language has all attributes and methods of SimpleProp
 # end
 #
@@ -54,3 +39,18 @@ class SimpleProp < ActiveRecord::Base
     paginate(options)
   end  
 end
+
+
+# == Schema Info
+# Schema version: 20100428184445
+#
+# Table name: simple_props
+#
+#  id          :integer         not null, primary key
+#  code        :string(255)
+#  description :text
+#  name        :string(255)
+#  notes       :text
+#  type        :string(255)
+#  created_at  :timestamp
+#  updated_at  :timestamp

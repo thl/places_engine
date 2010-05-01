@@ -1,18 +1,3 @@
-# == Schema Information
-# Schema version: 20091102185045
-#
-# Table name: feature_geo_codes
-#
-#  id               :integer         not null, primary key
-#  feature_id       :integer
-#  geo_code_type_id :integer
-#  timespan_id      :integer
-#  geo_code_value   :string(255)
-#  notes            :text
-#  created_at       :timestamp
-#  updated_at       :timestamp
-#
-
 class FeatureGeoCode < ActiveRecord::Base
   
   belongs_to :feature
@@ -39,3 +24,18 @@ class FeatureGeoCode < ActiveRecord::Base
   end
   
 end
+
+
+# == Schema Info
+# Schema version: 20100428184445
+#
+# Table name: feature_geo_codes
+#
+#  id               :integer         not null, primary key
+#  feature_id       :integer
+#  geo_code_type_id :integer
+#  timespan_id      :integer
+#  geo_code_value   :string(255)
+#  notes            :text
+#  created_at       :timestamp
+#  updated_at       :timestamp

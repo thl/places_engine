@@ -1,18 +1,3 @@
-# == Schema Information
-# Schema version: 20091102185045
-#
-# Table name: perspectives
-#
-#  id          :integer         not null, primary key
-#  name        :string(255)
-#  code        :string(255)
-#  description :text
-#  notes       :text
-#  is_public   :boolean
-#  created_at  :timestamp
-#  updated_at  :timestamp
-#
-
 class Perspective < ActiveRecord::Base
   include SimplePropCache
     
@@ -54,3 +39,18 @@ class Perspective < ActiveRecord::Base
   end
   
 end
+
+
+# == Schema Info
+# Schema version: 20100428184445
+#
+# Table name: perspectives
+#
+#  id          :integer         not null, primary key
+#  code        :string(255)
+#  description :text
+#  is_public   :boolean
+#  name        :string(255)
+#  notes       :text
+#  created_at  :timestamp
+#  updated_at  :timestamp

@@ -1,22 +1,3 @@
-# == Schema Information
-# Schema version: 20091102185045
-#
-# Table name: users
-#
-#  id                        :integer         not null, primary key
-#  login                     :string(255)     not null
-#  email                     :string(255)     not null
-#  person_id                 :integer
-#  crypted_password          :string(40)      not null
-#  salt                      :string(40)
-#  remember_token            :string(255)
-#  remember_token_expires_at :timestamp
-#  created_at                :timestamp
-#  updated_at                :timestamp
-#  identity_url              :string(255)
-#  fullname                  :string(255)
-#
-
 require 'digest/sha1'
 class User < ActiveRecord::Base
   has_and_belongs_to_many :descriptions, :join_table => 'authors_descriptions'
@@ -105,3 +86,22 @@ class User < ActiveRecord::Base
       crypted_password.blank? || !password.blank?
     end
 end
+
+
+# == Schema Info
+# Schema version: 20100428184445
+#
+# Table name: users
+#
+#  id                        :integer         not null, primary key
+#  person_id                 :integer
+#  crypted_password          :string(40)      not null
+#  email                     :string(255)     not null
+#  fullname                  :string(255)
+#  identity_url              :string(255)
+#  login                     :string(255)     not null
+#  remember_token            :string(255)
+#  salt                      :string(40)
+#  created_at                :timestamp
+#  remember_token_expires_at :timestamp
+#  updated_at                :timestamp
