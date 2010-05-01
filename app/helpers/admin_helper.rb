@@ -38,6 +38,7 @@ module AdminHelper
       'Blurbs'=>admin_blurbs_path,
       'Features'=>admin_features_path,
       'Feature Relations'=>admin_feature_relations_path,
+      'Feature Relation Types'=>admin_feature_relation_types_path,
       'Feature Names'=>admin_feature_names_path,
       'Feature Name Types'=>admin_feature_name_types_path,
       'Feature Name Relations'=>admin_feature_name_relations_path,
@@ -369,7 +370,6 @@ module AdminHelper
   
   #
   # Express the relationship relative to the "feature" arg node
-  # Uses the sentence labels found in FeatureRelation::ROLES
   #
   def feature_relation_role_label(feature, relation, opts={})
     options={
@@ -377,7 +377,6 @@ module AdminHelper
       :link_first=>true,:link_second=>true,:link_relation=>true
     }.merge(opts)
     relation.role_of?(feature) do |other,sentence|
-      sep = '&nbsp;'
       items=[]
       if options[:use_first]
         items << (options[:link_first] ? 
@@ -385,8 +384,7 @@ module AdminHelper
           feature_label(feature))
       end
       if options[:use_relation]
-        # join the sentences AND spaces with the sep variable
-        sentence = sentence.join(sep).gsub(/ /, sep)
+        sentence = sentence
         items << (options[:link_relation] ? link_to(sentence, admin_feature_feature_relation_path(feature, relation)) : sentence)
       end
       if options[:use_second]
@@ -397,7 +395,7 @@ module AdminHelper
           items << "(" + other.object_types.collect{|type| type.title }.join(", ") + ")"
         end
       end
-      items.join(sep)
+      items.join(" ")
     end
   end
   

@@ -43,7 +43,7 @@ class CategoryFeature < ActiveRecord::Base
       end
     end
     CategoryFeature.update_latest
-    self.feature.update_related_cached_feature_relation_categories
+    self.feature.update_cached_feature_relation_categories
   end
   
   def self.latest_update
@@ -65,6 +65,7 @@ class CategoryFeature < ActiveRecord::Base
     end
   end
 end
+
 
 # == Schema Info
 # Schema version: 20100428184445

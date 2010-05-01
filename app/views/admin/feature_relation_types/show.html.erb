@@ -1,0 +1,30 @@
+<%
+add_breadcrumb_item link_to('feature relation types', admin_feature_relation_types_path)
+add_breadcrumb_item @object.to_s
+%>
+
+<fieldset>
+	
+	<legend>
+		Feature Relation Type
+		<%= edit_item_link @object %>
+	</legend>
+
+	<div class="row">
+		<label>Is Symmetric</label>
+		<span><%= @object.is_symmetric ? 'Yes' : 'No' %></span>
+	</div>
+		
+	<div class="row">
+		<label>Label</label>
+		<span><%= @object.label %></span>
+	</div>
+	
+	<% unless @object.is_symmetric %>
+	<div class="row">
+		<label>Asymmetric Label</label>
+		<span><%= @object.asymmetric_label %></span>
+	</div>
+	<% end %>
+	
+</fieldset>

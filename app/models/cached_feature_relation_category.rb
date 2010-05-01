@@ -2,6 +2,7 @@ class CachedFeatureRelationCategory < ActiveRecord::Base
   belongs_to :feature
   belongs_to :related_feature, :class_name => "Feature"
   belongs_to :category
+  belongs_to :feature_relation_type
   belongs_to :perspective
 end
 

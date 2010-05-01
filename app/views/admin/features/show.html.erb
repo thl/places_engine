@@ -77,7 +77,7 @@
 	<legend>Feature Relations</legend>
 	<%= highlighted_new_item_link locate_for_relation_admin_feature_path(@object), 'New Feature Relation' %>
 	<br class="clear"/>
-	<%= render :partial => 'admin/feature_relations/list', :locals => { :list => @object.relations, :parent => @object, :use_first => false, :use_names => true } %>
+	<%= render :partial => 'admin/feature_relations/list', :locals => { :list => @object.all_relations, :parent => @object, :use_first => false, :use_names => true } %>
 	<%= association_note_list_fieldset(FeatureRelation.model_name) %>
 </fieldset>
 

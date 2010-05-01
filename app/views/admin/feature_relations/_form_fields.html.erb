@@ -1,21 +1,18 @@
 <%= error_messages_for :feature_relation %>
+<% @object[:feature_relation_type_id_] = @object.feature_relation_type_id %>
 
 <fieldset>
 	
-	<legend>Relation for Feature <%= @object.child_node.pid %></legend>
+	<legend>Relation for <%= fname_labels(@parent_object) %></legend>
 	
 	<%= f.hidden_field :parent_node_id %>
 	<%= f.hidden_field :child_node_id %>
 	
 	<div class="row">
-		<%= f.label :role, 'Role' %>
-		<%
-		roles=FeatureRelation::POSSIBLE_ROLE_LABELS.collect do |k,v|
-			label=[@object.child_node.pid, v.join(' '), @object.parent_node.pid].join(' ')
-			[label,FeatureRelation::POSSIBLE_ROLES[k]]
-		end
-		%>
-		<%= f.select :role, roles %>
+		<%= f.label :feature_relation_type_id_, 'Role' %>
+		<%= fname_labels(@parent_object) %>
+		<%= f.select :feature_relation_type_id_, FeatureRelationType.marked_options(@parent_object.id == @object.parent_node_id) %>
+		<%= fname_labels(@object.other_node(@parent_object)) %>
 	</div>
 	
 	<div class="row">

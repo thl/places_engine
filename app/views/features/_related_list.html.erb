@@ -2,9 +2,12 @@
 <ul class="normal">
 <% @relations.each do |relation| %>
   <li>
-      <%= "#{f_link(relation.related_feature, features_path(:anchor => relation.related_feature_id))} (#{FeatureRelation.label_of(relation.role).capitalize} &#8212; #{relation.perspective})" %>
+    <%= "#{f_link(relation.related_feature, features_path(:anchor => relation.related_feature_id))} (from the #{relation.perspective} perspective)" %>
+	<%= note_popup_link_for(relation) %>
+	<%= time_units_for(relation) %>
   </li>
 <% end %>
 </ul>
 <%= will_paginate @relations, :params => @params %>
+<%= note_popup_link_list_for(@feature, {:association_type => FeatureRelation.model_name}) %>
 </p>

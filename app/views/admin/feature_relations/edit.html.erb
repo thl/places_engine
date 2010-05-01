@@ -1,8 +1,8 @@
 <%
 add_breadcrumb_items features_link
-add_breadcrumb_items feature_link(@object.child_node)
-add_breadcrumb_items feature_relations_link(@object.child_node)
-add_breadcrumb_items feature_relation_role_label(@object.child_node, @object, :use_first=>false)
+add_breadcrumb_items feature_link(@parent_object)
+add_breadcrumb_items feature_relations_link(@parent_object)
+add_breadcrumb_items feature_relation_role_label(@parent_object, @object, :use_first=>false)
 add_breadcrumb_items 'edit'
 %>
 

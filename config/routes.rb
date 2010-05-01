@@ -42,6 +42,7 @@ ActionController::Routing::Routes.draw do |map|
       feature_name.resources :notes, :collection => {:add_author => :get}
       feature_name.resources :time_units, :collection => {:new_form => :get}
     end
+    admin.resources :features_relation_types
     admin.resources :feature_relations, :has_many=>[:citations] do |feature_relation|
       feature_relation.resources :notes, :collection => {:add_author => :get}
       feature_relation.resources :time_units, :collection => {:new_form => :get}
