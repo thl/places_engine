@@ -61,6 +61,22 @@ function on_category_click(ajax_div_id){
   }
   return true;
 }
+
+function expand_all_categories(){
+  accordion_enabled = false;
+  $('.related-features-categories .expandable-link-contracted').click();
+  accordion_enabled = true;
+  $('.collapse-all-categories').show();
+  $('.expand-all-categories').hide();
+}
+
+function collapse_all_categories(){
+  accordion_enabled = false;
+  $('.related-features-categories .expandable-link-expanded').click();
+  accordion_enabled = true;
+  $('.expand-all-categories').show();
+  $('.collapse-all-categories').hide();
+}
 </script>
 
 <% feature_label = f_label(@feature) %>
@@ -68,8 +84,8 @@ function on_category_click(ajax_div_id){
 
 <% if relation_counts.length > 0 %>
 <p>
-  <%= link_to_function "Expand all", "accordion_enabled=false;$('.related-features-categories .expandable-link-contracted').click();accordion_enabled=true;" %> | 
-  <%= link_to_function "Collapse all", "accordion_enabled=false;$('.related-features-categories .expandable-link-expanded').click();accordion_enabled=true;" %>
+  <%= link_to_function "Expand all", "expand_all_categories()", :class => "expand-all-categories" %>
+  <%= link_to_function "Collapse all", "collapse_all_categories()", :class => "collapse-all-categories", :style => "display:none;" %>
 </p>
 
 <div class="related-features-categories has-ajax-pagination has-hash-feature-links">
@@ -104,8 +120,8 @@ function on_category_click(ajax_div_id){
 
 <br />
 <p>
-  <%= link_to_function "Expand all", "accordion_enabled=false;$('.related-features-categories .expandable-link-contracted').click();accordion_enabled=true;" %> | 
-  <%= link_to_function "Collapse all", "accordion_enabled=false;$('.related-features-categories .expandable-link-expanded').click();accordion_enabled=true;" %>
+  <%= link_to_function "Expand all", "expand_all_categories()", :class => "expand-all-categories" %>
+  <%= link_to_function "Collapse all", "collapse_all_categories()", :class => "collapse-all-categories", :style => "display:none;" %>
 </p>
 <% else %>
 <p>

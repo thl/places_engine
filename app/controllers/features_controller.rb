@@ -243,6 +243,7 @@ class FeaturesController < ApplicationController
   
   def related_list
     @feature = Feature.find(params[:id])
+    @category = Category.find(params[:category_id])
     @relations = CachedFeatureRelationCategory.find(:all,
       :conditions => {
           :feature_id => params[:id],
@@ -255,6 +256,7 @@ class FeaturesController < ApplicationController
       :joins => 'INNER JOIN "cached_feature_names" ON "cached_feature_relation_categories".related_feature_id = "cached_feature_names".feature_id INNER JOIN "feature_names" ON "cached_feature_names".feature_name_id = "feature_names".id',
       :order => 'feature_names.name'
     )
+    @total_relations_count = @relations.length
     @relations = @relations.paginate(:page => params[:page] || 1, :per_page => 8)
     @params = params
     render :partial => 'related_list'
