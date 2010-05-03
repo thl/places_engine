@@ -1,15 +1,3 @@
-# == Schema Information
-#
-# Table name: feature_relation_types
-#
-#  id               :integer         not null, primary key
-#  is_symmetric     :boolean
-#  label            :string(255)
-#  asymmetric_label :string(255)
-#  created_at       :timestamp
-#  updated_at       :timestamp
-#
-
 class FeatureRelationType < ActiveRecord::Base
   has_many :feature_relations, :dependent => :destroy
   
@@ -59,3 +47,15 @@ class FeatureRelationType < ActiveRecord::Base
     paginate(options)
   end
 end
+
+# == Schema Information
+#
+# Table name: feature_relation_types
+#
+#  id               :integer         not null, primary key
+#  is_symmetric     :boolean
+#  label            :string(255)
+#  asymmetric_label :string(255)
+#  created_at       :timestamp
+#  updated_at       :timestamp
+#

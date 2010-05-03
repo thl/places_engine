@@ -1,13 +1,3 @@
-# == Schema Information
-#
-# Table name: note_titles
-#
-#  id         :integer         not null, primary key
-#  title      :string(255)
-#  created_at :timestamp
-#  updated_at :timestamp
-#
-
 class NoteTitle < ActiveRecord::Base
   validates_presence_of :title
   has_many :notes
@@ -24,3 +14,14 @@ class NoteTitle < ActiveRecord::Base
     paginate(options)
   end  
 end
+
+
+# == Schema Info
+# Schema version: 20100428184445
+#
+# Table name: note_titles
+#
+#  id         :integer         not null, primary key
+#  title      :string(255)
+#  created_at :timestamp
+#  updated_at :timestamp

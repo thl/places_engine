@@ -1,20 +1,3 @@
-# == Schema Information
-# Schema version: 20091102185045
-#
-# Table name: features
-#
-#  id                         :integer         not null, primary key
-#  is_public                  :integer
-#  position                   :integer         default(0)
-#  ancestor_ids               :string(255)
-#  created_at                 :timestamp
-#  updated_at                 :timestamp
-#  old_pid                    :string(255)
-#  is_blank                   :boolean         not null
-#  fid                        :integer         not null
-#  is_name_position_overriden :boolean         not null
-#
-
 class Feature < ActiveRecord::Base
   include FeatureExtensionForNamePositioning
   extend IsDateable
@@ -320,3 +303,20 @@ class Feature < ActiveRecord::Base
     
   end
 end
+
+
+# == Schema Info
+# Schema version: 20100428184445
+#
+# Table name: features
+#
+#  id                         :integer         not null, primary key
+#  ancestor_ids               :string(255)
+#  fid                        :integer         not null
+#  is_blank                   :boolean         not null
+#  is_name_position_overriden :boolean         not null
+#  is_public                  :integer
+#  old_pid                    :string(255)
+#  position                   :integer         default(0)
+#  created_at                 :timestamp
+#  updated_at                 :timestamp

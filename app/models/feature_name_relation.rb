@@ -1,23 +1,3 @@
-# == Schema Information
-# Schema version: 20091102185045
-#
-# Table name: feature_name_relations
-#
-#  id                     :integer         not null, primary key
-#  child_node_id          :integer         not null
-#  parent_node_id         :integer         not null
-#  ancestor_ids           :string(255)
-#  is_phonetic            :integer
-#  is_orthographic        :integer
-#  is_translation         :integer
-#  is_alt_spelling        :integer
-#  phonetic_system_id     :integer
-#  orthographic_system_id :integer
-#  alt_spelling_system_id :integer
-#  created_at             :timestamp
-#  updated_at             :timestamp
-#
-
 class FeatureNameRelation < ActiveRecord::Base
   
   acts_as_family_tree :tree, :node_class=>'FeatureName'
@@ -86,3 +66,23 @@ class FeatureNameRelation < ActiveRecord::Base
   end
   
 end
+
+
+# == Schema Info
+# Schema version: 20100428184445
+#
+# Table name: feature_name_relations
+#
+#  id                     :integer         not null, primary key
+#  alt_spelling_system_id :integer
+#  child_node_id          :integer         not null
+#  orthographic_system_id :integer
+#  parent_node_id         :integer         not null
+#  phonetic_system_id     :integer
+#  ancestor_ids           :string(255)
+#  is_alt_spelling        :integer
+#  is_orthographic        :integer
+#  is_phonetic            :integer
+#  is_translation         :integer
+#  created_at             :timestamp
+#  updated_at             :timestamp

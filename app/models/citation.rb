@@ -1,18 +1,3 @@
-# == Schema Information
-# Schema version: 20091102185045
-#
-# Table name: citations
-#
-#  id             :integer         not null, primary key
-#  info_source_id :integer
-#  citable_type   :string(255)
-#  citable_id     :integer
-#  pages          :string(255)
-#  notes          :text
-#  created_at     :timestamp
-#  updated_at     :timestamp
-#
-
 class Citation < ActiveRecord::Base
   
   attr_accessor :marked_for_deletion
@@ -45,3 +30,18 @@ class Citation < ActiveRecord::Base
   end
   
 end
+
+
+# == Schema Info
+# Schema version: 20100428184445
+#
+# Table name: citations
+#
+#  id             :integer         not null, primary key
+#  citable_id     :integer
+#  info_source_id :integer
+#  citable_type   :string(255)
+#  notes          :text
+#  pages          :string(255)
+#  created_at     :timestamp
+#  updated_at     :timestamp

@@ -1,17 +1,3 @@
-# == Schema Information
-# Schema version: 20091102185045
-#
-# Table name: descriptions
-#
-#  id         :integer         not null, primary key
-#  feature_id :integer         not null
-#  content    :text            not null
-#  is_primary :boolean         not null
-#  created_at :timestamp
-#  updated_at :timestamp
-#  title      :string(255)
-#
-
 class Description < ActiveRecord::Base
     validates_presence_of :content, :feature_id
     #belongs_to :creator, :class_name => 'User', :foreign_key => 'creator_id'
@@ -32,3 +18,17 @@ class Description < ActiveRecord::Base
       title
     end
 end
+
+
+# == Schema Info
+# Schema version: 20100428184445
+#
+# Table name: descriptions
+#
+#  id         :integer         not null, primary key
+#  feature_id :integer         not null
+#  content    :text            not null
+#  is_primary :boolean         not null
+#  title      :string(255)
+#  created_at :timestamp
+#  updated_at :timestamp

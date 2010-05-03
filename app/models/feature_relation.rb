@@ -1,20 +1,3 @@
-# == Schema Information
-# Schema version: 20091102185045
-#
-# Table name: feature_relations
-#
-#  id                       :integer           not null, primary key
-#  child_node_id            :integer           not null
-#  parent_node_id           :integer           not null
-#  ancestor_ids             :string(255)
-#  notes                    :text
-#  role                     :string(20)
-#  perspective_id           :integer           not null
-#  feature_relation_type_id :integer           not null
-#  created_at               :timestamp
-#  updated_at               :timestamp
-#
-
 class FeatureRelation < ActiveRecord::Base
   
   extend HasTimespan
@@ -106,3 +89,19 @@ class FeatureRelation < ActiveRecord::Base
   end
   
 end
+
+
+# == Schema Info
+# Schema version: 20100428184445
+#
+# Table name: feature_relations
+#
+#  id             :integer         not null, primary key
+#  child_node_id  :integer         not null
+#  parent_node_id :integer         not null
+#  perspective_id :integer         not null
+#  ancestor_ids   :string(255)
+#  notes          :text
+#  role           :string(20)
+#  created_at     :timestamp
+#  updated_at     :timestamp

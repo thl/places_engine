@@ -15,6 +15,14 @@
 		<label>Characteristic</label>
 		<span><%= "#{@object.category.root.title}: #{def_if_blank @object, :category, :title}" %></span>
 	</div>
+	<div class="row">
+		<label>String Label</label>
+		<span><%= def_if_blank @object, :string_value %></span>
+	</div>
+	<div class="row">
+		<label>Numeric Label</label>
+		<span><%= def_if_blank @object, :numeric_value %></span>
+	</div>
 </fieldset>
 <%= citation_list_fieldset %>
 <%= note_list_fieldset %>

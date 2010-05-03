@@ -1,17 +1,3 @@
-# == Schema Information
-#
-# Table name: notes
-#
-#  id                :integer         not null, primary key
-#  notable_type      :string(255)
-#  notable_id        :integer
-#  note_title_id     :integer
-#  custom_note_title :string(255)
-#  content           :text
-#  created_at        :timestamp
-#  updated_at        :timestamp
-#
-
 class Note < ActiveRecord::Base
   
   belongs_to :notable, :polymorphic=>true
@@ -54,3 +40,19 @@ class Note < ActiveRecord::Base
   
 end
 
+
+
+# == Schema Info
+# Schema version: 20100428184445
+#
+# Table name: notes
+#
+#  id                :integer         not null, primary key
+#  notable_id        :integer
+#  note_title_id     :integer
+#  association_type  :string(255)
+#  content           :text
+#  custom_note_title :string(255)
+#  notable_type      :string(255)
+#  created_at        :timestamp
+#  updated_at        :timestamp

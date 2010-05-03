@@ -1,18 +1,3 @@
-# == Schema Information
-#
-# Table name: notes
-#
-#  id                :integer         not null, primary key
-#  notable_type      :string(255)
-#  notable_id        :integer
-#  note_title_id     :integer
-#  custom_note_title :string(255)
-#  content           :text
-#  created_at        :timestamp
-#  updated_at        :timestamp
-#  association_type  :string(255)
-#
-
 class AssociationNote < Note
   belongs_to :feature, :foreign_key => "notable_id"
   
@@ -30,3 +15,19 @@ class AssociationNote < Note
   
 end
 
+
+
+# == Schema Info
+# Schema version: 20100428184445
+#
+# Table name: notes
+#
+#  id                :integer         not null, primary key
+#  notable_id        :integer
+#  note_title_id     :integer
+#  association_type  :string(255)
+#  content           :text
+#  custom_note_title :string(255)
+#  notable_type      :string(255)
+#  created_at        :timestamp
+#  updated_at        :timestamp

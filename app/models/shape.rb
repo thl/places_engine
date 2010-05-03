@@ -1,14 +1,3 @@
-# == Schema Information
-# Schema version: 20091102185045
-#
-# Table name: shapes
-#
-#  gid      :integer         not null, primary key
-#  geometry :geometry
-#  fid      :integer
-#  position :integer         :default => 0
-#
-
 class Shape < ActiveRecord::Base
   extend IsDateable
   extend IsNotable
@@ -58,3 +47,14 @@ class Shape < ActiveRecord::Base
   end
   
 end
+
+
+# == Schema Info
+# Schema version: 20100428184445
+#
+# Table name: shapes
+#
+#  gid      :integer         not null, primary key
+#  fid      :integer
+#  geometry :geometry
+#  position :integer         not null, default(0)

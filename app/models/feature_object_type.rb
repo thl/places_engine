@@ -1,17 +1,3 @@
-# == Schema Information
-# Schema version: 20091102185045
-#
-# Table name: feature_object_types
-#
-#  id             :integer         not null, primary key
-#  feature_id     :integer         not null
-#  object_type_id :integer         not null
-#  perspective_id :integer
-#  created_at     :timestamp
-#  updated_at     :timestamp
-#  position       :integer         :default => 0
-#
-
 class FeatureObjectType < CategoryFeature
   
   #
@@ -26,3 +12,19 @@ class FeatureObjectType < CategoryFeature
     self.feature.update_object_type_positions
   end
 end
+
+# == Schema Info
+# Schema version: 20100428184445
+#
+# Table name: category_features
+#
+#  id             :integer         not null, primary key
+#  category_id    :integer         not null
+#  feature_id     :integer         not null
+#  perspective_id :integer
+#  numeric_value  :integer
+#  position       :integer         not null, default(0)
+#  string_value   :string(255)
+#  type           :string(255)
+#  created_at     :timestamp
+#  updated_at     :timestamp
