@@ -26,7 +26,7 @@ jQuery(document).ready(function(){
 		  <!-- sets up the tabs for jquery -->
 		  <ul>
 		    <li><a href="#FeatureDetail"><span>Feature Detail</span></a></li>
-		    <li><%= link_to( content_tag(:span, "Contains"), descendants_feature_path(@feature) ) %></li>
+		    <li><%= link_to( content_tag(:span, "Related Features"), url_for(:action => "related", :id => @feature.id) ) %></li>
 		  </ul>
 		  <div class="left" id="FeatureDetail">
 		    <%= render :partial => "feature", :locals => {:feature => @feature, :show_old_pid => false} %>
