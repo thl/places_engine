@@ -242,7 +242,6 @@ class FeaturesController < ApplicationController
   end
   
   def related_list
-    debugger
     @feature = Feature.find(params[:id])
     @category = Category.find(params[:category_id])
     @relations = CachedFeatureRelationCategory.find(:all,
