@@ -242,12 +242,13 @@ class FeaturesController < ApplicationController
   end
   
   def related_list
+    debugger
     @feature = Feature.find(params[:id])
     @category = Category.find(params[:category_id])
     @relations = CachedFeatureRelationCategory.find(:all,
       :conditions => {
-          :feature_id => params[:id],
-          :category_id => params[:category_id],
+          'cached_feature_relation_categories.feature_id' => params[:id],
+          'cached_feature_relation_categories.category_id' => params[:category_id],
           'cached_feature_relation_categories.feature_relation_type_id' => params[:feature_relation_type_id],
           'cached_feature_relation_categories.feature_is_parent' => params[:feature_is_parent],
           'cached_feature_names.view_id' => current_view.id
