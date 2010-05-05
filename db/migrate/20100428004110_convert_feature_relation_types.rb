@@ -2,22 +2,24 @@ class ConvertFeatureRelationTypes < ActiveRecord::Migration
   def self.up
     FeatureRelationType.destroy_all
     
-    types = {
-      '' => {:is_symmetric => false, :label => 'is a parent of', :asymmetric_label => 'is subordinate to'},
-      :adjacent => {:is_symmetric => true, :label => 'is adjacent to'},
-      :intersects => {:is_symmetric => true, :label => 'intersects with'},
-      :instantiation => {:is_symmetric => false, :label => 'is an instantiation of', :asymmetric_label => 'has as an instantiation of it'},
-      :near => {:is_symmetric => true, :label => 'is near'},
-      :located => {:is_symmetric => false, :label => 'is contained by', :asymmetric_label => 'contains'},
-      :part => {:is_symmetric => false, :label => 'is part of', :asymmetric_label => 'has as part of it'},
-      :related => {:is_symmetric => true, :label => 'is related to'},
-      :admin_seat => {:is_symmetric => false, :label => 'is administrative seat of', :asymmetric_label => 'has as an administrative seat'},
-      :admin_headquarters => {:is_symmetric => false, :label => 'is administrative headquarters of', :asymmetric_label => 'has as an administrative headquarters'},
-      :conflict => {:is_symmetric => true, :label => 'is in conflict with'},
-      :affiliated => {:is_symmetric => true, :label => 'is affiliated with'}
-    }
+    types = [
+      {:role => '', :type => {:is_symmetric => false, :label => 'is a parent of', :asymmetric_label => 'is subordinate to'}},
+      {:role => :adjacent, :type => {:is_symmetric => true, :label => 'is adjacent to'}},
+      {:role => :intersects, :type => {:is_symmetric => true, :label => 'intersects with'}},
+      {:role => :instantiation, :type => {:is_symmetric => false, :label => 'is an instantiation of', :asymmetric_label => 'has as an instantiation of it'}},
+      {:role => :near, :type => {:is_symmetric => true, :label => 'is near'}},
+      {:role => :located, :type => {:is_symmetric => false, :label => 'is contained by', :asymmetric_label => 'contains'}},
+      {:role => :part, :type => {:is_symmetric => false, :label => 'is part of', :asymmetric_label => 'has as part of it'}},
+      {:role => :related, :type => {:is_symmetric => true, :label => 'is related to'}},
+      {:role => :admin_seat, :type => {:is_symmetric => false, :label => 'is administrative seat of', :asymmetric_label => 'has as an administrative seat'}},
+      {:role => :admin_headquarters, :type => {:is_symmetric => false, :label => 'is administrative headquarters of', :asymmetric_label => 'has as an administrative headquarters'}},
+      {:role => :conflict, :type => {:is_symmetric => true, :label => 'is in conflict with'}},
+      {:role => :affiliated, :type => {:is_symmetric => true, :label => 'is affiliated with'}}
+    ]
     
-    types.each do |old_role, type|
+    types.each do |element|
+      old_role = element[:role]
+      type = element[:type]
       type[:asymmetric_label] = type[:label] if type[:is_symmetric]
       created_type = FeatureRelationType.create(type)
       # Do these values need to be sanitized?
