@@ -45,7 +45,6 @@ module AdminHelper
       'Feature Geocodes'=>admin_feature_geo_codes_path,
       'Geocode Types'=>admin_geo_code_types_path,
       'Citations'=>admin_citations_path,
-      'Info Sources'=>admin_info_sources_path,
       'Perspectives'=>admin_perspectives_path,
       'Languages'=>admin_languages_path,
       'Notes'=>admin_notes_path,

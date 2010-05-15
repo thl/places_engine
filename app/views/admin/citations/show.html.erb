@@ -38,7 +38,7 @@ add_breadcrumb_item @object.id %>
 	<legend>Citation for <%= @object.citable_type.titleize %> <%= edit_item_link @object %> <%= delete_item_link @object %></legend>
 	<div class="row">
 		<label>Info Source</label>
-		<span><%= def_if_blank @object, :info_source, :code %></span>
+		<span><%= def_if_blank @object, :info_source, :prioritized_title %></span>
 	</div>	
 	<div class="row">
 		<label>Pages</label>

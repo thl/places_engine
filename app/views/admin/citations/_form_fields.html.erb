@@ -8,8 +8,8 @@
 	<%= f.hidden_field :id %>
 
 	<div class="row">
-		<%= f.label :info_source_id %>
-		<%= f.collection_select :info_source_id, InfoSource.find(:all), :id, :code %>
+		<%= f.label :info_source_id, 'Info Source (Document ID from MMS application)' %>
+		<%= f.text_field :info_source_id, :class => :text %>
 	</div>
 
 	<div class="row">

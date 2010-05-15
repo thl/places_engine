@@ -2,7 +2,7 @@ class FeatureGeoCode < ActiveRecord::Base
   
   belongs_to :feature
   belongs_to :geo_code_type
-  belongs_to :info_source
+  belongs_to :info_source, :class_name => 'Document'
   
   extend IsCitable
   extend IsNotable

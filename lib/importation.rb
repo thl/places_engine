@@ -55,7 +55,7 @@ module Importation
       # Name is optional. If there is a name, then the required column (for i varying from
       # 1 to 13) is "i.feature_names.name".
       # Optional columns are "i.languages.code"/"i.languages.name",
-      # "i.writing_systems.code"/"i.writing_systems.name", "i.feature_names.info_source.code",
+      # "i.writing_systems.code"/"i.writing_systems.name", "i.feature_names.info_source.id",
       # and "i.feature_names.is_primary"
       # If optional column "i.timespan.is_current" is specified, a timespan will be created for the name
       # setting is_current to true or false for corresponding value "Yes" or "No" in column.
@@ -123,7 +123,7 @@ module Importation
               timespan.save
             end
             begin
-              info_source = InfoSource.get_by_code(fields["#{i}.feature_names.info_source.code"])
+              info_source = Document.find(fields["#{i}.feature_names.info_source.id"])
             rescue Exception => e
               puts e.to_s
             end            
@@ -198,7 +198,7 @@ module Importation
       end      
       
       # The optional column "categories.title" can be used to specify the feature object type name.
-      # If there is a category title, then optional columns are "categories.info_source.code" and
+      # If there is a category title, then optional columns are "categories.info_source.id" and
       # "categories.timespan.start_date".
       category_title = fields['categories.title']
       if !category_title.blank?
@@ -216,7 +216,7 @@ module Importation
             timespan.save
           end
           begin
-            info_source = InfoSource.get_by_code(fields['categories.info_source.code'])
+            info_source = Document.find(fields['categories.info_source.id'])
           rescue Exception => e
             puts e.to_s
           end            
@@ -253,7 +253,7 @@ module Importation
               geocode.create_timespan(:start_date => to_date(timespan_start_date)) if !timespan_start_date.blank?
             end
             begin
-              info_source = InfoSource.get_by_code(fields["#{i}.feature_geo_codes.info_sources.code"])
+              info_source = Document.find(fields["#{i}.feature_geo_codes.info_sources.id"])
             rescue Exception => e
               puts e.to_s
             end

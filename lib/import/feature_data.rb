@@ -180,7 +180,7 @@ class FeatureData
   def extract_citations(doc, object)
     authorities = (doc/'/authority')
     authorities.each do |authority|
-      is = InfoSource.find_or_create_by_code(authority.inner_text)
+      is = Document.find(authority.inner_text)
       cit = Citation.create(:info_source_id => is.id, :citable=> object)
     end
   

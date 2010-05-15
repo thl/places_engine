@@ -7,7 +7,7 @@ class Citation < ActiveRecord::Base
   # Associations
   #
   #
-  belongs_to :info_source
+  belongs_to :info_source, :class_name => 'Document'
   belongs_to :citable, :polymorphic=>true
   
   #
@@ -22,10 +22,9 @@ class Citation < ActiveRecord::Base
   
   def self.search(filter_value, options={})
     options[:conditions] = build_like_conditions(
-      %W(citations.notes info_sources.code info_sources.title info_sources.agent),
+      %W(citations.notes),
       filter_value
     )
-    options[:include] = [:info_source]
     paginate(options)
   end
   
