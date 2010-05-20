@@ -2,13 +2,15 @@ require 'csv'
 module Importation
   
   def self.to_date(str)
+    complex_date = nil
     begin
       date = str.to_date
+      complex_date = ComplexDate.new(:day => date.day, :month => date.month, :year => date.year)
     rescue
       date_int = str.to_i
-      return Date.new(date_int) if date_int.to_s == str
+      complex_date = ComplexDate.new(:year => date_int) if date_int.to_s == str
     end
-    return date
+    return complex_date
   end
   
   def self.do_csv_import(filename)
@@ -52,6 +54,9 @@ module Importation
         end
       end
       names = feature.names
+      delete_feature_names = fields['feature_names.delete']
+      names.clear if !delete_feature_names.blank? && delete_feature_names.downcase == 'yes'
+        
       # Name is optional. If there is a name, then the required column (for i varying from
       # 1 to 13) is "i.feature_names.name".
       # Optional columns are "i.languages.code"/"i.languages.name",
@@ -80,20 +85,32 @@ module Importation
             puts e.to_s
           end
           begin
-            orthographic_system = OrthographicSystem.get_by_code_or_name(fields["#{i}.orthographic_systems.code"], fields["#{i}.orthographic_systems.name"])
-          rescue Exception => e
-            puts e.to_s
-          end
-          begin
-            phonetic_system = PhoneticSystem.get_by_code_or_name(fields["#{i}.phonetic_systems.code"], fields["#{i}.phonetic_systems.name"])
-          rescue Exception => e
-            puts e.to_s
-          end
-          begin
             writing_system = WritingSystem.get_by_code_or_name(fields["#{i}.writing_systems.code"], fields["#{i}.writing_systems.name"])
             conditions[:writing_system_id] = writing_system.id if !writing_system.nil?
           rescue Exception => e
             puts e.to_s
+          end
+          relationship_system_code = fields["#{i}.feature_name_relations.relationship.code"]
+          if !relationship_system_code.blank?
+            relationship_system = SimpleProp.get_by_code(relationship_system_code)
+            if !relationship_system.nil?
+              if relationship_system.instance_of? OrthographicSystem
+                orthographic_system = relationship_system
+              elsif relationship_system.instance_of? PhoneticSystem
+                phonetic_system = relationship_system
+              end
+            end
+          else
+            begin
+              orthographic_system = OrthographicSystem.get_by_code_or_name(fields["#{i}.orthographic_systems.code"], fields["#{i}.orthographic_systems.name"])
+            rescue Exception => e
+              puts e.to_s
+            end
+            begin
+              phonetic_system = PhoneticSystem.get_by_code_or_name(fields["#{i}.phonetic_systems.code"], fields["#{i}.phonetic_systems.name"])
+            rescue Exception => e
+              puts e.to_s
+            end
           end
           # if language is not specified it may be inferred.
           if language.nil?
@@ -104,9 +121,9 @@ module Importation
             end
           end
           conditions[:language_id] = language.id if !language.nil?          
-          is_primary = fields["#{i}.feature_names.is_primary"]
-          conditions[:is_primary] = is_primary.downcase=='yes' ? 1 : 0 if !is_primary.blank?
           name[n] = names.find(:first, :conditions => conditions)
+          is_primary = fields["#{i}.feature_names.is_primary"]
+          conditions[:is_primary_for_romanization] = is_primary.downcase=='yes' ? 1 : 0 if !is_primary.blank?
           relation_conditions = Hash.new
           relation_conditions[:orthographic_system_id] = orthographic_system.id if !orthographic_system.nil?
           relation_conditions[:phonetic_system_id] = phonetic_system.id if !phonetic_system.nil?
@@ -114,16 +131,23 @@ module Importation
           if name[n].id.nil?
             puts "Feature #{feature.pid} (old pid #{feature.old_pid}) couldn't get name #{name[n]} associated."
           else
-            timespan_is_current = fields["#{i}.feature_names.timespan.is_current"]
-            timespan_start_date = fields["#{i}.feature_names.timespan.start_date"]          
-            if !timespan_start_date.blank?
-              timespan = name[n].timespan
-              timespan.is_current = (timespan_is_current.downcase=='yes' ? 1 : 0) if !timespan_is_current.blank?
-              timespan.start_date = to_date(timespan_start_date) if !timespan_start_date.blank?
-              timespan.save
+            date = fields["#{i}.feature_names.time_units.date"]          
+            if !date.blank?
+              time_unit = name[n].time_units.build(:date => to_date(date), :is_range => false, :calendar_id => 1)
+              if !time_unit.date.nil?
+                time_unit.date.save
+                time_unit.save
+              end
             end
+            info_source = nil
             begin
-              info_source = Document.find(fields["#{i}.feature_names.info_source.id"])
+              info_source_id = fields["#{i}.feature_names.info_source.id"]
+              if !info_source_id.blank?
+                info_source = Document.find(info_source_id)
+              else
+                info_source_code = fields["#{i}.feature_names.info_source.code"]
+                info_source = Document.find_by_original_medium_id(info_source_code) if !info_source_code.blank?
+              end              
             rescue Exception => e
               puts e.to_s
             end            
@@ -133,13 +157,13 @@ module Importation
               citations.create(:info_source => info_source) if citation.nil?
             end
             
+            is_translation_str = fields["#{i}.feature_name_relations.is_translation"]
+            is_translation = is_translation_str.downcase=='yes' ? 1: 0 if !is_translation_str.blank?            
             parent_node_str = fields["#{i}.feature_name_relations.parent_node"]
             # for now is_translation is the only feature_name_relation that can be specified for a present or missing (inferred) parent.
             # if no parent is specified, it is possible to infer the parent based on the relationship to an already existing name.
             if parent_node_str.blank?
               feature_names = feature.prioritized_names
-              is_translation_str = fields["#{i}.feature_name_relations.is_translation"]
-              is_translation = is_translation_str.downcase=='yes' ? 1: 0 if !is_translation_str.blank?
               # tibetan must be parent
               if !phonetic_system.nil? && (phonetic_system.code=='ethnic.pinyin.tib.transcrip' || phonetic_system.code=='tib.to.chi.transcrip')
                 parent_name = FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(feature_names, WritingSystem.get_by_code('tibt').id)
@@ -175,7 +199,7 @@ module Importation
               parent_node = parent_node_str.to_i
               name_relation = name[n].parent_relations.find(:first, :conditions => {:parent_node_id => name[parent_node-1].id})
               if name_relation.nil?
-                conditions = {:parent_node => name[parent_node-1], :phonetic_system => phonetic_system, :orthographic_system => orthographic_system}
+                conditions = {:parent_node => name[parent_node-1], :phonetic_system => phonetic_system, :orthographic_system => orthographic_system, :is_translation => is_translation}
                 is_phonetic = fields["#{i}.feature_name_relations.is_phonetic"]
                 if is_phonetic.blank?
                   conditions[:is_phonetic] = phonetic_system.nil? ? 0 : 1
@@ -188,8 +212,6 @@ module Importation
                 else
                   conditions[:is_orthographic] = is_orthographic.downcase=='yes' ? 1: 0
                 end
-                is_translation_str = fields["#{i}.feature_name_relations.is_translation"]
-                conditions[:is_translation] = is_translation_str.downcase=='yes' ? 1: 0 if !is_translation_str.blank?
                 name[n].parent_relations.create(conditions)
               end
             end
@@ -209,17 +231,26 @@ module Importation
           feature_object_types = feature.feature_object_types
           feature_object_type = feature_object_types.find(:first, :conditions => {:category_id => category.id})
           feature_object_type = feature_object_types.create(:category => category) if feature_object_type.nil?
-          timespan_start_date = fields['categories.timespan.start_date']
-          if !timespan_start_date.blank?
-            timespan = feature_object_type.timespan
-            timespan.start_date = to_date(timespan_start_date)
-            timespan.save
+          date = fields['categories.time_units.date']
+          if !date.blank?
+            time_unit = feature_object_type.time_units.build(:date => to_date(date), :is_range => false, :calendar_id => 1)
+            if !time_unit.date.nil?
+              time_unit.date.save
+              time_unit.save
+            end
           end
+          info_source = nil
           begin
-            info_source = Document.find(fields['categories.info_source.id'])
+            info_source_id = fields['categories.info_source.id']
+            if !info_source_id.blank?
+              info_source = Document.find(info_source_id)
+            else
+              info_source_code = fields['categories.info_source.code']
+              info_source = Document.find_by_original_medium_id(info_source_code) if !info_source_code.blank?
+            end              
           rescue Exception => e
             puts e.to_s
-          end            
+          end          
           if !info_source.nil?
             citations = feature_object_type.citations
             citation = citations.find(:first, :conditions => {:info_source_id => info_source.id})
@@ -249,11 +280,24 @@ module Importation
             geocode = geocodes.find_by_geo_code_type_id(geocode_type.id)
             if geocode.nil?
               geocode = geocodes.create(:geo_code_type => geocode_type, :geo_code_value => geocode_value)
-              timespan_start_date = fields["#{i}.feature_geo_codes.timespan.start_date"]
-              geocode.create_timespan(:start_date => to_date(timespan_start_date)) if !timespan_start_date.blank?
+              date = fields["#{i}.feature_geo_codes.time_units.date"]
+              if !date.blank?
+                time_unit = geocode.time_units.build(:date => to_date(date), :is_range => false, :calendar_id => 1)
+                if !time_unit.date.nil?
+                  time_unit.date.save
+                  time_unit.save
+                end
+              end
             end
+            info_source = nil
             begin
-              info_source = Document.find(fields["#{i}.feature_geo_codes.info_sources.id"])
+              info_source_id = fields["#{i}.feature_geo_codes.info_source.id"]
+              if !info_source_id.blank?
+                info_source = Document.find(info_source_id)
+              else
+                info_source_code = fields["#{i}.feature_geo_codes.info_source.code"]
+                info_source = Document.find_by_original_medium_id(info_source_code) if !info_source_code.blank?
+              end              
             rescue Exception => e
               puts e.to_s
             end
@@ -284,11 +328,7 @@ module Importation
           conditions = {:parent_node_id => parent.id, :child_node_id => feature.id}
           conditions[:perspective_id] = perspective.id if !perspective.nil?
           feature_relation = FeatureRelation.find(:first, :conditions => conditions)
-          if feature_relation.nil?
-            feature_relation = FeatureRelation.create(conditions)
-            timespan_is_current = fields['feature_relations.timespan.is_current']
-            feature_relation.create_timespan(:is_current => (timespan_is_current.downcase=='yes' ? 1 : 0)) if !timespan_is_current.blank?
-          end
+          feature_relation = FeatureRelation.create(conditions) if feature_relation.nil?
         end
       end
       
