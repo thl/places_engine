@@ -6,17 +6,19 @@
 	</legend>
 	
 	<%= f.hidden_field :id %>
-
 	<div class="row">
 		<%= f.label :info_source_id, 'Info Source (Document ID from MMS application)' %>
 		<%= f.text_field :info_source_id, :class => :text %>
 	</div>
-
-	<div class="row">
-		<%= f.label :pages %>
-		<%= f.text_field :pages, :class => :text %>
-	</div>
-
+<%  if !@object.id.nil? %>
+	  <div class="row">
+	    <label>Pages</label>
+<%=     @object.pages.collect{|p| "#{p.to_s} #{edit_item_link edit_admin_citation_page_path(@object, p)} #{delete_item_link admin_citation_page_path(@object, p)}"}.join(', ') %>
+	  </div>
+	  <div class="row">
+<%=	    new_item_link(new_admin_citation_page_path(@object), 'Add pages referenced') %>		
+	  </div>
+<%  end %>
 	<div class="row">
 		<%= f.label :notes %>
 	</div>

@@ -12,9 +12,8 @@ class FeatureNameType < SimpleProp
   
 end
 
-
 # == Schema Info
-# Schema version: 20100428184445
+# Schema version: 20100521170006
 #
 # Table name: simple_props
 #

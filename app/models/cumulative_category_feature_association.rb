@@ -3,9 +3,8 @@ class CumulativeCategoryFeatureAssociation < ActiveRecord::Base
   belongs_to :category
 end
 
-
 # == Schema Info
-# Schema version: 20100428184445
+# Schema version: 20100521170006
 #
 # Table name: cumulative_category_feature_associations
 #

@@ -7,15 +7,16 @@ class CachedFeatureRelationCategory < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20100428184445
+# Schema version: 20100521170006
 #
 # Table name: cached_feature_relation_categories
 #
-#  id                 :integer         not null, primary key
-#  category_id        :integer
-#  feature_id         :integer
-#  perspective_id     :integer
-#  related_feature_id :integer
-#  role               :string(255)
-#  created_at         :timestamp
-#  updated_at         :timestamp
+#  id                       :integer         not null, primary key
+#  category_id              :integer
+#  feature_id               :integer
+#  feature_relation_type_id :integer
+#  perspective_id           :integer
+#  related_feature_id       :integer
+#  feature_is_parent        :boolean
+#  created_at               :timestamp
+#  updated_at               :timestamp

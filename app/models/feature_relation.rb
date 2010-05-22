@@ -90,18 +90,18 @@ class FeatureRelation < ActiveRecord::Base
   
 end
 
-
 # == Schema Info
-# Schema version: 20100428184445
+# Schema version: 20100521170006
 #
 # Table name: feature_relations
 #
-#  id             :integer         not null, primary key
-#  child_node_id  :integer         not null
-#  parent_node_id :integer         not null
-#  perspective_id :integer         not null
-#  ancestor_ids   :string(255)
-#  notes          :text
-#  role           :string(20)
-#  created_at     :timestamp
-#  updated_at     :timestamp
+#  id                       :integer         not null, primary key
+#  child_node_id            :integer         not null
+#  feature_relation_type_id :integer
+#  parent_node_id           :integer         not null
+#  perspective_id           :integer         not null
+#  ancestor_ids             :string(255)
+#  notes                    :text
+#  role                     :string(20)
+#  created_at               :timestamp
+#  updated_at               :timestamp

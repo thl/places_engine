@@ -31,7 +31,7 @@ class InfoSource < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20100428184445
+# Schema version: 20100521170006
 #
 # Table name: info_sources
 #

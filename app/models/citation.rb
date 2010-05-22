@@ -9,6 +9,7 @@ class Citation < ActiveRecord::Base
   #
   belongs_to :info_source, :class_name => 'Document'
   belongs_to :citable, :polymorphic=>true
+  has_many :pages
   
   #
   #
@@ -30,9 +31,8 @@ class Citation < ActiveRecord::Base
   
 end
 
-
 # == Schema Info
-# Schema version: 20100428184445
+# Schema version: 20100521170006
 #
 # Table name: citations
 #

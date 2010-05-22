@@ -310,11 +310,11 @@ module Importation
         end
       end
       
-      # The optional column "feature_relations.parent_node_id" can specify the THL ID for parent feature.
+      # The optional column "feature_relations.related_feature.fid" can specify the THL ID for parent feature.
       # If such parent is specified, the following optional columns are accepted: "perspectives.name".
       # Optionally if "feature_relations.timespan.is_current" is specified, a timespan will be created for
       # the relation.
-      parent_fid = fields['feature_relations.parent_node_id']
+      parent_fid = fields['feature_relations.related_feature.fid']
       if !parent_fid.blank?
         parent = Feature.get_by_fid(parent_fid)
         if parent.nil?

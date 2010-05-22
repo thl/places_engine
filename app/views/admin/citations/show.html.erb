@@ -42,10 +42,13 @@ add_breadcrumb_item @object.id %>
 	</div>	
 	<div class="row">
 		<label>Pages</label>
-		<span><%= def_if_blank @object, :pages %></span>
+		<span><%= @object.pages.collect{|p| "#{p.to_s} #{edit_item_link edit_admin_citation_page_path(@object, p)} #{delete_item_link admin_citation_page_path(@object, p)}"}.join(', ') %></span>
 	</div>
 	<div class="row">
 		<label>Notes</label>
 		<span><%= def_if_blank @object, :notes %></span>
+	</div>
+	<div class="row">
+<%=	new_item_link(new_admin_citation_page_path(@object), 'Add pages referenced') %>
 	</div>
 </fieldset>

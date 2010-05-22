@@ -21,9 +21,8 @@ class Blurb < ActiveRecord::Base
   end
 end
 
-
 # == Schema Info
-# Schema version: 20100428184445
+# Schema version: 20100521170006
 #
 # Table name: blurbs
 #

@@ -1,0 +1,30 @@
+<fieldset>	
+	<legend>
+		Pages for Citation of: <%= @object.citation.citable.id %>
+	</legend>	
+<%= f.hidden_field :id %>
+	<div class="row">
+<%= f.label :volume %>
+<%= f.text_field :volume, :class => :text %>
+    </div>
+	<div class="row">
+<%= f.label :start_page %>
+<%= f.text_field :start_page, :class => :text %>
+    </div>
+	<div class="row">
+<%= f.label :start_line %>
+<%= f.text_field :start_line, :class => :text %>
+    </div>
+	<div class="row">
+<%= f.label :end_page %>
+<%= f.text_field :end_page, :class => :text %>
+	</div>
+	<div class="row">
+<%= f.label :end_line %>
+<%= f.text_field :end_line, :class => :text %>
+	</div>
+	<div class="row">
+		<%= f.label '' %>
+		<%= f.label '' %>		
+	</div>  
+</fieldset>
