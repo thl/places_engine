@@ -2,9 +2,7 @@
 # THIS NEEDS TO BE INCLUDED IN OTHER HELPERS TO USE:
 # include AdminHelper
 #
-module AdminHelper
-  include InterfaceUtilsHelper
-  
+module AdminHelper  
   def admin_textarea(form_builder, field, options={})
     options[:cols] ||= 70
     options[:rows] ||= 10
@@ -493,7 +491,7 @@ module AdminHelper
   end
 
   def stylesheet_files
-    ['yui','admin'] + super
+    ['yui','admin', 'interface_utils'] + super
   end
   
   def javascript_files

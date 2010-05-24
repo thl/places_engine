@@ -64,8 +64,9 @@ class Admin::FeatureRelationsController < ResourceController::Base
   
   def process_feature_relation_type_id_mark
     if params[:feature_relation][:feature_relation_type_id_] =~ /^_/
-      params[:feature_relation][:child_node_id] = object.parent_node_id
-      params[:feature_relation][:parent_node_id] = object.child_node_id
+      swap_temp = params[:feature_relation][:child_node_id]
+      params[:feature_relation][:child_node_id] = params[:feature_relation][:parent_node_id]
+      params[:feature_relation][:parent_node_id] = swap_temp
     end
     params[:feature_relation][:feature_relation_type_id] = params[:feature_relation][:feature_relation_type_id_].gsub(/^_/, '')
     params[:feature_relation].delete(:feature_relation_type_id_)
