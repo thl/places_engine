@@ -79,7 +79,7 @@ function collapse_all_categories(){
 }
 </script>
 
-<% feature_label = f_label(@feature) %>
+<% feature_label = fname_labels(@feature).s %>
 <% relation_counts = CachedFeatureRelationCategory.find(:all, :select => "feature_relation_type_id, feature_is_parent, COUNT(DISTINCT related_feature_id) AS count", :group => "feature_relation_type_id, feature_is_parent", :conditions => {:feature_id => @feature.id}, :order => :feature_relation_type_id) %>
 
 <% if relation_counts.length > 0 %>

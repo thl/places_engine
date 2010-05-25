@@ -21,7 +21,7 @@ module ApplicationHelper
   # Creates a breadcrumb trail to the feature
   #
   def f_breadcrumb(feature)
-    content_tag :div, acts_as_family_tree_breadcrumb(feature, breadcrumb_separator) {|r| f_link(r, features_path(:anchor => r.id))}, :class => "breadcrumbs"
+    content_tag :div, acts_as_family_tree_breadcrumb(feature, breadcrumb_separator) {|r| f_link(r, features_path(:anchor => r.id), {}, {:s => true})}, :class => "breadcrumbs"
   end
   
   #
@@ -88,11 +88,13 @@ module ApplicationHelper
   #
   #
   #
-  def f_link(feature, url, html_attrs={})
+  def f_link(feature, url, html_attrs={}, options={})
     html_attrs[:class] = "#{html_attrs[:class]} feature_name"
     html_attrs[:title] ||= h(feature.name)
     url = url_for :controller => 'features', :action => 'iframe', :id => feature.id if current_page?(:controller => 'features', :action => 'iframe')
-    link_to(fname_labels(feature), url, html_attrs)
+    name = fname_labels(feature)
+    name = name.s if !options[:s].nil? && options[:s] == true
+    link_to(name, url, html_attrs)
   end
   
   #
