@@ -20,10 +20,14 @@ ActionController::Routing::Routes.draw do |map|
     admin.openid_new 'openid_new', :controller => 'users', :action => 'openid_new'
     admin.openid_create 'openid_create', :controller => 'users', :action => 'create', :requirements => { :method => :post }
     admin.admin '', :controller=>'features', :action=>'index'
+    admin.resources :altitudes, :has_many=>[:citations], :belongs_to=>:feature do |altitude|
+      altitude.resources :notes, :collection => {:add_author => :get}
+      altitude.resources :time_units, :collection => {:new_form => :get}
+    end    
+    admin.resources :citations, :has_many => :pages
     admin.resources :descriptions do |description|
       description.resources :time_units, :collection => {:new_form => :get}
     end
-    admin.resources :citations, :has_many => :pages
     admin.resources :feature_geo_codes, :has_many=>[:citations] do |feature_geo_code|
       feature_geo_code.resources :notes, :collection => {:add_author => :get}
       feature_geo_code.resources :time_units, :collection => {:new_form => :get}
@@ -48,7 +52,7 @@ ActionController::Routing::Routes.draw do |map|
       feature_relation.resources :notes, :collection => {:add_author => :get}
       feature_relation.resources :time_units, :collection => {:new_form => :get}
     end
-    admin.resources :features, :member=>{:locate_for_relation=>:get, :set_primary_description => :get}, :has_many => [ :category_features, :feature_names, :feature_relations, :citations, :feature_object_types, :feature_geo_codes, :shapes] do |feature|
+    admin.resources :features, :member=>{:locate_for_relation=>:get, :set_primary_description => :get}, :has_many => [ :altitudes, :category_features, :citations, :feature_geo_codes, :feature_names, :feature_object_types, :feature_relations, :shapes] do |feature|
       feature.resources :association_notes, :collection => {:add_author => :get}
       feature.resources :descriptions, :collection => {:add_author => :get}
       feature.resources :time_units, :collection => {:new_form => :get}

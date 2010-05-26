@@ -411,7 +411,7 @@ module AdminHelper
     	  #{new_item_link(new_polymorphic_path([:admin, object, :note]), 'New Note')}
     	</div>
     	<br class='clear'/>
-    	#{render :partial => 'admin/notes/list', :locals => { :list => object.notes }}
+    	#{render :partial => 'admin/notes/list', :locals => { :list => object.notes, :options => {:hide_type => true, :hide_type_value => true} }}
     </fieldset>"
     html
   end
@@ -437,7 +437,7 @@ module AdminHelper
     	  #{new_item_link(new_polymorphic_path([:admin, object, :time_unit]), 'New Date')}
     	</div>
     	<br class='clear'/>
-    	#{render :partial => 'admin/time_units/list', :locals => { :list => object.time_units }}
+    	#{render :partial => 'admin/time_units/list', :locals => { :list => object.time_units, :options => {:hide_type => true, :hide_type_value => true} }}
     </fieldset>"
     html
   end

@@ -32,7 +32,7 @@ class Citation < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20100521170006
+# Schema version: 20100525230844
 #
 # Table name: citations
 #
@@ -41,6 +41,5 @@ end
 #  info_source_id :integer
 #  citable_type   :string(255)
 #  notes          :text
-#  pages          :string(255)
 #  created_at     :timestamp
 #  updated_at     :timestamp

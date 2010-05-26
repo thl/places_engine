@@ -1,0 +1,26 @@
+<% add_breadcrumb_item features_link
+   add_breadcrumb_item feature_link(@parent_object)
+   add_breadcrumb_item link_to('altitudes', admin_feature_altitudes_path(@parent_object))
+   add_breadcrumb_item @object.id %>
+<fieldset>	
+	<legend>Altitude for <%= @parent_object.name %> <%= edit_item_link @object %> <%= delete_item_link @object %></legend>
+	<div class="row">
+		<label>Average</label>
+		<span><%= def_if_blank @object, :average %></span>
+	</div>	
+	<div class="row">
+		<label>Minimum</label>
+		<span><%= def_if_blank @object, :minimum %></span>
+	</div>
+	<div class="row">
+		<label>Maximum</label>
+		<span><%= def_if_blank @object, :maximum %></span>
+	</div>
+	<div class="row">
+		<label>Unit</label>
+		<span><%= def_if_blank @object, :unit, :title %></span>
+	</div>
+</fieldset>
+<%= citation_list_fieldset %>
+<%= note_list_fieldset %>
+<%= time_unit_list_fieldset %>

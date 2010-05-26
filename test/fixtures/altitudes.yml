@@ -1,0 +1,15 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  feature_id: 1
+  maximum: 1
+  minimum: 1
+  average: 1
+  unit_id: 1
+
+two:
+  feature_id: 1
+  maximum: 1
+  minimum: 1
+  average: 1
+  unit_id: 1
