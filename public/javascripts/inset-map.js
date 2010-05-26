@@ -71,8 +71,9 @@ var InsetMap = {
 	},
 	
 	addFeatureByFid: function(fid){
-		var new_layer = new OpenLayers.Layer.THLWMS(name ? name : 'FID: '+fid, {
-			CQL_FILTER: "fid="+fid+""
+		var new_layer = new OpenLayers.Layer.THLWMS('FID: '+fid, {
+			cql_filter: "fid="+fid+"",
+			styles: "thl_noscale"
 		});
 		new_layer.showPlaceNames();
 		// Many view codes aren't set up in GeoServer yet, so we'll have to wait to use setLanguage()
