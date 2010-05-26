@@ -32,7 +32,7 @@ when :feature_name_relation
   add_breadcrumb_item link_to(@parent_object.child_node.name, admin_feature_name_path(@parent_object.child_node))
   add_breadcrumb_item link_to('relations', admin_feature_name_feature_name_relations_path(@parent_object.child_node))
   add_breadcrumb_item link_to(@parent_object, admin_feature_name_feature_name_relation_path(@parent_object.child_node, @parent_object))
-endwhen :feature_geo_code
+when :feature_geo_code
   # @parent_object is FeatureGeoCode
   add_breadcrumb_item feature_link(@parent_object.feature)
   add_breadcrumb_item link_to('feature geo codes', admin_feature_feature_geo_codes_path(@parent_object.feature))
