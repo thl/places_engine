@@ -136,7 +136,7 @@ class FeaturesController < ApplicationController
     render :text => "Sorry, this request includes too many features for us to currently be able to provide this data." and return if fids.length > 300
     cql_filter = fids.join("+OR+")
     
-  	general_params = "version=1.0.0&typename=thl:roman_popular_poly,thl:roman_popular_pt&layers=thl:roman_popular_poly,thl:roman_popular_pt&projection=EPSG%3A4326&srs=EPSG%3A4326&cql_filter=("+cql_filter+");("+cql_filter+")"
+  	general_params = "version=1.0.0&typename=thl:roman_popular_poly,thl:roman_popular_pt&layers=thl:roman_popular_poly,thl:roman_popular_pt&styles=thl_noscale,thl_noscale&projection=EPSG%3A4326&srs=EPSG%3A4326&cql_filter=("+cql_filter+");("+cql_filter+")"
   	
     case params[:format]
     when 'gml'
