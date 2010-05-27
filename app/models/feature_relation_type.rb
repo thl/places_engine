@@ -49,13 +49,14 @@ class FeatureRelationType < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20100525230844
+# Schema version: 20100526225546
 #
 # Table name: feature_relation_types
 #
 #  id               :integer         not null, primary key
 #  asymmetric_label :string(255)
+#  code             :string(255)     not null
 #  is_symmetric     :boolean
-#  label            :string(255)
+#  label            :string(255)     not null
 #  created_at       :timestamp
 #  updated_at       :timestamp

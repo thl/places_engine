@@ -82,7 +82,7 @@ class FeatureName < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20100525230844
+# Schema version: 20100526225546
 #
 # Table name: feature_names
 #

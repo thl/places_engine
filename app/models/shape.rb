@@ -49,11 +49,12 @@ class Shape < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20100525230844
+# Schema version: 20100526225546
 #
 # Table name: shapes
 #
 #  gid      :integer         not null, primary key
+#  altitude :integer
 #  fid      :integer
 #  geometry :geometry
 #  position :integer         not null, default(0)
