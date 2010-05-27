@@ -13,6 +13,15 @@ module Importation
     return complex_date
   end
   
+  # Fields in spreadsheet:
+  # features.fid, features.old_pid, feature_names.delete,
+  # 1.feature_names.name, 1.languages.code, 1.writing_systems.code, 1.feature_names.info_source.id, 1.feature_names.is_primary, 1.feature_names.time_units.date,
+  # 1.feature_name_relations.parent_node, 1.feature_name_relations.is_translation, 1.feature_name_relations.relationship.code
+  # feature_types.id, feature_types.info_source.id, feature_types.time_units.date
+  # 1.geo_code_types.code, 1.feature_geo_codes.geo_code_value, 1.feature_geo_codes.info_source.id, 1.feature_geo_codes.time_units.date,
+  # feature_relations.related_feature.fid, feature_relations.type.code, perspectives.code
+  # contestations.contested, contestations.administrator, contestations.claimant
+  
   def self.do_csv_import(filename)
     field_names = nil
     country_type = Category.find_by_title('Nation')
@@ -54,24 +63,29 @@ module Importation
         end
       end
       names = feature.names
+      # If feature_names.delete is "yes", all names and relations will be deleted.
       delete_feature_names = fields['feature_names.delete']
       names.clear if !delete_feature_names.blank? && delete_feature_names.downcase == 'yes'
         
       # Name is optional. If there is a name, then the required column (for i varying from
       # 1 to 13) is "i.feature_names.name".
       # Optional columns are "i.languages.code"/"i.languages.name",
-      # "i.writing_systems.code"/"i.writing_systems.name", "i.feature_names.info_source.id",
+      # "i.writing_systems.code"/"i.writing_systems.name",
+      # "i.feature_names.info_source.id"/"i.feature_names.info_source.code"
       # and "i.feature_names.is_primary"
-      # If optional column "i.timespan.is_current" is specified, a timespan will be created for the name
-      # setting is_current to true or false for corresponding value "Yes" or "No" in column.
-      # Also "i.timespan.start_date" can optionally be specified.
+      # If optional column "i.feature_names.time_units.date" is specified, a date will be
+      # associated to the name.
       # Additionally, optional column "i.feature_name_relations.parent_node" can be
       # used to establish name i as child of name j by simply specifying the name number.
       # The parent name has to precede the child name. If a parent column is specified,
-      # the following optional columns are accepted: "i.phonetic_systems.code"/"i.phonetic_systems.name", 
+      # the two optional columns can be included: "i.feature_name_relations.is_translation"
+      # and "i.feature_name_relations.relationship.code" containing the code for the
+      # phonetic or orthographic system.That is the prefered method
+      # Alternatively, the following can still be used:
+      # "i.phonetic_systems.code"/"i.phonetic_systems.name", 
       # "i.orthographic_systems.code"/"i.orthographic_systems.name",
-      # "i.feature_name_relations.is_translation". You can also explicitly specify
-      # "i.feature_name_relations.is_phonetic" and "i.feature_name_relations.is_orthographic" but it will
+      # You can also explicitly specify "i.feature_name_relations.is_phonetic" and
+      # "i.feature_name_relations.is_orthographic" but it will
       # inferred otherwise.
       name = Array.new(13)
       1.upto(13) do |i|
@@ -93,7 +107,9 @@ module Importation
           relationship_system_code = fields["#{i}.feature_name_relations.relationship.code"]
           if !relationship_system_code.blank?
             relationship_system = SimpleProp.get_by_code(relationship_system_code)
-            if !relationship_system.nil?
+            if relationship_system.nil?
+              puts "Phonetic or orthographic system with code #{relationship_system_code} was not found."
+            else
               if relationship_system.instance_of? OrthographicSystem
                 orthographic_system = relationship_system
               elsif relationship_system.instance_of? PhoneticSystem
@@ -129,24 +145,33 @@ module Importation
           relation_conditions[:phonetic_system_id] = phonetic_system.id if !phonetic_system.nil?
           name[n] = names.create(conditions) if name[n].nil? || name[n].parent_relations.find(:first, :conditions => relation_conditions).nil?
           if name[n].id.nil?
-            puts "Feature #{feature.pid} (old pid #{feature.old_pid}) couldn't get name #{name[n]} associated."
+            puts "Name #{name_str} could not be associated to feature #{feature.pid || feature.old_pid}."
           else
             date = fields["#{i}.feature_names.time_units.date"]          
             if !date.blank?
-              time_unit = name[n].time_units.build(:date => to_date(date), :is_range => false, :calendar_id => 1)
-              if !time_unit.date.nil?
-                time_unit.date.save
-                time_unit.save
+              complex_date = to_date(date)
+              if complex_date.nil?
+                puts "Date #{date} could not be associated to name #{name_str} of feature #{feature.pid || feature.old_pid}."
+              else
+                time_unit = name[n].time_units.build(:date => complex_date, :is_range => false, :calendar_id => 1)
+                if !time_unit.date.nil?
+                  time_unit.date.save
+                  time_unit.save
+                end
               end
             end
             info_source = nil
             begin
               info_source_id = fields["#{i}.feature_names.info_source.id"]
-              if !info_source_id.blank?
-                info_source = Document.find(info_source_id)
-              else
+              if info_source_id.blank?
                 info_source_code = fields["#{i}.feature_names.info_source.code"]
-                info_source = Document.find_by_original_medium_id(info_source_code) if !info_source_code.blank?
+                if !info_source_code.blank?
+                  info_source = Document.find_by_original_medium_id(info_source_code)
+                  puts "Info source with code #{info_source_code} was not found." if info_source.nil?
+                end
+              else
+                info_source = Document.find(info_source_id)
+                puts "Info source with MMS ID #{info_source_id} was not found." if info_source.nil?
               end              
             rescue Exception => e
               puts e.to_s
@@ -158,7 +183,10 @@ module Importation
             end
             
             is_translation_str = fields["#{i}.feature_name_relations.is_translation"]
-            is_translation = is_translation_str.downcase=='yes' ? 1: 0 if !is_translation_str.blank?            
+            if !is_translation_str.blank?
+              debugger
+              is_translation = is_translation_str.downcase=='yes' ? 1: 0
+            end
             parent_node_str = fields["#{i}.feature_name_relations.parent_node"]
             # for now is_translation is the only feature_name_relation that can be specified for a present or missing (inferred) parent.
             # if no parent is specified, it is possible to infer the parent based on the relationship to an already existing name.
@@ -221,7 +249,7 @@ module Importation
       
       # The optional column "categories.title" can be used to specify the feature object type name.
       # If there is a category title, then optional columns are "categories.info_source.id" and
-      # "categories.timespan.start_date".
+      # "categories.time_units.date".
       category_title = fields['categories.title']
       if !category_title.blank?
         category = Category.find_by_title(category_title)
@@ -233,20 +261,29 @@ module Importation
           feature_object_type = feature_object_types.create(:category => category) if feature_object_type.nil?
           date = fields['categories.time_units.date']
           if !date.blank?
-            time_unit = feature_object_type.time_units.build(:date => to_date(date), :is_range => false, :calendar_id => 1)
-            if !time_unit.date.nil?
-              time_unit.date.save
-              time_unit.save
-            end
+            complex_date = to_date(date)
+            if complex_date.nil?
+              puts "Date #{date} could not be associated to feature type #{category_title} of feature #{feature.pid || feature.old_pid}."
+            else
+              time_unit = feature_object_type.time_units.build(:date => complex_date, :is_range => false, :calendar_id => 1)
+              if !time_unit.date.nil?
+                time_unit.date.save
+                time_unit.save
+              end
+            end            
           end
           info_source = nil
           begin
             info_source_id = fields['categories.info_source.id']
-            if !info_source_id.blank?
-              info_source = Document.find(info_source_id)
-            else
+            if info_source_id.blank?
               info_source_code = fields['categories.info_source.code']
-              info_source = Document.find_by_original_medium_id(info_source_code) if !info_source_code.blank?
+              if !info_source_code.blank?
+                info_source = Document.find_by_original_medium_id(info_source_code)
+                puts "Info source with code #{info_source_code} was not found." if info_source.nil?
+              end              
+            else
+              info_source = Document.find(info_source_id)
+              puts "Info source with id #{info_source_id} was not found." if info_source.nil?
             end              
           rescue Exception => e
             puts e.to_s
@@ -262,9 +299,9 @@ module Importation
       # Up to four optional geocode types can be specified. For each geocode type the required columns are
       # "i.geo_code_types.code"/"i.geo_code_types.name" (where i can range between 1 and 4) and
       # "i.feature_geo_codes.geo_code_value".
-      # The following optional columns are also accepted: "i.feature_geo_codes.info_sources.code"
-      # Optionally if "i.feature_geo_codes.timespan.start_date" is specified, a timespan will be created for
-      # for the geocode.
+      # The following optional columns are also accepted:
+      # "i.feature_geo_codes.info_source.id"/"i.feature_geo_codes.info_source.code" and
+      # "i.feature_geo_codes.time_units.date".
       1.upto(4) do |i|
         begin
           geocode_type = GeoCodeType.get_by_code_or_name(fields["#{i}.geo_code_types.code"], fields["#{i}.geo_code_types.name"])
@@ -282,21 +319,30 @@ module Importation
               geocode = geocodes.create(:geo_code_type => geocode_type, :geo_code_value => geocode_value)
               date = fields["#{i}.feature_geo_codes.time_units.date"]
               if !date.blank?
-                time_unit = geocode.time_units.build(:date => to_date(date), :is_range => false, :calendar_id => 1)
-                if !time_unit.date.nil?
-                  time_unit.date.save
-                  time_unit.save
-                end
+                complex_date = to_date(date)
+                if complex_date.nil?
+                  puts "Date #{date} could not be associated to geo_code #{geocode_value} (#{geocode_type}) of feature #{feature.pid || feature.old_pid}."
+                else
+                  time_unit = geocode.time_units.build(:date => complex_date, :is_range => false, :calendar_id => 1)
+                  if !time_unit.date.nil?
+                    time_unit.date.save
+                    time_unit.save
+                  end
+                end                
               end
             end
             info_source = nil
             begin
               info_source_id = fields["#{i}.feature_geo_codes.info_source.id"]
-              if !info_source_id.blank?
-                info_source = Document.find(info_source_id)
-              else
+              if info_source_id.blank?
                 info_source_code = fields["#{i}.feature_geo_codes.info_source.code"]
-                info_source = Document.find_by_original_medium_id(info_source_code) if !info_source_code.blank?
+                if !info_source_code.blank?
+                  info_source = Document.find_by_original_medium_id(info_source_code)
+                  puts "Info source with code #{info_source_code} was not found." if info_source.nil?
+                end
+              else
+                info_source = Document.find(info_source_id)
+                puts "Info source with id #{info_source_id} was not found." if info_source.nil?
               end              
             rescue Exception => e
               puts e.to_s
@@ -311,9 +357,9 @@ module Importation
       end
       
       # The optional column "feature_relations.related_feature.fid" can specify the THL ID for parent feature.
-      # If such parent is specified, the following optional columns are accepted: "perspectives.name".
-      # Optionally if "feature_relations.timespan.is_current" is specified, a timespan will be created for
-      # the relation.
+      # If such parent is specified, the following optional columns are accepted:
+      # "perspectives.code"/"perspectives.name"
+      # TODO: add feature relation type code.
       parent_fid = fields['feature_relations.related_feature.fid']
       if !parent_fid.blank?
         parent = Feature.get_by_fid(parent_fid)
