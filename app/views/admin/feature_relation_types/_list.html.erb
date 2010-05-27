@@ -15,6 +15,7 @@ list = list || []
 		<th>Is symmetric</th>
 		<th>Label</th>
 		<th>Asymmetric Label</th>
+		<th>Code</th>
 	</tr>
 	
 	<% list.each do |item| %>
@@ -31,7 +32,7 @@ list = list || []
 		<td><%= item.is_symmetric ? 'Yes' : 'No' %></td>
 		<td><%= item.label %></td>
 		<td><%= item.asymmetric_label unless item.is_symmetric %></td>
-			
+		<td><%= item.code %></td>			
 	</tr>
 	<% end %>
 </table>

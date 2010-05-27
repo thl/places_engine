@@ -232,7 +232,9 @@ module ApplicationHelper
     
   def shape_display_string(shape)
     return shape.geo_type unless shape.is_point?
-    "Latitude: #{shape.lat}; Longitude: #{shape.lng}"
+    s = "Latitude: #{shape.lat}; Longitude: #{shape.lng}"
+    s << "; Altitude: #{shape.altitude}" if !shape.altitude.nil?
+    s
   end
   
   # TODO: Add rules here based on language of name and perspective.

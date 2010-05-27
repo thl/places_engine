@@ -1,18 +1,16 @@
-<p>
-	Please input decimal degrees in the format of 35.1974, etc. If you have degrees, minutes and seconds, use a conversion program to convert them into decimal degrees. For example, try: <a href="http://www.fcc.gov/mb/audio/bickel/DDDMMSS-decimal.html" target="_blank">http://www.fcc.gov/mb/audio/bickel/DDDMMSS-decimal.html</a>.
-</p>
-
+<p>Please input decimal degrees in the format of 35.1974, etc. If you have degrees, minutes and seconds, use a conversion program to convert them into decimal degrees. For example, try: <a href="http://www.fcc.gov/mb/audio/bickel/DDDMMSS-decimal.html" target="_blank">http://www.fcc.gov/mb/audio/bickel/DDDMMSS-decimal.html</a>.</p>
 <fieldset>
 	<legend>Location:</legend>
-	
 		<div class="row">
 			<%= f.label :latitude %>
 			<%= f.text_field :lat, :class => :text %>
 		</div>
-
 		<div class="row">
 			<%= f.label :longitude %>
 			<%= f.text_field :lng, :class => :text %>
 		</div>
-	
+		<div class="row">
+			<%= f.label :altitude %>
+			<%= f.text_field :altitude, :class => :text %>
+		</div>	
 </fieldset>
