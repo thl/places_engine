@@ -323,6 +323,7 @@ class FeaturesController < ApplicationController
         options,
         search_options
       )
+      @features.uniq!
     end
     
     def api_render(features, options={})
