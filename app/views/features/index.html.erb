@@ -37,7 +37,7 @@ jQuery(document).ready(function(){
 	NodeMenu.init("NodeMenu", "<%= features_path %>/");
 	
 	<% unless @kmaps_characteristics.empty? %>
-	var characteristic_data = <%= @kmaps_characteristics.collect{|c| {:id => c.category_id, :name => c.to_s}}.sort{|a,b| a[:name].downcase <=> b[:name].downcase}.to_json %>;
+	var characteristic_data = <%= @kmaps_characteristics.collect{|c| {:id => c.category_id, :name => c.to_s}}.sort_by{|a| a[:name].downcase.strip}.to_json %>;
 	var characteristic_selector = new CharacteristicSelector();
 	characteristic_selector.init('characteristic_selector', {
 		fieldLabel: "Characteristic:",
