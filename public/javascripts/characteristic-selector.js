@@ -51,7 +51,7 @@ function CharacteristicSelector(){
 		for(var i in this.data){
 			this.objectList[this.data[i].id] = this.data[i];
 		}
-		this.div.append('<br />Input type above or <a href="#" class="tree-link">select from popup</a>'+
+		this.div.append('<br />Input type above or <a href="#" class="tree-link">select from list</a>'+
 			'<span class="tree-names"></span> <a href="#" class="tree-remove">(remove)</a><span class="tree-loading" style="float:right;"></span>');
 		this.treePopupId = this.divId+"_tree_popup";
 		this.treeLink = this.div.find('.tree-link');
