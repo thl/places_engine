@@ -46,6 +46,16 @@ class FeatureRelationType < ActiveRecord::Base
     )
     paginate(options)
   end
+  
+  def self.get_by_code(code)
+    @cache_by_codes ||= {}
+    relation_type = @cache_by_codes[code]
+    if relation_type.nil?
+      relation_type = self.find_by_code(code)
+      @cache_by_codes[code] = relation_type if !relation_type.nil?
+    end
+    return relation_type
+  end
 end
 
 # == Schema Info
