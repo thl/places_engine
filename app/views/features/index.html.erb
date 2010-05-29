@@ -10,6 +10,7 @@
 <%= javascript_tag "var current_view_code = '#{current_view.code}';" %>
 <%= javascript_include_tag "#{thl_url}/places/maps/interactive/scripts/THLWMS.js" %>
 <%= javascript_include_tag "inset-map" %>
+<%= javascript_include_tag "characteristic-selector" %>
 <script type="text/javascript">
 <% if @context_feature.nil?
      if @features.nil?
@@ -34,6 +35,15 @@ jQuery(document).ready(function(){
 	jQuery(window).unbind("scroll");
 	NodeTree.init("NodeTree", "NodeTreeList", "<%= features_path %>/");
 	NodeMenu.init("NodeMenu", "<%= features_path %>/");
+	
+	<% unless @kmaps_characteristics.empty? %>
+	var characteristic_data = <%= @kmaps_characteristics.collect{|c| {:id => c.category_id, :name => c.to_s}}.sort_by{|a| a[:name].downcase.strip}.to_json %>;
+	var characteristic_selector = new CharacteristicSelector();
+	characteristic_selector.init('characteristic_selector', {
+		fieldLabel: "Characteristic:",
+		data: characteristic_data
+	});
+	<% end %>
 });
 
 function reset_advanced_search(){
@@ -80,13 +90,14 @@ function reset_advanced_search(){
 							<%=  radio_button_tag :match, :begins %> Starts with
 							<%=  radio_button_tag :match, :exactly %> Exactly
 						</div>
-						<span id="tmb_category_selector_object_type"></span>
-						<br />
-						Select Scope:
-						<%=  radio_button_tag :search_scope, :global, true %> Global
-						<%=  radio_button_tag :search_scope, :contextual %> Contextual
-						<%=  radio_button_tag :search_scope, :fid %> THL ID
-						<br />
+						<div id="tmb_category_selector_object_type"></div>
+						<div id="characteristic_selector"></div>
+						<div>
+							Select Scope:
+							<%=  radio_button_tag :search_scope, :global, true %> Global
+							<%=  radio_button_tag :search_scope, :contextual %> Contextual
+							<%=  radio_button_tag :search_scope, :fid %> THL ID
+						</div>
 						<%=  hidden_field_tag :context_id, "" %>
 					</div>
 					<%= submit_tag 'search', :style => "margin-top: 4px;" %>

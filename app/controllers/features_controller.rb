@@ -23,6 +23,9 @@ class FeaturesController < ApplicationController
     @perspectives = Perspective.find_all_public
     @views = View.find(:all, :order => 'name')
     
+    # These are used for the "Characteristics" field in the search
+    @kmaps_characteristics = CategoryFeature.find(:all, :select => "DISTINCT category_id", :conditions => "type IS NULL")
+    
     # In the event that a Blurb with this code doesn't exist, fail gracefully
     @intro_blurb = Blurb.find_by_code('homepage.intro') || Blurb.new
     
@@ -216,6 +219,13 @@ class FeaturesController < ApplicationController
           options[:conditions]['features.is_public'] = 1
           options[:conditions].delete(:is_public)
         end
+        if !params[:characteristic_id].blank?
+          options[:joins] = "LEFT JOIN category_features cf ON cf.feature_id = features.id"
+          options[:conditions]['cf.category_id'] = params[:characteristic_id].split(',')
+          options[:conditions]['cf.type'] = nil
+          options[:conditions]['features.is_public'] = 1
+          options[:conditions].delete(:is_public)
+        end
         perform_global_search(options, search_options)
       end
     end
@@ -313,6 +323,7 @@ class FeaturesController < ApplicationController
         options,
         search_options
       )
+      @features.uniq!
     end
     
     def api_render(features, options={})
