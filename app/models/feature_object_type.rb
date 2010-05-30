@@ -9,7 +9,7 @@ class FeatureObjectType < CategoryFeature
   
   def after_save
     super
-    self.feature.update_object_type_positions
+    self.feature.update_object_type_positions if !self.skip_update
   end
 end
 

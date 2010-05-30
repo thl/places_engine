@@ -1,4 +1,6 @@
 class CategoryFeature < ActiveRecord::Base
+  attr_accessor :skip_update
+  
   belongs_to :feature
   belongs_to :category
 
@@ -6,6 +8,25 @@ class CategoryFeature < ActiveRecord::Base
   extend IsCitable
   extend IsDateable
   extend IsNotable
+
+  def after_destroy
+    CategoryFeature.delete_cumulative_information(self.category, self.feature_id)
+  end
+  
+  def before_save
+    CategoryFeature.delete_cumulative_information(Category.find(self.category_id_was), self.feature_id_was) if self.changed? && !self.category_id_was.nil? && (self.category_id_changed? || self.feature_id_changed?)
+  end
+  
+  def after_save
+    cat = self.category
+    ([cat] + cat.ancestors).each do |c|
+      if (c.id==cat.id || c.cumulative?) && CumulativeCategoryFeatureAssociation.find(:first, :conditions => {:category_id => c.id, :feature_id => self.feature_id}).nil?
+        CumulativeCategoryFeatureAssociation.create(:category => c, :feature_id => self.feature_id)
+      end
+    end
+    CategoryFeature.update_latest
+    self.feature.update_cached_feature_relation_categories if !self.skip_update
+  end
 
   def to_s
     "#{category.title}"
@@ -25,25 +46,6 @@ class CategoryFeature < ActiveRecord::Base
     # need to do a join here (not :include) because we're searching parents and children feature.fids
     options[:joins] = 'LEFT JOIN features f ON f.id=feature_id'
     paginate(options)
-  end
-
-  def after_destroy
-    CategoryFeature.delete_cumulative_information(self.category, self.feature_id)
-  end
-  
-  def before_save
-    CategoryFeature.delete_cumulative_information(Category.find(self.category_id_was), self.feature_id_was) if self.changed? && !self.category_id_was.nil? && (self.category_id_changed? || self.feature_id_changed?)
-  end
-  
-  def after_save
-    cat = self.category
-    ([cat] + cat.ancestors).each do |c|
-      if (c.id==cat.id || c.cumulative?) && CumulativeCategoryFeatureAssociation.find(:first, :conditions => {:category_id => c.id, :feature_id => self.feature_id}).nil?
-        CumulativeCategoryFeatureAssociation.create(:category => c, :feature_id => self.feature_id)
-      end
-    end
-    CategoryFeature.update_latest
-    self.feature.update_cached_feature_relation_categories
   end
   
   def self.latest_update

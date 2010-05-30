@@ -1,12 +1,13 @@
 class FeatureName < ActiveRecord::Base
-  
+  attr_accessor :skip_update
   acts_as_family_tree :node, :tree_class=>'FeatureNameRelation'
   
-  after_save { |record| record.feature.update_cached_feature_names} #{ |record| record.update_hierarchy }
+  after_save { |record| record.feature.update_cached_feature_names if !record.skip_update} #{ |record| record.update_hierarchy }
   
   after_create do |record|
-    feature = record.feature
-    feature.update_name_positions
+    if !record.skip_update
+      record.feature.update_name_positions
+    end
   end
   
   # acts_as_solr

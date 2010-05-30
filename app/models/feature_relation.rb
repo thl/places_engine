@@ -1,4 +1,5 @@
 class FeatureRelation < ActiveRecord::Base
+  attr_accessor :skip_update
   
   extend HasTimespan
   extend IsCitable
@@ -8,9 +9,11 @@ class FeatureRelation < ActiveRecord::Base
   acts_as_family_tree :tree, :node_class => 'Feature', :conditions => {'feature_relations.feature_relation_type_id' => FeatureRelationType.hierarchy_id}
   
   after_save do |record|
-    [record.parent_node, record.child_node].each { |r| r.update_cached_feature_relation_categories if !r.nil? }
-    # we could update this object's (a FeatureRelation) hierarchy but the THL Places-app doesn't use that info in any way yet
-    [record.parent_node, record.child_node].each { |r| r.update_hierarchy if !r.nil? }
+    if !record.skip_update
+      [record.parent_node, record.child_node].each { |r| r.update_cached_feature_relation_categories if !r.nil? }
+      # we could update this object's (a FeatureRelation) hierarchy but the THL Places-app doesn't use that info in any way yet
+      [record.parent_node, record.child_node].each { |r| r.update_hierarchy if !r.nil? }
+    end
   end
   
   after_destroy do |record|

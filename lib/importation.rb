@@ -13,6 +13,51 @@ module Importation
     return complex_date
   end
   
+  def self.add_date(fields, date_field, dateable)
+    date = fields.delete(date_field)
+    if !date.blank?
+      complex_date = to_date(date)
+      if complex_date.nil?
+        puts "Date #{date} could not be associated to #{dateable.class_name.titleize}."
+      else
+        time_unit = dateable.time_units.build(:date => complex_date, :is_range => false, :calendar_id => 1)
+        if !time_unit.date.nil?
+          time_unit.date.save
+          time_unit.save
+        end
+      end
+    end            
+  end
+  
+  def self.add_info_source(fields, id_field, code_field, citable)
+    info_source = nil
+    begin
+      info_source_id = fields.delete(id_field)
+      if info_source_id.blank?
+        info_source_code = fields.delete(code_field)
+        if !info_source_code.blank?
+          info_source = Document.find_by_original_medium_id(info_source_code)
+          puts "Info source with code #{info_source_code} was not found." if info_source.nil?
+        end
+      else
+        info_source = Document.find(info_source_id)
+        puts "Info source with MMS ID #{info_source_id} was not found." if info_source.nil?
+      end              
+    rescue Exception => e
+      puts e.to_s
+    end            
+    if !info_source.nil?
+      citations = citable.citations
+      citation = citations.find(:first, :conditions => {:info_source_id => info_source.id})
+      citation = citations.create(:info_source => info_source) if citation.nil?
+      puts "Info source #{info_source.id} could not be associated to #{citable.class_name.titleize}." if citation.nil?        
+    end  
+  end
+  
+  def self.say msg
+    Rails.logger.info "IMPORTER COMMENT (#{Time.now.to_s}): #{msg}"
+  end
+  
   # Fields in spreadsheet:
   # features.fid, features.old_pid, feature_names.delete,
   # 1.feature_names.name, 1.languages.code, 1.writing_systems.code, 
@@ -40,12 +85,14 @@ module Importation
   # feature_relations.related_feature.fid, feature_relations.type.code, perspectives.code/perspectives.name,
   # contestations.contested, contestations.administrator, contestations.claimant
   
-  
   def self.do_csv_import(filename)
     field_names = nil
     country_type = Category.find_by_title('Nation')
     country_type_id = country_type.id
     current = 0
+    feature_ids_with_changed_relations = Array.new
+    feature_ids_with_object_types_added = Array.new
+    
     CSV.open(filename, 'r', "\t") do |row|
       current+=1
       if field_names.nil?
@@ -93,6 +140,9 @@ module Importation
         note = AssociationNote.create(:notable => feature, :association_type => 'FeatureName', :content => feature_names_note) if note.nil?
         puts "Feature name note #{feature_names_note} could not be saved for feature #{feature.pid}" if note.nil?
       end
+      
+      name_added = false
+      name_positions_with_changed_relations = Array.new
       
       # Name is optional. If there is a name, then the required column (for i varying from
       # 1 to 18) is "i.feature_names.name".
@@ -179,46 +229,15 @@ module Importation
           relation_conditions[:orthographic_system_id] = orthographic_system.id if !orthographic_system.nil?
           relation_conditions[:phonetic_system_id] = phonetic_system.id if !phonetic_system.nil?
           relation_conditions[:alt_spelling_system_id] = alt_spelling_system.id if !alt_spelling_system.nil?
-          name[n] = names.create(conditions) if name[n].nil? || name[n].parent_relations.find(:first, :conditions => relation_conditions).nil?
+          if name[n].nil? || name[n].parent_relations.find(:first, :conditions => relation_conditions).nil?
+            name[n] = names.create(conditions.merge({:skip_update => true}))
+            name_added = true if !name_added
+          end
           if name[n].id.nil?
-            puts "Name #{name_str} could not be associated to feature #{feature.pid}."
+            puts "Name #{name_str} could not be added to feature #{feature.pid}."
           else
-            date = fields.delete("#{i}.feature_names.time_units.date")          
-            if !date.blank?
-              complex_date = to_date(date)
-              if complex_date.nil?
-                puts "Date #{date} could not be associated to name #{name_str} of feature #{feature.pid}."
-              else
-                time_unit = name[n].time_units.build(:date => complex_date, :is_range => false, :calendar_id => 1)
-                if !time_unit.date.nil?
-                  time_unit.date.save
-                  time_unit.save
-                end
-              end
-            end
-            info_source = nil
-            begin
-              info_source_id = fields.delete("#{i}.feature_names.info_source.id")
-              if info_source_id.blank?
-                info_source_code = fields.delete("#{i}.feature_names.info_source.code")
-                if !info_source_code.blank?
-                  info_source = Document.find_by_original_medium_id(info_source_code)
-                  puts "Info source with code #{info_source_code} was not found." if info_source.nil?
-                end
-              else
-                info_source = Document.find(info_source_id)
-                puts "Info source with MMS ID #{info_source_id} was not found." if info_source.nil?
-              end              
-            rescue Exception => e
-              puts e.to_s
-            end            
-            if !info_source.nil?
-              citations = name[n].citations
-              citation = citations.find(:first, :conditions => {:info_source_id => info_source.id})
-              citation = citations.create(:info_source => info_source) if citation.nil?
-              puts "Info source #{info_source.id} could not be associated to feature #{feature.pid}" if citation.nil?
-            end
-            
+            self.add_date(fields, "#{i}.feature_names.time_units.date", name[n])
+            self.add_info_source(fields, "#{i}.feature_names.info_source.id", "#{i}.feature_names.info_source.code", name[n])
             is_translation_str = fields.delete("#{i}.feature_name_relations.is_translation")
             is_translation = is_translation_str.downcase=='yes' ? 1: 0 if !is_translation_str.blank?
             parent_node_str = fields.delete("#{i}.feature_name_relations.parent_node")
@@ -234,8 +253,13 @@ module Importation
                 else
                   name_relation = name[n].parent_relations.find(:first, :conditions => {:parent_node_id => parent_name.id})
                   if name_relation.nil?
-                    name_relation = name[n].parent_relations.create(:parent_node => parent_name, :phonetic_system => phonetic_system, :is_phonetic => 1, :is_translation => is_translation)
-                    puts "Could not associate #{name_str} to Tibetan name for feature #{feature.pid}." if name_relation.nil?
+                    name_relation = name[n].parent_relations.create(:skip_update => true, :parent_node => parent_name, :phonetic_system => phonetic_system, :is_phonetic => 1, :is_translation => is_translation)
+                    if name_relation.nil?
+                      puts "Could not associate #{name_str} to Tibetan name for feature #{feature.pid}."
+                    else
+                      parent_name.update_hierarchy
+                      name_positions_with_changed_relations << n if !name_positions_with_changed_relations.include? n
+                    end
                   else
                     name_relation.update_attributes(:phonetic_system => phonetic_system, :is_phonetic => 1, :orthographic_system => nil, :is_orthographic => 0, :is_translation => is_translation)
                   end
@@ -248,8 +272,13 @@ module Importation
                 if !simp_chi_name.nil?
                   name_relation = simp_chi_name.parent_relations.first
                   if name_relation.nil?
-                    name_relation = name[n].child_relations.create(:is_orthographic => 1, :orthographic_system => OrthographicSystem.get_by_code('trad.to.simp.ch.translit'), :is_translation => is_translation, :child_node => simp_chi_name)
-                    puts "Could not make #{name_str} a parent of simplified chinese name for feature #{f.pid}" if name_relation.nil?
+                    name_relation = name[n].child_relations.create(:skip_update => true, :is_orthographic => 1, :orthographic_system => OrthographicSystem.get_by_code('trad.to.simp.ch.translit'), :is_translation => is_translation, :child_node => simp_chi_name)
+                    if name_relation.nil?
+                      puts "Could not make #{name_str} a parent of simplified chinese name for feature #{f.pid}"
+                    else
+                      simp_chi_name.update_hierarchy
+                      name_positions_with_changed_relations << n if !name_positions_with_changed_relations.include? n
+                    end
                   elsif !phonetic_system.nil? && phonetic_system.code=='tib.to.chi.transcrip'
                     # only update if its tibetan
                     name_relation.update_attributes(:phonetic_system => nil, :is_phonetic => 0, :orthographic_system => OrthographicSystem.get_by_code('trad.to.simp.ch.translit'), :is_orthographic => 1, :is_translation => is_translation, :parent_node => name[n])
@@ -260,7 +289,7 @@ module Importation
                 end
               end
             else            
-              conditions = {:phonetic_system => phonetic_system, :orthographic_system => orthographic_system, :is_translation => is_translation, :alt_spelling_system => alt_spelling_system}
+              conditions = {:skip_update => true, :phonetic_system => phonetic_system, :orthographic_system => orthographic_system, :is_translation => is_translation, :alt_spelling_system => alt_spelling_system}
               is_phonetic = fields.delete("#{i}.feature_name_relations.is_phonetic")
               if is_phonetic.blank?
                 conditions[:is_phonetic] = phonetic_system.nil? ? 0 : 1
@@ -279,7 +308,10 @@ module Importation
               else
                 conditions[:is_alt_spelling] = is_alt_spelling.downcase=='yes' ? 1: 0
               end
-              relations_pending_save << { :relation => name[n].parent_relations.build(conditions), :parent_position => parent_node_str.to_i-1 }
+              parent_position = parent_node_str.to_i-1
+              relations_pending_save << { :relation => name[n].parent_relations.build(conditions), :parent_position => parent_position }
+              name_positions_with_changed_relations << n if !name_positions_with_changed_relations.include? n
+              name_positions_with_changed_relations << parent_position if !name_positions_with_changed_relations.include? parent_position
             end
           end
         end        
@@ -287,12 +319,16 @@ module Importation
       relations_pending_save.each do |item|
         pending_relation = item[:relation]
         parent_node = name[item[:parent_position]]
-        relation = pending_relation.child_node.parent_relations.find(:first, :conditions => {:parent_node_id => parent_node.id})
-        if relation.nil?
-          pending_relation.parent_node = parent_node
-          relation = pending_relation.save
-          puts "Relation between names #{relation.child_note.name} and #{relation.parent_node.name} for feature #{feature.pid} could not be saved." if relation.nil?
-        end        
+        if parent_node.nil?
+          puts "Parent name #{item[:parent_position]} of #{pending_relation.child_node.id} for feature #{feature.fid} not found."
+        else
+          relation = pending_relation.child_node.parent_relations.find(:first, :conditions => {:parent_node_id => parent_node.id})
+          if relation.nil?
+            pending_relation.parent_node = parent_node
+            relation = pending_relation.save
+            puts "Relation between names #{relation.child_note.name} and #{relation.parent_node.name} for feature #{feature.pid} could not be saved." if relation.nil?              
+          end        
+        end
       end
       
       # The optional column "feature_types.id" can be used to specify the feature object type name.
@@ -306,45 +342,15 @@ module Importation
         else
           feature_object_types = feature.feature_object_types
           feature_object_type = feature_object_types.find(:first, :conditions => {:category_id => category.id})
-          feature_object_type = feature_object_types.create(:category => category) if feature_object_type.nil?
+          if feature_object_type.nil?
+            feature_object_type = feature_object_types.create(:category => category, :skip_update => true)
+            feature_ids_with_object_types_added << feature.id if !feature_ids_with_object_types_added.include? feature.id
+          end
           if feature_object_type.nil?
             puts "Couldn't associate feature type #{feature_type_id} with feature #{f.pid}"
           else
-            date = fields.delete('categories.time_units.date')
-            if !date.blank?
-              complex_date = to_date(date)
-              if complex_date.nil?
-                puts "Date #{date} could not be associated to feature type #{feature_type_id} of feature #{feature.pid}."
-              else
-                time_unit = feature_object_type.time_units.build(:date => complex_date, :is_range => false, :calendar_id => 1)
-                if !time_unit.date.nil?
-                  time_unit.date.save
-                  time_unit.save
-                end
-              end            
-            end
-            info_source = nil
-            begin
-              info_source_id = fields.delete('categories.info_source.id')
-              if info_source_id.blank?
-                info_source_code = fields.delete('categories.info_source.code')
-                if !info_source_code.blank?
-                  info_source = Document.find_by_original_medium_id(info_source_code)
-                  puts "Info source with code #{info_source_code} was not found." if info_source.nil?
-                end              
-              else
-                info_source = Document.find(info_source_id)
-                puts "Info source with id #{info_source_id} was not found." if info_source.nil?
-              end              
-            rescue Exception => e
-              puts e.to_s
-            end          
-            if !info_source.nil?
-              citations = feature_object_type.citations
-              citation = citations.find(:first, :conditions => {:info_source_id => info_source.id})
-              citation = citations.create(:info_source => info_source) if citation.nil?
-              puts "Couldn't associate info source #{info_source_id} to feature type #{feature_type_id} for feature #{f.pid}" if citation.nil?
-            end
+            self.add_date(fields, 'categories.time_units.date', feature_object_type)
+            self.add_info_source(fields, 'categories.info_source.id', 'categories.info_source.code', feature_object_type)
           end
         end
       end
@@ -368,47 +374,12 @@ module Importation
           else
             geocodes = feature.geo_codes
             geocode = geocodes.find_by_geo_code_type_id(geocode_type.id)
+            geocode = geocodes.create(:geo_code_type => geocode_type, :geo_code_value => geocode_value) if geocode.nil?
             if geocode.nil?
-              geocode = geocodes.create(:geo_code_type => geocode_type, :geo_code_value => geocode_value)
-              if geocode.nil?
-                puts "Couldn't associate #{geocode_value} to #{geocode_type} for feature #{feature.pid}"
-              else
-                date = fields.delete("#{i}.feature_geo_codes.time_units.date")
-                if !date.blank?
-                  complex_date = to_date(date)
-                  if complex_date.nil?
-                    puts "Date #{date} could not be associated to geo_code #{geocode_value} (#{geocode_type}) of feature #{feature.pid}."
-                  else
-                    time_unit = geocode.time_units.build(:date => complex_date, :is_range => false, :calendar_id => 1)
-                    if !time_unit.date.nil?
-                      time_unit.date.save
-                      time_unit.save
-                    end
-                  end                
-                end
-              end
-            end
-            info_source = nil
-            begin
-              info_source_id = fields.delete("#{i}.feature_geo_codes.info_source.id")
-              if info_source_id.blank?
-                info_source_code = fields.delete("#{i}.feature_geo_codes.info_source.code")
-                if !info_source_code.blank?
-                  info_source = Document.find_by_original_medium_id(info_source_code)
-                  puts "Info source with code #{info_source_code} was not found." if info_source.nil?
-                end
-              else
-                info_source = Document.find(info_source_id)
-                puts "Info source with id #{info_source_id} was not found." if info_source.nil?
-              end              
-            rescue Exception => e
-              puts e.to_s
-            end
-            if !info_source.nil?
-              citations = geocode.citations
-              citation = citations.find(:first, :conditions => {:info_source_id => info_source.id})
-              citation = citations.create(:info_source => info_source) if citation.nil?
-              puts "Couldn't associate info source #{info_source_id} to geocode #{geocode_value} (#{geocode_type}) for feature #{feature.pid}" if citation.nil?
+              puts "Couldn't associate #{geocode_value} to #{geocode_type} for feature #{feature.pid}"
+            else
+              self.add_date(fields, "#{i}.feature_geo_codes.time_units.date", geocode)
+              self.add_info_source(fields, "#{i}.feature_geo_codes.info_source.id", "#{i}.feature_geo_codes.info_source.code", geocode)
             end
           end
         end
@@ -439,7 +410,11 @@ module Importation
               conditions = {:parent_node_id => parent.id, :child_node_id => feature.id, :feature_relation_type_id => relation_type.id}
               conditions[:perspective_id] = perspective.id if !perspective.nil?
               feature_relation = FeatureRelation.find(:first, :conditions => conditions)
-              feature_relation = FeatureRelation.create(conditions) if feature_relation.nil?
+              if feature_relation.nil?
+                feature_relation = FeatureRelation.create(conditions.merge({:skip_update => true}))
+                feature_ids_with_changed_relations << parent.id if !feature_ids_with_changed_relations.include? parent.id
+                feature_ids_with_changed_relations << feature.id if !feature_ids_with_changed_relations.include? feature.id
+              end
               puts "Couldn't establish relationship #{relation_type_str} between feature #{feature.pid} and #{parent_fid}." if feature_relation.nil?
             end
           end
@@ -476,14 +451,41 @@ module Importation
         contestations = feature.contestations
         contestation = contestations.find(:first, :conditions => conditions)
         contestation = contestations.create(:administrator => administrator, :claimant => claimant, :contested => (contested.downcase == 'yes')) if contestation.nil?
-        puts "Couldn't create contestation between #{claimant_name} and #{administrator_name} for #{feature.pid}." if contestation.nil?
+        puts "Couldn't create contestation between #{claimant_name} and #{administrator_name} for #{feature.pid}." if contestation.nil?          
       end
       feature.update_attributes({:is_blank => false, :is_public => true})
+      # running triggers for feature_name
+      say "Running triggers for feature_name."
+      if name_added
+        feature.update_name_positions
+        feature.update_cached_feature_names
+      end
+      
+      # running triggers for feature_name_relation
+      say "Running triggers for feature_name_relation."
+      name_positions_with_changed_relations.each{|pos| name[pos].update_hierarchy }
+            
       if fields.empty?
         puts "#{feature.pid} processed."
       else
         puts "#{feature.pid}: the following fields have been ignored: #{fields.keys.join(', ')}"
       end
+    end
+    puts "Updating cache..."
+    # running triggers on feature_relation
+    say "Running triggers on feature_relations."
+    feature_ids_with_changed_relations.each do |id| 
+      feature = Feature.find(id)
+      feature.update_cached_feature_relation_categories
+      feature.update_hierarchy
+    end
+    
+    # running triggers for feature_object_type
+    say "Running triggers on feature_relations."
+    feature_ids_with_object_types_added.each do |id|
+      feature = Feature.find(id)
+      feature.update_cached_feature_relation_categories if !feature_ids_with_changed_relations.include? id
+      feature.update_object_type_positions
     end
   end
 end

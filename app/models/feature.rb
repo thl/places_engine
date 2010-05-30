@@ -1,4 +1,6 @@
 class Feature < ActiveRecord::Base
+  attr_accessor :skip_update
+  
   include FeatureExtensionForNamePositioning
   extend IsDateable
   
