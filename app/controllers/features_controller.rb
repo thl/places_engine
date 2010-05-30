@@ -116,6 +116,13 @@ class FeaturesController < ApplicationController
       options[:conditions]['features.is_public'] = 1
       options[:conditions].delete(:is_public)
     end
+    if !params[:characteristic_id].blank?
+      options[:joins] = "LEFT JOIN category_features cf ON cf.feature_id = features.id"
+      options[:conditions]['cf.category_id'] = params[:characteristic_id].split(',')
+      options[:conditions]['cf.type'] = nil
+      options[:conditions]['features.is_public'] = 1
+      options[:conditions].delete(:is_public)
+    end
     perform_global_search(options, search_options)
     #api_render(@features)
     respond_to do |format|
@@ -123,7 +130,11 @@ class FeaturesController < ApplicationController
       format.xml  { render :action => 'paginated_show' }
       format.json { render :json => Hash.from_xml(render_to_string(:action => 'paginated_show.xml.builder')) }
     end
-    
+  end
+  
+  def characteristics_list
+    @kmaps_characteristics = CategoryFeature.find(:all, :select => "DISTINCT category_id", :conditions => "type IS NULL")
+    render :json => @kmaps_characteristics.collect{|c| {:id => c.category_id, :name => c.to_s.strip}}.sort_by{|a| a[:name].downcase.strip}
   end
   
   def gis_resources
