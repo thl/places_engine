@@ -1,29 +1,24 @@
 require 'csv'
 module Importation
+  def self.to_date(str)
+    response = Hash.new
+    array = str.split('/')
+    response[:day] = array.shift.to_i if array.size==3
+    response[:month] = array.shift.to_i if array.size>=2
+    response[:year] = array.shift.to_i if array.size>=1
+    response
+  end
   
-  def self.to_date(str, certainty_id = nil, season_id = nil)
+  def self.to_complex_date(str, certainty_id = nil, season_id = nil)
     complex_date = nil
     dash = str.index('-')
     if dash.nil?
-      begin
-        date = str.to_date
-        complex_date = ComplexDate.new(:day => date.day, :day_certainty_id => certainty_id, :month => date.month, :month_certainty_id => certainty_id, :year => date.year, :year_certainty_id => certainty_id, :season_id => season_id, :season_certainty_id => certainty_id)
-      rescue
-        date_int = str.to_i
-        complex_date = ComplexDate.new(:year => date_int, :year_certainty_id => certainty_id, :season_id => season_id, :season_certainty_id => certainty_id) if date_int.to_s == str
-      end      
+      date = self.to_date(str)
+      complex_date = ComplexDate.new(:day => date[:day], :day_certainty_id => certainty_id, :month => date[:month], :month_certainty_id => certainty_id, :year => date[:year], :year_certainty_id => certainty_id, :season_id => season_id, :season_certainty_id => certainty_id)
     else
-      start_str = str[0...dash].strip
-      end_str = str[dash+1..str.size]
-      begin
-        start_date = start_str.to_date
-        end_date = end_str.to_date
-        complex_date = ComplexDate.new(:day => start_date.day, :day_end => end_date.day, :day_certainty_id => certainty_id, :month => start_date.month, :month_end => end_date.month, :month_certainty_id => certainty_id, :year => start_date.year, :year_end => end_date.year, :year_certainty_id => certainty_id, :season_id => season_id, :season_certainty_id => certainty_id)
-      rescue
-        start_date_int = start_str.to_i
-        end_date_int = end_str.to_i
-        complex_date = ComplexDate.new(:year => start_date_int, :year_end => end_date_int, :year_certainty_id => certainty_id, :season_id => season_id, :season_certainty_id => certainty_id) if start_date_int.to_s == start_str && end_date_int.to_s == end_str
-      end
+      start_date = self.to_date(str[0...dash].strip)
+      end_date = self.to_date(str[dash+1..str.size].strip)
+      complex_date = ComplexDate.new(:day => start_date[:day], :day_end => end_date[:day], :day_certainty_id => certainty_id, :month => start_date[:month], :month_end => end_date[:month], :month_certainty_id => certainty_id, :year => start_date[:year], :year_end => end_date[:year], :year_certainty_id => certainty_id, :season_id => season_id, :season_certainty_id => certainty_id)
     end
     return complex_date
   end
@@ -39,8 +34,8 @@ module Importation
         season_id = fields.delete("#{field_prefix}.time_units.season_id")
         season_id = nil if season_id.blank?
         
-        complex_start_date = to_date(start_date, certainty_id, season_id)
-        complex_end_date = to_date(end_date, certainty_id, season_id)
+        complex_start_date = to_complex_date(start_date, certainty_id, season_id)
+        complex_end_date = to_complex_date(end_date, certainty_id, season_id)
         if complex_start_date.nil? || complex_end_date.nil?
           puts "Date #{date} could not be associated to #{dateable.class_name.titleize}."
         else
@@ -57,9 +52,9 @@ module Importation
       season_id = nil if season_id.blank?
       certainty_id = fields.delete("#{field_prefix}.time_units.certainty_id")
       certainty_id = nil if certainty_id.blank?
-      complex_date = to_date(date, certainty_id, season_id)
+      complex_date = to_complex_date(date, certainty_id, season_id)
       if complex_date.nil?
-        puts "Date #{date} could not be associated to #{dateable.class_name.titleize}."
+        puts "Date #{date} could not be associated to #{dateable.class.class_name.titleize}."
       else
         time_unit = dateable.time_units.build(:date => complex_date, :is_range => false, :calendar_id => 1)
         if !time_unit.date.nil?
@@ -95,6 +90,16 @@ module Importation
     end  
   end
   
+  def self.add_note(fields, field_prefix, notable)
+    note_str = fields.delete("#{field_prefix}.note")
+    if !note_str.blank?
+      notes = notable.notes
+      note = notes.find(:first, :conditions => {:content => note_str})
+      note = notes.create(:content => note_str) if note.nil?
+      puts "Note #{note_str} could not be added to #{notable.class_name.titleize} #{notable.id}." if note.nil?
+    end
+  end
+  
   def self.say msg
     Rails.logger.info "IMPORTER COMMENT (#{Time.now.to_s}): #{msg}"
   end
@@ -114,27 +119,33 @@ module Importation
   # feature_names.note
   
   # Currently supported fields:
-  # features.fid, features.old_pid, feature_names.delete, feature_names.note
+  # features.fid, features.old_pid, feature_names.delete
   # i.feature_names.name, i.languages.code/name, i.writing_systems.code/name, i.feature_names.is_primary,
   # i.feature_name_relations.parent_node, i.feature_name_relations.is_translation, i.feature_name_relations.relationship.code
   # i.phonetic_systems.code/name, i.orthographic_systems.code/name, 
   # i.feature_name_relations.is_phonetic, i.feature_name_relations.is_orthographic
-  # feature_types.id, feature_types.info_source.id/code,
+  # feature_types.id, i.feature.id
   # i.geo_code_types.code/name, i.feature_geo_codes.geo_code_value, i.feature_geo_codes.info_source.id/code,
   # feature_relations.related_feature.fid, feature_relations.type.code, perspectives.code/name,
   # contestations.contested, contestations.administrator, contestations.claimant
+  # i.kmaps.id, kXXX._
+  # shapes.lat, shapes.lng, shapes.altitude
+  
 
   # Fields that accept time_units:
-  # features, i.feature_names, feature_types, feature_types.i
+  # features, i.feature_names, i.feature_names.j, feature_types, feature_types.i, i.kmaps
 
   # time_units fields supported:
   # .time_units.date, .time_units.start_date, .time_units.end_date, .time_units.season_id, .time_units.certainty_id
   
   # Fields that accept info_source:
-  # i.feature_names, i.feature_names.j, feature_types, i.feature_geo_codes
+  # i.feature_names, i.feature_names.j, feature_types.j, i.feature_types.j, i.feature_geo_codes
   
   # info_source fields:
   # .info_source.id/code
+  
+  # Fields that accept note:
+  # feature_names, i.kmaps, kXXX, i.feature_names
   
   
   def self.do_csv_import(filename)
@@ -196,7 +207,6 @@ module Importation
       
       name_added = false
       name_positions_with_changed_relations = Array.new
-      
       # Name is optional. If there is a name, then the required column (for i varying from
       # 1 to 18) is "i.feature_names.name".
       # Optional columns are "i.languages.code"/"i.languages.name",
@@ -291,7 +301,11 @@ module Importation
           else
             self.add_date(fields, "#{i}.feature_names", name[n])
             self.add_info_source(fields, "#{i}.feature_names", name[n])
-            1.upto(4) { |j| self.add_info_source(fields, "#{i}.feature_names.#{j}", name[n]) }
+            self.add_note(fields, "#{i}.feature_names", name[n])
+            1.upto(4) do |j|
+              self.add_date(fields, "#{i}.feature_names.#{j}", name[n])
+              self.add_info_source(fields, "#{i}.feature_names.#{j}", name[n])
+            end
             is_translation_str = fields.delete("#{i}.feature_name_relations.is_translation")
             is_translation = is_translation_str.downcase=='yes' ? 1: 0 if !is_translation_str.blank?
             parent_node_str = fields.delete("#{i}.feature_name_relations.parent_node")
@@ -374,7 +388,7 @@ module Importation
         pending_relation = item[:relation]
         parent_node = name[item[:parent_position]]
         if parent_node.nil?
-          puts "Parent name #{item[:parent_position]} of #{pending_relation.child_node.id} for feature #{feature.fid} not found."
+          puts "Parent name #{item[:parent_position]} of #{pending_relation.child_node.id} for feature #{feature.pid} not found."
         else
           relation = pending_relation.child_node.parent_relations.find(:first, :conditions => {:parent_node_id => parent_node.id})
           if relation.nil?
@@ -388,24 +402,32 @@ module Importation
       # The optional column "feature_types.id" can be used to specify the feature object type name.
       # If there is a category title, then optional columns are "categories.info_source.id" and
       # "categories.time_units.date".
-      feature_type_id = fields.delete('feature_types.id')
-      if !feature_type_id.blank?
-        category = Category.find(feature_type_id)
-        if category.nil?
-          puts "Feature type #{feature_type_id} not found."
-        else
-          feature_object_types = feature.feature_object_types
-          feature_object_type = feature_object_types.find(:first, :conditions => {:category_id => category.id})
-          if feature_object_type.nil?
-            feature_object_type = feature_object_types.create(:category => category, :skip_update => true)
-            feature_ids_with_object_types_added << feature.id if !feature_ids_with_object_types_added.include? feature.id
-          end
-          if feature_object_type.nil?
-            puts "Couldn't associate feature type #{feature_type_id} with feature #{f.pid}"
+      0.upto(4) do |i|
+        prefix = i>0 ? "#{i}.feature_types" : 'feature_types'
+        feature_type_id = fields.delete("#{prefix}.id")
+        if !feature_type_id.blank?
+          category = Category.find(feature_type_id)
+          if category.nil?
+            puts "Feature type #{feature_type_id} not found."
           else
-            self.add_date(fields, 'feature_types', feature_object_type)
-            1.upto(8) { |i| self.add_date(fields, "feature_types.#{i}", feature_object_type) }
-            self.add_info_source(fields, 'feature_types', feature_object_type)
+            feature_object_types = feature.feature_object_types
+            feature_object_type = feature_object_types.find(:first, :conditions => {:category_id => category.id})
+            if feature_object_type.nil?
+              feature_object_type = feature_object_types.create(:category => category, :skip_update => true)
+              feature_ids_with_object_types_added << feature.id if !feature_ids_with_object_types_added.include? feature.id
+            end
+            if feature_object_type.nil?
+              puts "Couldn't associate feature type #{feature_type_id} to feature #{feature.pid}"
+            else
+              self.add_date(fields, prefix, feature_object_type)
+              self.add_info_source(fields, prefix, feature_object_type)
+              1.upto(8) do |j|
+                field_prefix = "#{prefix}.#{j}"
+                self.add_info_source(fields, field_prefix, feature_object_type)
+                self.add_date(fields, field_prefix, feature_object_type)
+                self.add_note(fields, field_prefix, feature_object_type)
+              end
+            end
           end
         end
       end
@@ -434,6 +456,7 @@ module Importation
               puts "Couldn't associate #{geocode_value} to #{geocode_type} for feature #{feature.pid}"
             else
               self.add_date(fields, "#{i}.feature_geo_codes", geocode)
+              1.upto(3) { |j| self.add_date(fields, "#{i}.feature_geo_codes.#{j}", geocode) }
               self.add_info_source(fields, "#{i}.feature_geo_codes", geocode)
             end
           end
@@ -509,6 +532,63 @@ module Importation
         puts "Couldn't create contestation between #{claimant_name} and #{administrator_name} for #{feature.pid}." if contestation.nil?          
       end
       feature.update_attributes({:is_blank => false, :is_public => true})
+      
+      # Deal with shapes
+      shapes_lat = fields.delete('shapes.lat')
+      shapes_lng = fields.delete('shapes.lng')
+      if !shapes_lat.blank? && !shapes_lng.blank?
+        altitude = fields.delete('shapes.altitude')
+        shape = Shape.new(:geometry => GeoRuby::SimpleFeatures::Point.new(4326), :fid => feature.fid, :altitude => altitude.to_i)
+        geo = shape.geometry
+        geo.y = shapes_lat
+        geo.x = shapes_lng
+        shape.geometry = geo
+        shape.save
+        puts "Shape for feature #{feature.pid} could not be saved." if shape.id.nil?
+      else
+        puts "Can't specify a latitude without a longitude and viceversa for feature #{feature.pid}" if !shapes_lat.blank? || !shapes_lng.blank?
+      end
+      
+      # Now deal with i.kmaps.id
+      1.upto(3) do |i|
+        kmap_str = fields.delete("#{i}.kmaps.id")
+        next if kmap_str.blank?
+        kmap = Category.find(kmap_str.scan(/\d+/).first.to_i)
+        if kmap.nil?
+          puts "Could find kmap #{kmap_id} for feature #{feature.pid}."
+          next
+        end
+        category_features = feature.category_features
+        conditions = { :category_id => kmap.id }
+        category_feature = category_features.find(:first, :conditions => conditions)
+        category_feature = category_features.create(conditions) if category_feature.nil?
+        self.add_date(fields, "#{i}.kmaps", category_feature)
+        self.add_note(fields, "#{i}.kmaps", category_feature)        
+      end
+      
+      # now deal with kXXXX      
+      fields.keys.each do |key|
+        next if key !~ /\A[kK]\d+/ # check to see if its a kmap
+        kmap_id = key.scan(/[kK](\d+)/).flatten.first.to_i
+        pos = key =~ /time_units|note/
+        if !pos.nil?
+          kmap = Category.find(kmap_id)
+          if kmap.nil?
+            puts "Could find kmap #{kmap_id} associated with #{key} for #{feature.pid}."
+            next
+          end
+          category_features = feature.category_features
+          conditions = { :category_id => kmap.id }
+          category_feature = category_features.find(:first, :conditions => conditions)
+          category_feature = category_features.create(conditions) if category_feature.nil?
+          prefix = key[0...pos-1]
+          posfix = key[pos...key.size]
+          self.add_date(fields, prefix, category_feature)
+          self.add_note(fields, prefix, category_feature)
+          next
+        end
+      end
+      
       # running triggers for feature_name
       say "Running triggers for feature_name."
       if name_added
