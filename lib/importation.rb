@@ -134,7 +134,7 @@ module Importation
   # .time_units.date.certainty_id, .time_units.start_date.certainty_id, .time_units.end_date.certainty_id
   
   # Fields that accept info_source:
-  # i.feature_names, feature_types, i.feature_geo_codes
+  # i.feature_names, i.feature_names.j, feature_types, i.feature_geo_codes
   
   # info_source fields:
   # .info_source.id/code, 
@@ -294,6 +294,7 @@ module Importation
           else
             self.add_date(fields, "#{i}.feature_names", name[n])
             self.add_info_source(fields, "#{i}.feature_names", name[n])
+            1.upto(4) { |j| self.add_info_source(fields, "#{i}.feature_names.#{j}", name[n]) }
             is_translation_str = fields.delete("#{i}.feature_name_relations.is_translation")
             is_translation = is_translation_str.downcase=='yes' ? 1: 0 if !is_translation_str.blank?
             parent_node_str = fields.delete("#{i}.feature_name_relations.parent_node")
