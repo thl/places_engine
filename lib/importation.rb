@@ -1,30 +1,30 @@
 require 'csv'
 module Importation
   
-  def self.to_date(str, certainty_id = nil)
+  def self.to_date(str, certainty_id = nil, season_id = nil)
     complex_date = nil
     dash = str.index('-')
     if dash.nil?
       begin
         date = str.to_date
-        complex_date = ComplexDate.new(:day => date.day, :day_certainty_id => certainty_id, :month => date.month, :month_certainty_id => certainty_id, :year => date.year, :year_certainty_id => certainty_id)
+        complex_date = ComplexDate.new(:day => date.day, :day_certainty_id => certainty_id, :month => date.month, :month_certainty_id => certainty_id, :year => date.year, :year_certainty_id => certainty_id, :season_id => season_id, :season_certainty_id => certainty_id)
       rescue
         date_int = str.to_i
-        complex_date = ComplexDate.new(:year => date_int, :year_certainty_id => certainty_id) if date_int.to_s == str
+        complex_date = ComplexDate.new(:year => date_int, :year_certainty_id => certainty_id, :season_id => season_id, :season_certainty_id => certainty_id) if date_int.to_s == str
       end      
     else
       start_str = str[0...dash].strip
       end_str = str[dash+1..str.size]
       begin
-        start_date = to_date(start_str)
-        end_date = to_date(end_str)
-        complex_date = ComplexDate.new(:day => start_date.day, :day_end => end_date.day, :day_certainty_id => certainty_id, :month => start_date.month, :month_end => end_date.month, :month_certainty_id => certainty_id, :year => start_date.year, :year_end => end_date.year, :year_certainty_id => certainty_id)
+        start_date = start_str.to_date
+        end_date = end_str.to_date
+        complex_date = ComplexDate.new(:day => start_date.day, :day_end => end_date.day, :day_certainty_id => certainty_id, :month => start_date.month, :month_end => end_date.month, :month_certainty_id => certainty_id, :year => start_date.year, :year_end => end_date.year, :year_certainty_id => certainty_id, :season_id => season_id, :season_certainty_id => certainty_id)
       rescue
         start_date_int = start_str.to_i
         end_date_int = end_str.to_i
-        complex_date = ComplexDate.new(:year => start_date_int, :year_end => end_date_int, :year_certainty_id => certainty_id) if start_date_int.to_s == start_str && end_date_int.to_s == end_str
+        complex_date = ComplexDate.new(:year => start_date_int, :year_end => end_date_int, :year_certainty_id => certainty_id, :season_id => season_id, :season_certainty_id => certainty_id) if start_date_int.to_s == start_str && end_date_int.to_s == end_str
       end
-    end    
+    end
     return complex_date
   end
   
@@ -33,27 +33,33 @@ module Importation
     if date.blank?
       start_date = fields.delete("#{field_prefix}.time_units.start_date")
       end_date = fields.delete("#{field_prefix}.time_units.end_date")
-      start_certainty_id = fields.delete("#{field_prefix}.time_units.start_date.certainty_id")
-      start_certainty_id = nil if start_certainty_id.blank?
-      end_certainty_id = fields.delete("#{field_prefix}.time_units.end_date.certainty_id")
-      end_certainty_id = nil if end_certainty_id.blank?
       if !start_date.blank? && !end_date.blank?
-        complex_start_date = to_date(start_date, start_certainty_id)
-        complex_end_date = to_date(end_date, end_certainty_id)
+        start_certainty_id = fields.delete("#{field_prefix}.time_units.start_date.certainty_id")
+        start_certainty_id = nil if start_certainty_id.blank?
+        end_certainty_id = fields.delete("#{field_prefix}.time_units.end_date.certainty_id")
+        end_certainty_id = nil if end_certainty_id.blank?
+        season_id = fields.delete("#{field_prefix}.time_units.season_id")
+        season_id = nil if season_id.blank?
+        
+        complex_start_date = to_date(start_date, start_certainty_id, season_id)
+        complex_end_date = to_date(end_date, end_certainty_id, season_id)
         if complex_start_date.nil? || complex_end_date.nil?
           puts "Date #{date} could not be associated to #{dateable.class_name.titleize}."
         else
           time_unit = dateable.time_units.build(:start_date => complex_start_date, :end_date => complex_end_date, :is_range => true, :calendar_id => 1)
-          if !time_unit.date.nil?
-            time_unit.date.save
-            time_unit.save
-          end
+          time_unit.date.save if !time_unit.date.nil?
+          time_unit.start_date.save if !time_unit.start_date.nil?
+          time_unit.end_date.save if !time_unit.end_date.nil?
+          time_unit.save
         end        
       end
-    else
+    end
+    if !date.blank?
+      season_id = fields.delete("#{field_prefix}.time_units.season_id")
+      season_id = nil if season_id.blank?
       certainty_id = fields.delete("#{field_prefix}.time_units.date.certainty_id")
       certainty_id = nil if certainty_id.blank?
-      complex_date = to_date(date, certainty_id)
+      complex_date = to_date(date, certainty_id, season_id)
       if complex_date.nil?
         puts "Date #{date} could not be associated to #{dateable.class_name.titleize}."
       else
@@ -111,22 +117,28 @@ module Importation
   
   # Currently supported fields:
   # features.fid, features.old_pid, feature_names.delete, feature_names.note
-  # features.time_units.date, features.time_units.start_date, features.time_units.end_date
-  # features.time_units.date.certainty_id, features.time_units.start_date.certainty_id, features.time_units.end_date.certainty_id
-  # i.feature_names.name, i.languages.code/i.languages.name, i.writing_systems.code/i.writing_systems.name,
-  # i.feature_names.info_source.id/i.feature_names.info_source.code, i.feature_names.is_primary,
-  # i.feature_names.time_units.date, i.feature_names.time_units.start_date, i.feature_names.time_units.end_date
+  # i.feature_names.name, i.languages.code/name, i.writing_systems.code/name, i.feature_names.is_primary,
   # i.feature_name_relations.parent_node, i.feature_name_relations.is_translation, i.feature_name_relations.relationship.code
-  # i.phonetic_systems.code/i.phonetic_systems.name, i.orthographic_systems.code/i.orthographic_systems.name, 
+  # i.phonetic_systems.code/name, i.orthographic_systems.code/name, 
   # i.feature_name_relations.is_phonetic, i.feature_name_relations.is_orthographic
-  # feature_types.id, feature_types.info_source.id/feature_types.info_source.code,
-  # features_types.time_units.date, features_types.time_units.start_date, feature_types.time_units.end_date
-  # features_types.time_units.date.certainty_id, features_types.time_units.start_date.certainty_id, feature_types.time_units.end_date.certainty_id
-  # i.geo_code_types.code/i.geo_code_types.name, i.feature_geo_codes.geo_code_value,
-  # i.feature_geo_codes.info_source.id/i.feature_geo_codes.info_source.code,
-  # i.feature_geo_codes.time_units.date, i.feature_geo_codes.time_units.start_date, i.feature_geo_codes.time_units.end_date
-  # feature_relations.related_feature.fid, feature_relations.type.code, perspectives.code/perspectives.name,
+  # feature_types.id, feature_types.info_source.id/code,
+  # i.geo_code_types.code/name, i.feature_geo_codes.geo_code_value, i.feature_geo_codes.info_source.id/code,
+  # feature_relations.related_feature.fid, feature_relations.type.code, perspectives.code/name,
   # contestations.contested, contestations.administrator, contestations.claimant
+
+  # Fields that accept time_units:
+  # features, i.feature_names, feature_types, feature_types.i
+
+  # time_units fields supported:
+  # .time_units.date, .time_units.start_date, .time_units.end_date, .time_units.season_id
+  # .time_units.date.certainty_id, .time_units.start_date.certainty_id, .time_units.end_date.certainty_id
+  
+  # Fields that accept info_source:
+  # i.feature_names, feature_types, i.feature_geo_codes
+  
+  # info_source fields:
+  # .info_source.id/code, 
+  
   
   def self.do_csv_import(filename)
     field_names = nil
@@ -394,6 +406,7 @@ module Importation
             puts "Couldn't associate feature type #{feature_type_id} with feature #{f.pid}"
           else
             self.add_date(fields, 'feature_types', feature_object_type)
+            1.upto(8) { |i| self.add_date(fields, "feature_types.#{i}", feature_object_type) }
             self.add_info_source(fields, 'feature_types', feature_object_type)
           end
         end
