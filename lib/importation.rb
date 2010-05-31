@@ -34,15 +34,13 @@ module Importation
       start_date = fields.delete("#{field_prefix}.time_units.start_date")
       end_date = fields.delete("#{field_prefix}.time_units.end_date")
       if !start_date.blank? && !end_date.blank?
-        start_certainty_id = fields.delete("#{field_prefix}.time_units.start_date.certainty_id")
-        start_certainty_id = nil if start_certainty_id.blank?
-        end_certainty_id = fields.delete("#{field_prefix}.time_units.end_date.certainty_id")
-        end_certainty_id = nil if end_certainty_id.blank?
+        certainty_id = fields.delete("#{field_prefix}.time_units.certainty_id")
+        certainty_id = nil if certainty_id.blank?
         season_id = fields.delete("#{field_prefix}.time_units.season_id")
         season_id = nil if season_id.blank?
         
-        complex_start_date = to_date(start_date, start_certainty_id, season_id)
-        complex_end_date = to_date(end_date, end_certainty_id, season_id)
+        complex_start_date = to_date(start_date, certainty_id, season_id)
+        complex_end_date = to_date(end_date, certainty_id, season_id)
         if complex_start_date.nil? || complex_end_date.nil?
           puts "Date #{date} could not be associated to #{dateable.class_name.titleize}."
         else
@@ -57,7 +55,7 @@ module Importation
     if !date.blank?
       season_id = fields.delete("#{field_prefix}.time_units.season_id")
       season_id = nil if season_id.blank?
-      certainty_id = fields.delete("#{field_prefix}.time_units.date.certainty_id")
+      certainty_id = fields.delete("#{field_prefix}.time_units.certainty_id")
       certainty_id = nil if certainty_id.blank?
       complex_date = to_date(date, certainty_id, season_id)
       if complex_date.nil?
@@ -130,14 +128,13 @@ module Importation
   # features, i.feature_names, feature_types, feature_types.i
 
   # time_units fields supported:
-  # .time_units.date, .time_units.start_date, .time_units.end_date, .time_units.season_id
-  # .time_units.date.certainty_id, .time_units.start_date.certainty_id, .time_units.end_date.certainty_id
+  # .time_units.date, .time_units.start_date, .time_units.end_date, .time_units.season_id, .time_units.certainty_id
   
   # Fields that accept info_source:
   # i.feature_names, i.feature_names.j, feature_types, i.feature_geo_codes
   
   # info_source fields:
-  # .info_source.id/code, 
+  # .info_source.id/code
   
   
   def self.do_csv_import(filename)
