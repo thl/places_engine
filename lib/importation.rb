@@ -572,9 +572,7 @@ module Importation
       shapes_lat = fields.delete('shapes.lat')
       shapes_lng = fields.delete('shapes.lng')
       if !shapes_lat.blank? && !shapes_lng.blank?
-        altitude_str = fields.delete('shapes.altitude')
-        altitude = altitude_str.to_i if !altitude_str.blank?
-        shape = Shape.new(:geometry => GeoRuby::SimpleFeatures::Point.new(4326), :fid => feature.fid, :altitude => altitude_str)
+        shape = Shape.new(:geometry => GeoRuby::SimpleFeatures::Point.new(4326), :fid => feature.fid, :altitude => fields.delete('shapes.altitude'))
         geo = shape.geometry
         geo.y = shapes_lat
         geo.x = shapes_lng
@@ -602,16 +600,18 @@ module Importation
         conditions = { :category_id => kmap.id }
         category_feature = category_features.find(:first, :conditions => conditions)
         category_feature = category_features.create(conditions) if category_feature.nil?
-        self.add_date(fields, "#{i}.kmaps", category_feature)
-        self.add_note(fields, "#{i}.kmaps", category_feature)
-        self.add_info_source(fields, "#{i}.kmaps", category_feature)
+        if !category_feature.nil?
+          self.add_date(fields, "#{i}.kmaps", category_feature)
+          self.add_note(fields, "#{i}.kmaps", category_feature)
+          self.add_info_source(fields, "#{i}.kmaps", category_feature)
+        end
       end
       
       # now deal with kXXXX      
       fields.keys.each do |key|
         next if key !~ /\A[kK]\d+/ # check to see if its a kmap
         kmap_id = key.scan(/[kK](\d+)/).flatten.first.to_i
-        pos = key =~ /time_units|note/
+        pos = key =~ /time_units|note|info_source/
         if !pos.nil?
           kmap = Category.find(kmap_id)
           if kmap.nil?
@@ -624,10 +624,11 @@ module Importation
           category_feature = category_features.create(conditions) if category_feature.nil?
           prefix = key[0...pos-1]
           posfix = key[pos...key.size]
-          self.add_date(fields, prefix, category_feature)
-          self.add_note(fields, prefix, category_feature)
-          self.add_info_source(fields, prefix, category_feature)
-          next
+          if !category_feature.nil?
+            self.add_date(fields, prefix, category_feature)
+            self.add_note(fields, prefix, category_feature)
+            self.add_info_source(fields, prefix, category_feature)
+          end  
         end
       end
       
