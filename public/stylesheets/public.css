@@ -446,6 +446,11 @@ dl.no-style p {
     font-size: 15px;
 }
 
+.shell-1 #FeatureDetails h4 {
+    margin-top: 9px;
+    font-size: 13px;
+}
+
 #FeatureDetails .breadcrumb {
   color: red;
 }
