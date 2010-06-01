@@ -86,7 +86,32 @@ module Importation
       citations = citable.citations
       citation = citations.find(:first, :conditions => {:info_source_id => info_source.id})
       citation = citations.create(:info_source => info_source) if citation.nil?
-      puts "Info source #{info_source.id} could not be associated to #{citable.class_name.titleize}." if citation.nil?        
+      if citation.nil?
+        puts "Info source #{info_source.id} could not be associated to #{citable.class_name.titleize}."  
+      else
+        volume_str = fields.delete("#{field_prefix}.info_source.volume")
+        pages_range = fields.delete("#{field_prefix}.info_source.pages")
+        if !volume_str.blank? || !pages_range.blank?
+          volume = nil
+          start_page = nil
+          end_page = nil
+          if !pages_range.blank?
+            page_array = pages_range.split('-')
+            start_page_str = page_array.shift
+            end_page_str = page_array.shift
+            start_page = start_page_str.to_i if !start_page_str.nil? && !start_page_str.strip!.blank?
+            end_page = end_page_str.to_i if !end_page_str.nil? && !end_page_str.strip!.blank?
+          end
+          if !volume_str.blank?
+            volume_str.strip!
+            volume = volume_str.to_i if !volume_str.blank?
+          end
+          pages = citation.pages
+          conditions = {:start_page => start_page, :end_page => end_page, :volume => volume}
+          page = pages.find(:first, :conditions => conditions)
+          page = pages.create(conditions) if page.nil?
+        end
+      end
     end  
   end
   
@@ -129,7 +154,7 @@ module Importation
   # feature_relations.related_feature.fid, feature_relations.type.code, perspectives.code/name,
   # contestations.contested, contestations.administrator, contestations.claimant
   # i.kmaps.id, kXXX._
-  # shapes.lat, shapes.lng, shapes.altitude
+  # shapes.lat, shapes.lng, shapes.altitude, shapes.note
   
 
   # Fields that accept time_units:
@@ -139,13 +164,13 @@ module Importation
   # .time_units.date, .time_units.start_date, .time_units.end_date, .time_units.season_id, .time_units.certainty_id
   
   # Fields that accept info_source:
-  # i.feature_names, i.feature_names.j, feature_types.j, i.feature_types.j, i.feature_geo_codes
+  # i.feature_names, i.feature_names.j, feature_types.j, i.feature_types.j, i.feature_geo_codes, kXXX, i.kmaps
   
   # info_source fields:
-  # .info_source.id/code
+  # .info_source.id/code, .info_source.volume, info_source.page
   
   # Fields that accept note:
-  # feature_names, i.kmaps, kXXX, i.feature_names
+  # feature_names, i.feature_names, i.kmaps, kXXX, feature_types
   
   
   def self.do_csv_import(filename)
@@ -421,6 +446,7 @@ module Importation
             else
               self.add_date(fields, prefix, feature_object_type)
               self.add_info_source(fields, prefix, feature_object_type)
+              self.add_note(fields, prefix, feature_object_type)
               1.upto(8) do |j|
                 field_prefix = "#{prefix}.#{j}"
                 self.add_info_source(fields, field_prefix, feature_object_type)
@@ -490,10 +516,19 @@ module Importation
               feature_relation = FeatureRelation.find(:first, :conditions => conditions)
               if feature_relation.nil?
                 feature_relation = FeatureRelation.create(conditions.merge({:skip_update => true}))
-                feature_ids_with_changed_relations << parent.id if !feature_ids_with_changed_relations.include? parent.id
-                feature_ids_with_changed_relations << feature.id if !feature_ids_with_changed_relations.include? feature.id
+                if feature_relation.nil?
+                  put "Failed to create feature relation between #{parent.pid} and #{feature.pid}"
+                else
+                  feature_ids_with_changed_relations << parent.id if !feature_ids_with_changed_relations.include? parent.id
+                  feature_ids_with_changed_relations << feature.id if !feature_ids_with_changed_relations.include? feature.id
+                end
               end
-              puts "Couldn't establish relationship #{relation_type_str} between feature #{feature.pid} and #{parent_fid}." if feature_relation.nil?
+              if feature_relation.nil?
+                puts "Couldn't establish relationship #{relation_type_str} between feature #{feature.pid} and #{parent_fid}."
+              else
+                self.add_info_source(fields, 'feature_relations', feature_relation)
+                self.add_note(fields, 'feature_relations', feature_relation)
+              end
             end
           end
         end
@@ -537,14 +572,19 @@ module Importation
       shapes_lat = fields.delete('shapes.lat')
       shapes_lng = fields.delete('shapes.lng')
       if !shapes_lat.blank? && !shapes_lng.blank?
-        altitude = fields.delete('shapes.altitude')
-        shape = Shape.new(:geometry => GeoRuby::SimpleFeatures::Point.new(4326), :fid => feature.fid, :altitude => altitude.to_i)
+        altitude_str = fields.delete('shapes.altitude')
+        altitude = altitude_str.to_i if !altitude_str.blank?
+        shape = Shape.new(:geometry => GeoRuby::SimpleFeatures::Point.new(4326), :fid => feature.fid, :altitude => altitude_str)
         geo = shape.geometry
         geo.y = shapes_lat
         geo.x = shapes_lng
         shape.geometry = geo
         shape.save
-        puts "Shape for feature #{feature.pid} could not be saved." if shape.id.nil?
+        if shape.id.nil?
+          puts "Shape for feature #{feature.pid} could not be saved."
+        else
+          self.add_note(fields, 'shapes', shape)
+        end
       else
         puts "Can't specify a latitude without a longitude and viceversa for feature #{feature.pid}" if !shapes_lat.blank? || !shapes_lng.blank?
       end
@@ -563,7 +603,8 @@ module Importation
         category_feature = category_features.find(:first, :conditions => conditions)
         category_feature = category_features.create(conditions) if category_feature.nil?
         self.add_date(fields, "#{i}.kmaps", category_feature)
-        self.add_note(fields, "#{i}.kmaps", category_feature)        
+        self.add_note(fields, "#{i}.kmaps", category_feature)
+        self.add_info_source(fields, "#{i}.kmaps", category_feature)
       end
       
       # now deal with kXXXX      
@@ -585,6 +626,7 @@ module Importation
           posfix = key[pos...key.size]
           self.add_date(fields, prefix, category_feature)
           self.add_note(fields, prefix, category_feature)
+          self.add_info_source(fields, prefix, category_feature)
           next
         end
       end
