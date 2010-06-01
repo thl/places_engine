@@ -288,7 +288,14 @@ module ApplicationHelper
     if output.length < len
       return input
     end
-    output = truncate(input, :length => len, :omission => extension)
+    
+    # We need to be able to call .s on the input, but not on the extension, so we
+    # have to use a modified version of truncate() instead of truncate() itself.
+    # output = truncate(input, :length => len, :omission => extension)
+    l = len - extension.mb_chars.length
+    chars = input.mb_chars
+    output = (chars.length > len ? chars[0...l].s + extension : input).to_s
+    
     output.strip!
     output.gsub!(/\v/, "<br />")
     output

@@ -1,8 +1,8 @@
-<% title = d.title.blank? ? "Description" : d.title %>
+<% title = d.title.blank? ? "Essay" : d.title %>
 <% expand_options = {:url => expand_feature_description_path(feature,d), :method => 'get'} %>
 <p class='description-author'>
 	<%= link_to_remote '.', expand_options,  { :class => 'descriptionplus_icon' } %>
-    <span class='title'><%= link_to_remote title, expand_options %></span>
+    <span class='title'><%= link_to_remote title.s, expand_options %></span>
 	<% if !d.authors.empty? %>
         <span class='by'><%= ' by ' %></span>
         <span class='content_by'><%= "#{ join_with_and(d.authors.collect{|a| a.screen_name})}" %></span>

@@ -1,8 +1,8 @@
-<% title = d.title.blank? ? "Description" : d.title %>
+<% title = d.title.blank? ? "Essay" : d.title %>
 <% contract_options = {:url => contract_feature_description_path(feature,d), :update => "#{d.id}_descdiv", :method => 'get'} %>
 <p class='description-author'>
 	<%= link_to_remote '.', contract_options,  { :class => 'descriptionminus_icon' } %>
-	<span class='title'><%= link_to_remote title, contract_options %></span>
+	<span class='title'><%= link_to_remote title.s, contract_options %></span>
     <% if !d.authors.empty? %>
 	    <span class='by'><%= ' by ' %></span>
 	    <span class='content_by'><%= "#{ join_with_and(d.authors.collect{|a| a.screen_name})}" %></span>
@@ -15,6 +15,6 @@
 		'... ' + link_to_function( 'Read more', "$('#desc_truncated_#{d.id}').hide();$('#desc_full_#{d.id}').show()" )) %>
 </div>
 <div class='expanded' id="desc_full_<%= d.id %>" style="display: none;">
-	<%= d.content %>
+	<%= d.content.s %>
 </div>
 
