@@ -86,7 +86,7 @@
 	<%= association_note_list_fieldset(FeatureRelation.model_name) %>
 </fieldset>
 <fieldset>
-	<legend>Descriptions</legend>
+	<legend>Essays</legend>
 	<%= highlighted_new_item_link [@object, :description] %>
 	<br class="clear"/>
 	<%= render :partial => 'admin/descriptions/descriptions_list', :locals => { :list => @object.descriptions.find(:all, :order => 'is_primary DESC, title') } %>

@@ -6,11 +6,11 @@ add_breadcrumb_item @object.id
 %>
 
 <div>
-<h1>Description: <%= @object.id %></h1>
+<h1>Essay: <%= @object.id %></h1>
 </div>
 <br class="clear"/>
 <fieldset>
-	<legend>Description <%= edit_item_link @object %></legend>
+	<legend>Essay <%= edit_item_link @object %></legend>
 
 	<% if !@object.title.blank? %>  
 	<%   if !@object.authors.empty? %>
@@ -22,7 +22,7 @@ add_breadcrumb_item @object.id
 	<%   end %>
 	<% else %>     
 	<%   if !@object.authors.empty? %>
-	       <span class='title'>Description</span>
+	       <span class='title'>Essay</span>
 	       <span class='by'><%= ' by ' %></span>
 		   <span class='content_by'><%= "#{ join_with_and(@object.authors.collect{|a| a.screen_name})}" %></span>
 	<%   end %>

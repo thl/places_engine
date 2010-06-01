@@ -172,6 +172,7 @@ module AdminHelper
   def model_display_name(str)
     names = {
       'association_note' => 'note',
+      'description' => 'essay',
       'feature_geo_code' => 'geo_code',
       'feature_name' => 'name',
       'feature_object_type' => 'feature_type',
@@ -342,7 +343,7 @@ module AdminHelper
   end
   
   def feature_descriptions_link(feature=nil)
-    feature.nil? ? link_to('admin', admin_path) : link_to('descriptions', admin_feature_descriptions_path(feature))
+    feature.nil? ? link_to('admin', admin_path) : link_to('essays', admin_feature_descriptions_path(feature))
   end
   #
   #

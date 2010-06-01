@@ -17,11 +17,11 @@ end
 	<% if parent? %>
 		<%= new_item_link [@parent_object, :description] %> for: <%= feature_link(@parent_object) %>
 	<% else %>
-		A Description can only be created from a resource that uses one.
+		An Essay can only be created from a resource that uses one.
 	<% end %>
 <% end %>
 <% if !@parent_object.nil? && !@parent_object.descriptions.nil? %>
-	<%= link_to 'Set Primary Description', set_primary_description_admin_feature_path(@parent_object) %>
+	<%= link_to 'Set Primary Essay', set_primary_description_admin_feature_path(@parent_object) %>
 <% end %>
 	</div>
 </div>

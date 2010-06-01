@@ -9,7 +9,7 @@
 	<tr>
 		<th class="listActionsCol"></th>
 		<th> </th>
-		<th>Description</th>
+		<th>Essay</th>
 		<th>Dates</th>
 		<th>Add Date</th>
 	</tr>
@@ -37,7 +37,7 @@
 		<%   end %>
 		<% else %>     
 		<%   if !item.authors.empty? %>
-		       <span class='title'>Description</span>
+		       <span class='title'>Essay</span>
 		       <span class='by'><%= ' by ' %></span>
 			   <span class='content_by'><%= "#{ join_with_and(item.authors.collect{|a| a.screen_name})}" %></span>
 		<%   end %>
@@ -53,5 +53,5 @@
 	</tr>
 	<% end %>
 </table>
-<sub>'*' denotes a primary description</sub>
+<sub>'*' denotes a primary essay</sub>
 <% end %>
