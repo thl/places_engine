@@ -25,7 +25,8 @@ ActionController::Routing::Routes.draw do |map|
       altitude.resources :time_units, :collection => {:new_form => :get}
     end    
     admin.resources :citations, :has_many => :pages
-    admin.resources :descriptions do |description|
+    admin.resources :descriptions, :has_many=>[:citations] do |description|
+      description.resources :notes, :collection => {:add_author => :get}
       description.resources :time_units, :collection => {:new_form => :get}
     end
     admin.resources :feature_geo_codes, :has_many=>[:citations] do |feature_geo_code|
@@ -72,6 +73,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :features, :has_many => :association_notes, :member => {:descendants => :get} do |feature|
     feature.resources :descriptions, :member => {:expand => :get, :contract => :get, :show => :get}
   end
+  map.resources :description, :has_many => :notes
   map.resources :feature_geo_codes, :has_many => :notes
   map.resources :feature_names, :has_many => :notes
   map.resources :feature_name_relations, :has_many => :notes

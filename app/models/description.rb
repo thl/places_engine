@@ -3,7 +3,9 @@ class Description < ActiveRecord::Base
     #belongs_to :creator, :class_name => 'User', :foreign_key => 'creator_id'
     belongs_to :feature  
     has_and_belongs_to_many :authors, :class_name => 'User', :join_table => 'authors_descriptions', :association_foreign_key => 'author_id'
-
+  
+    extend IsCitable
+    extend IsNotable
     extend IsDateable
 
     def self.search(filter_value, options={})

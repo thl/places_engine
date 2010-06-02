@@ -1,5 +1,5 @@
 class Admin::CitationsController < ResourceController::Base
-  belongs_to :altitude, :category_feature, :feature, :feature_name, :feature_relation, :feature_name_relation, :feature_object_type, :feature_geo_code
+  belongs_to :altitude, :description, :category_feature, :feature, :feature_name, :feature_relation, :feature_name_relation, :feature_object_type, :feature_geo_code
   
   create.wants.html { redirect_to polymorphic_url([:admin, object.citable, object]) }
   update.wants.html { redirect_to polymorphic_url([:admin, object.citable, object]) }

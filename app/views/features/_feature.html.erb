@@ -65,6 +65,7 @@
 	      <div id='descriptions_div'>
 	<%=     render :partial => '/descriptions/index', :locals => {:feature => feature, :description => nil} %>
 	      </div>
+		  <%= note_popup_link_list_for(feature, {:association_type => Description.model_name}) %>
 	<%  end %>
 	
 	<p>
