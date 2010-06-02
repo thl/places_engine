@@ -249,8 +249,10 @@ class Feature < ActiveRecord::Base
     obj
   end
   
-  def association_notes_for(association_type)
-    AssociationNote.find(:all, :conditions => {:notable_type => self.class.name, :notable_id => self.id, :association_type => association_type})
+  def association_notes_for(association_type, options={})
+    conditions = {:notable_type => self.class.name, :notable_id => self.id, :association_type => association_type, :is_public => true}
+    conditions.delete(:is_public) if !options[:include_private].nil? && options[:include_private] == true
+    AssociationNote.find(:all, :conditions => conditions)
   end
     
   def update_object_type_positions

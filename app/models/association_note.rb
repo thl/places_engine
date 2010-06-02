@@ -10,7 +10,7 @@ class AssociationNote < Note
   end
   
   def association_type_name
-    self.association_type.blank? ? '' : self.association_type.tableize.humanize.downcase
+    association_type.blank? ? '' : model_display_name(association_type.tableize.singularize).humanize
   end
   
 end

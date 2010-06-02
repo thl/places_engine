@@ -129,8 +129,8 @@ module ApplicationHelper
         link_url = polymorphic_url([object, :association_notes], :association_type => options[:association_type])
       end
     else
-      if object.respond_to?(:notes) && object.notes.length > 0
-        notes = object.notes
+      if object.respond_to?(:notes) && object.public_notes.length > 0
+        notes = object.public_notes
         link_url = polymorphic_url([object, :notes])
       end
     end
@@ -156,8 +156,8 @@ module ApplicationHelper
         notes = object.association_notes_for(options[:association_type])
       end
     else
-      if object.respond_to?(:notes) && object.notes.length > 0
-        notes = object.notes
+      if object.respond_to?(:notes) && object.public_notes.length > 0
+        notes = object.public_notes
         link_url = polymorphic_url([object, :notes])
       end
     end
@@ -201,6 +201,23 @@ module ApplicationHelper
     end
   end
   
+  #
+  # Allows for specification of what model names should be displayed as to users (e.g. "location" instead of "shape")
+  #
+  def model_display_name(str)
+    names = {
+      'association_note' => 'note',
+      'description' => 'essay',
+      'feature_geo_code' => 'geo_code',
+      'feature_name' => 'name',
+      'feature_object_type' => 'feature_type',
+      'shape' => 'location',
+      'time_unit' => 'date',
+      'category_feature' => 'kmap_characteristic'
+    }
+    names[str].nil? ? str : names[str]
+  end
+    
   #
   #
   #

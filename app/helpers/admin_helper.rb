@@ -165,23 +165,6 @@ module AdminHelper
         model.to_s
       end
   end
-  
-  #
-  # Allows for specification of what model names should be displayed as to users (e.g. "location" instead of "shape")
-  #
-  def model_display_name(str)
-    names = {
-      'association_note' => 'note',
-      'description' => 'essay',
-      'feature_geo_code' => 'geo_code',
-      'feature_name' => 'name',
-      'feature_object_type' => 'feature_type',
-      'shape' => 'location',
-      'time_unit' => 'date',
-      'category_feature' => 'kmap_characteristic'
-    }
-    names[str].nil? ? str : names[str]
-  end
     
   #
   #
@@ -401,7 +384,7 @@ module AdminHelper
     "<h4>General Notes</h4>
   	  #{highlighted_new_item_link new_polymorphic_path([:admin, @object, :association_note], :association_type => association_type), 'New Note'}
     	<br class='clear'/>
-  	  #{render :partial => 'admin/association_notes/list', :locals => { :list => @object.association_notes_for(association_type), :options => {:hide_type => true, :hide_type_value => true, :hide_association_type => true, :hide_empty_collection_message => true} }}"
+  	  #{render :partial => 'admin/association_notes/list', :locals => { :list => @object.association_notes_for(association_type, :include_private => true), :options => {:hide_type => true, :hide_type_value => true, :hide_association_type => true, :hide_empty_collection_message => true} }}"
   end
   
   def note_list_fieldset(object=nil)
