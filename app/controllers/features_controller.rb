@@ -110,19 +110,21 @@ class FeaturesController < ApplicationController
       :match => params[:match]
     }
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
+    joins = []
     if !params[:feature_type].blank?
-      options[:joins] = "LEFT JOIN cumulative_category_feature_associations ccfa ON ccfa.feature_id = features.id"
+      joins << "LEFT JOIN cumulative_category_feature_associations ccfa ON ccfa.feature_id = features.id"
       options[:conditions]['ccfa.category_id'] = params[:feature_type].split(',')
       options[:conditions]['features.is_public'] = 1
       options[:conditions].delete(:is_public)
     end
     if !params[:characteristic_id].blank?
-      options[:joins] = "LEFT JOIN category_features cf ON cf.feature_id = features.id"
+      joins << "LEFT JOIN category_features cf ON cf.feature_id = features.id"
       options[:conditions]['cf.category_id'] = params[:characteristic_id].split(',')
       options[:conditions]['cf.type'] = nil
       options[:conditions]['features.is_public'] = 1
       options[:conditions].delete(:is_public)
     end
+    options[:joins] = joins.join(' ') unless joins.empty?
     perform_global_search(options, search_options)
     #api_render(@features)
     respond_to do |format|
@@ -224,19 +226,21 @@ class FeaturesController < ApplicationController
       when 'name'
         @features = Feature.name_search(params[:filter])
       else
+        joins = []
         if !params[:object_type].blank?
-          options[:joins] = "LEFT JOIN cumulative_category_feature_associations ccfa ON ccfa.feature_id = features.id"
+          joins << "LEFT JOIN cumulative_category_feature_associations ccfa ON ccfa.feature_id = features.id"
           options[:conditions]['ccfa.category_id'] = params[:object_type].split(',')
           options[:conditions]['features.is_public'] = 1
           options[:conditions].delete(:is_public)
         end
         if !params[:characteristic_id].blank?
-          options[:joins] = "LEFT JOIN category_features cf ON cf.feature_id = features.id"
+          joins << "LEFT JOIN category_features cf ON cf.feature_id = features.id"
           options[:conditions]['cf.category_id'] = params[:characteristic_id].split(',')
           options[:conditions]['cf.type'] = nil
           options[:conditions]['features.is_public'] = 1
           options[:conditions].delete(:is_public)
         end
+        options[:joins] = joins.join(' ') unless joins.empty?
         perform_global_search(options, search_options)
       end
     end
