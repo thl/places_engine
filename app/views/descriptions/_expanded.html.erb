@@ -16,6 +16,6 @@
 		'... ' + link_to_function( 'Read more', "$('#desc_truncated_#{d.id}').hide();$('#desc_full_#{d.id}').show()" )) %>
 </div>
 <div class='expanded' id="desc_full_<%= d.id %>" style="display: none;">
-	<%= d.content.s %>
+	<%= "#{d.content}".s %>
 </div>
 
