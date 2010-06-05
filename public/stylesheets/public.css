@@ -120,7 +120,11 @@ dl.no-style p {
 	border-bottom:0;
 	background:transparent no-repeat url(http://thlib.org/global/images/icon-page-text.gif);
 }
-.note-content div {
+.note-content {
+	font-size: 13px;
+	line-height: 18px;
+}
+.note-content p {
 	font-size: 13px;
 	line-height: 18px;
 }
