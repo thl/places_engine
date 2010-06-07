@@ -107,7 +107,7 @@ module FeaturesHelper
       name_notes_link = note_popup_link_for(name)
       name_time_units_link = time_units_for(name)
     end
-    "#{name.name} (#{name.language}, #{name.writing_system}, #{name.pp_display_string})#{name_notes_link}#{name_time_units_link}"
+    "#{name.name.to_s.s} (#{name.language.to_s.s}, #{name.writing_system.to_s.s}, #{name.pp_display_string.to_s.s})#{name_notes_link}#{name_time_units_link}"
   end
   
   def feature_name_header(feature)

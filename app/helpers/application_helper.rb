@@ -177,13 +177,13 @@ module ApplicationHelper
   #
   def note_popup_link(note)
     note_title = note.title.nil? ? "Note" : note.title
-    note_authors = " by #{note.authors.collect{|a| a.fullname}.join(", ")}" if note.authors.length > 0
+    note_authors = " by #{note.authors.collect{|a| a.fullname.to_s.s}.join(", ")}" if note.authors.length > 0
     note_date = " (#{formatted_date(note.updated_at)})"
-    link_title = "#{note_title}#{note_authors}#{note_date}"
+    link_title = "#{note_title.to_s.s}#{note_authors}#{note_date}"
     link_url = polymorphic_url([note.notable, note])
     link_classes = "draggable-pop no-view-alone overflow-y-auto height-350"
     "<span class='has-draggable-popups'>
-      #{link_to(link_title, link_url, :class => link_classes, :title => h(link_title))}
+      #{link_to(link_title, link_url, :class => link_classes, :title => h(note_title))}
     </span>
     <script type='text/javascript'>jQuery(document).ready(function(){ActivateDraggablePopups('.has-draggable-popups');})</script>"
   end

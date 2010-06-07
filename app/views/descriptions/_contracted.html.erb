@@ -5,7 +5,7 @@
     <span class='title'><%= link_to_remote title.s, expand_options %></span>
 	<% if !d.authors.empty? %>
         <span class='by'><%= ' by ' %></span>
-        <span class='content_by'><%= "#{ join_with_and(d.authors.collect{|a| a.screen_name})}" %></span>
+        <span class='content_by'><%= "#{ join_with_and(d.authors.collect{|a| a.screen_name.to_s.s})}" %></span>
 	<% end %>	
 	<span class='last_updated'>(<%= "#{h(d.updated_at.to_date.to_formatted_s(:long))}" %>)...</span>
 	<%= time_units_for d %>

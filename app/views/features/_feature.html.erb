@@ -80,7 +80,7 @@
 	<%= feature_name_ul(feature,false) %>
 	<dl class="no-style">
 	<% feature.names.roots.each do |name| %>
-		<%= "<dt><strong>Etymology of #{name.name}:</strong></dt><dd>#{name.etymology}</dd>" unless name.etymology.blank? %>
+		<%= "<dt><strong>Etymology of #{name.name.to_s.s}:</strong></dt><dd>#{name.etymology.to_s.s}</dd>" unless name.etymology.blank? %>
 	<% end %>
 	</dl>
 	<%= note_popup_link_list_for(feature, {:association_type => FeatureName.model_name}) %>
