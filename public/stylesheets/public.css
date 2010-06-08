@@ -330,7 +330,7 @@ dl.no-style p {
     max-height:400px;
     min-height:25px;
     overflow:auto;
-	font-size:12px;
+	font-size:13px;
 }
 
 #NodeSearch{
@@ -569,7 +569,7 @@ span.arrow {
 .expanded { padding: 2px; text-align: justify; }
 
 #descriptions_div h1{ border-bottom: 0px; }
-#descriptions_div p{ text-align: justify; font-size: 13px; }
+#descriptions_div p{ text-align: justify; font-size: 15px; }
 #descriptions_div .description-author{ font-size: 14px; }
 
 hr {border-style: solid; border-color: color:#404040; border-width: 1px}

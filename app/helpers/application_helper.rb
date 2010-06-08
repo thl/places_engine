@@ -311,7 +311,9 @@ module ApplicationHelper
     # output = truncate(input, :length => len, :omission => extension)
     l = len - extension.mb_chars.length
     chars = input.mb_chars
-    output = (chars.length > len ? chars[0...l].s + extension : input).to_s
+    # Temporarily removing .s, as it takes a while to run on long strings
+    #output = (chars.length > len ? chars[0...l].s + extension : input).to_s
+    output = (chars.length > len ? chars[0...l] + extension : input).to_s
     
     output.strip!
     output.gsub!(/\v/, "<br />")
