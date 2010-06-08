@@ -29,19 +29,8 @@ class Importation
     Rails.logger.info "IMPORTER COMMENT (#{Time.now.to_s}): #{msg}"
   end
   
-  # Fields in spreadsheet:
-  # features.fid, features.old_pid, feature_names.delete,
-  # 1.feature_names.name, 1.languages.code, 1.writing_systems.code, 
-  # 1.feature_names.1.info_source.id, 1.feature_names.is_primary, 1.feature_names.1.time_units.date,
-  # 1.feature_name_relations.parent_node, 1.feature_name_relations.is_translation, 1.feature_name_relations.relationship.code
-  # 1.feature_types.id, 1.feature_types.1.info_source.id, 1.feature_types.1.time_units.date
-  # 1.geo_code_types.code, 1.feature_geo_codes.geo_code_value, 1.feature_geo_codes.1.info_source.id, 1.feature_geo_codes.1.time_units.date,
-  # 1.feature_relations.related_feature.fid, 1.feature_relations.type.code, 1.perspectives.code
-  # 1.contestations.contested, 1.contestations.administrator, 1.contestations.claimant
-  # shapes.lat	shapes.lng	shapes.altitude
-  
   # Currently supported fields:
-  # features.fid, features.old_pid, feature_names.delete
+  # features.fid, features.old_pid, feature_names.delete, feature_names.is_primary.delete
   # i.feature_names.name, i.languages.code/name, i.writing_systems.code/name, i.feature_names.is_primary,
   # i.feature_name_relations.parent_node, i.feature_name_relations.is_translation, i.feature_name_relations.relationship.code
   # i.phonetic_systems.code/name, i.orthographic_systems.code/name, 
@@ -84,15 +73,20 @@ class Importation
       end
       import.populate_fields(row, field_names)
       next unless import.get_feature
-      import.process_names(42)
-      feature_ids_with_object_types_added += import.process_feature_types(4)
-      import.process_geocodes(4)
-      feature_ids_with_changed_relations += import.process_feature_relations(3)
-      import.process_contestations(3)
-      import.process_shapes(3)      
-      import.feature.update_attributes({:is_blank => false, :is_public => true})
-      import.process_kmaps(3)
-                  
+      
+      begin
+        import.process_names(42)
+        feature_ids_with_object_types_added += import.process_feature_types(4)
+        import.process_geocodes(4)
+        feature_ids_with_changed_relations += import.process_feature_relations(3)
+        import.process_contestations(3)
+        import.process_shapes(3)      
+        import.feature.update_attributes({:is_blank => false, :is_public => true})
+        import.process_kmaps(3)
+      rescue  Exception => e
+        puts "Something went wrong with feature #{import.feature.pid}!"
+        puts e.to_s
+      end
       if import.fields.empty?
         puts "#{import.feature.pid} processed."
       else
@@ -278,6 +272,18 @@ class Importation
     delete_feature_names = self.fields.delete('feature_names.delete')
     names.clear if !delete_feature_names.blank? && delete_feature_names.downcase == 'yes'
     
+    name_added = false
+    name_positions_with_changed_relations = Array.new
+    relations_pending_save = Array.new
+    name_changed = false
+    
+    delete_is_primary = self.fields.delete('feature_names.is_primary.delete')
+    if !delete_is_primary.blank? && delete_is_primary.downcase == 'yes'
+      names.all(:conditions => {:is_primary_for_romanization => true}).each do |name|
+        name_changed = true if !name_changed
+        name.update_attributes(:is_primary_for_romanization => false, :skip_update => true)
+      end
+    end    
     # feature_names.note can be used to add general notes to all names of a feature
     feature_names_note = self.fields.delete('feature_names.note')
     if !feature_names_note.blank?
@@ -286,10 +292,6 @@ class Importation
       puts "Feature name note #{feature_names_note} could not be saved for feature #{self.feature.pid}" if note.nil?
     end
     self.add_date('features', self.feature)
-    
-    name_added = false
-    name_positions_with_changed_relations = Array.new
-    relations_pending_save = Array.new
     name = Array.new(total)
     1.upto(total) do |i|
       n = i-1
@@ -461,10 +463,8 @@ class Importation
     end
     
     # running triggers for feature_name
-    if name_added
-      self.feature.update_name_positions
-      self.feature.update_cached_feature_names
-    end
+    self.feature.update_name_positions if name_added
+    self.feature.update_cached_feature_names if name_added || name_changed
     
     # running triggers for feature_name_relation
     name_positions_with_changed_relations.each{|pos| name[pos].update_hierarchy}
