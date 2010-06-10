@@ -14,7 +14,7 @@ class FeatureObjectType < CategoryFeature
 end
 
 # == Schema Info
-# Schema version: 20100526225546
+# Schema version: 20100609203100
 #
 # Table name: category_features
 #

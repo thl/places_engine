@@ -11,6 +11,11 @@ add_breadcrumb_item @object.to_s
 	</legend>
 
 	<div class="row">
+		<label>Is Hierarchical</label>
+		<span><%= @object.is_hierarchical ? 'Yes' : 'No' %></span>
+	</div>
+
+	<div class="row">
 		<label>Is Symmetric</label>
 		<span><%= @object.is_symmetric ? 'Yes' : 'No' %></span>
 	</div>

@@ -6,7 +6,7 @@ class FeatureRelation < ActiveRecord::Base
   extend IsDateable
   extend IsNotable
   
-  acts_as_family_tree :tree, :node_class => 'Feature', :conditions => {'feature_relations.feature_relation_type_id' => FeatureRelationType.hierarchy_id}
+  acts_as_family_tree :tree, :node_class => 'Feature', :conditions => {'feature_relations.feature_relation_type_id' => FeatureRelationType.hierarchy_ids}
   
   after_save do |record|
     if !record.skip_update
@@ -94,7 +94,7 @@ class FeatureRelation < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20100526225546
+# Schema version: 20100609203100
 #
 # Table name: feature_relations
 #

@@ -11,7 +11,7 @@ class Feature < ActiveRecord::Base
   # after_save {|record| record.update_hierarchy}  
   # acts_as_solr :fields=>[:pid]
   
-  acts_as_family_tree :node, :tree_class => 'FeatureRelation', :conditions => {'feature_relations.feature_relation_type_id' => FeatureRelationType.hierarchy_id}
+  acts_as_family_tree :node, :tree_class => 'FeatureRelation', :conditions => {'feature_relations.feature_relation_type_id' => FeatureRelationType.hierarchy_ids}
   # These are distinct from acts_as_family_tree's parent/child_relations, which only include hierarchical parent/child relations.
   has_many :all_child_relations, :class_name => 'FeatureRelation', :foreign_key => 'parent_node_id'
   has_many :all_parent_relations, :class_name => 'FeatureRelation', :foreign_key => 'child_node_id'
@@ -305,7 +305,7 @@ class Feature < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20100526225546
+# Schema version: 20100609203100
 #
 # Table name: features
 #

@@ -16,7 +16,7 @@ class AssociationNote < Note
 end
 
 # == Schema Info
-# Schema version: 20100526225546
+# Schema version: 20100609203100
 #
 # Table name: notes
 #
@@ -26,6 +26,7 @@ end
 #  association_type  :string(255)
 #  content           :text
 #  custom_note_title :string(255)
+#  is_public         :boolean         default(TRUE)
 #  notable_type      :string(255)
 #  created_at        :timestamp
 #  updated_at        :timestamp

@@ -5,7 +5,7 @@ class XmlDocument < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20100526225546
+# Schema version: 20100609203100
 #
 # Table name: xml_documents
 #

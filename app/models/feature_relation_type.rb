@@ -31,8 +31,8 @@ class FeatureRelationType < ActiveRecord::Base
   # that is only set to TRUE for this type, and use that to determine which type is used.
   # This seems to be generally satisfactory for now, since a migration creates the initial
   # FeatureRelationTypes.
-  def self.hierarchy_id
-    self.find(:first, :conditions => {:is_symmetric => false}, :order => :id).id
+  def self.hierarchy_ids
+    self.all(:conditions => {:is_symmetric => false}, :order => :id).collect(&:id)
   end
   
   def to_s
@@ -59,13 +59,14 @@ class FeatureRelationType < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20100526225546
+# Schema version: 20100609203100
 #
 # Table name: feature_relation_types
 #
 #  id               :integer         not null, primary key
 #  asymmetric_label :string(255)
 #  code             :string(255)     not null
+#  is_hierarchical  :boolean         not null
 #  is_symmetric     :boolean
 #  label            :string(255)     not null
 #  created_at       :timestamp
