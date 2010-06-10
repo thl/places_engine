@@ -544,8 +544,12 @@ class Importation
     # If such parent is specified, the following columns are required:
     # "perspectives.code"/"perspectives.name", "feature_relations.type.code"
     feature_ids_with_changed_relations = Array.new
-    
-    replace_relations = self.fields.delete('feature_relations.replace') == 'Yes'
+    replace_relations_str = self.fields.delete('feature_relations.replace')
+    if replace_relations_str.blank?
+      replace_relation = false
+    else
+      replace_relations = replace_relations_str.downcase == 'yes'
+    end
     0.upto(n) do |i|
       prefix = i>0 ? "#{i}." : ''
       parent_fid = self.fields.delete("#{prefix}feature_relations.related_feature.fid")
@@ -557,32 +561,38 @@ class Importation
       end
       perspective_code = self.fields.delete("#{prefix}perspectives.code")
       perspective_name = self.fields.delete("#{prefix}perspectives.name")
+      perspective = nil
       if perspective_code.blank? && perspective_name.blank?
-        puts "Perspective type is required to establish a relationship between feature #{self.feature.pid} and feature #{parent_fid}."
-        next
-      end
-      begin
-        perspective = Perspective.get_by_code_or_name(perspective_code, perspective_name)
-      rescue Exception => e
-        puts e.to_s
-      end
-      if perspective.nil?
-        puts "Perspective #{perspective_code || perspective_name} was not found."
-        next
+        if !replace_relations
+          puts "Perspective type is required to establish a relationship between feature #{self.feature.pid} and feature #{parent_fid}."
+          next
+        end
+      else
+        begin
+          perspective = Perspective.get_by_code_or_name(perspective_code, perspective_name)
+        rescue Exception => e
+          puts e.to_s
+        end
+        if perspective.nil?
+          puts "Perspective #{perspective_code || perspective_name} was not found."
+          next
+        end
       end
       relation_type_str = self.fields.delete("#{prefix}feature_relations.type.code")
+      relation_type = nil
       if relation_type_str.blank?
-        puts "Feature relation type is required to establish a relationship between feature #{self.feature.pid} and feature #{parent_fid}."
-        next
+        if !replace_relations
+          puts "Feature relation type is required to establish a relationship between feature #{self.feature.pid} and feature #{parent_fid}."
+          next
+        end
+      else
+        relation_type = FeatureRelationType.get_by_code(relation_type_str)
+        if relation_type.nil?
+          puts "Feature relation type #{relation_type_str} was not found."
+          next
+        end
       end
-      relation_type = FeatureRelationType.get_by_code(relation_type_str)
-      if relation_type.nil?
-        puts "Feature relation type #{relation_type_str} was not found."
-        next
-      end
-      conditions = { :parent_node_id => parent.id, :child_node_id => self.feature.id }
-      attributes = { :feature_relation_type_id => relation_type.id, :perspective_id => perspective.id }
-      conditions.merge!(attributes) if !replace_relations
+      conditions = replace_relations ? { :parent_node_id => parent.id, :child_node_id => self.feature.id } : { :parent_node_id => parent.id, :child_node_id => self.feature.id, :feature_relation_type_id => relation_type.id, :perspective_id => perspective.id }
       feature_relation = FeatureRelation.find(:first, :conditions => conditions)
       changed = false
       if feature_relation.nil?
@@ -592,9 +602,12 @@ class Importation
         else
           changed = true
         end
-      else
-        if replace_relations && (feature_relation.feature_relation_type.id != relation_type.id || feature_relation.perspective.id != perspective.id)
-          feature_relation.update_attributes(attributes.merge({:skip_update => true}))
+      elsif replace_relations 
+        feature_relation.feature_relation_type = relation_type if !relation_type.nil?
+        feature_relation.perspective = perspective if !perspective.nil?
+        if feature_relation.changed?
+          feature_relation.skip_update = true
+          feature_relation.save
           changed = true
         end
       end
