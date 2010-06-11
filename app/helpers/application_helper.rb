@@ -43,7 +43,13 @@ module ApplicationHelper
   # Can pass a block for item formatting
   #
   def acts_as_family_tree_breadcrumb(aaft_instance, sep=' &gt; ')
-    (aaft_instance.all_parents + [aaft_instance]).collect do |r|
+    if aaft_instance.parent.nil?
+      grandparent = aaft_instance.all_parent_relations.collect(&:parent_node).detect(&:parent)
+      trail = grandparent.nil? ? [aaft_instance] : grandparent.all_parents + [grandparent, aaft_instance]
+    else
+      trail = aaft_instance.all_parents + [aaft_instance]
+    end
+    trail.collect do |r|
       block_given? ? yield(r) : r.to_s
     end.join(sep)
   end
