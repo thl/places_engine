@@ -72,8 +72,7 @@ class Importation
         next
       end
       import.populate_fields(row, field_names)
-      next unless import.get_feature
-      
+      next unless import.get_feature(current)
       begin
         import.process_names(42)
         feature_ids_with_object_types_added += import.process_feature_types(4)
@@ -221,12 +220,12 @@ class Importation
 
   # The feature can either be specified with by its current fid ("features.fid")
   # or the pid used in THL's previous application ("features.old_pid"). One of the two is required.  
-  def get_feature
+  def get_feature(current)
     fid = self.fields.delete('features.fid')
     if fid.blank?
       old_pid = self.fields.delete('features.old_pid')
       if old_pid.blank?
-        puts "Either a\"features.fid\" or a \"features.old_pid\" must be present in line #{current}!"
+        puts "Either a \"features.fid\" or a \"features.old_pid\" must be present in line #{current}!"
         return false
       end
       
