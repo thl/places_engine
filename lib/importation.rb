@@ -357,7 +357,7 @@ class Importation
       relation_conditions[:alt_spelling_system_id] = alt_spelling_system.id if !alt_spelling_system.nil?
       if name[n].nil? || name[n].parent_relations.find(:first, :conditions => relation_conditions).nil?
         name[n] = names.create(conditions.merge({:skip_update => true}))
-        name_added = true if !name_added && name[n].id.nil?
+        name_added = true if !name_added && !name[n].id.nil?
       end
       if name[n].id.nil?
         puts "Name #{name_str} could not be added to feature #{self.feature.pid}."
