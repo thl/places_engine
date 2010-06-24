@@ -48,7 +48,7 @@ class Note < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20100609203100
+# Schema version: 20100623234636
 #
 # Table name: notes
 #

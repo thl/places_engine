@@ -24,7 +24,7 @@ class CategoryFeature < ActiveRecord::Base
         CumulativeCategoryFeatureAssociation.create(:category => c, :feature_id => self.feature_id)
       end
     end
-    CategoryFeature.update_latest
+    Rails.cache.delete('CategoryFeature-max_updated_at')
     self.feature.update_cached_feature_relation_categories if !self.skip_update
   end
 
@@ -49,15 +49,10 @@ class CategoryFeature < ActiveRecord::Base
   end
   
   def self.latest_update
-    return @@max_updated_at if defined? @@max_updated_at
-    @@max_updated_at = self.update_latest
+    Rails.cache.fetch('CategoryFeature-max_updated_at') { CategoryFeature.maximum(:updated_at) }
   end
   
   private
-  
-  def self.update_latest
-    @@max_updated_at = self.maximum(:updated_at)
-  end
   
   def self.delete_cumulative_information(category, feature_id)
     while !category.nil? && CumulativeCategoryFeatureAssociation.count(:conditions => {:category_id => category.children.collect(&:id), :feature_id => feature_id})==0
@@ -69,7 +64,7 @@ class CategoryFeature < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20100609203100
+# Schema version: 20100623234636
 #
 # Table name: category_features
 #
