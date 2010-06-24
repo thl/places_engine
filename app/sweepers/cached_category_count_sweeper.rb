@@ -1,9 +1,5 @@
 class CachedCategoryCountSweeper < ActiveRecord::Observer
-  observe CategoryFeature
-  
-  def before_save(cf)
-    expire_cache(cf.category_id_was) if cf.category_id_changed?
-  end
+  observe CachedCategoryCount
   
   def after_save(cf)
     expire_cache(cf.category_id)
