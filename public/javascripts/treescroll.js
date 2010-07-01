@@ -14,9 +14,9 @@ $(window).scroll(function () {
 $(document).ready(function () {
 	setTimeout('scrollToSelected();',1000);
 	// size the FeatureDetails InnerPane
-	browseHeight = (typeof window.innerHeight != 'undefined' ? window.innerHeight : document.body.offsetHeight) + heightAdj;
-	jQuery("#FeatureDetails").css("overflow","auto").css("border","3px inset #AAA").css("padding","3px");;
-	jQuery("#FeatureDetails").height(browseHeight);
+	//browseHeight = (typeof window.innerHeight != 'undefined' ? window.innerHeight : document.body.offsetHeight) + heightAdj;
+	//jQuery("#FeatureDetails").css("overflow","auto").css("border","3px inset #AAA").css("padding","3px");;
+	//jQuery("#FeatureDetails").height(browseHeight);
 });
 
 // Scroll to selected element in the FeatureTree

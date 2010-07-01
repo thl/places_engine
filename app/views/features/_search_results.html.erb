@@ -18,7 +18,7 @@
   <% @features.each do |f| %>
     <tr class="featureRow" id="feature_<%= f.id %>">
       <td class="leftText">
-		<%= link_to_function h(feature_name_header(f)).s, "NodeTree.showNode(#{f.id}); NodeTree.loadExpandedTree(#{f.id})", { :href => features_url + "##{f.id}" } %>
+		<%= link_to h(feature_name_header(f)).s, f %>
 	</td>
       <td class="leftText"><%=h f.object_types.first.title rescue '' %></td>
     </tr>

@@ -1,0 +1,18 @@
+<% @selected_tab = 2 %>
+<%= render :partial => "top" %>
+
+		  <!-- sets up the tabs for jquery -->
+		  <ul>
+		    <li><a href="<%= ActionController::Base.relative_url_root %>/"><span>Home</span></a></li>
+		    <li><a href="<%= feature_path @feature %>"><span>Place</span></a></li>
+		    <li><a href="#RelatedFeatures"><span>Related</span></a></li>
+		  </ul>
+			<div id="RelatedFeatures">
+				<div class="has-right-margin">
+					<%= render :partial => "related" %>
+				</div>
+			</div>
+
+<%= javascript_on_load "document.title = 'THL Place Dictionary - #{feature_name_header(@feature)} - Related Places'" %>
+			
+<%= render :partial => "bottom" %>

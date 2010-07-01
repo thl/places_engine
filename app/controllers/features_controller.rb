@@ -4,48 +4,22 @@ class FeaturesController < ApplicationController
   #
   #
   def index
+    set_common_variables(session)
     
-    # Allow for views and perspectives to be set by GET params.  It might be possible to simplify this code...
-    if params[:perspective_id] || params[:view_id]
-      session = Session.new
-      if params[:perspective_id]
-        session.perspective_id = params[:perspective_id]
-        self.current_perspective = Perspective.find(params[:perspective_id])
-      end
-      if params[:view_id]
-        session.view_id = params[:view_id]
-        self.current_view = View.find(params[:view_id])
-      end
-    end
+    @feature = Feature.find(session[:interface][:context_id]) unless session[:interface][:context_id].blank? 
     
-    @top_level_nodes = Feature.current_roots(current_perspective, current_view)
-    @session = Session.new(:perspective_id => self.current_perspective.id, :view_id => self.current_view.id)
-    @perspectives = Perspective.find_all_public
-    @views = View.find(:all, :order => 'name')
-    
-    # These are used for the "Characteristics" field in the search
-    @kmaps_characteristics = CategoryFeature.find(:all, :select => "DISTINCT category_id", :conditions => "type IS NULL")
-    
+    #if params[:context_id] && params[:context_id].match(/^[\d]+$/)
+    #  redirect_to :action => 'index', :anchor => params[:context_id]
+    #  return false
+    #end
+
     # In the event that a Blurb with this code doesn't exist, fail gracefully
     @intro_blurb = Blurb.find_by_code('homepage.intro') || Blurb.new
-    
-    if params[:context_id] && params[:context_id].match(/^[\d]+$/)
-      redirect_to :action => 'index', :anchor => params[:context_id]
-      return false
-    end
-    
+        
     respond_to do |format|
       format.html
       format.xml do
-        if !@context_feature.nil? && (@features.nil? || @features.size==0)
-          render :action => 'context_feature'
-        else
-          if search_scope.blank?
-            render :xml => @features.to_xml
-          else
-            render :action => 'index'
-          end
-        end
+        render :action => 'index'
       end
     end
   end
@@ -54,7 +28,11 @@ class FeaturesController < ApplicationController
   #
   #
   def show
+    set_common_variables(session)
+    
     @feature = Feature.find(params[:id])
+    session[:interface][:context_id] = @feature.id unless @feature.nil?
+    
     respond_to do |format|
       format.html
       format.xml
@@ -245,6 +223,16 @@ class FeaturesController < ApplicationController
       end
     end
     @params = params
+    valid_search_keys = [
+      :filter,
+    	:scope,
+    	:match,
+    	:search_scope,
+    	:object_type,
+    	:characteristic_id,
+    	:page
+    ]
+    session[:interface][:search_params] = @params.reject{|key, val| !valid_search_keys.include?(key.to_sym)}
     render :partial => 'search_results', :layout => false
   end
   
@@ -261,8 +249,9 @@ class FeaturesController < ApplicationController
   end
   
   def related
+    set_common_variables(session)
     @feature = Feature.find(params[:id])
-    render :partial => 'related'
+    session[:interface][:context_id] = @feature.id unless @feature.nil?
   end
   
   def related_list
@@ -303,6 +292,18 @@ class FeaturesController < ApplicationController
     @ancestors_for_current << node.id
     top_level_nodes = Feature.current_roots(current_perspective, current_view)
     render :partial => 'node_tree', :locals => { :children => top_level_nodes }, :layout => false
+  end  
+    
+  def set_session_variables
+    defaults = {
+      :menu_item => "search",
+      :advanced_search => "0"
+    }
+    valid_keys = defaults.keys
+    params.each do |key, value|
+      session[:interface][key.to_sym] = value if valid_keys.include?(key.to_sym)
+    end
+    render :text => ""
   end
   
   protected
@@ -368,5 +369,44 @@ class FeaturesController < ApplicationController
       f[:has_shapes] = feature.shapes.empty? ? 0 : 1
       #f[:parents] = feature.parents.collect{|p| api_format_feature(p) }
       f
+    end
+    
+    def set_common_variables(session_params)
+      
+      session[:interface] ||= {}
+      
+      # Allow for views and perspectives to be set by GET params.  It might be possible to simplify this code...
+      if params[:perspective_id] || params[:view_id]
+        session = Session.new
+        if params[:perspective_id]
+          session.perspective_id = params[:perspective_id]
+          self.current_perspective = Perspective.find(params[:perspective_id])
+        end
+        if params[:view_id]
+          session.view_id = params[:view_id]
+          self.current_view = View.find(params[:view_id])
+        end
+      end
+
+      @top_level_nodes = Feature.current_roots(current_perspective, current_view)
+      @session = Session.new(:perspective_id => self.current_perspective.id, :view_id => self.current_view.id)
+      @perspectives = Perspective.find_all_public
+      @views = View.find(:all, :order => 'name')
+
+      # These are used for the "Characteristics" field in the search
+      @kmaps_characteristics = CategoryFeature.find(:all, :select => "DISTINCT category_id", :conditions => "type IS NULL")
+
+      search_defaults = {
+      	:filter => '',
+      	:scope => 'full_text',
+      	:match => 'contains',
+      	:search_scope => 'global'
+      }
+      
+      # These are used to show the same search results that were on the previous page.
+      @previous_search_params = session_params[:interface][:search_params] || search_defaults
+      
+      # These are used to show the same search form field values that were on the previous page.
+      @search_form_params = search_defaults
     end
 end

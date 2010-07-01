@@ -1,12 +1,10 @@
 <% if feature.nil? %>
 <div class="left">
   <h2>No Results</h2>
-  <p>There is no feature to display. Please select a feature from the tree.</p>
+  <p>Sorry, this feature couldn't be found. Please use the menu on the right to search or browse for a feature.</p>
 </div>
-<% else
-@context_id = feature.id
-%>
-<div id="FeatureDetails" class="has-right-margin">
+<% else %>
+<div id="FeatureDetails">
   <%= content_tag :h2, feature_name_header(feature) %>
   <%= time_units_for(feature) %>
   
