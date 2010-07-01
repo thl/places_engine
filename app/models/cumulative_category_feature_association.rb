@@ -4,7 +4,7 @@ class CumulativeCategoryFeatureAssociation < ActiveRecord::Base
   belongs_to :feature
   belongs_to :category
   
-  after_save { |record| CachedCategoryCount.updated_count(record.category_id) if !skip_update }
+  after_save { |record| CachedCategoryCount.updated_count(record.category_id) if !record.skip_update }
 end
 
 # == Schema Info

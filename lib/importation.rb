@@ -44,7 +44,7 @@ class Importation
   
 
   # Fields that accept time_units:
-  # features, i.feature_names, i.feature_names.j, feature_types, feature_types.i, i.kmaps
+  # features, i.feature_names, i.feature_names.j, feature_types, feature_types.i, i.kmaps, i.feature_geo_codes, i.feature_geo_codes.j
 
   # time_units fields supported:
   # .time_units.date, .time_units.start_date, .time_units.end_date, .time_units.season_id, .time_units.certainty_id
