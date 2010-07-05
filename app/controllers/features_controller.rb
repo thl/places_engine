@@ -101,10 +101,11 @@ class FeaturesController < ApplicationController
       options[:conditions]['cf.type'] = nil
       options[:conditions]['features.is_public'] = 1
       options[:conditions].delete(:is_public)
-    end
+    end  
     options[:joins] = joins.join(' ') unless joins.empty?
+    options[:select] = "features.*, DISTINCT feature.id" unless joins.empty?
     perform_global_search(options, search_options)
-    #api_render(@features)
+
     respond_to do |format|
       format.html { render :action => 'paginated_show' }
       format.xml  { render :action => 'paginated_show' }
@@ -219,6 +220,7 @@ class FeaturesController < ApplicationController
           options[:conditions].delete(:is_public)
         end
         options[:joins] = joins.join(' ') unless joins.empty?
+        options[:select] = "features.*, DISTINCT feature.id" unless joins.empty?
         perform_global_search(options, search_options)
       end
     end
@@ -339,7 +341,6 @@ class FeaturesController < ApplicationController
         options,
         search_options
       )
-      @features.uniq!
     end
     
     def api_render(features, options={})
