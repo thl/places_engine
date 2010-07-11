@@ -197,10 +197,20 @@ module FeatureExtensionForNamePositioning
   def update_name_positions
     if self.is_name_position_overriden?
       names = self.names
+      updated = false
       self.names.find(:all, :conditions => {:position => 0}, :order => 'created_at').inject(names.maximum(:position)+1) do |pos, name|
-        name.update_attribute(:position, pos)
+        name.update_attributes(:position => pos, :skip_update => true)
+        updated = true if !updated
         pos + 1
       end
+      self.names.find(:all, :order => 'position, created_at').inject(1) do |pos, name|
+        if name.position!=pos
+          name.update_attributes(:position => pos, :skip_update => true)
+          updated = true if !updated
+        end
+        pos + 1
+      end
+      name.feature.update_cached_feature_names if updated
     else
       self.reset_name_positions
     end
@@ -269,6 +279,10 @@ module FeatureExtensionForNamePositioning
     
     def update_cached_feature_names
       self.find(:all, :order => 'fid').each { |f| f.update_cached_feature_names }
+    end
+    
+    def update_name_positions
+      self.find(:all, :order => 'fid').each { |f| f.update_name_positions }
     end
   end
   
