@@ -1,0 +1,66 @@
+<%= stylesheet_link_tag 'jquery-ui-tabs' %>
+<%= javascript_include_tag 'jquery-form' %>
+<%= javascript_include_tag 'jquery.livequery' %>
+<%= javascript_include_tag "sections/#{controller.controller_name}" %>
+<%= javascript_tag "var AUTH_TOKEN = #{form_authenticity_token.inspect};" if protect_against_forgery? %>
+<%= javascript_include_tag 'node-menu' %>
+<%= javascript_include_tag 'node-tree' %>
+<script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=<%= google_maps_key %>"></script>
+<%= javascript_include_tag "http://openlayers.org/api/OpenLayers.js" %>
+<%= javascript_tag "var current_view_code = '#{current_view.code}';" %>
+<%= javascript_include_tag "#{thl_url}/places/maps/interactive/scripts/THLWMS.js" %>
+<%= javascript_include_tag "inset-map" %>
+<%= javascript_include_tag "characteristic-selector" %>
+<script type="text/javascript">
+
+jQuery(document).ready(function(){
+	jQuery("#FeaturePanel").tabs({
+		selected: <%= @selected_tab %>,
+		select: function(event, ui) {
+        var url = $.data(ui.tab, 'load.tabs');
+        if( url ) {
+            location.href = url;
+            return false;
+        }
+        return true;
+    },
+		cache: true,
+		load: function() { NodeTree.reselectNode(); }
+	});
+	jQuery(window).unbind("scroll");
+	NodeTree.init("NodeTree", "NodeTreeList", "<%= features_path %>/");
+	NodeMenu.init("NodeMenu", "<%= features_path %>/");
+	
+	<% unless @kmaps_characteristics.blank? %>
+	var characteristic_data = <%= @kmaps_characteristics.collect{|c| {:id => c.category_id, :name => c.to_s}}.sort_by{|a| a[:name].downcase.strip}.to_json %>;
+	var characteristic_selector = new CharacteristicSelector();
+	characteristic_selector.init('characteristic_selector', {
+		fieldLabel: "Characteristic:",
+		data: characteristic_data
+	});
+	<% end %>
+});
+
+function reset_advanced_search(){
+	// Select "Global" for search scope
+	$("input[name='search_scope']").removeAttr('checked');
+	$('#search_scope_global').attr('checked', 'checked');
+	// Select "Contains" for match
+	$("input[name='match']").removeAttr('checked');
+	$('#match_contains').attr('checked', 'checked');
+	// Select "Full Text" for text scope
+	$("input[name='scope']").removeAttr('checked');
+	$('#scope_full_text').attr('checked', 'checked');
+	// Reset all of the fields in the ModelSearcher
+	category_searcher_object_type.resetFields();
+}
+
+</script>
+<%= category_searcher(true, :category_id => 20, :field_name => 'object_type', :field_label => 'Feature type: ', :exclude_span => true, :options => {:hasTree => 'true'}) %>
+
+<h2>THL Place Dictionary of Tibet &amp; the Himalayas</h2>
+
+<div id="FeatureContainer">
+	<div id="FeaturePanelContainer">
+		<%= render :partial => "menu" %>
+		<div id="FeaturePanel">

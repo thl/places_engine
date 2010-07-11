@@ -21,7 +21,7 @@ module ApplicationHelper
   # Creates a breadcrumb trail to the feature
   #
   def f_breadcrumb(feature)
-    content_tag :div, acts_as_family_tree_breadcrumb(feature, breadcrumb_separator) {|r| f_link(r, features_path(:anchor => r.id), {}, {:s => true})}, :class => "breadcrumbs"
+    content_tag :div, acts_as_family_tree_breadcrumb(feature, breadcrumb_separator) {|r| f_link(r, feature_path(r), {}, {:s => true})}, :class => "breadcrumbs"
   end
   
   #
@@ -375,6 +375,14 @@ module ApplicationHelper
         collection.offset + collection.length,
         collection.total_entries
       ]
+    end
+  end
+  
+  def javascript_on_load(*args, &block)
+    if block_given?
+      concat(javascript_tag "$(document).ready(function(){#{capture(&block)}})")
+    else
+      javascript_tag "$(document).ready(function(){#{args.first}})"
     end
   end
 

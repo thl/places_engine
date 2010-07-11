@@ -50,9 +50,9 @@ var NodeMenu = {
 	mouse_is_down: false,
 	menu_item_indexes: {
 		'search' : 0,
-		'search_results' : 1,
+		'results' : 1,
 		'options' : 2,
-		'tree' : 3
+		'browse' : 3
 	},
 	
 	init: function(div_id, controller){
@@ -94,6 +94,10 @@ var NodeMenu = {
 			var sibling_div = jQuery(this).next();
 			if(sibling_div.hasClass('item-contracted')){
 				NodeMenu.toggleMenuItem(sibling_div, true);
+				var menu_item_match = jQuery(this).attr('class').match(/(^|\s)menu-item-(\w+)($|\s)/);
+				if(menu_item_match){
+					NodeMenu.onMenuItemOpen(menu_item_match[2]);
+				}
 			}else{
 				NodeMenu.toggleMenuItem(sibling_div, false);
 			}
@@ -144,24 +148,39 @@ var NodeMenu = {
 		// Hide the search results item by default
 		jQuery('#NodeSearchResults').prev('h2').hide();
 		
-		// Cause any links to #[id] to trigger a reloading of the necessary AJAX elements (otherwise, these links
-		// would merely change the location.hash and not load any new content).
-		// We use .livequery instead of the native jQuery .live because there's the latter has an issue with
-		// right-clicking to open the link in a new window--should probably resolve this and use .live instead.
-		jQuery('a[href*=features#]').livequery('click', function(){
-			// Links in the feature tree already have different events attached, so omit those
-			if(jQuery(this).parents('#NodeTree').length == 0){
-				var id = this.href.match(/features#([\d]+)$/);
-				if(id){
-					id = id[1];
-					NodeTree.showNodeAndLoadExpandedTree(id);
-				}
+		// Make old, hash-based links redirect to the appropriate new URL
+		jQuery('a[href*=/features#]').livequery('click', function(){
+			var id = this.href.match(/\/features#([\d]+)$/);
+			if(id){
+				id = id[1];
+				window.location = NodeMenu.controller+id;
+				return false;
+			}
+			return true;
+		});
+
+		jQuery('a[href*=/#]').livequery('click', function(){
+			var id = this.href.match(/\/#([\d]+)$/);
+			if(id){
+				id = id[1];
+				window.location = NodeMenu.controller+id;
+				return false;
+			}
+			return true;
+		});
+		
+		jQuery('a[href*=/?frame=destroy#]').livequery('click', function(){
+			var id = this.href.match(/frame=destroy#([\d]+)$/);
+			if(id){
+				id = id[1];
+				window.location = NodeMenu.controller+id;
+				return false;
 			}
 			return true;
 		});
 		
 		// Check to see if a location.hash exists, and load it if so
-		this.loadLocation();
+		//this.loadLocation();
 		
 		// Bind window scrolling to .moveMenu() 
 		jQuery(window).bind("scroll", function(){NodeMenu.moveMenu();});
@@ -270,11 +289,15 @@ var NodeMenu = {
 	// Model-specific methods
 	
 	// Methods for searching
-	beginSearch: function(){
+	beginSearch: function(loading_text){
+		if(typeof loading_text == "undefined"){
+			var loading_text = "Searching...";
+		}
 		this.content_div.find("#NodeSearchResults")
-			.html('<img src="http://thlib.org/global/images/ajax-loader.gif" alt="Searching..." style="display:inline;" /> Searching...')
+			.html('<img src="http://thlib.org/global/images/ajax-loader.gif" alt="" style="display:inline;" /> '+loading_text)
 			.prev('h2').show();
-		this.showMenuItemByIndex(1);
+		this.showMenuItem('results');
+		this.onMenuItemOpen('results');
 	},
 	
 	beginFidSearch: function(){
@@ -358,6 +381,19 @@ var NodeMenu = {
 			}
 		}
 		return false;
+	},
+	
+	// App-specific functions and callbacks:
+	
+	onMenuItemOpen: function(menu_item){
+		
+		jQuery.ajax({
+			type: 'POST',
+			url: this.controller+'set_session_variables/0/',
+			data: 'menu_item='+menu_item,
+			success: function(){},
+			error: function(){}
+		});
 	}
 	
 };
