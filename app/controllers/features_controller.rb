@@ -30,7 +30,7 @@ class FeaturesController < ApplicationController
   def show
     set_common_variables(session)
     
-    @feature = Feature.find(params[:id])
+    @feature = Feature.get_by_fid(params[:id])
     session[:interface][:context_id] = @feature.id unless @feature.nil?
     
     respond_to do |format|

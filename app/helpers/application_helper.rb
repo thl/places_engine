@@ -21,7 +21,7 @@ module ApplicationHelper
   # Creates a breadcrumb trail to the feature
   #
   def f_breadcrumb(feature)
-    content_tag :div, acts_as_family_tree_breadcrumb(feature, breadcrumb_separator) {|r| f_link(r, feature_path(r), {}, {:s => true})}, :class => "breadcrumbs"
+    content_tag :div, acts_as_family_tree_breadcrumb(feature, breadcrumb_separator) {|r| f_link(r, feature_path(r.fid), {}, {:s => true})}, :class => "breadcrumbs"
   end
   
   #

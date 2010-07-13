@@ -2,7 +2,7 @@
     if has_no_children %>
       <span class="node-empty"></span>
 <%  else %>
-<%= link_to_remote '', { :update => "node_#{expanded.id}_div", :url => { :action => 'contracted', :id => expanded.id }, :complete => "NodeTree.reselectNode()" }, { :class => 'node-minus', :href => feature_url(expanded) } %>
+<%= link_to_remote '', { :update => "node_#{expanded.id}_div", :url => { :action => 'contracted', :id => expanded.id }, :complete => "NodeTree.reselectNode()" }, { :class => 'node-minus', :href => feature_url(expanded.fid) } %>
 <%  end %>
 <%= render :partial => 'selectable_node', :locals => { :node => expanded } %>
 <%= render :partial => 'node_tree', :locals => {:node => expanded} %>

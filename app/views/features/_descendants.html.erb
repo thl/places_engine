@@ -11,7 +11,7 @@
       </tr>
     	<% descendants.each do |child| %>
       <tr id="feature_<%= child.id %>">
-        <td><%= f_link(child, features_path(:anchor=>child.id)) %></td>
+        <td><%= f_link(child, feature_path(child.fid)) %></td>
         <td><%=h child.object_types.first.title rescue '' %></td>
       </tr>
     	<% end %>
