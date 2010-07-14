@@ -57,6 +57,10 @@ class Importation
   
   # Fields that accept note:
   # feature_names, i.feature_names, i.kmaps, kXXX, feature_types
+  
+  # Note fields:
+  # .note
+  
   def self.do_csv_import(filename)
     field_names = nil
     country_type = Category.find_by_title('Nation')
