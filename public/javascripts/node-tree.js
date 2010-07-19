@@ -76,13 +76,21 @@ var NodeTree = {
 		jQuery('#node_'+id+'_div > .node-name').addClass('selected-node');
 		this.removeNodeLoading();
 		this.selected_node_id = id;
-		window.location.hash = '#'+id;
 	},
 	
 	// For use after expandNode() or contractNode() have been called, to be sure that the selected node is still selected after
 	// those AJAX calls
 	reselectNode: function(){
 		jQuery('#node_'+this.selected_node_id+'_div > .node-name').addClass('selected-node');
+	},
+	
+	// Scroll to the specified node
+	scrollToNode: function(id){
+		var node_element = jQuery('#node_'+this.selected_node_id+'_div > .node-name');
+		if(node_element.length > 0) {
+			var offset_within_tree = (node_element.offset().top - jQuery('#NodeTreeList').offset().top) - 5;
+			jQuery('#NodeTreeList').animate({scrollTop: offset_within_tree+'px'}, 300);
+		}
 	},
 	
 	// Add a spinner to the currently loading node
@@ -122,7 +130,10 @@ var NodeTree = {
 	
 	// Loads the entire node tree, expanded to the specified node 
 	loadExpandedTree: function(id){
-		this.list_div.load(this.controller+"node_tree_expanded/"+id, function(){NodeTree.reselectNode();});
+		this.list_div.load(this.controller+"node_tree_expanded/"+id, function(){
+			NodeTree.selectNode(id);
+			NodeTree.scrollToNode(id);
+		});
 	},
 	
 	// Will both show the specified node and load the expanded tree (only call this if the more 
