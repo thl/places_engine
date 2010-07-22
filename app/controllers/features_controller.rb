@@ -219,12 +219,17 @@ class FeaturesController < ApplicationController
           options[:conditions]['features.is_public'] = 1
           options[:conditions].delete(:is_public)
         end
+        if !params[:has_descriptions].blank? && params[:has_descriptions] == '1'
+          search_options[:has_descriptions] = true
+        end
         options[:joins] = joins.join(' ') unless joins.empty?
         options[:select] = "features.*, DISTINCT feature.id" unless joins.empty?
         perform_global_search(options, search_options)
       end
     end
     @params = params
+    
+    # The search params that should be observed when creating the session store of search params
     valid_search_keys = [
       :filter,
     	:scope,
@@ -232,6 +237,7 @@ class FeaturesController < ApplicationController
     	:search_scope,
     	:object_type,
     	:characteristic_id,
+    	:has_descriptions,
     	:page
     ]
     session[:interface][:search_params] = @params.reject{|key, val| !valid_search_keys.include?(key.to_sym)}
@@ -401,7 +407,8 @@ class FeaturesController < ApplicationController
       	:filter => '',
       	:scope => 'full_text',
       	:match => 'contains',
-      	:search_scope => 'global'
+      	:search_scope => 'global',
+      	:has_descriptions => '0'
       }
       
       # These are used to show the same search results that were on the previous page.

@@ -184,14 +184,29 @@ class Feature < ActiveRecord::Base
       conditions[0] << ' OR features.fid = ?'
       conditions << filter_value.gsub(/[^\d]/, '').to_i
     end
+    
     base_scope={
       # These conditions will apply to all searches
       :conditions => conditions, :include => [:names, :descriptions], :order => 'features.position'
       #:joins => 'left join feature_names on features.id = feature_names.feature_id'
     }
+    
     # Now that we have the base scope setup, apply the custom options and paginate!
-    with_scope(:find=>base_scope) do
-      paginate(options)
+    
+    # For :has_descriptions == true, it appears that there isn't a way to use IS NOT NULL in a :conditions hash, so
+    # we'll use it in a :conditions string in an outer scope.  Is there a way to use IS NOT NULL in
+    # base_scope[:conditions] instead?
+    if !search_options[:has_descriptions].nil? && search_options[:has_descriptions]
+      with_scope(:find => {:conditions => "descriptions.content IS NOT NULL"}) do
+        with_scope(:find=>base_scope) do
+          paginate(options)
+        end
+      end
+    # Otherwise, just use a single scope:
+    else      
+      with_scope(:find=>base_scope) do
+        paginate(options)
+      end
     end
   end
   

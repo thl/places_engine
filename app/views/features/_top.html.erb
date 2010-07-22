@@ -51,6 +51,8 @@ function reset_advanced_search(){
 	// Select "Full Text" for text scope
 	$("input[name='scope']").removeAttr('checked');
 	$('#scope_full_text').attr('checked', 'checked');
+	// Uncheck has_descriptions
+	$("input[name='has_descriptions']").removeAttr('checked');
 	// Reset all of the fields in the ModelSearcher
 	category_searcher_object_type.resetFields();
 }

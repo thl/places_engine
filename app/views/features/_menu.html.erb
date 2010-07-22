@@ -21,6 +21,10 @@
 					<%=  radio_button_tag :match, :begins, @search_form_params[:match] == 'begins' %> Starts with
 					<%=  radio_button_tag :match, :exactly, @search_form_params[:match] == 'exactly' %> Exactly
 				</div>
+				<div>
+					<%=  check_box_tag :has_descriptions, '1', @search_form_params[:has_descriptions] == '1' %>
+					<%=  label_tag :has_descriptions, "Show only entries with essays" %>
+				</div>
 				<div id="tmb_category_selector_object_type"></div>
 				<div id="characteristic_selector"></div>
 				<div>
