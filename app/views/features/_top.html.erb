@@ -29,7 +29,14 @@ jQuery(document).ready(function(){
 	});
 	jQuery(window).unbind("scroll");
 	NodeTree.init("NodeTree", "NodeTreeList", "<%= features_path %>/");
-	NodeMenu.init("NodeMenu", "<%= features_path %>/");
+	<%
+		node_menu_options = {}
+		# Set the menu item that should be open when the NodeMenu loads
+		node_menu_options[:default_item] = session[:interface][:menu_item] unless session[:interface][:menu_item].blank?
+		# Make the Results menu item be shown if a search exists in the session
+		node_menu_options[:show_results] = true unless session[:search].blank?
+	%>
+	NodeMenu.init("NodeMenu", "<%= features_path %>/", <%= node_menu_options.to_json %>);
 	
 	<% unless @kmaps_characteristics.blank? %>
 	var characteristic_data = <%= @kmaps_characteristics.collect{|c| {:id => c.category_id, :name => c.to_s}}.sort_by{|a| a[:name].downcase.strip}.to_json %>;

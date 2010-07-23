@@ -85,12 +85,36 @@ var NodeTree = {
 	},
 	
 	// Scroll to the specified node
-	scrollToNode: function(id){
+	scrollToNode: function(id, speed){
+		if(typeof speed == "undefined"){
+			speed = 300;
+		}
 		var node_element = jQuery('#node_'+this.selected_node_id+'_div > .node-name');
 		if(node_element.length > 0) {
-			var offset_within_tree = (node_element.offset().top - jQuery('#NodeTreeList').offset().top) - 5;
-			jQuery('#NodeTreeList').animate({scrollTop: offset_within_tree+'px'}, 300);
+			var offset_within_tree = (node_element.offset().top + jQuery('#NodeTreeList').scrollTop() - jQuery('#NodeTreeList').offset().top) - 5;
+			jQuery('#NodeTreeList').animate({scrollTop: offset_within_tree+'px'}, speed);
 		}
+	},
+	
+	// Scroll to the currently selected node
+	scrollToSelectedNode: function(speed){
+		var selected_node_id = this.getSelectedNodeId();
+		if(selected_node_id){
+			this.scrollToNode(selected_node_id, speed);
+		}
+	},
+	
+	// Get the ID of the currently selected node
+	getSelectedNodeId: function(){
+		var selected_node = jQuery('.selected-node:first');
+		if(selected_node.length == 1){
+			var id_match = selected_node.parents('li:first').attr('id').match(/node_([\d]+)_div/);
+			if(id_match){
+				var id = id_match[1];
+				return id;
+			}
+		}
+		return false;
 	},
 	
 	// Add a spinner to the currently loading node

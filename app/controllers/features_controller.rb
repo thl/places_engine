@@ -240,8 +240,23 @@ class FeaturesController < ApplicationController
     	:has_descriptions,
     	:page
     ]
-    session[:interface][:search_params] = @params.reject{|key, val| !valid_search_keys.include?(key.to_sym)}
-    render :partial => 'search_results', :layout => false
+    
+    # When using the session store features, we need to provide will_paginate with info about how to render
+    # the pagination, so we'll store it in session[:search], along with the feature ids 
+    session[:search] = {
+      :params => @params.reject{|key, val| !valid_search_keys.include?(key.to_sym)},
+      :page => @params[:page] ||= 1,
+      :per_page => @features.per_page,
+      :total_entries => @features.total_entries,
+      :total_pages => @features.total_pages,
+      :feature_ids => @features.collect{|f|f.id}
+    }
+    
+    # Set the current menu_item to 'results', so that the Results will stay open when the user browses
+    # to a new page
+    session[:interface][:menu_item] = 'results'
+    
+    render :partial => 'search_results', :locals => {:features => @features}, :layout => false
   end
   
   def feature
