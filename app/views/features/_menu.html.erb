@@ -21,6 +21,10 @@
 					<%=  radio_button_tag :match, :begins, @search_form_params[:match] == 'begins' %> Starts with
 					<%=  radio_button_tag :match, :exactly, @search_form_params[:match] == 'exactly' %> Exactly
 				</div>
+				<div>
+					<%=  check_box_tag :has_descriptions, '1', @search_form_params[:has_descriptions] == '1' %>
+					<%=  label_tag :has_descriptions, "Show only entries with essays" %>
+				</div>
 				<div id="tmb_category_selector_object_type"></div>
 				<div id="characteristic_selector"></div>
 				<div>
@@ -37,7 +41,11 @@
 	</div>
 	<h2 class="menu-item-results">Results</h2>
 	<div id="NodeSearchResults">
-		Use the search field above to search for features.
+		<% if session[:search].blank? %>
+			Use the search field above to search for features.
+		<% else %>
+			<%= render :partial => 'search_results', :locals => {:use_session => true, :features => Feature.find(session[:search][:feature_ids])} %>
+		<% end %>
 	</div>
 	<h2 class="menu-item-options">Options</h2>
 	<div id="NodeOptions">
@@ -64,23 +72,18 @@
 	<h2 class="menu-item-browse">Browse</h2>
 	<div id="NodeTree">
 		<div id="NodeTreeList">
-		<% if current_perspective %>
-			<%= render :partial => "node_tree", :locals => { :children => @top_level_nodes } %>
+		<% if @feature.nil? %>
+			<% if current_perspective %>
+				<%= render :partial => "node_tree", :locals => { :children => @top_level_nodes } %>
+			<% else %>
+				To see a list of features, please <%= link_to 'choose a perspective', edit_session_path %>.
+			<% end %>
 		<% else %>
-			To see a list of features, please <%= link_to 'choose a perspective', edit_session_path %>.
+			<img src="http://thlib.org/global/images/ajax-loader.gif" alt="" style="display:inline;" /> Loading...
 		<% end %>
 		</div>
 	</div>
 </div>
-
-<% unless session[:interface][:search_params].blank? %>
-	<%= link_to_remote "", :url => {:action => "search"}.merge(@previous_search_params), :update => "NodeSearchResults", :loading => "NodeMenu.beginSearch('Loading previous results...')", :html => {:id => "load_search_link", :style => "display:none;"} %>
-	<%= javascript_on_load "$('#load_search_link').click()" %>
-<% end %>
-
-<% unless session[:interface][:menu_item].blank? %>
-	<%= javascript_on_load "NodeMenu.showMenuItem('#{session[:interface][:menu_item]}')" %>
-<% end %>
 
 <% unless @feature.nil? %>
 	<%= javascript_on_load "NodeTree.loadExpandedTree(#{@feature.id})" %>

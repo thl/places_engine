@@ -37,6 +37,12 @@ var NodeMenu = {
 	// The maximum y offset of the menu in its container during page scroll:
 	max_container_offset_y: 400,
 	
+	// The default menu item's name (e.g. 'search') that should be open on initialization (set in init()'s options)
+	default_item: false,
+	
+	// Whether the 'results' menu item should be shown on intialization
+	show_results: false,
+	
 	// Generally for internal use only:
 	div: null,
 	content_div: null,
@@ -55,7 +61,13 @@ var NodeMenu = {
 		'browse' : 3
 	},
 	
-	init: function(div_id, controller){
+	init: function(div_id, controller, options){
+	
+		if(typeof options == "undefined"){
+			options = {}
+		}
+		if(options.default_item){ this.default_item = options.default_item; }
+		if(options.show_results){ this.show_results = options.show_results; }
 	
 		// Set the object's attributes
 		this.div_id = div_id;
@@ -86,8 +98,12 @@ var NodeMenu = {
 		// Set up the menu item toggling
 		this.content_div.find("> div").addClass('item-contracted').hide();
 		
-		// Choose the initial menu item
-		this.content_div.find("> div.default-item").addClass('item-expanded').show();
+		// Open the initial menu item
+		if(this.default_item){
+			this.showMenuItem(this.default_item, 0);
+		}else{
+			this.content_div.find("> div.default-item").addClass('item-expanded').show();
+		}
 		
 		// Set up onclick events for the menu items to create accordion-like toggling
 		this.content_div.find("> h2").click(function(){
@@ -145,8 +161,11 @@ var NodeMenu = {
 			return false;
 		});
 		
-		// Hide the search results item by default
-		jQuery('#NodeSearchResults').prev('h2').hide();
+		// Hide the search results item by default, unless it's the default_item (meaning that it's open by default)
+		// or this.show_results is true
+		if(!(this.default_item == 'results' || this.show_results)){
+			jQuery('#NodeSearchResults').prev('h2').hide();
+		}
 		
 		// Make old, hash-based links redirect to the appropriate new URL
 		jQuery('a[href*=/features#]').livequery('click', function(){
@@ -179,11 +198,9 @@ var NodeMenu = {
 			return true;
 		});
 		
-		// Check to see if a location.hash exists, and load it if so
-		//this.loadLocation();
-		
 		// Bind window scrolling to .moveMenu() 
 		jQuery(window).bind("scroll", function(){NodeMenu.moveMenu();});
+		
 	},
 	
 	// Make the browser scroll to the top of the NodeMenu
@@ -197,28 +214,31 @@ var NodeMenu = {
 	// Methods for toggling menu items
 	
 	// Open the menu item at the specified index
-	showMenuItemByIndex: function(index){
-		this.toggleMenuItem(this.content_div.find("> div").eq(index), true);
+	showMenuItemByIndex: function(index, speed){
+		this.toggleMenuItem(this.content_div.find("> div").eq(index), true, speed);
 	},
 	
-	showMenuItem: function(menu_item){
-		this.showMenuItemByIndex(this.menu_item_indexes[menu_item]);
+	showMenuItem: function(menu_item, speed){
+		this.showMenuItemByIndex(this.menu_item_indexes[menu_item], speed);
 	},
 	
 	// Either collapse or expand a menu item, depending on what show (boolean) is set to
-	toggleMenuItem: function(div, show){
+	toggleMenuItem: function(div, show, speed){
+		if(typeof speed == "undefined"){
+			speed = this.item_toggle_speed;
+		}
 		if(show){
 			this.content_div.find('.item-expanded')
 				.removeClass('item-expanded')
 				.addClass('item-contracted')
-				.hide(this.item_toggle_speed);
+				.hide(speed);
 			div.removeClass('item-contracted');
 			div.addClass('item-expanded');
-			div.show(this.item_toggle_speed);
+			div.show(speed);
 		}else{
 			div.removeClass('item-expanded');
 			div.addClass('item-contracted');
-			div.hide(this.item_toggle_speed);
+			div.hide(speed);
 		}
 	},
 	
@@ -286,7 +306,7 @@ var NodeMenu = {
 		return scrollY;
 	},
 	
-	// Model-specific methods
+	// App-specific methods
 	
 	// Methods for searching
 	beginSearch: function(loading_text){
@@ -394,6 +414,12 @@ var NodeMenu = {
 			success: function(){},
 			error: function(){}
 		});
+		
+		// When the Browse menu item is opened, scroll to the selected node after the menu item has
+		// fully loaded
+		if(menu_item == 'browse'){
+			setTimeout('NodeTree.scrollToSelectedNode(0);', NodeMenu.item_toggle_speed+1);
+		}
 	}
 	
 };
