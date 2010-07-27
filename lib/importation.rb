@@ -44,23 +44,23 @@ class Importation
   
 
   # Fields that accept time_units:
-  # features, i.feature_names, i.feature_names.j, feature_types, feature_types.i, i.kmaps, i.feature_geo_codes, i.feature_geo_codes.j
+  # features, i.feature_names[.j], [i.]feature_types[.j], i.kmaps[.j], kXXX[.i], i.feature_geo_codes[.j], [i.]feature_relations[.j]
 
   # time_units fields supported:
-  # .time_units.date, .time_units.start_date, .time_units.end_date, .time_units.season_id, .time_units.certainty_id
+  # .time_units.[start.|end.]date, .time_units.[start.|end.]certainty_id, .time_units.season_id
   
   # Fields that accept info_source:
-  # i.feature_names, i.feature_names.j, feature_types.j, i.feature_types.j, i.feature_geo_codes, kXXX, i.kmaps
+  # i.feature_names[.j], [i.]feature_types[.j], i.feature_geo_codes[.j], kXXX[.i], i.kmaps[.j], [i.]feature_relations[.j]
   
   # info_source fields:
   # .info_source.id/code, .info_source.volume, info_source.page
   
   # Fields that accept note:
-  # feature_names, i.feature_names, i.kmaps, kXXX, feature_types
+  # feature_names[.i], i.feature_names, i.kmaps[.j], kXXX[.i], [i.]feature_types[.j], [i.]feature_relations[.j]
   
   # Note fields:
   # .note
-  
+    
   def self.do_csv_import(filename)
     field_names = nil
     country_type = Category.find_by_title('Nation')
@@ -78,6 +78,7 @@ class Importation
       import.populate_fields(row, field_names)
       next unless import.get_feature(current)
       begin
+        self.add_date('features', self.feature)
         import.process_names(42)
         feature_ids_with_object_types_added += import.process_feature_types(4)
         import.process_geocodes(4)
@@ -115,16 +116,24 @@ class Importation
   def add_date(field_prefix, dateable)
     date = self.fields.delete("#{field_prefix}.time_units.date")
     if date.blank?
-      start_date = self.fields.delete("#{field_prefix}.time_units.start_date")
-      end_date = self.fields.delete("#{field_prefix}.time_units.end_date")
+      start_date = self.fields.delete("#{field_prefix}.time_units.start.date")
+      end_date = self.fields.delete("#{field_prefix}.time_units.end.date")
       if !start_date.blank? && !end_date.blank?
         certainty_id = self.fields.delete("#{field_prefix}.time_units.certainty_id")
-        certainty_id = nil if certainty_id.blank?
+        if certainty_id.blank?
+          start_certainty_id = self.fields.delete("#{field_prefix}.time_units.start.certainty_id")
+          start_certainty_id = nil if start_certainty_id.empty?
+          end_certainty_id = self.fields.delete("#{field_prefix}.time_units.end.certainty_id")          
+          end_certainty_id = nil if end_certainty_id.empty?
+        else
+          start_certainty_id = certainty_id
+          end_certainty_id = certainty_id
+        end
         season_id = self.fields.delete("#{field_prefix}.time_units.season_id")
         season_id = nil if season_id.blank?
         
-        complex_start_date = Importation.to_complex_date(start_date, certainty_id, season_id)
-        complex_end_date = Importation.to_complex_date(end_date, certainty_id, season_id)
+        complex_start_date = Importation.to_complex_date(start_date, start_certainty_id, season_id)
+        complex_end_date = Importation.to_complex_date(end_date, end_certainty_id, season_id)
         if complex_start_date.nil? || complex_end_date.nil?
           puts "Date #{date} could not be associated to #{dateable.class_name.titleize}."
         else
@@ -288,13 +297,14 @@ class Importation
       end
     end    
     # feature_names.note can be used to add general notes to all names of a feature
-    feature_names_note = self.fields.delete('feature_names.note')
-    if !feature_names_note.blank?
-      note = AssociationNote.find(:first, :conditions => { :notable_id => self.feature.id, :notable_type => 'Feature', :association_type => 'FeatureName', :content => feature_names_note })
-      note = AssociationNote.create(:notable => self.feature, :association_type => 'FeatureName', :content => feature_names_note) if note.nil?
-      puts "Feature name note #{feature_names_note} could not be saved for feature #{self.feature.pid}" if note.nil?
+    0.upto(3) do |i|
+      feature_names_note = self.fields.delete(i==0 ? 'feature_names.note' : "feature_names.note.#{i}")
+      if !feature_names_note.blank?
+        note = AssociationNote.find(:first, :conditions => { :notable_id => self.feature.id, :notable_type => 'Feature', :association_type => 'FeatureName', :content => feature_names_note })
+        note = AssociationNote.create(:notable => self.feature, :association_type => 'FeatureName', :content => feature_names_note) if note.nil?
+        puts "Feature name note #{feature_names_note} could not be saved for feature #{self.feature.pid}" if note.nil?
+      end
     end
-    self.add_date('features', self.feature)
     name = Array.new(total)
     1.upto(total) do |i|
       n = i-1
@@ -536,9 +546,12 @@ class Importation
         puts "Couldn't associate #{geocode_value} to #{geocode_type} for feature #{self.feature.pid}"
         next
       end
-      self.add_date("#{i}.feature_geo_codes", geocode)
-      1.upto(3) { |j| self.add_date("#{i}.feature_geo_codes.#{j}", geocode) }
-      self.add_info_source("#{i}.feature_geo_codes", geocode)
+      second_prefix = "#{i}.feature_geo_codes"
+      0.upto(3) do |j|
+        third_prefix = j==0 ? second_prefix : "#{second_prefix}.#{j}"
+        self.add_date(third_prefix, geocode)
+        self.add_info_source(third_prefix, geocode)
+      end
     end
   end
   
@@ -621,8 +634,13 @@ class Importation
       if feature_relation.nil?
         puts "Couldn't establish relationship #{relation_type_str} between feature #{self.feature.pid} and #{parent_fid}."
       else
-        self.add_info_source("#{prefix}feature_relations", feature_relation)
-        self.add_note("#{prefix}feature_relations", feature_relation)
+        second_prefix = "#{prefix}feature_relations"
+        0.upto(3) do |j|
+          third_prefix = j==0 ? second_prefix : "#{second_prefix}.#{j}"
+          self.add_date(second_prefix, feature_relation)
+          self.add_info_source(second_prefix, feature_relation)
+          self.add_note(second_prefix, feature_relation)
+        end
       end
     end
     return feature_ids_with_changed_relations
@@ -704,9 +722,12 @@ class Importation
       category_feature = category_features.find(:first, :conditions => conditions)
       category_feature = category_features.create(conditions) if category_feature.nil?
       next if category_feature.nil?
-      self.add_date("#{i}.kmaps", category_feature)
-      self.add_note("#{i}.kmaps", category_feature)
-      self.add_info_source("#{i}.kmaps", category_feature)
+      0.upto(3) do |j|
+        prefix = j==0 ? "#{i}.kmaps" : "#{i}.kmaps.#{j}"
+        self.add_date(prefix, category_feature)
+        self.add_note(prefix, category_feature)
+        self.add_info_source(prefix, category_feature)
+      end
     end
     
     # now deal with kXXXX      
@@ -727,9 +748,12 @@ class Importation
         prefix = key[0...pos-1]
         posfix = key[pos...key.size]
         next if category_feature.nil?
-        self.add_date(prefix, category_feature)
-        self.add_note(prefix, category_feature)
-        self.add_info_source(prefix, category_feature)
+        0.upto(3) do |j|
+          second_prefix = j==0 ? prefix : "#{prefix}.#{j}"
+          self.add_date(second_prefix, category_feature)
+          self.add_note(second_prefix, category_feature)
+          self.add_info_source(second_prefix, category_feature)
+        end        
       end
     end
   end
