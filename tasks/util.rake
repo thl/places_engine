@@ -10,4 +10,10 @@ namespace :util do
     end
   end
   
+  desc 'Synchronizes all of the ancestor data for features'
+  task :reset_feature_ancestor_ids=>:environment do
+    puts ''
+    puts "Reseting feature ancestor ids"
+    Feature.reset_ancestor_ids
+  end  
 end
