@@ -582,3 +582,13 @@ hr {border-style: solid; border-color: color:#404040; border-width: 1px}
 	margin: 0;
 	padding: 0;
 }
+
+/* THL-specific */
+
+/* Hide the THL sidebar menu immediately, without waiting from $(document).ready to be triggered */
+#fxSideMenu {
+	display:none;
+}
+#sideMenuLink {
+	background-position:0 0;
+}
