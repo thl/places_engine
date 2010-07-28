@@ -148,7 +148,7 @@ var NodeMenu = {
 		
 		// Make the will_paginate links AJAX-driven 
 		jQuery('#NodeSearchResults .pagination a').live('click', function() {
-			NodeMenu.beginSearch();
+			NodeMenu.onPaginationClick();
 			NodeMenu.scrollToMenuTop();
 			// Unfortunately, there isn't a clean way to POST with .post() using a query string
 			jQuery.ajax({
@@ -156,6 +156,10 @@ var NodeMenu = {
 				url: this.href,
 				success: function(html){
 					jQuery('#NodeSearchResults').html(html);
+					NodeMenu.onPaginationLoad();
+				},
+				error: function(error){
+					NodeMenu.onPaginationLoad();
 				}
 			});
 			return false;
@@ -318,6 +322,19 @@ var NodeMenu = {
 			.prev('h2').show();
 		this.showMenuItem('results');
 		this.onMenuItemOpen('results');
+	},
+	
+	onPaginationClick: function(loading_text){
+		if(typeof loading_text == "undefined"){
+			var loading_text = "Loading results...";
+		}
+		this.content_div.find("#NodeSearchResults .pagination-info-cell")
+			.html('<img src="http://thlib.org/global/images/ajax-loader.gif" alt="" style="display:inline;" /> '+loading_text);
+		this.content_div.find('#NodeSearchResults td:not(.pagination-info-cell), #NodeSearchResults th').css('opacity', 0.3);
+	},
+	
+	onPaginationLoad: function(){
+		NodeMenu.content_div.find('#NodeSearchResults td:not(.pagination-info-cell), #NodeSearchResults th').css('opacity', 1);
 	},
 	
 	beginFidSearch: function(){
