@@ -250,7 +250,7 @@ module ApplicationHelper
   end
 
   def stylesheet_files
-    super + ['public']
+    super + ['public', 'jquery-ui-tabs']
   end
     
   def shape_display_string(shape)

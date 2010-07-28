@@ -1,5 +1,7 @@
 <%= header(:class => 'single-col places') %>
 <div class="shell-1">
-<%= yield %>
+	<% universal_navigation_tabs :current_tab => :places do %>
+		<%= yield %>
+	<% end %>
 </div>
 <%= footer %>

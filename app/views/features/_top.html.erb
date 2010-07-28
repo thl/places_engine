@@ -1,4 +1,3 @@
-<%= stylesheet_link_tag 'jquery-ui-tabs' %>
 <%= javascript_include_tag 'jquery-form' %>
 <%= javascript_include_tag 'jquery.livequery' %>
 <%= javascript_include_tag "sections/#{controller.controller_name}" %>
@@ -14,19 +13,6 @@
 <script type="text/javascript">
 
 jQuery(document).ready(function(){
-	jQuery("#FeaturePanel").tabs({
-		selected: <%= @selected_tab %>,
-		select: function(event, ui) {
-        var url = $.data(ui.tab, 'load.tabs');
-        if( url ) {
-            location.href = url;
-            return false;
-        }
-        return true;
-    },
-		cache: true,
-		load: function() { NodeTree.reselectNode(); }
-	});
 	jQuery(window).unbind("scroll");
 	NodeTree.init("NodeTree", "NodeTreeList", "<%= features_path %>/");
 	<%
@@ -67,9 +53,10 @@ function reset_advanced_search(){
 </script>
 <%= category_searcher(true, :category_id => 20, :field_name => 'object_type', :field_label => 'Feature type: ', :exclude_span => true, :options => {:hasTree => 'true'}) %>
 
-<h2>THL Place Dictionary of Tibet &amp; the Himalayas</h2>
+<!--<h2>THL Place Dictionary of Tibet &amp; the Himalayas</h2>-->
+<div style="clear:both;"></div>
 
 <div id="FeatureContainer">
 	<div id="FeaturePanelContainer">
 		<%= render :partial => "menu" %>
-		<div id="FeaturePanel">
+		<div id="FeaturePanel" class="secondary-universal-navigation">

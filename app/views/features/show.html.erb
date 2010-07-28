@@ -1,12 +1,7 @@
-<% @selected_tab = 1 %>
 <%= render :partial => "top" %>
 
-		  <!-- sets up the tabs for jquery -->
-		  <ul>
-		    <li><a href="<%= ActionController::Base.relative_url_root %>/"><span>Home</span></a></li>
-		    <li><a href="#FeatureDetail"><span>Place</span></a></li>
-		    <li><a href="<%= related_feature_path @feature %>"><span>Related</span></a></li>
-		  </ul>
+			<%= un_secondary_tabs [["Home", ActionController::Base.relative_url_root], ["Place", "#FeatureDetail"], ["Related", related_feature_path(@feature)]], 2 %>
+
 			<div id="FeatureDetail">
 				<div class="has-right-margin">
 					<%= render :partial => "feature", :locals => {:feature => @feature, :show_old_pid => false} %>
