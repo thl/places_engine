@@ -224,6 +224,7 @@ dl.no-style p {
 	border-width:3px;
 	border-color:#777;
 	float:right;
+	width:246px;
 }
 
 #NodeMenu .node-menu-content > h2{

@@ -7,13 +7,15 @@ menu items, which can be toggled with an accordion-like setup.
 The only necessary HTML is the following.  The toggle element and content wrapper div are created dynamically by the object. 
 
 <div id="NodeMenu">
-	<h2>Menu Item 1</h2>
-	<div>
-		Menu item 1's content...
-	</div>
-	<h2>Menu Item 2</h2>
-	<div>
-		Menu item 2's content...
+	<div class="node-menu-content">
+		<h2>Menu Item 1</h2>
+		<div>
+			Menu item 1's content...
+		</div>
+		<h2>Menu Item 2</h2>
+		<div>
+			Menu item 2's content...
+		</div>
 	</div>
 </div>
 
@@ -73,9 +75,6 @@ var NodeMenu = {
 		this.div_id = div_id;
 		this.controller = controller;
 		this.div = jQuery("#"+this.div_id);
-		
-		// Wrap the menu items in a div
-		this.div.children().wrapAll('<div class="node-menu-content"></div>');
 		
 		// Add the toggle switch
 		this.div.prepend('<div class="node-menu-toggle"></div>');
