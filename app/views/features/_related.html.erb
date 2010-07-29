@@ -106,8 +106,12 @@ function collapse_all_categories(){
     else
       Category.find(a[0]).title.casecmp(Category.find(b[0]).title)
     end
-    }.each do |c| %>
-    <% category_id, count = c %>
+    }.each do |c|
+      category_id, count = c
+      category = Category.find(category_id)
+      # This has returned nil in some cases on production, so we need to check it to prevent a fatal error below
+      unless category.nil?
+    %>
     <% div_id = "list_#{category_id}_#{feature_relation_type.id}_#{feature_is_parent}" %>
 
     <p>
@@ -119,7 +123,7 @@ function collapse_all_categories(){
     </p>
 
     <div id="<%= div_id %>" style="display:none;" class="related-feature-list pagination-click-results"></div>
-	
+    <% end %>
   <% end %>
 
 <% end %>
