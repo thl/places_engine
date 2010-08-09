@@ -94,6 +94,6 @@
 
 <% # If a search is made via GET params (e.g. /features?filter=china), we need to perform it %>
 <% if !params[:filter].blank? || !params[:search_scope].blank? || !params[:context_id].blank? %>
-  <%= link_to_remote '', { :update => "NodeSearchResults", :url => { :action => 'search' }.merge(params), :loading => "NodeMenu.beginSearch()" }, { :id => 'ajax_search_results', :style => "display:none;" } %>
+  <%= link_to_remote '', { :update => "NodeSearchResults", :url => params.merge({ :action => 'search' }), :loading => "NodeMenu.beginSearch()" }, { :id => 'ajax_search_results', :style => "display:none;" } %>
   <%= javascript_on_load "jQuery('#ajax_search_results').click()" %>
 <% end %>
