@@ -50,13 +50,13 @@ class Importation
   # .time_units.[start.|end.]date, .time_units.[start.|end.]certainty_id, .time_units.season_id
   
   # Fields that accept info_source:
-  # i.feature_names[.j], [i.]feature_types[.j], i.feature_geo_codes[.j], kXXX[.i], i.kmaps[.j], [i.]feature_relations[.j]
+  # [i.]feature_names[.j], [i.]feature_types[.j], i.feature_geo_codes[.j], kXXX[.i], i.kmaps[.j], [i.]feature_relations[.j]
   
   # info_source fields:
   # .info_source.id/code, .info_source.volume, info_source.page
   
   # Fields that accept note:
-  # feature_names[.i], i.feature_names, i.kmaps[.j], kXXX[.i], [i.]feature_types[.j], [i.]feature_relations[.j]
+  # i.feature_names[.j], i.kmaps[.j], kXXX[.i], [i.]feature_types[.j], [i.]feature_relations[.j]
   
   # Note fields:
   # .note
@@ -78,7 +78,7 @@ class Importation
       import.populate_fields(row, field_names)
       next unless import.get_feature(current)
       begin
-        self.add_date('features', self.feature)
+        import.add_date('features', import.feature)
         import.process_names(42)
         feature_ids_with_object_types_added += import.process_feature_types(4)
         import.process_geocodes(4)
@@ -377,12 +377,11 @@ class Importation
         puts "Name #{name_str} could not be added to feature #{self.feature.pid}."
         next
       end
-      self.add_date("#{i}.feature_names", name[n])
-      self.add_info_source("#{i}.feature_names", name[n])
-      self.add_note("#{i}.feature_names", name[n])
-      1.upto(4) do |j|
-        self.add_date("#{i}.feature_names.#{j}", name[n])
-        self.add_info_source("#{i}.feature_names.#{j}", name[n])
+      0.upto(4) do |j|
+        prefix = j==0 ? "#{i}.feature_names" : "#{i}.feature_names.#{j}"
+        self.add_date(prefix, name[n])
+        self.add_info_source(prefix, name[n])
+        self.add_note(prefix, name[n])
       end
       is_translation_str = self.fields.delete("#{i}.feature_name_relations.is_translation")
       is_translation = is_translation_str.downcase=='yes' ? 1: 0 if !is_translation_str.blank?
@@ -551,6 +550,7 @@ class Importation
         third_prefix = j==0 ? second_prefix : "#{second_prefix}.#{j}"
         self.add_date(third_prefix, geocode)
         self.add_info_source(third_prefix, geocode)
+        self.add_note(third_prefix, geocode)
       end
     end
   end
@@ -637,9 +637,9 @@ class Importation
         second_prefix = "#{prefix}feature_relations"
         0.upto(3) do |j|
           third_prefix = j==0 ? second_prefix : "#{second_prefix}.#{j}"
-          self.add_date(second_prefix, feature_relation)
-          self.add_info_source(second_prefix, feature_relation)
-          self.add_note(second_prefix, feature_relation)
+          self.add_date(third_prefix, feature_relation)
+          self.add_info_source(third_prefix, feature_relation)
+          self.add_note(third_prefix, feature_relation)
         end
       end
     end
@@ -709,6 +709,7 @@ class Importation
   
   def process_kmaps(n)
     # Now deal with i.kmaps.id
+    category_features = self.feature.category_features
     1.upto(n) do |i|
       kmap_str = self.fields.delete("#{i}.kmaps.id")
       next if kmap_str.blank?
@@ -716,8 +717,7 @@ class Importation
       if kmap.nil?
         puts "Could find kmap #{kmap_id} for feature #{self.feature.pid}."
         next
-      end
-      category_features = self.feature.category_features
+      end      
       conditions = { :category_id => kmap.id }
       category_feature = category_features.find(:first, :conditions => conditions)
       category_feature = category_features.create(conditions) if category_feature.nil?
@@ -730,7 +730,40 @@ class Importation
       end
     end
     
-    # now deal with kXXXX      
+    # now deal with kXXXX
+    self.fields.keys.each do |key|
+      next if key !~ /\A[kK]\d+\z/ # check to see if its a kmap
+      value = self.fields.delete(key)
+      next if value.nil?      
+      kmap_id = key.scan(/[kK](\d+)/).flatten.first.to_i
+      kmap = Category.find(kmap_id)
+      if kmap.nil?
+        puts "Could find kmap for #{kmap_id} associated with #{key} for #{self.feature.pid}."
+        next
+      end
+      numeric_value = value.to_i
+      if numeric_value.to_s == value
+        string_value = nil
+      else
+        string_value = value
+        numeric_value = nil
+      end
+      conditions = {:category_id => kmap.id}
+      values = {:numeric_value => numeric_value, :string_value => string_value}
+      category_feature = category_features.find(:first, :conditions => conditions)
+      if category_feature.nil?
+        category_feature = category_features.create(conditions.merge(values))
+      else
+        category_feature.update_attributes(values)
+      end
+      0.upto(3) do |j|
+        prefix = j==0 ? key : "#{key}.#{j}"
+        self.add_date(prefix, category_feature)
+        self.add_note(prefix, category_feature)
+        self.add_info_source(prefix, category_feature)
+      end      
+    end
+    
     self.fields.keys.each do |key|
       next if key !~ /\A[kK]\d+/ # check to see if its a kmap
       kmap_id = key.scan(/[kK](\d+)/).flatten.first.to_i
@@ -741,7 +774,6 @@ class Importation
           puts "Could find kmap #{kmap_id} associated with #{key} for #{self.feature.pid}."
           next
         end
-        category_features = self.feature.category_features
         conditions = { :category_id => kmap.id }
         category_feature = category_features.find(:first, :conditions => conditions)
         category_feature = category_features.create(conditions) if category_feature.nil?

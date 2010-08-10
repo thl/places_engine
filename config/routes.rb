@@ -86,6 +86,7 @@ ActionController::Routing::Routes.draw do |map|
   map.with_options :path_prefix => 'features', :controller => 'features' do |features|
     features.by_fid 'by_fid/:fids.:format', :action => 'by_fid'
     features.by_old_pid 'by_old_pid/:old_pids', :action => 'by_old_pid'
+    features.by_geo_code 'by_geo_code/:geo_code.:format', :action => 'by_geo_code'
     # Allow an empty :query for feature type searches
     features.by_name 'by_name/:query.:format', :action => 'by_name', :query => /.*?/
     features.gis_resources 'gis_resources/:fids.:format', :action => 'gis_resources'
