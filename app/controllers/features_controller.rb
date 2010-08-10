@@ -267,6 +267,7 @@ class FeaturesController < ApplicationController
     
     # Set the current menu_item to 'results', so that the Results will stay open when the user browses
     # to a new page
+    session[:interface] = {} if session[:interface].nil?
     session[:interface][:menu_item] = 'results'
     
     render :partial => 'search_results', :locals => {:features => @features}, :layout => false
@@ -336,6 +337,8 @@ class FeaturesController < ApplicationController
       :advanced_search => "0"
     }
     valid_keys = defaults.keys
+    
+    session[:interface] = {} if session[:interface].nil?
     params.each do |key, value|
       session[:interface][key.to_sym] = value if valid_keys.include?(key.to_sym)
     end

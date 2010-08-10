@@ -224,6 +224,7 @@ dl.no-style p {
 	border-width:3px;
 	border-color:#777;
 	float:right;
+	width:246px;
 }
 
 #NodeMenu .node-menu-content > h2{
@@ -581,4 +582,14 @@ hr {border-style: solid; border-color: color:#404040; border-width: 1px}
 #content .shell-1 > .shell-1 {
 	margin: 0;
 	padding: 0;
+}
+
+/* THL-specific */
+
+/* Hide the THL sidebar menu immediately, without waiting from $(document).ready to be triggered */
+#fxSideMenu {
+	display:none;
+}
+#sideMenuLink {
+	background-position:0 0;
 }
