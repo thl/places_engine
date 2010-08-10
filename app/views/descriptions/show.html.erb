@@ -5,8 +5,8 @@
 		  <ul>
 		    <li><a href="<%= ActionController::Base.relative_url_root %>/"><span>Home</span></a></li>
 		    <li><a href="<%= feature_path @feature.fid %>"><span>Place</span></a></li>
-		    <li><a href="#FeatureDescription"><span>Essays</span></a></li>
-		    <li><a href="<%= related_feature_path @feature %>"><span>Related</span></a></li>
+		    <li><a href="#FeatureDescription"><span>Essays (<%= "#{@feature.descriptions.length}" %>)</span></a></li>
+		    <li><a href="<%= related_feature_path @feature.fid %>"><span>Related</span></a></li>
 		  </ul>
 			<div id="FeatureDescription">
 				<div class="has-right-margin">
@@ -14,6 +14,6 @@
 				</div>
 			</div>
 
-<%= javascript_on_load "document.title = 'THL Place Dictionary - #{description_title(@description)}'" %>
+<%= javascript_on_load "document.title = 'THL Place Dictionary - #{description_simple_title(@description)}'" %>
 
 <%= render :partial => "features/bottom" %>

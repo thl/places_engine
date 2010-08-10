@@ -2,15 +2,15 @@
 	<p>
 		View other essays:
 		<% description_options = @feature.descriptions.collect{|desc|
-				[strip_tags(description_title(desc)), feature_description_url(@feature, desc)]
+				[strip_tags(description_simple_title(desc)), feature_description_url(@feature, desc)]
 			}.sort %>
 		<%= select_tag :description_menu, options_for_select(description_options, feature_description_url(@feature.id, @description.id)), :onchange => "window.location = jQuery(this).val()" %>
 	</p>
 <% end %>
 <div id="descriptions_div">
-	<p class='description-author'>
+	<h2>
 		<%= description_title(@description).s %>
-	</p>
+	</h2>
 	<%= note_popup_link_for(@description) %>
 	<div>
 		<%= @description.content %>
