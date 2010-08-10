@@ -13,9 +13,5 @@
 <%= time_units_for d %>
 <div class='expanded' id="desc_truncated_<%= d.id %>">
 	<%= truncate_html(d.content, 700,
-		'... ' + link_to_function( 'Read more', "$('#desc_truncated_#{d.id}').hide();$('#desc_full_#{d.id}').show()" )) %>
+		'... ' + link_to( 'Read more', feature_description_path(d.feature, d) )) %>
 </div>
-<div class='expanded' id="desc_full_<%= d.id %>" style="display: none;">
-	<%= d.content %>
-</div>
-

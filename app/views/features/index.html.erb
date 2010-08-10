@@ -6,7 +6,10 @@
 		    <li><a href="#Home"><span>Home</span></a></li>
 				<% unless @feature.nil? %>
 			    <li><a href="<%= feature_path @feature.fid %>"><span>Place</span></a></li>
-			    <li><a href="<%= related_feature_path @feature %>"><span>Related</span></a></li>
+			    <% unless @feature.descriptions.empty? %>
+			    <li><a href="<%= feature_description_path(@feature, @feature.descriptions.first) %>"><span>Essays (<%= "#{@feature.descriptions.length}" %>)</span></a></li>
+			    <% end %>
+			    <li><a href="<%= related_feature_path @feature.fid %>"><span>Related</span></a></li>
 				<% end %>
 		  </ul>
   

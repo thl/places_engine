@@ -1,18 +1,18 @@
-<% if feature.descriptions.length > 0 %>
+<% if @feature.descriptions.length > 0 %>
 	<p>
 		View other essays:
-		<% description_options = feature.descriptions.collect{|desc|
-				[strip_tags(description_name(desc)), feature_description_url(feature.id, desc.id)]
+		<% description_options = @feature.descriptions.collect{|desc|
+				[strip_tags(description_simple_title(desc)), feature_description_url(@feature, desc)]
 			}.sort %>
-		<%= select_tag :description_menu, options_for_select(description_options, feature_description_url(feature.id, d.id)), :onchange => "ThlTabs.setTabUrlAndLoadByCode('essays', $(this).val());NodeMenu.hideMenu()" %>
+		<%= select_tag :description_menu, options_for_select(description_options, feature_description_url(@feature.id, @description.id)), :onchange => "window.location = jQuery(this).val()" %>
 	</p>
 <% end %>
 <div id="descriptions_div">
-	<p class='description-author'>
-		<%= description_name(d).s %>
-	</p>
-	<%= note_popup_link_for(d) %>
+	<h2>
+		<%= description_title(@description).s %>
+	</h2>
+	<%= note_popup_link_for(@description) %>
 	<div>
-		<%= d.content %>
+		<%= @description.content %>
 	</div>
 </div>

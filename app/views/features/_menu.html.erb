@@ -46,7 +46,7 @@
 		<% if session[:search].blank? %>
 			Use the search field above to search for features.
 		<% else %>
-			<%= render :partial => 'search_results', :locals => {:use_session => true, :features => Feature.find(session[:search][:feature_ids])} %>
+			<%= render :partial => 'features/search_results', :locals => {:use_session => true, :features => Feature.find(session[:search][:feature_ids])} %>
 		<% end %>
 	</div>
 	<h2 class="menu-item-options">Options</h2>
