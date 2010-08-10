@@ -125,6 +125,10 @@ module ApplicationHelper
     content_tag(:span, h(feature_name.to_s), {:class=>css_class})
   end
   
+  def description_title(d)
+    d.title.blank? ? "Essay" : d.title 
+  end
+  
   #
   #
   #
