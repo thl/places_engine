@@ -6,7 +6,7 @@ class FeatureNameMatch
   
   public
   
-  def self.match(source, matched_filename="matched_name_results.csv", unmatched_filename="unmatched_name_results.csv")
+  def self.match(source, matched_filename="tmp/matched_name_results.csv", unmatched_filename="tmp/unmatched_name_results.csv")
     matched_filename = "#{RAILS_ROOT}/#{matched_filename}"
     unmatched_filename = "#{RAILS_ROOT}/#{unmatched_filename}"
     matched_items = []

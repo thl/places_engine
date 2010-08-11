@@ -13,7 +13,7 @@ class EssayImport
     view_code = options.has_key?(:view_code) ? options[:view_code].to_s : "roman.popular"
     dry_run = options.has_key?(:dry_run) ? options[:dry_run] : false
     
-    created_descriptions_filename = "created_descriptions.csv"
+    created_descriptions_filename = "tmp/created_descriptions.csv"
     created_descriptions_filename = "#{RAILS_ROOT}/#{created_descriptions_filename}"
     
     fids_not_found = []

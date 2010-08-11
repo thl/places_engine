@@ -44,7 +44,7 @@ namespace :db do
       options[:full_url] = ENV['FULL_URL'] || 
       if source.blank?
         puts "Please specify a source.\n"+
-          "Syntax: rake db:essay_import:import SOURCE=csv-file-name"
+          "Syntax: rake db:essay_import:import SOURCE=csv-file-name PREFIX=/bellezza/wb/"
       else
         EssayImport.import_with_book_reader(source, options)
       end
