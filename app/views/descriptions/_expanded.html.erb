@@ -1,8 +1,6 @@
 <% title = d.title.blank? ? "Essay" : d.title %>
-<% contract_options = {:url => contract_feature_description_path(feature,d), :update => "#{d.id}_descdiv", :method => 'get'} %>
 <p class='description-author'>
-	<%= link_to_remote '.', contract_options,  { :class => 'descriptionminus_icon' } %>
-	<span class='title'><%= link_to_remote title.s, contract_options %></span>
+	<span class='title'>&#8226; <%= link_to title.s, feature_description_path(feature, d) %></span>
     <% if !d.authors.empty? %>
 	    <span class='by'><%= ' by ' %></span>
 	    <span class='content_by'><%= "#{ join_with_and(d.authors.collect{|a| a.screen_name.to_s.s})}" %></span>
