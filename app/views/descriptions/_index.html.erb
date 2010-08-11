@@ -1,13 +1,13 @@
 <% feature.descriptions.find(:all, :order => 'is_primary DESC, title').each do |d| %>
 	<div id="<%= "#{d.id}_descdiv" %>">
 <%  if description.nil? 		
-      if d.is_primary? %>
+      if d.is_primary? || feature.descriptions.length == 1 %>
 		<%=   render :partial => 'descriptions/expanded', :locals => {:feature => feature, :d => d} %>
 <%	  else %>
 		<%=   render :partial => 'descriptions/contracted', :locals => {:feature => feature, :d => d} %>
 <%    end %>
 <%  else %>
-<%    if d == description %>
+<%    if d == description || feature.descriptions.length == 1 %>
 <%=     render :partial => 'descriptions/expanded', :locals => {:feature => feature, :d => d} %>
 <%	  else %>
 <%=     render :partial => 'descriptions/contracted', :locals => {:feature => feature, :d => d} %>

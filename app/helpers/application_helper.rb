@@ -127,7 +127,7 @@ module ApplicationHelper
   
   def description_title(d)
     title = d.title.blank? ? "Essay" : d.title
-    authors = d.authors.empty? ? " <span class='by'> by </span><span class='content_by'>#{join_with_and(d.authors.collect{|a| a.screen_name.to_s.s})}</span>" : ""
+    authors = d.authors.empty? ? "" : " <span class='by'> by </span><span class='content_by'>#{join_with_and(d.authors.collect{|a| a.screen_name.to_s.s})}</span>"
     date = " <span class='last_updated'>(#{h(d.updated_at.to_date.to_formatted_s(:long))})</span>"
     "#{title}#{authors}#{date}"
   end
