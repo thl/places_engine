@@ -14,7 +14,7 @@
 	<% unless @description.source_url.blank? %>
 	<% source_url = @description.source_url =~ /^\// ? "#{thl_url}#{@description.source_url}" : @description.source_url %>
 	<p class="view-essay-in-publication">
-		<%= link_to "See this essay in its original online publication", source_url, { :target => "_blank" } %>
+		<%= link_to "See this essay in its original online publication", source_url %>
 	</p>
 	<% end %>
 	<%= note_popup_link_for(@description) %>
