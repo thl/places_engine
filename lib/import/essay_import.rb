@@ -12,6 +12,7 @@ class EssayImport
     essay_prefix = options[:prefix] || ""
     view_code = options.has_key?(:view_code) ? options[:view_code].to_s : "roman.popular"
     dry_run = options.has_key?(:dry_run) ? options[:dry_run] : false
+    limit = options[:limit].blank? ? false : options[:limit].to_i
     
     created_descriptions_filename = "tmp/created_descriptions.csv"
     created_descriptions_filename = "#{RAILS_ROOT}/#{created_descriptions_filename}"
@@ -21,7 +22,6 @@ class EssayImport
     created_descriptions = []
     errors = []
     rows_done = 0
-    limit = 10
     
     view = View.find_by_code(view_code)
     if view.nil?
@@ -36,7 +36,7 @@ class EssayImport
     end
     
     CSV.open(source, 'r', ",") do |columns|
-      if rows_done < limit
+      if !limit || (rows_done < limit)
         essay_id, fid = columns
         feature = Feature.find_by_fid(fid)
         feature = feature.first if feature.is_a?(Array)

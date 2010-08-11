@@ -25,12 +25,14 @@ namespace :db do
     desc csv_desc
     task :match do
       source = ENV['SOURCE']
-      output = ENV['OUTPUT']
+      options = {}
+      options[:output] = ENV['OUTPUT']
+      options[:limit] = ENV['LIMIT']
       if source.blank?
         puts "Please specify a source.\n"+
           "Syntax: rake db:feature_name_match:match SOURCE=csv-file-name"
       else
-        FeatureNameMatch.match(source)
+        FeatureNameMatch.match(source, options)
       end
     end
   end
@@ -41,7 +43,8 @@ namespace :db do
       options[:dry_run] = ENV['DRY_RUN'] || false
       options[:prefix] = ENV['PREFIX'] || ""
       options[:reader_url] = ENV['READER_URL'] || "http://www.thlib.org/global/php/book_reader.php?url="
-      options[:full_url] = ENV['FULL_URL'] || 
+      options[:full_url] = ENV['FULL_URL'] || nil
+      options[:limit] = ENV['LIMIT'] || nil
       if source.blank?
         puts "Please specify a source.\n"+
           "Syntax: rake db:essay_import:import SOURCE=csv-file-name PREFIX=/bellezza/wb/"

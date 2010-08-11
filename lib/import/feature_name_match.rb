@@ -6,15 +6,17 @@ class FeatureNameMatch
   
   public
   
-  def self.match(source, matched_filename="tmp/matched_name_results.csv", unmatched_filename="tmp/unmatched_name_results.csv")
-    matched_filename = "#{RAILS_ROOT}/#{matched_filename}"
-    unmatched_filename = "#{RAILS_ROOT}/#{unmatched_filename}"
+  def self.match(source, options={})
+    options[:matched_filename] ||= "tmp/matched_name_results.csv"
+    options[:unmatched_filename] ||= "tmp/unmatched_name_results.csv"
+    matched_filename = "#{RAILS_ROOT}/#{options[:matched_filename]}"
+    unmatched_filename = "#{RAILS_ROOT}/#{options[:unmatched_filename]}"
+    limit = options[:limit].blank? ? false : options[:limit].to_i
     matched_items = []
     unmatched_items = []
     rows_done = 0
-    limit = 10
     CSV.open(source, 'r', ",") do |columns|
-      if rows_done < limit
+      if !limit || (rows_done < limit)
         external_id = columns[0].strip
         name = format_name(columns[1])
         feature = find_feature_by_name(name)
