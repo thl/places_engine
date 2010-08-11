@@ -402,11 +402,13 @@ module ApplicationHelper
    def thl_url
      hostname = Socket.gethostname.downcase
      if hostname == 'dev.thlib.org'
-       return 'http://dev.thlib.org'
+       'http://dev.thlib.org'
+     elsif hostname == 'sds6.itc.virginia.edu'
+       'http://staging.thlib.org'
      elsif hostname =~ /\.local/ && hostname !~ /^a/
-       return 'http://localhost:90'
+       'http://localhost:90'
      else
-       return 'http://www.thlib.org'
+       'http://www.thlib.org'
      end
    end
    
