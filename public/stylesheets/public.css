@@ -573,6 +573,7 @@ span.arrow {
 #descriptions_div h1{ border-bottom: 0px; }
 #descriptions_div p{ text-align: justify; font-size: 15px; }
 #descriptions_div .description-author{ font-size: 14px; }
+#descriptions_div .view-essay-in-publication{ font-size: 13px; margin-bottom: 15px; }
 
 hr {border-style: solid; border-color: color:#404040; border-width: 1px}
 
