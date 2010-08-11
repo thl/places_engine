@@ -48,7 +48,7 @@ class FeatureNameMatch
     puts "- Not found: #{unmatched_items.length}\n"
     puts "- Wrote matched results to:\n"
     puts "#{matched_filename}\n"
-    puts "and\n"
+    puts "- Wrote unmatched results to:\n"
     puts "#{unmatched_filename}\n"
   end
   

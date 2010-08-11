@@ -91,11 +91,29 @@ class EssayImport
   
   def self.get_http_content(url)
     uri = URI.parse(URI.encode(url));
+    
+    requested_host = uri.host
+    headers = {}
+    
+    # Check to see if the request is for a URL on thlib.org or a subdomain; if so, and if
+    # this is being run on sds[3-8], make the appropriate changes to headers and uri.host
+    if requested_host =~ /thlib.org/
+      server_host = Socket.gethostname.downcase
+      if server_host =~ /sds[3-8].itc.virginia.edu/
+        headers = { 'Host' => requested_host }
+        uri.host = '127.0.0.1'
+      end
+    end
+    
+    # Required for requests without paths (e.g. http://www.google.com)
+    uri.path = "/" if uri.path.empty?
+    
     path = uri.query.blank? ? uri.path : uri.path + '?' + uri.query 
-    request = Net::HTTP::Get.new(path, {})
+    request = Net::HTTP::Get.new(path, headers)
     result = Net::HTTP.start(uri.host, uri.port) {|http|
       http.request(request)
     }
+    
     result.body
   end
   
