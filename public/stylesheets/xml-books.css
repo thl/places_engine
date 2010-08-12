@@ -182,3 +182,6 @@ li.viewall a {
 
 /* Temporarily remove the reference popup */
 #chapRefWindow {display: none}
+
+/* Add a margin above Tibetan script essays; otherwise they overlap the title */
+#descriptions_div > div > div.tib { margin-top: 40px; }
