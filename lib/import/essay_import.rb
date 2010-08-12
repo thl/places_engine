@@ -10,7 +10,7 @@ class EssayImport
     reader_url = options[:reader_url] || "http://www.thlib.org/global/php/book_reader.php?url="
     public_url = options[:public_url] || "/places/monasteries/publications/chosphel-book.php#book="
     essay_prefix = options[:prefix] || ""
-    view_code = options.has_key?(:view_code) ? options[:view_code].to_s : "roman.popular"
+    view_code = !options[:view_code].blank? ? options[:view_code].to_s : "roman.popular"
     dry_run = options.has_key?(:dry_run) ? options[:dry_run] : false
     limit = options[:limit].blank? ? false : options[:limit].to_i
     
@@ -30,7 +30,7 @@ class EssayImport
     end
     
     if ['pri.tib.sec.roman', 'pri.tib.sec.chi'].include?(view_code)
-      introduction_text = "[name]&#3906;&#3954;&#3851;&#3908;&#3964;&#3851;&#3942;&#4004;&#3851;&#3942;&#4004;&#4018;&#3964;&#3921;&#3851;&#3851;"
+      introduction_text = "[name]"
     else
       introduction_text = "[name] Introduction"
     end

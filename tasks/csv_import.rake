@@ -16,6 +16,7 @@ namespace :db do
       end
     end
   end
+  
   namespace :feature_name_match do
     csv_desc = "Find feature matches based on names in a CSV and associate them with an ID in the CSV.\n" +
       "The CSV should have columns like \"external_id, name1, name2, name3\", where external_id can be anything," +
@@ -36,6 +37,7 @@ namespace :db do
       end
     end
   end
+  
   namespace :essay_import do
     task :import do
       source = ENV['SOURCE']
@@ -45,6 +47,7 @@ namespace :db do
       options[:reader_url] = ENV['READER_URL'] || "http://www.thlib.org/global/php/book_reader.php?url="
       options[:full_url] = ENV['FULL_URL'] || nil
       options[:limit] = ENV['LIMIT'] || nil
+      options[:view_code] = ENV['VIEW'] || nil
       if source.blank?
         puts "Please specify a source.\n"+
           "Syntax: rake db:essay_import:import SOURCE=csv-file-name PREFIX=/bellezza/wb/"
