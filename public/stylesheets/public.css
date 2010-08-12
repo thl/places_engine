@@ -558,6 +558,7 @@ span.arrow {
 /* description styling */
 #descriptions_div a.descriptionplus_icon { background:transparent url(http://thlib.org/global/images/btn-plus-lg.gif) no-repeat scroll 2px center; padding:0 0 0 12px; border-bottom:0px; color: white;}
 #descriptions_div a.descriptionminus_icon  { background:transparent url(http://thlib.org/global/images/btn-minus-lg.gif) no-repeat scroll 2px center; padding:0 0 0 12px; border-bottom:0px; color: white;}
+#descriptions_div > h2.description-title { font-size: 25px; margin-bottom: 10px; }
 
 /* add a margin below each description to separate it from following content */ 
 #descriptions_div > div { margin-bottom: 1em; }
@@ -572,6 +573,7 @@ span.arrow {
 #descriptions_div h1{ border-bottom: 0px; }
 #descriptions_div p{ text-align: justify; font-size: 15px; }
 #descriptions_div .description-author{ font-size: 14px; }
+#descriptions_div .view-essay-in-publication{ font-size: 13px; margin-bottom: 15px; }
 
 hr {border-style: solid; border-color: color:#404040; border-width: 1px}
 

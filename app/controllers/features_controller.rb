@@ -193,7 +193,7 @@ class FeaturesController < ApplicationController
       :scope => params[:scope],
       :match => params[:match]
     }
-    search_scope = params[:search_scope]
+    search_scope = params[:search_scope].blank? ? 'global' : params[:search_scope]
     @features = nil
     if !search_scope.blank?
       case search_scope
