@@ -45,6 +45,7 @@ namespace :db do
       options[:dry_run] = ENV['DRY_RUN'] || false
       options[:prefix] = ENV['PREFIX'] || ""
       options[:reader_url] = ENV['READER_URL'] || "http://www.thlib.org/global/php/book_reader.php?url="
+      options[:public_url] = ENV['PUBLIC_URL'] || "" # Example: /places/monasteries/publications/chosphel-book.php#book=
       options[:full_url] = ENV['FULL_URL'] || nil
       options[:limit] = ENV['LIMIT'] || nil
       options[:view_code] = ENV['VIEW'] || nil
