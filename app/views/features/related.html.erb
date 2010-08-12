@@ -1,3 +1,5 @@
+<% @un_options = {:entity => @feature} %>
+
 <%= render :partial => "top" %>
 
 			<%= un_secondary_tabs [["Home", "#{ActionController::Base.relative_url_root}/"], ["Place", feature_path(@feature)], ["Related", "#RelatedFeatures"]], 2 %>
