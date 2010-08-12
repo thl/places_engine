@@ -40,23 +40,24 @@ class Importation
   # [i.]feature_relations.related_feature.fid, [i.]feature_relations.type.code, [i.]perspectives.code/name, feature_relations.replace
   # [i.]contestations.contested, [i.]contestations.administrator, [i.]contestations.claimant
   # i.kmaps.id, kXXX._
-  # [i.]shapes.lat, [i.]shapes.lng, [i.]shapes.altitude, [i.]shapes.note
+  # [i.]shapes.lat, [i.]shapes.lng, [i.]shapes.altitude
   
 
   # Fields that accept time_units:
-  # features, i.feature_names[.j], [i.]feature_types[.j], i.kmaps[.j], kXXX[.i], i.feature_geo_codes[.j], [i.]feature_relations[.j]
+  # features, i.feature_names[.j], [i.]feature_types[.j], i.kmaps[.j], kXXX[.i], i.feature_geo_codes[.j], [i.]feature_relations[.j], [i.]shapes[.j]
 
   # time_units fields supported:
-  # .time_units.[start.|end.]date, .time_units.[start.|end.]certainty_id, .time_units.season_id
+  # .time_units.[start.|end.]date, .time_units.[start.|end.]certainty_id, .time_units.season_id,
+  # .time_units.calendar_id, .time_units.frequency_id
   
   # Fields that accept info_source:
-  # [i.]feature_names[.j], [i.]feature_types[.j], i.feature_geo_codes[.j], kXXX[.i], i.kmaps[.j], [i.]feature_relations[.j]
+  # [i.]feature_names[.j], [i.]feature_types[.j], i.feature_geo_codes[.j], kXXX[.i], i.kmaps[.j], [i.]feature_relations[.j], [i.]shapes[.j]
   
   # info_source fields:
-  # .info_source.id/code, .info_source.volume, info_source.page
+  # .info_source.id/code, .info_source.volume, info_source.pages
   
   # Fields that accept note:
-  # i.feature_names[.j], i.kmaps[.j], kXXX[.i], [i.]feature_types[.j], [i.]feature_relations[.j]
+  # i.feature_names[.j], i.kmaps[.j], kXXX[.i], [i.]feature_types[.j], [i.]feature_relations[.j], [i.]shapes[.j]
   
   # Note fields:
   # .note
@@ -86,7 +87,7 @@ class Importation
         import.process_contestations(3)
         import.process_shapes(3)      
         import.feature.update_attributes({:is_blank => false, :is_public => true})
-        import.process_kmaps(3)
+        import.process_kmaps(15)
       rescue  Exception => e
         puts "Something went wrong with feature #{import.feature.pid}!"
         puts e.to_s
@@ -115,44 +116,76 @@ class Importation
     
   def add_date(field_prefix, dateable)
     date = self.fields.delete("#{field_prefix}.time_units.date")
+    calendar_id = self.fields.delete("#{field_prefix}.time_units.calendar_id") || 1
+    frequency_id = self.fields.delete("#{field_prefix}.time_units.frequency_id")
+    season_id = self.fields.delete("#{field_prefix}.time_units.season_id")
+    certainty_id = self.fields.delete("#{field_prefix}.time_units.certainty_id")
+    if certainty_id.blank?
+      start_certainty_id = self.fields.delete("#{field_prefix}.time_units.start.certainty_id")
+      end_certainty_id = self.fields.delete("#{field_prefix}.time_units.end.certainty_id")          
+    else
+      start_certainty_id = certainty_id
+      end_certainty_id = certainty_id
+    end
     if date.blank?
       start_date = self.fields.delete("#{field_prefix}.time_units.start.date")
       end_date = self.fields.delete("#{field_prefix}.time_units.end.date")
       if !start_date.blank? && !end_date.blank?
-        certainty_id = self.fields.delete("#{field_prefix}.time_units.certainty_id")
-        if certainty_id.blank?
-          start_certainty_id = self.fields.delete("#{field_prefix}.time_units.start.certainty_id")
-          start_certainty_id = nil if start_certainty_id.empty?
-          end_certainty_id = self.fields.delete("#{field_prefix}.time_units.end.certainty_id")          
-          end_certainty_id = nil if end_certainty_id.empty?
+        if start_date==end_date
+          complex_date = Importation.to_complex_date(start_date, start_certainty_id, season_id)
+          if complex_date.nil?
+            puts "Date #{date} could not be associated to #{dateable.class.class_name.titleize}."
+          else
+            time_unit = dateable.time_units.build(:date => complex_date, :is_range => false, :calendar_id => calendar_id, :frequency_id => frequency_id)
+            if !time_unit.date.nil?
+              time_unit.date.save
+              time_unit.save
+            end
+          end
         else
-          start_certainty_id = certainty_id
-          end_certainty_id = certainty_id
+          complex_start_date = Importation.to_complex_date(start_date, start_certainty_id, season_id)
+          complex_end_date = Importation.to_complex_date(end_date, end_certainty_id, season_id)
+          if complex_start_date.nil? || complex_end_date.nil?
+            puts "Date #{date} could not be associated to #{dateable.class_name.titleize}."
+          else
+            time_unit = dateable.time_units.build(:start_date => complex_start_date, :end_date => complex_end_date, :is_range => true, :calendar_id => calendar_id, :frequency_id => frequency_id)
+            time_unit.start_date.save if !time_unit.start_date.nil?
+            time_unit.end_date.save if !time_unit.end_date.nil?
+            time_unit.save
+          end
         end
-        season_id = self.fields.delete("#{field_prefix}.time_units.season_id")
-        season_id = nil if season_id.blank?
-        
-        complex_start_date = Importation.to_complex_date(start_date, start_certainty_id, season_id)
-        complex_end_date = Importation.to_complex_date(end_date, end_certainty_id, season_id)
-        if complex_start_date.nil? || complex_end_date.nil?
-          puts "Date #{date} could not be associated to #{dateable.class_name.titleize}."
+      else
+        month = self.fields.delete("#{field_prefix}.time_units.month")
+        day = self.fields.delete("#{field_prefix}.time_units.day")
+        if month.blank? && day.blank?
+          start_month = self.fields.delete("#{field_prefix}.time_units.start.month")
+          start_day = self.fields.delete("#{field_prefix}.time_units.start.day")
+          end_month = self.fields.delete("#{field_prefix}.time_units.end.month")
+          end_day = self.fields.delete("#{field_prefix}.time_units.end.day")
+          if (!start_month.blank? || !start_day.blank?) && (!end_month.blank? || !end_day.blank?)
+            if start_day==end_day && start_month==end_month
+              complex_date = ComplexDate.create(:day => start_day, :day_certainty_id => start_certainty_id, :month => start_month, :month_certainty_id => start_certainty_id, :season_id => season_id, :season_certainty_id => start_certainty_id)
+              time_unit = dateable.time_units.build(:date => complex_date, :is_range => false, :calendar_id => calendar_id, :frequency_id => frequency_id)
+              time_unit.save
+            else
+              complex_start_date = ComplexDate.create(:day => start_day, :day_certainty_id => start_certainty_id, :month => start_month, :month_certainty_id => start_certainty_id, :season_id => season_id, :season_certainty_id => start_certainty_id)
+              complex_end_date = ComplexDate.create(:day => end_day, :day_certainty_id => end_certainty_id, :month => end_month, :month_certainty_id => end_certainty_id, :season_id => season_id, :season_certainty_id => end_certainty_id)
+              time_unit = dateable.time_units.build(:start_date => complex_start_date, :end_date => complex_end_date, :is_range => true, :calendar_id => calendar_id, :frequency_id => frequency_id)            
+              time_unit.save
+            end
+          end
         else
-          time_unit = dateable.time_units.build(:start_date => complex_start_date, :end_date => complex_end_date, :is_range => true, :calendar_id => 1)
-          time_unit.start_date.save if !time_unit.start_date.nil?
-          time_unit.end_date.save if !time_unit.end_date.nil?
+          complex_date = ComplexDate.create(:day => day, :day_certainty_id => certainty_id, :month => month, :month_certainty_id => certainty_id, :season_id => season_id, :season_certainty_id => certainty_id)
+          time_unit = dateable.time_units.build(:date => complex_date, :is_range => false, :calendar_id => calendar_id, :frequency_id => frequency_id)
           time_unit.save
-        end        
+        end
       end
     else
-      season_id = self.fields.delete("#{field_prefix}.time_units.season_id")
-      season_id = nil if season_id.blank?
-      certainty_id = self.fields.delete("#{field_prefix}.time_units.certainty_id")
-      certainty_id = nil if certainty_id.blank?
       complex_date = Importation.to_complex_date(date, certainty_id, season_id)
       if complex_date.nil?
         puts "Date #{date} could not be associated to #{dateable.class.class_name.titleize}."
       else
-        time_unit = dateable.time_units.build(:date => complex_date, :is_range => false, :calendar_id => 1)
+        time_unit = dateable.time_units.build(:date => complex_date, :is_range => false, :calendar_id => calendar_id, :frequency_id => frequency_id)
         if !time_unit.date.nil?
           time_unit.date.save
           time_unit.save
@@ -699,7 +732,12 @@ class Importation
         if shape.id.nil?
           puts "Shape for feature #{self.feature.pid} could not be saved."
         else
-          self.add_note(prefix, shape)
+          0.upto(3) do |j|
+            second_prefix = j==0 ? prefix : "#{prefix}.#{j}"
+            self.add_date(second_prefix, shape)
+            self.add_note(second_prefix, shape)
+            self.add_info_source(second_prefix, shape)
+          end
         end
       else
         puts "Can't specify a latitude without a longitude and viceversa for feature #{self.feature.pid}" if !shapes_lat.blank? || !shapes_lng.blank?
