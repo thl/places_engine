@@ -1,0 +1,187 @@
+/* TOC related styles */
+#chap-id, #toc-id {display: none;}
+
+li.viewall {
+	width: 75%;
+	border-top: 1px solid #99c2e0;
+	padding-top: 6px;
+	margin-left: 18px !important;
+}
+
+li.viewall a {
+	background-image: url(/global/images/btn-dot-sm.gif) !important;
+	padding-left: 18px !important;
+}
+
+/* For Chapter (essay) display */
+#essay-head1 {
+	font-size: 130%; 
+	line-height: 150%;
+}
+
+#essay-head1 .chapter {
+	text-align: center; 
+	font-size: 200%; 
+	line-height: 130%;
+	margin: 10px 0px; 
+}
+
+.essay-body #essay-head1 .chapter .sub {
+	padding-top: 8px;
+	font-size: 80%;
+}
+
+.essay-body #essay-head1 .chapter .sub em { font-style: normal;}
+
+.tib #essay-head1 .chapter {
+	text-align: center; 
+	font-size: 140%; 
+	line-height: 130%;
+	margin: 10px 0px; 
+}
+
+.tib #essay-head1 .chapter em {font-style: normal !important; }
+
+#essay-head1 .author {
+	font-size: 130%;
+	font-style: normal;
+	font-weight: normal;
+}
+
+#essay-head1 .editor{
+	text-align: center;
+	font-size: 110%;
+	font-style: normal;
+	font-weight: normal;
+	margin-top: -8px;
+	margin-bottom: 8px;
+}
+
+#essay-head1 .source {
+	text-align: center;
+	font-size: 110%;
+}
+
+#essay-head1 .copyright {
+	text-align: center;
+	font-size: 110%;
+}
+
+.tib #essay-head1 .copyright {
+	text-align: center;
+	font-size: 80%;
+}
+
+.tib #essay-head1 .copyright .eng {font-size: 14px !important;}
+
+#essay-head1 a {
+	border-bottom: 1px solid #b0bf8f;
+}
+
+#essay-head1 a {
+	border-bottom: 1px solid #b0bf8f;
+}
+
+#essay-head1 a:hover {
+	border-bottom: 1px solid #888;
+}
+
+#essay-head2 {
+	font-size: 100%; 
+	padding-bottom: 8px;
+}
+
+#essay-head2 .chapter {
+	font-size: 130%;
+	width: 50%;
+	float: left;
+	white-space: nowrap;
+}
+
+#ie-root .shell-1 .essay-body #essay-head2 .chapter, #ie-root .shell-1 .essay-body #essay-head2 .author, 
+#ie-root .shell-1 .essay-body #essay-head2 .source, #ie-root .shell-1 .essay-body #essay-head2 .copyright {
+	font-size: 80% !important;
+}
+
+#essay-head2 .author {
+	font-style: normal;
+	padding-top: 3px;
+	width: 60%;
+	float: left;
+	white-space: nowrap;
+}
+
+#essay-head2 .source {
+	font-size: 120%;
+	width: 50%;
+	float: left;
+	white-space: nowrap;
+}
+
+#essay-head2 .copyright {
+	width: 100%;
+}
+
+#essay-head2 a {
+	border-bottom: 1px solid #b0bf8f;
+}
+
+/* Chapter body Styles */
+
+/* Overwrite the main THL site, as this padding doesn't work in the PD */
+#descriptions_div .essay-body {padding-left: 0 !important}
+
+.essay-body .toc-item br {display: none;}
+
+.essay-body h2.h1 {font-size: 200%; margin-bottom: 0px; clear:both;}
+.tib h2 {font-size: 150% !important; line-height: 150% !important; }	
+.essay-body h2 {font-size: 190%; padding-left: 0px;  }	
+.essay-body h3 {font-size: 180%; padding-left: 6px; font-weight: bold;}
+.essay-body h4 {font-size: 150%; margin-bottom: 8px; padding-left: 12px; font-weight: normal; font-style: italic;}
+	
+.essay-body .footnote-divider {width: 30%;}
+
+.essay-body .note {
+	font-size: 90%;
+}
+#ie-root .essay-body .note {vertical-align: middle;}
+.essay-body div.footnote ol { margin: 10px 30px 0px;}
+.essay-body div.footnote ol li {font-size: 75% !important;}
+.essay-body div.footnote a, .essay-body div.footnote a:visited {
+	background-color: transparent;
+	color: #444444;
+	text-decoration: none;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #b0bf8f;
+}
+
+.essay-body div.footnote a.note {border-bottom: none;}
+
+.essay-body div.footnote a:hover {
+	background-color: #eff3f4;
+	color: #222222;
+	text-decoration: none;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #9eaf78;
+}
+
+.essay-body .img-block img  {max-width: 900px;}
+
+#chapRefWindow .conx-content p {margin: 6px 24px; font-size: 150%;}
+
+#biblio {font-size: 100%;}
+#biblio h2 {font-size: 150%; margin-left: 0px; padding-left: 0px;}
+#biblio h2.h1 {font-size: 180%;}
+
+.tocDisplay {width: 90%;}
+.tocDisplay p {display: block; background:url(/global/images/list-sep-dot.jpg) repeat-x center;}
+.tocDisplay p .toctitle {background:#FFF;padding: 0 4px 0 0;}
+.tocDisplay p .tocpg {float:right !important;background:#FFF !important; font-size: 80%; width: 45px; text-align: center;}
+
+/* Temporarily remove the reference popup */
+#chapRefWindow {display: none}
+
+/* Add a margin above Tibetan script essays; otherwise they overlap the title */
+#descriptions_div > div > div.tib { margin-top: 40px; }

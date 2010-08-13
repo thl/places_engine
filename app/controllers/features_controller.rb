@@ -46,6 +46,20 @@ class FeaturesController < ApplicationController
     @feature = Feature.find(params[:id])
     render :action => 'iframe', :layout => 'iframe'
   end
+  
+  def by_geo_code
+    geo_code_type_str = params[:geo_code_type]
+    geo_code_type = GeoCodeType.get_by_code(geo_code_type_str)
+    @feature = nil
+    if !geo_code_type.nil?
+      geo_code = FeatureGeoCode.first(:conditions => {:geo_code_type_id => geo_code_type.id, :geo_code_value => params[:geo_code]})
+      @feature = geo_code.feature if !geo_code.nil?
+    end
+    respond_to do |format|
+      format.html { render :action => 'show' }
+      format.xml  { render :action => 'show' }
+    end
+  end
     
   #
   #
@@ -179,7 +193,7 @@ class FeaturesController < ApplicationController
       :scope => params[:scope],
       :match => params[:match]
     }
-    search_scope = params[:search_scope]
+    search_scope = params[:search_scope].blank? ? 'global' : params[:search_scope]
     @features = nil
     if !search_scope.blank?
       case search_scope

@@ -1,5 +1,6 @@
 class GeoCodeType < SimpleProp
-  
+  has_many :feature_geo_codes
+  has_many :features, :through => :feature_geo_codes
 end
 
 # == Schema Info

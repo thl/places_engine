@@ -2,7 +2,14 @@
 
 <%= render :partial => "top" %>
 
-			<%= un_secondary_tabs [["Home", "#{ActionController::Base.relative_url_root}/"], ["Place", feature_path(@feature)], ["Related", "#RelatedFeatures"]], 2 %>
+<% 
+	secondary_tabs = [["Home", "#{ActionController::Base.relative_url_root}/"]]
+  secondary_tabs << ["Place", feature_path(@feature)]
+  secondary_tabs << ["Essays (#{@feature.descriptions.length})", feature_description_path(@feature, @feature.descriptions.first)] unless @feature.descriptions.empty?
+	secondary_tabs << ["Related", "#RelatedFeatures"]
+%>
+
+			<%= un_secondary_tabs secondary_tabs, @feature.descriptions.empty? ? 2 : 3 %>
 
 			<div id="RelatedFeatures">
 				<div class="has-right-margin">

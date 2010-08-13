@@ -1,6 +1,8 @@
+<% active_item = !session[:interface].blank? && !session[:interface][:menu_item].blank? ? session[:interface][:menu_item] : false %>
 <div id="NodeMenu">
+	<div class="node-menu-content">
 	<h2 class="menu-item-search">Search</h2>
-	<div id="NodeSearch" class="default-item">
+	<div id="NodeSearch" class="default-item" <%= ' style="display:none"' unless active_item == 'search' %>>
 		<% form_remote_for :feature,
 			:url => {:controller => :features, :action => :search },
 			:update => "NodeSearchResults",
@@ -40,15 +42,15 @@
 		<% end %>
 	</div>
 	<h2 class="menu-item-results">Results</h2>
-	<div id="NodeSearchResults">
+	<div id="NodeSearchResults" <%= ' style="display:none"' unless active_item == 'results' %>>
 		<% if session[:search].blank? %>
 			Use the search field above to search for features.
 		<% else %>
-			<%= render :partial => 'search_results', :locals => {:use_session => true, :features => Feature.find(session[:search][:feature_ids])} %>
+			<%= render :partial => 'features/search_results', :locals => {:use_session => true, :features => Feature.find(session[:search][:feature_ids])} %>
 		<% end %>
 	</div>
 	<h2 class="menu-item-options">Options</h2>
-	<div id="NodeOptions">
+	<div id="NodeOptions" <%= ' style="display:none"' unless active_item == 'options' %>>
 		<ul>
 			<li>
 			  Language:<br />
@@ -70,7 +72,7 @@
 		</ul>
 	</div>
 	<h2 class="menu-item-browse">Browse</h2>
-	<div id="NodeTree">
+	<div id="NodeTree" <%= ' style="display:none"' unless active_item == 'browse' %>>
 		<div id="NodeTreeList">
 		<% if @feature.nil? %>
 			<% if current_perspective %>
@@ -83,8 +85,17 @@
 		<% end %>
 		</div>
 	</div>
+	</div>
 </div>
 
 <% unless @feature.nil? %>
 	<%= javascript_on_load "NodeTree.loadExpandedTree(#{@feature.id})" %>
+<% end %>
+
+<% # If a search is made via GET params (e.g. /features?filter=china), we need to perform it.
+valid_search_params = [:filter, :context_id, :match, :object_type, :characteristic_id, :scope, :search_scope, :has_descriptions].collect{|p| p.to_s }
+%>
+<% unless (params.keys & valid_search_params).empty? %>
+  <%= link_to_remote '', { :update => "NodeSearchResults", :url => params.merge({ :action => 'search' }), :loading => "NodeMenu.beginSearch()" }, { :id => 'ajax_search_results', :style => "display:none;" } %>
+  <%= javascript_on_load "jQuery('#ajax_search_results').click()" %>
 <% end %>

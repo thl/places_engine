@@ -1,7 +1,12 @@
 <%= render :partial => "top" %>
 
-			<% secondary_tabs = [["Home", "#Home"]] %>
-			<% secondary_tabs = secondary_tabs + [["Place", feature_path(@feature)], ["Related", related_feature_path(@feature)]] unless @feature.nil?%>
+<% 
+	secondary_tabs = [["Home", "#Home"]]
+  secondary_tabs << ["Place", feature_path(@feature)] unless @feature.nil?
+  secondary_tabs << ["Essays (#{@feature.descriptions.length})", feature_description_path(@feature, @feature.descriptions.first)] if !@feature.nil? && !@feature.descriptions.empty?
+	secondary_tabs << ["Related", related_feature_path(@feature)] unless @feature.nil?
+%>
+
 			<%= un_secondary_tabs secondary_tabs %>
   
 		  <div class="left" id="Home">

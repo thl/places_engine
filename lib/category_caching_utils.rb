@@ -10,7 +10,7 @@ module CategoryCachingUtils
         feature_ids = FeatureObjectType.find(:all, :conditions => {:category_id => category.id}, :order => 'feature_id').collect(&:feature_id)
         ([category] + category.ancestors).each do |c|
           feature_ids.each { |feature_id| CumulativeCategoryFeatureAssociation.create(:category => c, :feature_id => feature_id, :skip_update => true) if (c.id==category.id || c.cumulative?) && CumulativeCategoryFeatureAssociation.find(:first, :conditions => {:category_id => c.id, :feature_id => feature_id}).nil? }
-          CachedCategoryCount.updated_count(record.category_id)
+          CachedCategoryCount.updated_count(c.id)
         end
       end
     end
