@@ -39,25 +39,25 @@ class Importation
   # i.geo_code_types.code/name, i.feature_geo_codes.geo_code_value, i.feature_geo_codes.info_source.id/code,
   # [i.]feature_relations.related_feature.fid, [i.]feature_relations.type.code, [i.]perspectives.code/name, feature_relations.replace
   # [i.]contestations.contested, [i.]contestations.administrator, [i.]contestations.claimant
-  # i.kmaps.id, kXXX._
+  # i.kmaps.id, [i.]kXXX._
   # [i.]shapes.lat, [i.]shapes.lng, [i.]shapes.altitude
   
 
   # Fields that accept time_units:
-  # features, i.feature_names[.j], [i.]feature_types[.j], i.kmaps[.j], kXXX[.i], i.feature_geo_codes[.j], [i.]feature_relations[.j], [i.]shapes[.j]
+  # features, i.feature_names[.j], [i.]feature_types[.j], i.kmaps[.j], [i.]kXXX[.j], i.feature_geo_codes[.j], [i.]feature_relations[.j], [i.]shapes[.j]
 
   # time_units fields supported:
   # .time_units.[start.|end.]date, .time_units.[start.|end.]certainty_id, .time_units.season_id,
   # .time_units.calendar_id, .time_units.frequency_id
   
   # Fields that accept info_source:
-  # [i.]feature_names[.j], [i.]feature_types[.j], i.feature_geo_codes[.j], kXXX[.i], i.kmaps[.j], [i.]feature_relations[.j], [i.]shapes[.j]
+  # [i.]feature_names[.j], [i.]feature_types[.j], i.feature_geo_codes[.j], [i.]kXXX[.j], i.kmaps[.j], [i.]feature_relations[.j], [i.]shapes[.j]
   
   # info_source fields:
-  # .info_source.id/code, .info_source.volume, info_source.pages
+  # .info_source.id/code, .info_source.volume, info_source.pages, info_source.notes
   
   # Fields that accept note:
-  # i.feature_names[.j], i.kmaps[.j], kXXX[.i], [i.]feature_types[.j], [i.]feature_relations[.j], [i.]shapes[.j]
+  # i.feature_names[.j], i.kmaps[.j], [i.]kXXX[.j], [i.]feature_types[.j], [i.]feature_relations[.j], [i.]shapes[.j]
   
   # Note fields:
   # .note
@@ -212,9 +212,14 @@ class Importation
       puts e.to_s
     end            
     if !info_source.nil?
+      notes = self.fields.delete("#{field_prefix}.info_source.notes")
       citations = citable.citations
       citation = citations.find(:first, :conditions => {:info_source_id => info_source.id})
-      citation = citations.create(:info_source => info_source) if citation.nil?
+      if citation.nil?
+        citation = citations.create(:info_source => info_source, :notes => notes)
+      else
+        citation.update_attribute(:notes, notes) if !notes.nil?
+      end
       if citation.nil?
         puts "Info source #{info_source.id} could not be associated to #{citable.class_name.titleize}."  
       else
@@ -753,7 +758,7 @@ class Importation
       next if kmap_str.blank?
       kmap = Category.find(kmap_str.scan(/\d+/).first.to_i)
       if kmap.nil?
-        puts "Could find kmap #{kmap_id} for feature #{self.feature.pid}."
+        puts "Could find kmap #{kmap_str} for feature #{self.feature.pid}."
         next
       end      
       conditions = { :category_id => kmap.id }
@@ -768,12 +773,12 @@ class Importation
       end
     end
     
-    # now deal with kXXXX
+    # now deal with [i.]kXXXX
     self.fields.keys.each do |key|
-      next if key !~ /\A[kK]\d+\z/ # check to see if its a kmap
+      next if key !~ /\A(\d+\.)?[kK]\d+\z/ # check to see if its a kmap
       value = self.fields.delete(key)
       next if value.nil?      
-      kmap_id = key.scan(/[kK](\d+)/).flatten.first.to_i
+      kmap_id = key.scan(/.*[kK](\d+)/).flatten.first.to_i
       kmap = Category.find(kmap_id)
       if kmap.nil?
         puts "Could find kmap for #{kmap_id} associated with #{key} for #{self.feature.pid}."

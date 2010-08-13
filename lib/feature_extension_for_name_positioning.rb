@@ -210,7 +210,7 @@ module FeatureExtensionForNamePositioning
         end
         pos + 1
       end
-      name.feature.update_cached_feature_names if updated
+      self.update_cached_feature_names if updated
     else
       self.reset_name_positions
     end
