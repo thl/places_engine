@@ -54,7 +54,7 @@ class Importation
   # [i.]feature_names[.j], [i.]feature_types[.j], i.feature_geo_codes[.j], [i.]kXXX[.j], i.kmaps[.j], [i.]feature_relations[.j], [i.]shapes[.j]
   
   # info_source fields:
-  # .info_source.id/code, .info_source.volume, info_source.pages
+  # .info_source.id/code, .info_source.volume, info_source.pages, info_source.notes
   
   # Fields that accept note:
   # i.feature_names[.j], i.kmaps[.j], [i.]kXXX[.j], [i.]feature_types[.j], [i.]feature_relations[.j], [i.]shapes[.j]
@@ -212,9 +212,14 @@ class Importation
       puts e.to_s
     end            
     if !info_source.nil?
+      notes = self.fields.delete("#{field_prefix}.info_source.notes")
       citations = citable.citations
       citation = citations.find(:first, :conditions => {:info_source_id => info_source.id})
-      citation = citations.create(:info_source => info_source) if citation.nil?
+      if citation.nil?
+        citation = citations.create(:info_source => info_source, :notes => notes)
+      else
+        citation.update_attribute(:notes, notes) if !notes.nil?
+      end
       if citation.nil?
         puts "Info source #{info_source.id} could not be associated to #{citable.class_name.titleize}."  
       else
@@ -753,7 +758,7 @@ class Importation
       next if kmap_str.blank?
       kmap = Category.find(kmap_str.scan(/\d+/).first.to_i)
       if kmap.nil?
-        puts "Could find kmap #{kmap_id} for feature #{self.feature.pid}."
+        puts "Could find kmap #{kmap_str} for feature #{self.feature.pid}."
         next
       end      
       conditions = { :category_id => kmap.id }
