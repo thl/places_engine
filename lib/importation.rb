@@ -54,7 +54,7 @@ class Importation
   # [i.]feature_names[.j], [i.]feature_types[.j], i.feature_geo_codes[.j], [i.]kXXX[.j], i.kmaps[.j], [i.]feature_relations[.j], [i.]shapes[.j]
   
   # info_source fields:
-  # .info_source.id/code, .info_source.volume, info_source.pages, info_source.notes
+  # .info_source.id/code, info_source.notes, .info_source[.i].volume, info_source[.i].pages
   
   # Fields that accept note:
   # i.feature_names[.j], i.kmaps[.j], [i.]kXXX[.j], [i.]feature_types[.j], [i.]feature_relations[.j], [i.]shapes[.j]
@@ -223,28 +223,31 @@ class Importation
       if citation.nil?
         puts "Info source #{info_source.id} could not be associated to #{citable.class_name.titleize}."  
       else
-        volume_str = self.fields.delete("#{field_prefix}.info_source.volume")
-        pages_range = self.fields.delete("#{field_prefix}.info_source.pages")
-        if !volume_str.blank? || !pages_range.blank?
-          volume = nil
-          start_page = nil
-          end_page = nil
-          if !pages_range.blank?
-            page_array = pages_range.split('-')
-            start_page_str = page_array.shift
-            end_page_str = page_array.shift
-            start_page = start_page_str.to_i if !start_page_str.nil? && !start_page_str.strip!.blank?
-            end_page = end_page_str.to_i if !end_page_str.nil? && !end_page_str.strip!.blank?
+        pages = citation.pages
+        0.upto(2) do |j|
+          prefix = j==0 ? "#{field_prefix}.info_source" : "#{field_prefix}.info_source.#{j}"
+          volume_str = self.fields.delete("#{prefix}.volume")
+          pages_range = self.fields.delete("#{prefix}.pages")
+          if !volume_str.blank? || !pages_range.blank?
+            volume = nil
+            start_page = nil
+            end_page = nil
+            if !pages_range.blank?
+              page_array = pages_range.split('-')
+              start_page_str = page_array.shift
+              end_page_str = page_array.shift
+              start_page = start_page_str.to_i if !start_page_str.nil? && !start_page_str.strip!.blank?
+              end_page = end_page_str.to_i if !end_page_str.nil? && !end_page_str.strip!.blank?
+            end
+            if !volume_str.blank?
+              volume_str.strip!
+              volume = volume_str.to_i if !volume_str.blank?
+            end
+            conditions = {:start_page => start_page, :end_page => end_page, :volume => volume}
+            page = pages.find(:first, :conditions => conditions)
+            page = pages.create(conditions) if page.nil?
           end
-          if !volume_str.blank?
-            volume_str.strip!
-            volume = volume_str.to_i if !volume_str.blank?
-          end
-          pages = citation.pages
-          conditions = {:start_page => start_page, :end_page => end_page, :volume => volume}
-          page = pages.find(:first, :conditions => conditions)
-          page = pages.create(conditions) if page.nil?
-        end
+        end        
       end
     end  
   end
