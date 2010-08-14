@@ -186,7 +186,7 @@ class FeaturesController < ApplicationController
   def search
     options = {
       :page => params[:page] || 1,
-      :per_page => 15,
+      :per_page => 10,
       :conditions => {:is_public => 1}
     }
     search_options = {
