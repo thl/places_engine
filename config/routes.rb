@@ -73,13 +73,14 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :features, :has_many => :association_notes, :member => {:descendants => :get, :related => :get} do |feature|
     feature.resources :descriptions, :member => {:expand => :get, :contract => :get, :show => :get}
   end
+  map.resources :category_features, :has_many => :notes
   map.resources :description, :has_many => :notes
   map.resources :feature_geo_codes, :has_many => :notes
   map.resources :feature_names, :has_many => :notes
   map.resources :feature_name_relations, :has_many => :notes
   map.resources :feature_object_types, :has_many => :notes
-  map.resources :category_features, :has_many => :notes
   map.resources :feature_relations, :has_many => :notes
+  map.resources :media, :as => 'media_objects', :only => 'show'
   map.resources :shapes, :has_many => :notes
   map.resources :time_units, :has_many => :notes
   map.resources :topics, :only => 'show'

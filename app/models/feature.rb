@@ -264,6 +264,10 @@ class Feature < ActiveRecord::Base
     obj
   end
   
+  def self.find_all_by_medium_id(medium_id)
+    Medium.find(medium_id).feature_ids.collect{|fid| Feature.get_by_fid(fid)}
+  end
+  
   def association_notes_for(association_type, options={})
     conditions = {:notable_type => self.class.name, :notable_id => self.id, :association_type => association_type, :is_public => true}
     conditions.delete(:is_public) if !options[:include_private].nil? && options[:include_private] == true
