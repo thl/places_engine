@@ -6,8 +6,8 @@ class TopicsController < ApplicationController
     @category = Category.find(params[:id])
     join = @category.root.id==20 ? :feature_object_types : :category_features    
     @features = Feature.all(:conditions => {'category_features.category_id' => @category.id}, :joins => join)
-    @title = "Places Associated with #{@category.title}"
-    @tab_title = "Topics"
+    @object_type = "Topic"
+    @object_title = @category.title
     
     @feature = Feature.find(session[:interface][:context_id]) unless session[:interface][:context_id].blank?
     respond_to do |format|
