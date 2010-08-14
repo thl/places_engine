@@ -224,7 +224,7 @@ class Feature < ActiveRecord::Base
   # Shortcut for getting all feature_object_types.object_types
   #
   def object_types
-    feature_object_types.collect{ |f| f.category }.select{|c| c}
+    feature_object_types.collect(&:category).select{|c| c}
   end
   
   #

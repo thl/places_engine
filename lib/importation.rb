@@ -318,6 +318,7 @@ class Importation
   # inferred otherwise.
   def process_names(total)
     names = self.feature.names
+    prioritized_names = self.feature.prioritized_names
     # If feature_names.delete is "yes", all names and relations will be deleted.
     delete_feature_names = self.fields.delete('feature_names.delete')
     names.clear if !delete_feature_names.blank? && delete_feature_names.downcase == 'yes'
@@ -424,13 +425,13 @@ class Importation
       is_translation_str = self.fields.delete("#{i}.feature_name_relations.is_translation")
       is_translation = is_translation_str.downcase=='yes' ? 1: 0 if !is_translation_str.blank?
       parent_node_str = self.fields.delete("#{i}.feature_name_relations.parent_node")
+      parent_name_str = self.fields.delete("#{i}.feature_name_relations.parent_node.name") if parent_node_str.blank?
       # for now is_translation is the only feature_name_relation that can be specified for a present or missing (inferred) parent.
       # if no parent is specified, it is possible to infer the parent based on the relationship to an already existing name.
-      if parent_node_str.blank?
-        feature_names = self.feature.prioritized_names
+      if parent_node_str.blank? && parent_name_str.blank?
         # tibetan must be parent
         if !phonetic_system.nil? && (phonetic_system.code=='ethnic.pinyin.tib.transcrip' || phonetic_system.code=='tib.to.chi.transcrip')
-          parent_name = FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(feature_names, WritingSystem.get_by_code('tibt').id)
+          parent_name = FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(prioritized_names, WritingSystem.get_by_code('tibt').id)
           if parent_name.nil?
             puts "No tibetan name was found to associate #{phonetic_system.code} to #{name_str} for feature #{self.feature.pid}."
           else
@@ -451,7 +452,7 @@ class Importation
         # now check if there is simplified chinese and make it a child of trad chinese
         writing_system = name[n].writing_system
         if !writing_system.nil? && writing_system.code=='hant'
-          simp_chi_name = FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(feature_names, WritingSystem.get_by_code('hans').id)
+          simp_chi_name = FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(prioritized_names, WritingSystem.get_by_code('hans').id)
           if !simp_chi_name.nil?
             name_relation = simp_chi_name.parent_relations.first
             if name_relation.nil?
@@ -491,7 +492,19 @@ class Importation
         else
           conditions[:is_alt_spelling] = is_alt_spelling.downcase=='yes' ? 1: 0
         end
-        parent_position = parent_node_str.to_i-1
+        if parent_node_str.blank?
+          if !parent_name_str.blank?
+            parent_name = prioritized_names.detect{|fn| fn.name==parent_name_str}
+            if parent_name.nil?
+              puts "Parent name #{parent_name_str} of #{name[n].name} for feature #{self.feature.pid} not found."
+            else
+              name << parent_name
+              parent_position = name.size - 1
+            end
+          end
+        else
+          parent_position = parent_node_str.to_i-1
+        end        
         relations_pending_save << { :relation => name[n].parent_relations.build(conditions), :parent_position => parent_position }
         name_positions_with_changed_relations << n if !name_positions_with_changed_relations.include? n
         name_positions_with_changed_relations << parent_position if !name_positions_with_changed_relations.include? parent_position
