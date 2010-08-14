@@ -54,7 +54,7 @@ class Importation
   # [i.]feature_names[.j], [i.]feature_types[.j], i.feature_geo_codes[.j], [i.]kXXX[.j], i.kmaps[.j], [i.]feature_relations[.j], [i.]shapes[.j]
   
   # info_source fields:
-  # .info_source.id/code, .info_source.volume, info_source.pages
+  # .info_source.id/code, info_source.notes, .info_source[.i].volume, info_source[.i].pages
   
   # Fields that accept note:
   # i.feature_names[.j], i.kmaps[.j], [i.]kXXX[.j], [i.]feature_types[.j], [i.]feature_relations[.j], [i.]shapes[.j]
@@ -212,34 +212,42 @@ class Importation
       puts e.to_s
     end            
     if !info_source.nil?
+      notes = self.fields.delete("#{field_prefix}.info_source.notes")
       citations = citable.citations
       citation = citations.find(:first, :conditions => {:info_source_id => info_source.id})
-      citation = citations.create(:info_source => info_source) if citation.nil?
+      if citation.nil?
+        citation = citations.create(:info_source => info_source, :notes => notes)
+      else
+        citation.update_attribute(:notes, notes) if !notes.nil?
+      end
       if citation.nil?
         puts "Info source #{info_source.id} could not be associated to #{citable.class_name.titleize}."  
       else
-        volume_str = self.fields.delete("#{field_prefix}.info_source.volume")
-        pages_range = self.fields.delete("#{field_prefix}.info_source.pages")
-        if !volume_str.blank? || !pages_range.blank?
-          volume = nil
-          start_page = nil
-          end_page = nil
-          if !pages_range.blank?
-            page_array = pages_range.split('-')
-            start_page_str = page_array.shift
-            end_page_str = page_array.shift
-            start_page = start_page_str.to_i if !start_page_str.nil? && !start_page_str.strip!.blank?
-            end_page = end_page_str.to_i if !end_page_str.nil? && !end_page_str.strip!.blank?
+        pages = citation.pages
+        0.upto(2) do |j|
+          prefix = j==0 ? "#{field_prefix}.info_source" : "#{field_prefix}.info_source.#{j}"
+          volume_str = self.fields.delete("#{prefix}.volume")
+          pages_range = self.fields.delete("#{prefix}.pages")
+          if !volume_str.blank? || !pages_range.blank?
+            volume = nil
+            start_page = nil
+            end_page = nil
+            if !pages_range.blank?
+              page_array = pages_range.split('-')
+              start_page_str = page_array.shift
+              end_page_str = page_array.shift
+              start_page = start_page_str.to_i if !start_page_str.nil? && !start_page_str.strip!.blank?
+              end_page = end_page_str.to_i if !end_page_str.nil? && !end_page_str.strip!.blank?
+            end
+            if !volume_str.blank?
+              volume_str.strip!
+              volume = volume_str.to_i if !volume_str.blank?
+            end
+            conditions = {:start_page => start_page, :end_page => end_page, :volume => volume}
+            page = pages.find(:first, :conditions => conditions)
+            page = pages.create(conditions) if page.nil?
           end
-          if !volume_str.blank?
-            volume_str.strip!
-            volume = volume_str.to_i if !volume_str.blank?
-          end
-          pages = citation.pages
-          conditions = {:start_page => start_page, :end_page => end_page, :volume => volume}
-          page = pages.find(:first, :conditions => conditions)
-          page = pages.create(conditions) if page.nil?
-        end
+        end        
       end
     end  
   end
@@ -313,6 +321,7 @@ class Importation
   # inferred otherwise.
   def process_names(total)
     names = self.feature.names
+    prioritized_names = self.feature.prioritized_names
     # If feature_names.delete is "yes", all names and relations will be deleted.
     delete_feature_names = self.fields.delete('feature_names.delete')
     names.clear if !delete_feature_names.blank? && delete_feature_names.downcase == 'yes'
@@ -419,13 +428,13 @@ class Importation
       is_translation_str = self.fields.delete("#{i}.feature_name_relations.is_translation")
       is_translation = is_translation_str.downcase=='yes' ? 1: 0 if !is_translation_str.blank?
       parent_node_str = self.fields.delete("#{i}.feature_name_relations.parent_node")
+      parent_name_str = self.fields.delete("#{i}.feature_name_relations.parent_node.name") if parent_node_str.blank?
       # for now is_translation is the only feature_name_relation that can be specified for a present or missing (inferred) parent.
       # if no parent is specified, it is possible to infer the parent based on the relationship to an already existing name.
-      if parent_node_str.blank?
-        feature_names = self.feature.prioritized_names
+      if parent_node_str.blank? && parent_name_str.blank?
         # tibetan must be parent
         if !phonetic_system.nil? && (phonetic_system.code=='ethnic.pinyin.tib.transcrip' || phonetic_system.code=='tib.to.chi.transcrip')
-          parent_name = FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(feature_names, WritingSystem.get_by_code('tibt').id)
+          parent_name = FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(prioritized_names, WritingSystem.get_by_code('tibt').id)
           if parent_name.nil?
             puts "No tibetan name was found to associate #{phonetic_system.code} to #{name_str} for feature #{self.feature.pid}."
           else
@@ -446,7 +455,7 @@ class Importation
         # now check if there is simplified chinese and make it a child of trad chinese
         writing_system = name[n].writing_system
         if !writing_system.nil? && writing_system.code=='hant'
-          simp_chi_name = FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(feature_names, WritingSystem.get_by_code('hans').id)
+          simp_chi_name = FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(prioritized_names, WritingSystem.get_by_code('hans').id)
           if !simp_chi_name.nil?
             name_relation = simp_chi_name.parent_relations.first
             if name_relation.nil?
@@ -486,7 +495,19 @@ class Importation
         else
           conditions[:is_alt_spelling] = is_alt_spelling.downcase=='yes' ? 1: 0
         end
-        parent_position = parent_node_str.to_i-1
+        if parent_node_str.blank?
+          if !parent_name_str.blank?
+            parent_name = prioritized_names.detect{|fn| fn.name==parent_name_str}
+            if parent_name.nil?
+              puts "Parent name #{parent_name_str} of #{name[n].name} for feature #{self.feature.pid} not found."
+            else
+              name << parent_name
+              parent_position = name.size - 1
+            end
+          end
+        else
+          parent_position = parent_node_str.to_i-1
+        end        
         relations_pending_save << { :relation => name[n].parent_relations.build(conditions), :parent_position => parent_position }
         name_positions_with_changed_relations << n if !name_positions_with_changed_relations.include? n
         name_positions_with_changed_relations << parent_position if !name_positions_with_changed_relations.include? parent_position
@@ -753,7 +774,7 @@ class Importation
       next if kmap_str.blank?
       kmap = Category.find(kmap_str.scan(/\d+/).first.to_i)
       if kmap.nil?
-        puts "Could find kmap #{kmap_id} for feature #{self.feature.pid}."
+        puts "Could find kmap #{kmap_str} for feature #{self.feature.pid}."
         next
       end      
       conditions = { :category_id => kmap.id }
