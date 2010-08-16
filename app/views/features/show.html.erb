@@ -1,15 +1,16 @@
-<% @selected_tab = 1 %>
+<% @un_options = {:entity => @feature} %>
+
 <%= render :partial => "top" %>
 
-		  <!-- sets up the tabs for jquery -->
-		  <ul>
-		    <li><a href="<%= ActionController::Base.relative_url_root %>/"><span>Home</span></a></li>
-		    <li><a href="#FeatureDetail"><span>Place</span></a></li>
-		    <% unless @feature.descriptions.empty? %>
-		    <li><a href="<%= feature_description_path(@feature, @feature.descriptions.first) %>"><span>Essays (<%= "#{@feature.descriptions.length}" %>)</span></a></li>
-		    <% end %>
-		    <li><a href="<%= related_feature_path @feature %>"><span>Related</span></a></li>
-		  </ul>
+<% 
+	secondary_tabs = [["Home", "#{ActionController::Base.relative_url_root}/"]]
+  secondary_tabs << ["Place", "#FeatureDetail"]
+  secondary_tabs << ["Essays (#{@feature.descriptions.length})", feature_description_path(@feature, @feature.descriptions.first)] unless @feature.descriptions.empty?
+	secondary_tabs << ["Related", related_feature_path(@feature)]
+%>
+
+			<%= un_secondary_tabs secondary_tabs, 1 %>
+
 			<div id="FeatureDetail">
 				<div class="has-right-margin">
 					<%= render :partial => "feature", :locals => {:feature => @feature, :show_old_pid => false} %>

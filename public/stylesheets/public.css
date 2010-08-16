@@ -166,6 +166,7 @@ dl.no-style p {
 #FeaturePanel > div{
 	width:99%;
 	border-right:1px solid #ccc;
+	padding-top:15px;
 }
 
 #FeaturePanel .has-right-margin{
@@ -177,7 +178,6 @@ dl.no-style p {
 
 #FeaturePanelContainer {
     min-height:580px;
-    border:solid 1px #ccc;
     position:relative;
     overflow:hidden;
 }
@@ -389,7 +389,6 @@ dl.no-style p {
 
 #Home {
 	margin: 0 auto;
-	padding: 5px; 
 	width: 99%;
 	background-color: #fff;
 }
@@ -437,7 +436,6 @@ dl.no-style p {
 .shell-1 #FeatureDetails {
 	font-size: 13px; 
 	line-height: 130%;
-	padding: 3px;
 	overflow: auto;
 }
 

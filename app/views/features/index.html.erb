@@ -1,17 +1,13 @@
-<% @selected_tab = 0 %>
 <%= render :partial => "top" %>
-  
-		  <!-- sets up the tabs for jquery -->
-		  <ul>
-		    <li><a href="#Home"><span>Home</span></a></li>
-				<% unless @feature.nil? %>
-			    <li><a href="<%= feature_path @feature.fid %>"><span>Place</span></a></li>
-			    <% unless @feature.descriptions.empty? %>
-			    <li><a href="<%= feature_description_path(@feature, @feature.descriptions.first) %>"><span>Essays (<%= "#{@feature.descriptions.length}" %>)</span></a></li>
-			    <% end %>
-			    <li><a href="<%= related_feature_path @feature.fid %>"><span>Related</span></a></li>
-				<% end %>
-		  </ul>
+
+<% 
+	secondary_tabs = [["Home", "#Home"]]
+  secondary_tabs << ["Place", feature_path(@feature)] unless @feature.nil?
+  secondary_tabs << ["Essays (#{@feature.descriptions.length})", feature_description_path(@feature, @feature.descriptions.first)] if !@feature.nil? && !@feature.descriptions.empty?
+	secondary_tabs << ["Related", related_feature_path(@feature)] unless @feature.nil?
+%>
+
+			<%= un_secondary_tabs secondary_tabs %>
   
 		  <div class="left" id="Home">
 				<div class="has-right-margin">
