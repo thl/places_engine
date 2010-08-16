@@ -1,6 +1,6 @@
 <% title = d.title.blank? ? "Essay" : d.title %>
+<h2 class="description-title">&#8226; <%= link_to title.s, feature_description_path(feature, d) %></h2>
 <p class='description-author'>
-	<span class='title'>&#8226; <%= link_to title.s, feature_description_path(feature, d) %></span>
     <% if !d.authors.empty? %>
 	    <span class='by'><%= ' by ' %></span>
 	    <span class='content_by'><%= "#{ join_with_and(d.authors.collect{|a| a.screen_name.to_s.s})}" %></span>
