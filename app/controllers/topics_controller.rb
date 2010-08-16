@@ -8,6 +8,7 @@ class TopicsController < ApplicationController
     @features = Feature.all(:conditions => {'category_features.category_id' => @category.id}, :joins => join)
     @object_type = "Topic"
     @object_title = @category.title
+    @object_url = Category.element_url(@category.id, :format => 'html')
     
     @feature = Feature.find(session[:interface][:context_id]) unless session[:interface][:context_id].blank?
     respond_to do |format|
