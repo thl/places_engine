@@ -224,7 +224,7 @@ class Feature < ActiveRecord::Base
   # Shortcut for getting all feature_object_types.object_types
   #
   def object_types
-    feature_object_types.collect{ |f| f.category }.select{|c| c}
+    feature_object_types.collect(&:category).select{|c| c}
   end
   
   #
@@ -262,6 +262,10 @@ class Feature < ActiveRecord::Base
       @cache_by_fids[fid] = obj if !obj.nil?
     end
     obj
+  end
+  
+  def self.find_all_by_medium_id(medium_id)
+    Medium.find(medium_id).feature_ids.collect{|fid| Feature.get_by_fid(fid)}
   end
   
   def association_notes_for(association_type, options={})
