@@ -566,11 +566,16 @@ span.arrow {
 .by { font-size: 14px;}
 .content_by { font-size: 14px; font-variant:small-caps;}
 .last_updated { font-size: 13px;}
-.expanded { padding: 2px; text-align: justify; }
+.expanded { padding: 2px; text-align: justify; margin-left: 10px; }
 
-#descriptions_div h1{ border-bottom: 0px; }
+#descriptions_div h1{ font-size: 19px; border-bottom: 0px; }
+#descriptions_div h2{ font-size: 18px; }
+#descriptions_div h3{ font-size: 17px; }
+#descriptions_div h4{ font-size: 16px; }
 #descriptions_div p{ text-align: justify; font-size: 15px; }
-#descriptions_div .description-author{ font-size: 14px; }
+#descriptions_div h2.description-title{ font-size: 19px; }
+#descriptions_div h2.description-title a{ text-decoration: underline; }
+#descriptions_div .description-author{ margin-left: 18px; font-size: 14px; }
 #descriptions_div .view-essay-in-publication{ font-size: 13px; margin-bottom: 15px; }
 
 hr {border-style: solid; border-color: color:#404040; border-width: 1px}
