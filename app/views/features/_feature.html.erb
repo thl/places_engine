@@ -29,10 +29,11 @@
 	  </ul>
 	  <%= note_popup_link_list_for(feature, {:association_type => FeatureObjectType.model_name}) %>
 	<% end %>
-	<% if defined? feature.category_features %>
-	<%= content_tag :h3, "Characteristics" unless feature.category_features.empty? %>
+	<% if defined? feature.category_features 
+		 category_features = feature.category_features.all(:conditions => {:type => nil}) %>
+	<%= content_tag :h3, "Characteristics" unless category_features.empty? %>
 	  <ul id="CategoryFeaturesList">
-	<% feature.category_features.each do |cfs| 
+	<% category_features.each do |cfs| 
 		 cf = cfs.category
 		 if !cf.nil? 
 			values = []

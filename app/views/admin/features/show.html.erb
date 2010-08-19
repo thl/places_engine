@@ -54,7 +54,7 @@
 	<legend>Kmap Characteristics</legend>
 	<%= highlighted_new_item_link [@object, :category_feature] %>
 	<br class="clear"/>
-	<%= render :partial => 'admin/category_features/list', :locals => { :list => @object.category_features, :hide_feature_id => true } %>
+	<%= render :partial => 'admin/category_features/list', :locals => { :list => @object.category_features.all(:conditions => {:type => nil}), :hide_feature_id => true } %>
 	<%= association_note_list_fieldset(CategoryFeature.model_name) %>
 </fieldset>
 <fieldset>

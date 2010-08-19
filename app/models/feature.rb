@@ -18,7 +18,7 @@ class Feature < ActiveRecord::Base
   has_many :altitudes, :dependent => :destroy
   has_many :association_notes, :foreign_key => "notable_id"
   has_many :cached_feature_names
-  has_many :category_features, :conditions => {:type => nil}
+  has_many :category_features, :dependent => :destroy
   has_many :citations, :as => :citable, :dependent => :destroy
   has_many :contestations
   has_many :cumulative_category_feature_associations, :dependent => :destroy
@@ -225,6 +225,19 @@ class Feature < ActiveRecord::Base
   #
   def object_types
     feature_object_types.collect(&:category).select{|c| c}
+  end
+  
+  def categories(options = {})
+    if options[:cumulative]
+      return cumulative_category_feature_associations.collect(&:category).select{|c| c}
+    else
+      return category_features.collect(&:category).select{|c| c}
+    end
+  end
+  
+  def category_count(options = {})
+    association = options[:cumulative] || false ? CumulativeCategoryFeatureAssociation : CategoryFeature
+    association.count(:conditions => {:feature_id => self.id})
   end
   
   #
