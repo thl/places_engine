@@ -19,7 +19,7 @@
 		 if !ot.nil? %>
 		 	<li>
 				<% # Is there a way to prevent from hard-coding the Geographical Features category id (20) here? %>
-				<%= link_to ot.title, Category.get_url("20/iframe/#{ot.id}"), :class => "draggable-pop iframe no-view-alone overflow-y-auto width-850 height-488" %>
+				<%= link_to ot.title, Category.get_url("20/children/#{ot.id}") %>
 				<%= note_popup_link_for(fot) %>
 				<%= time_units_for(fot) %>
 			</li>

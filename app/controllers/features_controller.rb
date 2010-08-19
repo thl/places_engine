@@ -5,13 +5,8 @@ class FeaturesController < ApplicationController
   def index
     set_common_variables(session)
     
-    @feature = Feature.find(session[:interface][:context_id]) unless session[:interface][:context_id].blank? 
+    @feature = Feature.find(session[:interface][:context_id]) unless session[:interface][:context_id].blank?
     
-    #if params[:context_id] && params[:context_id].match(/^[\d]+$/)
-    #  redirect_to :action => 'index', :anchor => params[:context_id]
-    #  return false
-    #end
-
     # In the event that a Blurb with this code doesn't exist, fail gracefully
     @intro_blurb = Blurb.find_by_code('homepage.intro') || Blurb.new
         
@@ -186,7 +181,7 @@ class FeaturesController < ApplicationController
   def search
     options = {
       :page => params[:page] || 1,
-      :per_page => 15,
+      :per_page => 10,
       :conditions => {:is_public => 1}
     }
     search_options = {
@@ -407,45 +402,5 @@ class FeaturesController < ApplicationController
       f[:has_shapes] = feature.shapes.empty? ? 0 : 1
       #f[:parents] = feature.parents.collect{|p| api_format_feature(p) }
       f
-    end
-    
-    def set_common_variables(session_params)
-      
-      session[:interface] ||= {}
-      
-      # Allow for views and perspectives to be set by GET params.  It might be possible to simplify this code...
-      if params[:perspective_id] || params[:view_id]
-        session = Session.new
-        if params[:perspective_id]
-          session.perspective_id = params[:perspective_id]
-          self.current_perspective = Perspective.find(params[:perspective_id])
-        end
-        if params[:view_id]
-          session.view_id = params[:view_id]
-          self.current_view = View.find(params[:view_id])
-        end
-      end
-
-      @top_level_nodes = Feature.current_roots(current_perspective, current_view)
-      @session = Session.new(:perspective_id => self.current_perspective.id, :view_id => self.current_view.id)
-      @perspectives = Perspective.find_all_public
-      @views = View.find(:all, :order => 'name')
-
-      # These are used for the "Characteristics" field in the search
-      @kmaps_characteristics = CategoryFeature.find(:all, :select => "DISTINCT category_id", :conditions => "type IS NULL")
-
-      search_defaults = {
-      	:filter => '',
-      	:scope => 'full_text',
-      	:match => 'contains',
-      	:search_scope => 'global',
-      	:has_descriptions => '0'
-      }
-      
-      # These are used to show the same search results that were on the previous page.
-      @previous_search_params = session_params[:interface][:search_params] || search_defaults
-      
-      # These are used to show the same search form field values that were on the previous page.
-      @search_form_params = search_defaults
     end
 end

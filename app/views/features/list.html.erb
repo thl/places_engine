@@ -1,6 +1,35 @@
-<h2><%= @title %></h2>
-<ul>
-<% for feature in @features do %>
-<li class="normal"><%= link_to h(feature.prioritized_name(current_view)), feature_path(feature) %></li>
-<% end %>
-</ul>
+<%= render :partial => "features/top" %>
+
+<% 
+	secondary_tabs = [["Home", "#{ActionController::Base.relative_url_root}/"]]
+  secondary_tabs << ["Place", feature_path(@feature.fid)] unless @feature.nil?
+  secondary_tabs << ["Essays (#{@feature.descriptions.length})", feature_description_path(@feature, @feature.descriptions.first)] if !@feature.nil? && !@feature.descriptions.empty?
+	secondary_tabs << ["Related", related_feature_path(@feature)] unless @feature.nil?
+	secondary_tabs << [@object_type, "#RelatedPlaces"] unless @feature.nil?
+%>
+
+			<%= un_secondary_tabs secondary_tabs, secondary_tabs.length-1 %>
+  
+		  <div class="left" id="RelatedPlaces">
+				<div class="has-right-margin">
+					<h2>Places Associated with <%= @object_title %></h2>
+					<ul style="list-style-type:square; margin-left:2em;">
+					<% for feature in @features do %>
+					  <li class="normal"><%= link_to h(feature.prioritized_name(current_view)), feature_path(feature.fid) %></li>
+					<% end %>
+					</ul>
+					<% if @features.empty? %>
+					<p>
+					  No associated places were found.
+					</p>
+					<% end %>
+					<br />
+					<p>
+					  <%= link_to "#{@object_title} in #{@object_type.humanize.pluralize}", @object_url %>
+					</p>
+			  </div>
+			</div>
+
+<%= javascript_on_load "document.title = 'THL Place Dictionary of Tibet & the Himalayas'" %>
+
+<%= render :partial => "features/bottom" %>
