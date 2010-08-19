@@ -76,7 +76,7 @@
 		<div id="NodeTreeList">
 		<% if @feature.nil? %>
 			<% if current_perspective %>
-				<%= render :partial => "node_tree", :locals => { :children => @top_level_nodes } %>
+				<%= render :partial => "features/node_tree", :locals => { :children => @top_level_nodes } %>
 			<% else %>
 				To see a list of features, please <%= link_to 'choose a perspective', edit_session_path %>.
 			<% end %>

@@ -3,9 +3,9 @@
 for child in nodes %>
   <li id="<%= "node_#{child.id}_div" %>">
   <% if @ancestors_for_current.nil? || @ancestors_for_current.empty? || (index = @ancestors_for_current.index(child.id)).nil? %>
-    <%= render :partial => 'contracted', :object => child, :locals => {:contracted => child} %>
+    <%= render :partial => 'features/contracted', :object => child, :locals => {:contracted => child} %>
   <% else %>
-    <%= render :partial => 'expanded', :object => child, :locals => {:expanded => child} %>
+    <%= render :partial => 'features/expanded', :object => child, :locals => {:expanded => child} %>
   <% end %>
   </li>
 <% end %>
