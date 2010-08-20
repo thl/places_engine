@@ -240,6 +240,17 @@ class Feature < ActiveRecord::Base
     association.count(:conditions => {:feature_id => self.id})
   end
   
+  def media_count(options = {})
+    media_count_hash = Rails.cache.fetch("#{self.cache_key}/media_count") do
+      media_place_count = MediaPlaceCount.find(:all, :params => {:place_id => self.fid}).dup
+      media_count_hash = { 'Medium' => media_place_count.shift.count.to_i }
+      media_place_count.each{|count| media_count_hash[count.medium_type] = count.count.to_i }
+      media_count_hash
+    end
+    type = options[:type]
+    return type.nil? ? media_count_hash['Medium'] : media_count_hash[type]
+  end
+  
   #
   # Find all features that are related through a FeatureRelation
   #
