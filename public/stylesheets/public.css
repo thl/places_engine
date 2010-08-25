@@ -435,7 +435,6 @@ dl.no-style p {
 .shell-1 #FeatureDetails {
 	font-size: 13px; 
 	line-height: 130%;
-	overflow: auto;
 }
 
 .shell-1 #FeatureDetails h1 {
