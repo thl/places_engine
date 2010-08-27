@@ -33,7 +33,7 @@ class Importation
   # features.fid, features.old_pid, feature_names.delete, feature_names.is_primary.delete
   # i.feature_names.name, i.languages.code/name, i.writing_systems.code/name, i.feature_names.is_primary,
   # i.feature_name_relations.parent_node, i.feature_name_relations.is_translation, i.feature_name_relations.relationship.code
-  # i.phonetic_systems.code/name, i.orthographic_systems.code/name, 
+  # i.phonetic_systems.code/name, i.orthographic_systems.code/name, alt_spelling_systems.code/name
   # i.feature_name_relations.is_phonetic, i.feature_name_relations.is_orthographic
   # [i.]feature_types.id
   # i.geo_code_types.code/name, i.feature_geo_codes.geo_code_value, i.feature_geo_codes.info_source.id/code,
@@ -83,9 +83,10 @@ class Importation
         import.process_names(42)
         feature_ids_with_object_types_added += import.process_feature_types(4)
         import.process_geocodes(4)
-        feature_ids_with_changed_relations += import.process_feature_relations(3)
+        feature_ids_with_changed_relations += import.process_feature_relations(14)
         import.process_contestations(3)
-        import.process_shapes(3)      
+        import.process_shapes(3)
+        import.process_descriptions(3)
         import.feature.update_attributes({:is_blank => false, :is_public => true})
         import.process_kmaps(15)
       rescue  Exception => e
@@ -364,18 +365,23 @@ class Importation
       rescue Exception => e
         puts e.to_s
       end
+      begin
+        alt_spelling_system = AltSpellingSystem.get_by_code_or_name(self.fields.delete("#{i}.alt_spelling_systems.code"), self.fields.delete("#{i}.alt_spelling_systems.name"))
+      rescue Exception => e
+        puts e.to_s
+      end
       relationship_system_code = self.fields.delete("#{i}.feature_name_relations.relationship.code")
       if !relationship_system_code.blank?
         relationship_system = SimpleProp.get_by_code(relationship_system_code)
         if relationship_system.nil?
-          puts "Phonetic or orthographic system with code #{relationship_system_code} was not found."
+          puts "Phonetic or orthographic system with code #{relationship_system_code} was not found for feature #{self.feature.pid}."
         else
           if relationship_system.instance_of? OrthographicSystem
             orthographic_system = relationship_system
           elsif relationship_system.instance_of? PhoneticSystem
             phonetic_system = relationship_system
-          elsif relationship_system.instance_of? AltSpellingSystem
-            alt_spelling_system = relationship_system
+          else
+            puts "Relationship #{relationship_system_code} has to be either phonetic or orthographic for feature #{self.feature.pid}."
           end
         end
       else
@@ -386,11 +392,6 @@ class Importation
         end
         begin
           phonetic_system = PhoneticSystem.get_by_code_or_name(self.fields.delete("#{i}.phonetic_systems.code"), self.fields.delete("#{i}.phonetic_systems.name"))
-        rescue Exception => e
-          puts e.to_s
-        end
-        begin
-          alt_spelling_system = AltSpellingSystem.get_by_code_or_name(self.fields.delete("#{i}.alt_spelling_systems.code"), self.fields.delete("#{i}.alt_spelling_systems.name"))
         rescue Exception => e
           puts e.to_s
         end
@@ -533,7 +534,7 @@ class Importation
     self.feature.update_cached_feature_names if name_added || name_changed
     
     # running triggers for feature_name_relation
-    name_positions_with_changed_relations.each{|pos| name[pos].update_hierarchy}
+    name_positions_with_changed_relations.each{|pos| name[pos].update_hierarchy if !name[pos].nil?}
   end
 
   # The optional column "feature_types.id" can be used to specify the feature object type name.
@@ -735,6 +736,22 @@ class Importation
       contestation = contestations.create(:administrator => administrator, :claimant => claimant, :contested => (contested.downcase == 'yes')) if contestation.nil?
       puts "Couldn't create contestation between #{claimant_name} and #{administrator_name} for #{self.feature.pid}." if contestation.nil?
     end
+  end
+  
+  def process_descriptions(n)
+    descriptions = self.feature.descriptions
+    0.upto(n) do |i|
+      prefix = i>0 ? "#{i}.descriptions" : 'descriptions'
+      description_content = self.fields.delete("#{prefix}.content")
+      if !description_content.blank?
+        description_content = "<p>#{description_content}</p>"
+        author_name = self.fields.delete("#{prefix}.author.fullname")
+        author = author_name.blank? ? nil : User.find_by_fullname(author_name)
+        description = descriptions.find_by_content(description_content) # : descriptions.find(:first, :conditions => ['LEFT(content, 200) = ?', description_content[0...200]])
+        description = descriptions.create(:content => description_content) if description.nil?
+        description.authors << author if !author.nil? && !description.author_ids.include?(author.id)
+      end
+    end    
   end
   
   def process_shapes(n)
