@@ -41,13 +41,12 @@
 			values << cfs.numeric_value if !cfs.numeric_value.nil?
 			 %>
 		 	<li>
-				<%= cf.root.title %> - <%= link_to cf.title, Category.get_url("iframe/#{cf.id}"), :class => "draggable-pop iframe no-view-alone overflow-y-auto width-850 height-488" %><%= ": #{values.join(', ')}" if !values.empty? %>
+				<%= cf.root.title %> - <%= link_to cf.title, Category.get_url("#{cf.root.id}/children/#{cf.id}") %><%= ": #{values.join(', ')}" if !values.empty? %>
 				<%= note_popup_link_for(cfs) %>
 				<%= time_units_for(cfs) %>
 			</li>
 	<%   end
 	   end %>
-	   <%= javascript_tag "$(document).ready(function(){ ActivateDraggablePopups('#CategoryFeaturesList'); });" %>
 	  </ul>
 	  <%= note_popup_link_list_for(feature, {:association_type => CategoryFeature.model_name}) %>
 	<% end
