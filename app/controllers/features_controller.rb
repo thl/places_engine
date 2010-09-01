@@ -7,6 +7,8 @@ class FeaturesController < ApplicationController
     
     @feature = Feature.find(session[:interface][:context_id]) unless session[:interface][:context_id].blank?
     
+    @active_menu_item = 'search'
+
     # In the event that a Blurb with this code doesn't exist, fail gracefully
     @intro_blurb = Blurb.find_by_code('homepage.intro') || Blurb.new
         
