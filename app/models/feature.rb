@@ -251,6 +251,26 @@ class Feature < ActiveRecord::Base
     return type.nil? ? media_count_hash['Medium'] : media_count_hash[type]
   end
   
+  def kmaps_url
+    TopicalMapResource.get_url + place_path
+  end
+
+  def media_url
+    MediaManagementResource.get_url + place_path
+  end
+
+  def pictures_url
+    MediaManagementResource.get_url + place_path('pictures')
+  end
+
+  def videos_url
+    MediaManagementResource.get_url + place_path('videos')
+  end
+
+  def documents_url
+    MediaManagementResource.get_url + place_path('documents')
+  end
+  
   #
   # Find all features that are related through a FeatureRelation
   #
@@ -344,6 +364,12 @@ class Feature < ActiveRecord::Base
   
   def self.name_search_options(filter_value, options = {})
     
+  end
+  
+  def place_path(type = nil)
+    a = ['places', self.fid]
+    a << type if !type.nil?
+    a.join('/')
   end
 end
 
