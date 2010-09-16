@@ -1,4 +1,5 @@
 class Admin::FeaturesController < ResourceController::Base
+  cache_sweeper :feature_sweeper, :only => [:update, :destroy]
   
   new_action.before { @object.fid = Feature.generate_pid }
   create.before { @object.is_blank = false }

@@ -1,4 +1,6 @@
 class FeaturesController < ApplicationController
+  caches_page :show, :if => :api_response?.to_proc
+  
   #
   #
   #
@@ -404,5 +406,11 @@ class FeaturesController < ApplicationController
       f[:has_shapes] = feature.shapes.empty? ? 0 : 1
       #f[:parents] = feature.parents.collect{|p| api_format_feature(p) }
       f
+    end
+    
+    private
+    
+    def api_response?
+      request.format.xml?
     end
 end

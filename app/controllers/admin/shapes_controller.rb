@@ -1,4 +1,6 @@
 class Admin::ShapesController < ResourceController::Base
+  cache_sweeper :feature_sweeper, :only => [:update, :destroy]
+  
   belongs_to :feature
   
   def update

@@ -9,23 +9,27 @@ class CategoryFeature < ActiveRecord::Base
   extend IsDateable
   extend IsNotable
 
-  def after_destroy
-    CategoryFeature.delete_cumulative_information(self.category, self.feature_id)
+  after_destroy do |record|
+    feature = record.feature
+    CategoryFeature.delete_cumulative_information(record.category, feature.id)
+    feature.touch
   end
   
-  def before_save
-    CategoryFeature.delete_cumulative_information(Category.find(self.category_id_was), self.feature_id_was) if self.changed? && !self.category_id_was.nil? && (self.category_id_changed? || self.feature_id_changed?)
+  before_save do |record|
+    CategoryFeature.delete_cumulative_information(Category.find(record.category_id_was), record.feature_id_was) if record.changed? && !record.category_id_was.nil? && (record.category_id_changed? || record.feature_id_changed?)
   end
   
-  def after_save
-    cat = self.category
+  after_save do |record|
+    cat = record.category
+    feature = record.feature
     ([cat] + cat.ancestors).each do |c|
-      if (c.id==cat.id || c.cumulative?) && CumulativeCategoryFeatureAssociation.find(:first, :conditions => {:category_id => c.id, :feature_id => self.feature_id}).nil?
-        CumulativeCategoryFeatureAssociation.create(:category => c, :feature_id => self.feature_id)
+      if (c.id==cat.id || c.cumulative?) && CumulativeCategoryFeatureAssociation.find(:first, :conditions => {:category_id => c.id, :feature_id => feature.id}).nil?
+        CumulativeCategoryFeatureAssociation.create(:category => c, :feature_id => feature.id)
       end
     end
     Rails.cache.delete('CategoryFeature-max_updated_at')
-    self.feature.update_cached_feature_relation_categories if !self.skip_update
+    feature.update_cached_feature_relation_categories if !record.skip_update
+    feature.touch
   end
 
   def to_s

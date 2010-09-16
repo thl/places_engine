@@ -2,8 +2,17 @@ class FeatureName < ActiveRecord::Base
   attr_accessor :skip_update
   acts_as_family_tree :node, :tree_class=>'FeatureNameRelation'
   
-  after_save { |record| record.feature.update_cached_feature_names if !record.skip_update} #{ |record| record.update_hierarchy }
-  after_destroy { |record| record.feature.update_cached_feature_names }
+  after_save do |record|
+    feature = record.feature
+    feature.update_cached_feature_names if !record.skip_update
+    feature.touch
+  end #{ |record| record.update_hierarchy
+  
+  after_destroy do |record|
+    feature = record.feature
+    feature.update_cached_feature_names
+    feature.touch
+  end
   
   after_create do |record|
     if !record.skip_update
