@@ -6,3 +6,4 @@ require 'will_paginate_ext'
 require 'csv'
 require File.join(File.dirname(__FILE__), 'app', 'sweepers', 'cached_category_count_sweeper')
 require File.join(File.dirname(__FILE__), 'app', 'sweepers', 'feature_sweeper')
+CachedCategoryCountSweeper.instance

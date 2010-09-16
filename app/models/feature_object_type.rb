@@ -7,9 +7,8 @@ class FeatureObjectType < CategoryFeature
   #
   belongs_to :perspective
   
-  def after_save
-    super
-    self.feature.update_object_type_positions if !self.skip_update
+  after_save do |record|
+    record.feature.update_object_type_positions if !record.skip_update
   end
 end
 
