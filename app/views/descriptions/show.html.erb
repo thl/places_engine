@@ -1,15 +1,4 @@
-<% @un_options = {:entity => @feature} %>
-
 <%= render :partial => "features/top" %>
-
-<% 
-	secondary_tabs = [["Home", "#{ActionController::Base.relative_url_root}/"]]
-  secondary_tabs << ["Place", feature_path(@feature.fid)]
-  secondary_tabs << ["Essays (#{@feature.descriptions.length})", "#FeatureDescription"] unless @feature.descriptions.empty?
-	secondary_tabs << ["Related", related_feature_path(@feature)]
-%>
-
-			<%= un_secondary_tabs secondary_tabs, 2 %>
 
 			<div id="FeatureDescription">
 				<div class="has-right-margin">

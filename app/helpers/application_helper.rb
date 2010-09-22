@@ -263,6 +263,58 @@ module ApplicationHelper
   def stylesheet_files
     super + ['public', 'jquery-ui-tabs']
   end
+  
+  def custom_secondary_tabs_list
+    # The :index values are necessary for this hash's elements to be sorted properly
+    {
+      :place => {:index => 1, :title => "Place"},
+      :descriptions => {:index => 2, :title => "Essays"},
+      :related => {:index => 3, :title => "Related"}
+    }
+  end
+
+  def custom_secondary_tabs(current_tab_id=:place)
+
+    @tab_options ||= {}
+  
+    if @tab_options[:entity].blank?
+      tabs = {}
+    else
+      tabs = custom_secondary_tabs_list
+    end
+  
+    current_tab_id = :place unless (tabs.keys << :home).include? current_tab_id
+  
+    tabs = tabs.sort{|a,b| a[1][:index] <=> b[1][:index]}.collect{|tab_id, tab|
+      remove_tab = false
+      if tab[:url].blank? && !@tab_options[:entity].blank?
+        entity = @tab_options[:entity]
+        url = nil
+        count = nil
+        case tab_id
+        when :place
+          url = feature_path(entity.fid)
+        when :descriptions
+          if entity.descriptions.empty?
+            remove_tab = true
+          else
+            url = feature_description_path(entity, entity.descriptions.first)
+            count = entity.descriptions.length
+          end
+        when :related
+          url = related_feature_path(entity)
+          count = nil
+        end
+      else
+        tab_url = tab[:url]
+      end
+      title = count.nil? ? tab[:title] : "#{tab[:title]} (#{count})"
+    
+      remove_tab ? nil : [tab_id, title, url]
+    }.reject{|t| t.nil?}
+  
+    tabs
+  end
     
   def shape_display_string(shape)
     return shape.geo_type unless shape.is_point?
