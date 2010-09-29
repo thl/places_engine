@@ -68,6 +68,22 @@
 		  <%= note_popup_link_list_for(feature, {:association_type => Description.model_name}) %>
 	<%  end %>
 	
+	<%
+	  associated_resources = [
+      ["Topics", feature.category_count(:cumulative => true), feature.kmaps_url],
+	    ["Pictures", feature.media_count(:type => 'Picture'), feature.pictures_url],
+	    ["Video", feature.media_count(:type => 'Video'), feature.videos_url],
+	    ["Texts", feature.media_count(:type => 'Document'), feature.documents_url]
+    ]
+	%>
+
+	<% if associated_resources.collect{|ar| ar[1]}.sum > 0 %>
+	<h3>Associated Resources</h3>
+	<ul>
+	  <%= associated_resources.reject{|ar| ar[1] == 0}.collect{|ar| "<li>" + link_to("#{ar[0]} (#{ar[1]})", ar[2]) + "</li>" }.join("") %>
+	</ul>
+	<% end %>
+  	
 	<p>
 		<br />
 		<%= button_to_function "View More Feature Detail", "$('#more_feature_detail').show(); $(this).hide(); $('#less_feature_detail_button').show();", :id => "more_feature_detail_button", :style => ("display:none;" if current_show_feature_details) %>

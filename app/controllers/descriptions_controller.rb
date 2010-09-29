@@ -15,6 +15,8 @@ class DescriptionsController < ApplicationController
   def show
     set_common_variables(session)
     @description = Description.find(params[:id])
+    @tab_options = {:entity => @feature}
+    @current_tab_id = :descriptions
   end
 
   private

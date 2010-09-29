@@ -8,6 +8,8 @@ class FeaturesController < ApplicationController
     set_common_variables(session)
     
     @feature = Feature.find(session[:interface][:context_id]) unless session[:interface][:context_id].blank?
+    @tab_options = {:entity => @feature}
+    @current_tab_id = :home
     
     @active_menu_item = 'search'
 
@@ -30,6 +32,8 @@ class FeaturesController < ApplicationController
     
     @feature = Feature.get_by_fid(params[:id])
     session[:interface][:context_id] = @feature.id unless @feature.nil?
+    @tab_options = {:entity => @feature}
+    @current_tab_id = :place
     
     respond_to do |format|
       format.html
@@ -288,6 +292,8 @@ class FeaturesController < ApplicationController
     set_common_variables(session)
     @feature = Feature.find(params[:id])
     session[:interface][:context_id] = @feature.id unless @feature.nil?
+    @tab_options = {:entity => @feature}
+    @current_tab_id = :related
   end
   
   def related_list
