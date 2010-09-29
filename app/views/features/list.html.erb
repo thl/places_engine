@@ -1,14 +1,4 @@
 <%= render :partial => "features/top" %>
-
-<% 
-	secondary_tabs = [["Home", "#{ActionController::Base.relative_url_root}/"]]
-  secondary_tabs << ["Place", feature_path(@feature.fid)] unless @feature.nil?
-  secondary_tabs << ["Essays (#{@feature.descriptions.length})", feature_description_path(@feature, @feature.descriptions.first)] if !@feature.nil? && !@feature.descriptions.empty?
-	secondary_tabs << ["Related", related_feature_path(@feature)] unless @feature.nil?
-	secondary_tabs << [@object_type, "#RelatedPlaces"] unless @feature.nil?
-%>
-
-      <%= un_secondary_tabs secondary_tabs, secondary_tabs.length-1 %>
   
       <div class="left" id="RelatedPlaces">
         <div class="has-right-margin has-ajax-pagination">
