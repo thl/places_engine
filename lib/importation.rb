@@ -33,7 +33,7 @@ class Importation
   # features.fid, features.old_pid, feature_names.delete, feature_names.is_primary.delete
   # i.feature_names.name, i.languages.code/name, i.writing_systems.code/name, i.feature_names.is_primary,
   # i.feature_name_relations.parent_node, i.feature_name_relations.is_translation, i.feature_name_relations.relationship.code
-  # i.phonetic_systems.code/name, i.orthographic_systems.code/name, alt_spelling_systems.code/name
+  # i.phonetic_systems.code/name, i.orthographic_systems.code/name, i.alt_spelling_systems.code/name
   # i.feature_name_relations.is_phonetic, i.feature_name_relations.is_orthographic
   # [i.]feature_types.id
   # i.geo_code_types.code/name, i.feature_geo_codes.geo_code_value, i.feature_geo_codes.info_source.id/code,
@@ -41,6 +41,7 @@ class Importation
   # [i.]contestations.contested, [i.]contestations.administrator, [i.]contestations.claimant
   # i.kmaps.id, [i.]kXXX._
   # [i.]shapes.lat, [i.]shapes.lng, [i.]shapes.altitude
+  # [i.]descriptions.content, [i.]descriptions.author.fullname
   
 
   # Fields that accept time_units:
@@ -73,7 +74,7 @@ class Importation
     CSV.open(filename, 'r', "\t") do |row|
       current+=1
       if field_names.nil?
-        field_names = row
+        field_names = row.collect(&:strip)
         next
       end
       import.populate_fields(row, field_names)
@@ -738,6 +739,8 @@ class Importation
     end
   end
   
+  # [i.]descriptions:
+  # content, author.fullname  
   def process_descriptions(n)
     descriptions = self.feature.descriptions
     0.upto(n) do |i|
