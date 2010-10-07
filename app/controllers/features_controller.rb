@@ -51,6 +51,7 @@ class FeaturesController < ApplicationController
   end
   
   def by_geo_code
+    set_common_variables(session)
     geo_code_type_str = params[:geo_code_type]
     geo_code_type = GeoCodeType.get_by_code(geo_code_type_str)
     @feature = nil
@@ -61,6 +62,7 @@ class FeaturesController < ApplicationController
     respond_to do |format|
       format.html { render :action => 'show' }
       format.xml  { render :action => 'show' }
+      format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')) }
     end
   end
     

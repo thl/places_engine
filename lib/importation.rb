@@ -31,16 +31,17 @@ class Importation
   
   # Currently supported fields:
   # features.fid, features.old_pid, feature_names.delete, feature_names.is_primary.delete
-  # i.feature_names.name, i.languages.code/name, i.writing_systems.code/name, i.feature_names.is_primary,
-  # i.feature_name_relations.parent_node, i.feature_name_relations.is_translation, i.feature_name_relations.relationship.code
-  # i.phonetic_systems.code/name, i.orthographic_systems.code/name, i.alt_spelling_systems.code/name
-  # i.feature_name_relations.is_phonetic, i.feature_name_relations.is_orthographic
+  # i.feature_names.name, i.feature_names.position, i.feature_names.is_primary,
+  # i.languages.code/name, i.writing_systems.code/name, i.alt_spelling_systems.code/name
+  # i.phonetic_systems.code/name, i.orthographic_systems.code/name, BOTH DEPRECATED, INSTEAD USE: i.feature_name_relations.relationship.code
+  # i.feature_name_relations.parent_node, i.feature_name_relations.is_translation, 
+  # i.feature_name_relations.is_phonetic, i.feature_name_relations.is_orthographic, BOTH DEPRECATED AND USELESS
   # [i.]feature_types.id
   # i.geo_code_types.code/name, i.feature_geo_codes.geo_code_value, i.feature_geo_codes.info_source.id/code,
   # [i.]feature_relations.related_feature.fid, [i.]feature_relations.type.code, [i.]perspectives.code/name, feature_relations.replace
   # [i.]contestations.contested, [i.]contestations.administrator, [i.]contestations.claimant
-  # i.kmaps.id, [i.]kXXX._
-  # [i.]shapes.lat, [i.]shapes.lng, [i.]shapes.altitude
+  # i.kmaps.id, [i.]kXXX
+  # [i.]shapes.lat, [i.]shapes.lng, [i.]shapes.altitude, [i.]shapes.altitude.estimate
   # [i.]descriptions.content, [i.]descriptions.author.fullname
   
 
@@ -413,7 +414,9 @@ class Importation
       relation_conditions[:orthographic_system_id] = orthographic_system.id if !orthographic_system.nil?
       relation_conditions[:phonetic_system_id] = phonetic_system.id if !phonetic_system.nil?
       relation_conditions[:alt_spelling_system_id] = alt_spelling_system.id if !alt_spelling_system.nil?
-      if name[n].nil? || name[n].parent_relations.find(:first, :conditions => relation_conditions).nil?
+      if name[n].nil? || !relation_conditions.empty? && name[n].parent_relations.find(:first, :conditions => relation_conditions).nil?
+        position = self.fields.delete("#{i}.feature_names.position")
+        conditions[:position] = position if !position.nil?
         name[n] = names.create(conditions.merge({:skip_update => true}))
         name_added = true if !name_added && !name[n].id.nil?
       end
@@ -782,6 +785,14 @@ class Importation
         end
       else
         puts "Can't specify a latitude without a longitude and viceversa for feature #{self.feature.pid}" if !shapes_lat.blank? || !shapes_lng.blank?
+      end
+      # deal with "extra" altitudes
+      estimate_str = self.fields.delete("#{prefix}.altitude.estimate")
+      if !estimate_str.blank?
+        altitudes = self.feature.altitudes
+        conditions = {:unit_id => 1, :estimate => estimate_str}
+        estimate = altitudes.find(:first, :conditions => conditions)
+        estimate = altitudes.create(conditions) if estimate.nil?
       end
     end
   end

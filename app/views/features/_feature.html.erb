@@ -116,18 +116,20 @@
 			</p>
   	<% end %>
 	<%= note_popup_link_list_for(feature, {:association_type => FeatureGeoCode.model_name}) %>
-	<% if !shapes.empty? %>
-		<%= content_tag :h3, "Locations" %>
-		<ul>
-		  <% shapes.each do |shape| %>
+	<%  altitudes = feature.altitudes
+	    if !shapes.empty? || !altitudes.empty? %>
+<%=       content_tag :h3, "Locations" %>
+		  <ul>
+<%        shapes.each do |shape| %>
 		    <li>
 				<%=h shape_display_string(shape) %>
 				<%= note_popup_link_for(shape) %>
+				<%= note_popup_link_for(shape) %>
 				<%= time_units_for(shape) %>
 			</li>
-		  <% end %>	
-		</ul>
-
+<%        end %>	
+		  </ul>
+<%        if !shapes.empty? %>
 			GIS Resources (feature alone)
 				<ul>
 					<li>
@@ -162,11 +164,10 @@
 				</ul>
 				<% end %>
 			<% end %>
-		<%= note_popup_link_list_for(feature, {:association_type => Shape.model_name}) %>
-	<% end %>
-
+<%=         note_popup_link_list_for(feature, {:association_type => Shape.model_name}) %>
+<%        end
+        end %>
 </div>
-	
 </div>
 
 <br class="clear"/>

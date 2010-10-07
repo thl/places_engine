@@ -323,6 +323,14 @@ module ApplicationHelper
     s
   end
   
+  def altitude_display_string(altitude)
+    a = []
+    a << "#{altitude.average} (average)" if !altitude.average.nil?
+    a << "#{altitude.minimum} (minimum)" if !altitude.minimum.nil?
+    a << "#{altitude.maximum} (maximum)" if !altitude.maximum.nil?
+    a.empty? ? '' : "Altitude: #{a.join(', ')}"
+  end
+  
   # TODO: Add rules here based on language of name and perspective.
   def apply_name_preference(names)
     return [] if names.empty?
