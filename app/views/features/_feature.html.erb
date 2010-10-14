@@ -124,8 +124,14 @@
 		    <li>
 				<%=h shape_display_string(shape) %>
 				<%= note_popup_link_for(shape) %>
-				<%= note_popup_link_for(shape) %>
 				<%= time_units_for(shape) %>
+			</li>
+<%        end
+          altitudes.each do |altitude| %>
+		    <li>
+				<%=h altitude_display_string(altitude) %>
+				<%= note_popup_link_for(altitude) %>
+				<%= time_units_for(altitude) %>
 			</li>
 <%        end %>	
 		  </ul>

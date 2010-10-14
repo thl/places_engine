@@ -754,7 +754,12 @@ class Importation
         author_name = self.fields.delete("#{prefix}.author.fullname")
         author = author_name.blank? ? nil : User.find_by_fullname(author_name)
         description = descriptions.find_by_content(description_content) # : descriptions.find(:first, :conditions => ['LEFT(content, 200) = ?', description_content[0...200]])
-        description = descriptions.create(:content => description_content) if description.nil?
+        attributes = {:content => description_content, :title => self.fields.delete("#{prefix}.title")}
+        if description.nil?
+          description = descriptions.create(attributes)
+        else
+          description.update_attributes(attributes)
+        end
         description.authors << author if !author.nil? && !description.author_ids.include?(author.id)
       end
     end    
