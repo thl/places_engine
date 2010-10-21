@@ -82,7 +82,7 @@ class Importation
       next unless import.get_feature(current)
       begin
         import.add_date('features', import.feature)
-        import.process_names(42)
+        import.process_names(44)
         feature_ids_with_object_types_added += import.process_feature_types(4)
         import.process_geocodes(4)
         feature_ids_with_changed_relations += import.process_feature_relations(14)
