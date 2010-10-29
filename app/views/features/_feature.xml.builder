@@ -6,4 +6,6 @@ xml.feature(:id => feature.id, :pid => feature.pid, :fid => feature.fid, :header
   xml.has_shapes(feature.shapes.empty? ? 0 : 1)
   xml.created_at(feature.created_at, :type => 'datetime')
   xml.updated_at(feature.updated_at, :type => 'datetime')
+  xml.related_feature_count(feature.relations.size.to_s, :type => 'integer')
+  xml.description_count(feature.descriptions.size.to_s, :type => 'integer')
 end
