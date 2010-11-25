@@ -1,4 +1,4 @@
-<% title = d.title.blank? ? "Essay" : d.title %>
+<% title = d.title.blank? ? Description.human_name.titleize.s : d.title %>
 <h2 class="description-title">&#8226; <%= link_to title.s, feature_description_path(feature, d) %></h2>
 <p class='description-author'>
     <% if !d.authors.empty? %>

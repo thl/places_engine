@@ -37,8 +37,8 @@ end
 	</td>
   </tr>
   <tr>
-    <th class="leftText">Name Variations</th>
-    <th class="leftText">Type</th>
+    <th class="leftText"><%= FeatureName.human_name(:count => :many).titleize.s %></th>
+    <th class="leftText"><%= Feature.human_attribute_name(:object_type).s %></th>
   </tr>
   <% features.each do |f| %>
     <tr class="featureRow" id="feature_<%= f.id %>">
