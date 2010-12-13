@@ -53,7 +53,7 @@ ActionController::Routing::Routes.draw do |map|
       feature_relation.resources :notes, :collection => {:add_author => :get}
       feature_relation.resources :time_units, :collection => {:new_form => :get}
     end
-    admin.resources :features, :member=>{:locate_for_relation=>:get, :set_primary_description => :get}, :has_many => [ :altitudes, :category_features, :citations, :feature_geo_codes, :feature_names, :feature_object_types, :feature_relations, :shapes] do |feature|
+    admin.resources :features, :member=>{:locate_for_relation=>:get, :set_primary_description => :get, :clone => :post}, :has_many => [ :altitudes, :category_features, :citations, :feature_geo_codes, :feature_names, :feature_object_types, :feature_relations, :shapes] do |feature|
       feature.resources :association_notes, :collection => {:add_author => :get}
       feature.resources :descriptions, :collection => {:add_author => :get}
       feature.resources :time_units, :collection => {:new_form => :get}
