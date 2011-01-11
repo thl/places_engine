@@ -12,14 +12,14 @@
 	<%= f_breadcrumb(feature) %>
 
 	<% if defined? feature.object_types %>
-	<%= content_tag :h3, "Types" unless feature.object_types.empty? %>
+	<%= content_tag :h3, Feature.human_attribute_name(:object_type, :count => feature.feature_object_types.size).s unless feature.object_types.empty? %>
 	  <ul id="FeatureTypesList">
-	<% feature.feature_object_types.each do |fot| 
+	<% feature.feature_object_types.each do |fot|
 		 ot = fot.category
 		 if !ot.nil? %>
 		 	<li>
 				<% # Is there a way to prevent from hard-coding the Geographical Features category id (20) here? %>
-				<%= link_to ot.title, Category.get_url("20/children/#{ot.id}") %>
+				<%= link_to ot.title, ot.get_url_with_parent %>
 				<%= note_popup_link_for(fot) %>
 				<%= time_units_for(fot) %>
 			</li>
@@ -31,7 +31,7 @@
 	<% end %>
 	<% if defined? feature.category_features 
 		 category_features = feature.category_features.all(:conditions => {:type => nil}) %>
-	<%= content_tag :h3, "Characteristics" unless category_features.empty? %>
+	<%= content_tag :h3, Feature.human_attribute_name(:characteristic, :count => :many).s unless category_features.empty? %>
 	  <ul id="CategoryFeaturesList">
 	<% category_features.each do |cfs| 
 		 cf = cfs.category
@@ -41,7 +41,7 @@
 			values << cfs.numeric_value if !cfs.numeric_value.nil?
 			 %>
 		 	<li>
-				<%= cf.root.title %> - <%= link_to cf.title, Category.get_url("#{cf.root.id}/children/#{cf.id}") %><%= ": #{values.join(', ')}" if !values.empty? %>
+				<%= cf.root.title %> - <%= link_to cf.title, cf.get_url_with_parent %><%= ": #{values.join(', ')}" if !values.empty? %>
 				<%= note_popup_link_for(cfs) %>
 				<%= time_units_for(cfs) %>
 			</li>
@@ -93,7 +93,7 @@
 	 <%= link_to image_tag("http://www.thlib.org/global/images/icon-google-maps.png", :alt => "") + " View in Google Maps", "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => map_fid, :format => "kmz"), :target => "_blank", :class => "view-on-map" %>
 	 <%= link_to image_tag("http://www.thlib.org/global/images/icon-google-earth.png", :alt => "") + " View in Google Earth", {:action => :gis_resources, :fids => map_fid, :format => "kmz"}, :target => "_blank", :class => "view-on-map" %>
 	<% end %>
-	<%= content_tag :h3, "Essays" unless feature.descriptions.blank? %>
+	<%= content_tag :h3, Description.human_name(:count => feature.descriptions.size).titleize.s unless feature.descriptions.blank? %>
 	<%  if !feature.descriptions.empty? %>
 	      <div id='descriptions_div'>
 	<%=     render :partial => '/descriptions/index', :locals => {:feature => feature, :description => nil} %>
@@ -125,7 +125,7 @@
 
 <div id="more_feature_detail" style="<%= ("display: none;" unless current_show_feature_details) %>">
 
-	<h3>Names</h3>
+	<h3><%= FeatureName.human_name(:count => feature.names.size).titleize.s %></h3>
 	<%= feature_name_ul(feature,false) %>
 	<dl class="no-style">
 	<% feature.names.roots.each do |name| %>
@@ -136,22 +136,22 @@
 
 	<h3>IDs</h3>
 <%  if show_old_pid %>
-      <p>CURRENT THL ID: <%= feature.pid %></p>
-      <p>OLD THL PID: <%= feature.old_pid %></p>
+      <p><%= "#{ts :current, :what => Feature.human_attribute_name(:pid)}: #{feature.pid}" %></p>
+      <p><%= "#{Feature.human_attribute_name(:old_pid).s}: #{feature.old_pid}" %></p>
 <%  else %>
-      <p>THL ID: <%= feature.pid %></p>
+      <p><%= "#{Feature.human_attribute_name(:pid).s}: #{feature.pid}" %></p>
 <%  end %>
-  	<% feature.geo_codes.each do |geo_code| %>
-			<p>
-				<%= geo_code %>: <%= geo_code.geo_code_value%>
-				<%= note_popup_link_for(geo_code) %>
-				<%= time_units_for(geo_code) %>
-			</p>
-  	<% end %>
+<%  feature.geo_codes.each do |geo_code| %>
+	<p>
+<%=   geo_code %>: <%= geo_code.geo_code_value %>
+<%=   note_popup_link_for(geo_code) %>
+<%=   time_units_for(geo_code) %>
+	</p>
+<%  end %>
 	<%= note_popup_link_list_for(feature, {:association_type => FeatureGeoCode.model_name}) %>
 	<%  altitudes = feature.altitudes
 	    if !shapes.empty? || !altitudes.empty? %>
-<%=       content_tag :h3, "Locations" %>
+<%=       content_tag :h3, Shape.human_name(:count => :many).titleize.s %>
 		  <ul>
 <%        shapes.each do |shape| %>
 		    <li>

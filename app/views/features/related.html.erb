@@ -1,11 +1,8 @@
 <%= render :partial => "top" %>
-
-			<div id="RelatedFeatures">
-				<div class="has-right-margin">
-					<%= render :partial => "related" %>
-				</div>
-			</div>
-
-<%= javascript_on_load "document.title = 'THL Place Dictionary - #{feature_name_header(@feature)} - Related Places'" %>
-			
+<div id="RelatedFeatures">
+  <div class="has-right-margin">
+<%= render :partial => "related" %>
+  </div>
+</div>
+<%= javascript_on_load "document.title = 'THL Place Dictionary - #{feature_name_header(@feature)} - Related Places'" %>		
 <%= render :partial => "bottom" %>

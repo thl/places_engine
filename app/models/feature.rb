@@ -307,11 +307,7 @@ class Feature < ActiveRecord::Base
     end
     obj
   end
-  
-  def self.find_all_by_medium_id(medium_id)
-    Medium.find(medium_id).feature_ids.collect{|fid| Feature.get_by_fid(fid)}
-  end
-  
+    
   def association_notes_for(association_type, options={})
     conditions = {:notable_type => self.class.name, :notable_id => self.id, :association_type => association_type, :is_public => true}
     conditions.delete(:is_public) if !options[:include_private].nil? && options[:include_private] == true
@@ -358,6 +354,27 @@ class Feature < ActiveRecord::Base
   		  })
   		end
   	end
+  end
+  
+  def clone_with_names
+    new_feature = Feature.create(:fid => Feature.generate_pid, :is_blank => false, :is_public => true)
+    names = self.names
+    names_to_clones = Hash.new
+    names.each do |name|
+      cloned = name.clone
+      cloned.feature = new_feature
+      cloned.save
+      names_to_clones[name.id] = cloned
+    end
+    relations = Array.new
+    names.each { |name| name.relations.each { |relation| relations << relation if !relations.include? relation } }
+    relations.each do |relation|
+      new_relation = relation.clone
+      new_relation.child_node = names_to_clones[new_relation.child_node.id]
+      new_relation.parent_node = names_to_clones[new_relation.parent_node.id]
+      new_relation.save
+    end
+    return new_feature
   end
       
   private

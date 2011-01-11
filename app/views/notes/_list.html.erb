@@ -1,10 +1,9 @@
 <div class="thl-popup-padded-content">
 <% if false %>
-  <h2>Note<%= "s" if @notes.length > 1 %> for <%= @parent_object %></h2>
+  <h2><%= ts :for, :what => Note.human_name(:count => @notes.size).titleize, :whom => @parent_object %></h2>
 <% end %>
-
 <% @notes.each do |note| %>
-  <h2><%= (note.title.blank? ? "Note" : note.title).s %></h2>
+  <h2><%= (note.title.blank? ? Note.human_name.titleize.s : note.title).s %></h2>
   <p>
 	<%= "#{"by "+note.authors.collect{|a| a.fullname }.join(", ")+" " if note.authors.length > 0} (#{note.updated_at.to_date.to_formatted_s(:long)})" %>
   </p>

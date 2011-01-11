@@ -20,6 +20,10 @@ class Admin::FeaturesController < ResourceController::Base
     #render :action => 'primary_description_set'
   end
   
+  def clone
+    redirect_to admin_feature_url(Feature.find(params[:id]).clone_with_names)
+  end
+  
   private
   
   def collection
@@ -40,5 +44,5 @@ class Admin::FeaturesController < ResourceController::Base
         feat.descriptions.update_all("is_primary = false")
         feat.descriptions.update_all("is_primary = true","id=#{primary_desc.id}")
       end
-  end
+  end  
 end

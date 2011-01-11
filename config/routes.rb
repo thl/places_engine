@@ -53,7 +53,7 @@ ActionController::Routing::Routes.draw do |map|
       feature_relation.resources :notes, :collection => {:add_author => :get}
       feature_relation.resources :time_units, :collection => {:new_form => :get}
     end
-    admin.resources :features, :member=>{:locate_for_relation=>:get, :set_primary_description => :get}, :has_many => [ :altitudes, :category_features, :citations, :feature_geo_codes, :feature_names, :feature_object_types, :feature_relations, :shapes] do |feature|
+    admin.resources :features, :member=>{:locate_for_relation=>:get, :set_primary_description => :get, :clone => :post}, :has_many => [ :altitudes, :category_features, :citations, :feature_geo_codes, :feature_names, :feature_object_types, :feature_relations, :shapes] do |feature|
       feature.resources :association_notes, :collection => {:add_author => :get}
       feature.resources :descriptions, :collection => {:add_author => :get}
       feature.resources :time_units, :collection => {:new_form => :get}
@@ -73,17 +73,17 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :features, :has_many => :association_notes, :member => {:descendants => :get, :related => :get} do |feature|
     feature.resources :descriptions, :member => {:expand => :get, :contract => :get, :show => :get}
   end
-  map.resources :altitudes, :has_many => :notes
-  map.resources :category_features, :has_many => :notes
-  map.resources :description, :has_many => :notes
-  map.resources :feature_geo_codes, :has_many => :notes
-  map.resources :feature_names, :has_many => :notes
-  map.resources :feature_name_relations, :has_many => :notes
-  map.resources :feature_object_types, :has_many => :notes
-  map.resources :feature_relations, :has_many => :notes
+  map.resources :altitudes, :has_many => [:notes, :citations]
+  map.resources :category_features, :has_many => [:notes, :citations]
+  map.resources :description, :has_many => [:notes, :citations]
+  map.resources :feature_geo_codes, :has_many => [:notes, :citations]
+  map.resources :feature_names, :has_many => [:notes, :citations]
+  map.resources :feature_name_relations, :has_many => [:notes, :citations]
+  map.resources :feature_object_types, :has_many => [:notes, :citations]
+  map.resources :feature_relations, :has_many => [:notes, :citations]
   map.resources :media, :as => 'media_objects', :only => 'show'
-  map.resources :shapes, :has_many => :notes
-  map.resources :time_units, :has_many => :notes
+  map.resources :shapes, :has_many => [:notes, :citations]
+  map.resources :time_units, :has_many => [:notes, :citations]
   map.resources :topics, :only => 'show'
   #map.resources :descriptions, :member => {:expand => :get, :contract => :get}
   map.with_options :path_prefix => 'features', :controller => 'features' do |features|

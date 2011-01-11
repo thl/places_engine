@@ -52,34 +52,34 @@
 	</div>
 	<h2 class="menu-item-options">Options</h2>
 	<div id="NodeOptions" <%= ' style="display:none"' unless active_item == 'options' %>>
-		<ul>
-			<li>
-			  Language:<br />
-			  <%= render(:partial => 'sessions/language_select') %>
-			  <% form_for :session, :url => session_path, :html => { :method => 'put' } do |f| %>
-			      Perspective:<br />
-				  <%= f.collection_select :perspective_id, @perspectives, :id, :name, {}, { :onchange => 'jQuery(this).parents("form:first").submit();' } %>
-				  <br />
-				  Place Name Language:<br />
-				  <%= f.collection_select :view_id, @views, :id, :name, {}, { :onchange => 'jQuery(this).parents("form:first").submit();' } %>
-				  <br />
-				  Show Feature Details:<br />
-				  <%= f.select :show_feature_details, [['Yes', true], ['No', false]], {:selected => current_show_feature_details}, { :onchange => 'jQuery(this).parents("form:first").submit();' } %>
-				  <br />
-				  Show Advanced Search:<br />
-				  <%= f.select :show_advanced_search, [['Yes', true], ['No', false]], {:selected => current_show_advanced_search}, { :onchange => 'jQuery(this).parents("form:first").submit();' } %>
-			  <% end %>
-			</li>
-		</ul>
+      <ul>
+	    <li>
+<%=       ComplexScripts::Language.human_name.titleize.s %>:<br />
+<%=       render(:partial => 'sessions/language_select') %>
+<%        form_for :session, :url => session_path, :html => { :method => 'put' } do |f| %>
+<%=         Perspective.human_name.titleize.s %>:<br />
+<%=         f.collection_select :perspective_id, @perspectives, :id, :name, {}, { :onchange => 'jQuery(this).parents("form:first").submit();' } %>
+            <br />
+<%=         View.human_name.titleize.s %>:<br />
+<%=         f.collection_select :view_id, @views, :id, :name, {}, { :onchange => 'jQuery(this).parents("form:first").submit();' } %>
+            <br />
+            Show Feature Details:<br />
+<%=         f.select :show_feature_details, [['Yes', true], ['No', false]], {:selected => current_show_feature_details}, { :onchange => 'jQuery(this).parents("form:first").submit();' } %>
+            <br />
+            Show Advanced Search:<br />
+<%=         f.select :show_advanced_search, [['Yes', true], ['No', false]], {:selected => current_show_advanced_search}, { :onchange => 'jQuery(this).parents("form:first").submit();' } %>
+<%        end %>
+        </li>
+      </ul>
 	</div>
-	<h2 class="menu-item-browse">Browse</h2>
+	<h2 class="menu-item-browse"><%= ts 'browse.this' %></h2>
 	<div id="NodeTree" <%= ' style="display:none"' unless active_item == 'browse' %>>
 		<div id="NodeTreeList">
 		<% if @feature.nil? %>
 			<% if current_perspective %>
 				<%= render :partial => "features/node_tree", :locals => { :children => @top_level_nodes } %>
 			<% else %>
-				To see a list of features, please <%= link_to 'choose a perspective', edit_session_path %>.
+				To see a list of features, please <%= link_to ts(:choose, :what => Perspective.human_name), edit_session_path %>.
 			<% end %>
 		<% else %>
 			<img src="http://thlib.org/global/images/ajax-loader.gif" alt="" style="display:inline;" /> Loading...
