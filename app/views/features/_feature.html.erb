@@ -49,17 +49,50 @@
 	   end %>
 	  </ul>
 	  <%= note_popup_link_list_for(feature, {:association_type => CategoryFeature.model_name}) %>
-	<% end
-	   shapes = logged_in? ? feature.shapes : feature.shapes.select(&:is_public?)
-	   if !shapes.empty? %>
-		<h3>Map</h3>
-		<div id="inset_map" class="fid-<%= feature.fid.to_s %> language-<%= current_view.code %>"></div>
-		<%= javascript_tag "$(document).ready(function(){ InsetMap.init({proxyUrl: '#{ActionController::Base.relative_url_root}/proxy_engine/utils/proxy/?proxy_url='}); });" %>
-		<%= link_to image_tag("http://www.thlib.org/global/images/icon-map-simple.gif", :alt => "") + " View the full map", "http://www.thlib.org/places/maps/interactive/#fid:#{feature.fid};language:#{current_view.code}", :target => "_blank", :class => "view-on-map" %>
-		<%= link_to image_tag("http://www.thlib.org/global/images/icon-google-maps.png", :alt => "") + " View in Google Maps", "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => feature.fid, :format => "kmz"), :target => "_blank", :class => "view-on-map" %>
-		<%= link_to image_tag("http://www.thlib.org/global/images/icon-google-earth.png", :alt => "") + " View in Google Earth", {:action => :gis_resources, :fids => feature.fid, :format => "kmz"}, :target => "_blank", :class => "view-on-map" %>
+	<% end 
+
+	  shapes = logged_in? ? feature.shapes : feature.shapes.select(&:is_public?)
+	 
+	   if shapes.empty?
+	     # check if parent has shapes (township)
+	     geographical_parents = feature.all_parent_relations.select{|relation| relation.perspective_id == 2}.collect(&:parent_node)
+        
+         #get the first parent
+         if geographical_parents.length>0
+         	 firstTownship= geographical_parents.at(0)
+	         shapes = logged_in? ? firstTownship.shapes : firstTownship.shapes.select(&:is_public?)
+		     if !shapes.empty?
+		     	map_fid = firstTownship.fid	       
+		     else	     
+		     	map_fid =nil		      	
+		     end
+		 else	     
+	     	#check if county level parent exist  
+	     	county_parents = feature.all_parent_relations.select{|relation| relation.perspective_id == 1068913229}.collect(&:parent_node)
+	     	
+	     	if county_parents.length>0
+	     		firstCounty= county_parents.at(0)
+         		shapes = logged_in? ? firstCounty.shapes : firstCounty.shapes.select(&:is_public?)
+	     		if !shapes.empty?
+	     			map_fid = firstCounty.fid
+	     		else
+	     			map_fid =nil	
+	     		end
+	     	else
+	     		map_fid =nil
+	     	end	
+         end
+	   else
+	     map_fid = feature.fid
+	   end
+	   if !map_fid.nil? %>
+	 <h3>Map</h3>	 
+	 <div id="inset_map" class="fid-<%= map_fid.to_s %> language-<%= current_view.code %>"></div>
+	 <%= javascript_tag "$(document).ready(function(){ InsetMap.init({proxyUrl: '#{ActionController::Base.relative_url_root}/proxy_engine/utils/proxy/?proxy_url='}); });" %>
+	 <%= link_to image_tag("http://www.thlib.org/global/images/icon-map-simple.gif", :alt => "") + " View the full map", "http://www.thlib.org/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}", :target => "_blank", :class => "view-on-map" %>
+	 <%= link_to image_tag("http://www.thlib.org/global/images/icon-google-maps.png", :alt => "") + " View in Google Maps", "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => map_fid, :format => "kmz"), :target => "_blank", :class => "view-on-map" %>
+	 <%= link_to image_tag("http://www.thlib.org/global/images/icon-google-earth.png", :alt => "") + " View in Google Earth", {:action => :gis_resources, :fids => map_fid, :format => "kmz"}, :target => "_blank", :class => "view-on-map" %>
 	<% end %>
-	
 	<%= content_tag :h3, "Essays" unless feature.descriptions.blank? %>
 	<%  if !feature.descriptions.empty? %>
 	      <div id='descriptions_div'>
