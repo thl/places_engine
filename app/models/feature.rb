@@ -13,18 +13,18 @@ class Feature < ActiveRecord::Base
   
   acts_as_family_tree :node, :tree_class => 'FeatureRelation', :conditions => {'feature_relations.feature_relation_type_id' => FeatureRelationType.hierarchy_ids}
   # These are distinct from acts_as_family_tree's parent/child_relations, which only include hierarchical parent/child relations.
-  has_many :all_child_relations, :class_name => 'FeatureRelation', :foreign_key => 'parent_node_id'
-  has_many :all_parent_relations, :class_name => 'FeatureRelation', :foreign_key => 'child_node_id'
+  has_many :all_child_relations, :class_name => 'FeatureRelation', :foreign_key => 'parent_node_id', :dependent => :destroy
+  has_many :all_parent_relations, :class_name => 'FeatureRelation', :foreign_key => 'child_node_id', :dependent => :destroy
   has_many :altitudes, :dependent => :destroy
-  has_many :association_notes, :foreign_key => "notable_id"
-  has_many :cached_feature_names
+  has_many :association_notes, :foreign_key => "notable_id", :dependent => :destroy
+  has_many :cached_feature_names, :dependent => :destroy
   has_many :category_features, :dependent => :destroy
   has_many :citations, :as => :citable, :dependent => :destroy
-  has_many :contestations
+  has_many :contestations, :dependent => :destroy
   has_many :cumulative_category_feature_associations, :dependent => :destroy
   has_many :descriptions, :dependent => :destroy
-  has_many :feature_object_types, :order => :position
-  has_many :geo_codes, :class_name=>'FeatureGeoCode' # naming inconsistency here (see feature_object_types association) ?
+  has_many :feature_object_types, :order => :position, :dependent => :destroy
+  has_many :geo_codes, :class_name=>'FeatureGeoCode', :dependent => :destroy # naming inconsistency here (see feature_object_types association) ?
   has_many :geo_code_types, :through=>:geo_codes
   has_many :shapes, :foreign_key => 'fid', :primary_key => 'fid'
   has_one :xml_document, :class_name=>'XmlDocument', :dependent => :destroy
