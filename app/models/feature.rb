@@ -299,13 +299,13 @@ class Feature < ActiveRecord::Base
   end
   
   def self.get_by_fid(fid)
-    @cache_by_fids ||= {}
-    obj = @cache_by_fids[fid]
-    if obj.nil?
-      obj = self.find_by_fid(fid)
-      @cache_by_fids[fid] = obj if !obj.nil?
+    Rails.cache.fetch("features-fid/fid") do
+      begin
+        self.find_by_fid(fid)
+      rescue ActiveRecord::ActiveRecordError
+        nil
+      end      
     end
-    obj
   end
     
   def association_notes_for(association_type, options={})

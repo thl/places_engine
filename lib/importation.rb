@@ -59,7 +59,7 @@ class Importation
   # .info_source.id/code, info_source.notes, .info_source[.i].volume, info_source[.i].pages
   
   # Fields that accept note:
-  # i.feature_names[.j], i.kmaps[.j], [i.]kXXX[.j], [i.]feature_types[.j], [i.]feature_relations[.j], [i.]shapes[.j]
+  # [i.]feature_names[.j], i.kmaps[.j], [i.]kXXX[.j], [i.]feature_types[.j], [i.]feature_relations[.j], [i.]shapes[.j]
   
   # Note fields:
   # .note
@@ -343,7 +343,7 @@ class Importation
     end    
     # feature_names.note can be used to add general notes to all names of a feature
     0.upto(3) do |i|
-      feature_names_note = self.fields.delete(i==0 ? 'feature_names.note' : "feature_names.note.#{i}")
+      feature_names_note = self.fields.delete(i==0 ? 'feature_names.note' : "feature_names.#{i}.note")
       if !feature_names_note.blank?
         note = AssociationNote.find(:first, :conditions => { :notable_id => self.feature.id, :notable_type => 'Feature', :association_type => 'FeatureName', :content => feature_names_note })
         note = AssociationNote.create(:notable => self.feature, :association_type => 'FeatureName', :content => feature_names_note) if note.nil?
