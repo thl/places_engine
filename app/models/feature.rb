@@ -343,16 +343,19 @@ class Feature < ActiveRecord::Base
   		    :perspective_id => relation.perspective_id
   		  })
   		end
-  		relation.parent_node.feature_object_types.each do |fot|
-  		  CachedFeatureRelationCategory.create({
-  		    :feature_id => relation.child_node_id,
-  		    :related_feature_id => relation.parent_node_id,
-  		    :category_id => fot.category_id,
-  		    :feature_relation_type_id => relation.feature_relation_type_id,
-  		    :feature_is_parent => false,
-  		    :perspective_id => relation.perspective_id
-  		  })
-  		end
+  		parent_node = relation.parent_node
+  		if !parent_node.nil?
+  		  parent_node.feature_object_types.each do |fot|
+    		  CachedFeatureRelationCategory.create({
+    		    :feature_id => relation.child_node_id,
+    		    :related_feature_id => relation.parent_node_id,
+    		    :category_id => fot.category_id,
+    		    :feature_relation_type_id => relation.feature_relation_type_id,
+    		    :feature_is_parent => false,
+    		    :perspective_id => relation.perspective_id
+    		  })
+    		end
+		  end
   	end
   end
   
