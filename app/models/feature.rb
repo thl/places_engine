@@ -299,7 +299,7 @@ class Feature < ActiveRecord::Base
   end
   
   def self.get_by_fid(fid)
-    Rails.cache.fetch("features-fid/fid") do
+    Rails.cache.fetch("features-fid/#{fid}") do
       begin
         self.find_by_fid(fid)
       rescue ActiveRecord::ActiveRecordError
