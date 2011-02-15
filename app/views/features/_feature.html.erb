@@ -89,7 +89,7 @@
 	 <h3>Map</h3>	 
 	 <div id="inset_map" class="fid-<%= map_fid.to_s %> language-<%= current_view.code %>"></div>
 	 <%= javascript_tag "$(document).ready(function(){ InsetMap.init({proxyUrl: '#{ActionController::Base.relative_url_root}/proxy_engine/utils/proxy/?proxy_url='}); });" %>
-	 <%= link_to image_tag("http://www.thlib.org/global/images/icon-map-simple.gif", :alt => "") + " View the full map", "http://www.thlib.org/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}", :target => "_blank", :class => "view-on-map" %>
+	 <%= link_to image_tag("http://www.thlib.org/global/images/icon-map-simple.gif", :alt => "") + " View the full map", "http://www.thlib.org/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}", :class => "view-on-map" %>
 	 <%= link_to image_tag("http://www.thlib.org/global/images/icon-google-maps.png", :alt => "") + " View in Google Maps", "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => map_fid, :format => "kmz"), :target => "_blank", :class => "view-on-map" %>
 	 <%= link_to image_tag("http://www.thlib.org/global/images/icon-google-earth.png", :alt => "") + " View in Google Earth", {:action => :gis_resources, :fids => map_fid, :format => "kmz"}, :target => "_blank", :class => "view-on-map" %>
 	<% end %>
