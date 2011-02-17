@@ -394,7 +394,7 @@ class Feature < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20100623234636
+# Schema version: 20110217172044
 #
 # Table name: features
 #
@@ -403,8 +403,8 @@ end
 #  fid                        :integer         not null
 #  is_blank                   :boolean         not null
 #  is_name_position_overriden :boolean         not null
-#  is_public                  :integer
+#  is_public                  :integer(2)
 #  old_pid                    :string(255)
 #  position                   :integer         default(0)
-#  created_at                 :timestamp
-#  updated_at                 :timestamp
+#  created_at                 :datetime
+#  updated_at                 :datetime

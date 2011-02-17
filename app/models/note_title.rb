@@ -16,7 +16,7 @@ class NoteTitle < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20100623234636
+# Schema version: 20110217172044
 #
 # Table name: note_titles
 #

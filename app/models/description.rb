@@ -22,7 +22,7 @@ class Description < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20100623234636
+# Schema version: 20110217172044
 #
 # Table name: descriptions
 #
@@ -30,6 +30,7 @@ end
 #  feature_id :integer         not null
 #  content    :text            not null
 #  is_primary :boolean         not null
+#  source_url :string(255)
 #  title      :string(255)
 #  created_at :timestamp
 #  updated_at :timestamp

@@ -48,26 +48,25 @@ class FeatureRelationType < ActiveRecord::Base
   end
   
   def self.get_by_code(code)
-    @cache_by_codes ||= {}
-    relation_type = @cache_by_codes[code]
-    if relation_type.nil?
-      relation_type = self.find_by_code(code)
-      @cache_by_codes[code] = relation_type if !relation_type.nil?
-    end
-    return relation_type
+    Rails.cache.fetch("feature_relation_types/code/#{code}") { self.find_by_code(code) }
+  end
+  
+  def self.get_by_asymmetric_code(code)
+    Rails.cache.fetch("feature_relation_types/asymmetric_code/#{code}") { self.find_by_asymmetric_code(code) }
   end
 end
 
 # == Schema Info
-# Schema version: 20100623234636
+# Schema version: 20110217172044
 #
 # Table name: feature_relation_types
 #
 #  id               :integer         not null, primary key
+#  asymmetric_code  :string(255)
 #  asymmetric_label :string(255)
 #  code             :string(255)     not null
 #  is_hierarchical  :boolean         not null
 #  is_symmetric     :boolean
 #  label            :string(255)     not null
-#  created_at       :timestamp
-#  updated_at       :timestamp
+#  created_at       :datetime
+#  updated_at       :datetime

@@ -663,11 +663,18 @@ class Importation
       else
         relation_type = FeatureRelationType.get_by_code(relation_type_str)
         if relation_type.nil?
-          puts "Feature relation type #{relation_type_str} was not found."
-          next
+          relation_type = FeatureRelationType.get_by_asymmetric_code(relation_type_str)
+          if relation_type.nil?
+            puts "Feature relation type #{relation_type_str} was not found."
+            next
+          else
+            conditions = { :parent_node_id => self.feature.id, :child_node_id => parent.id }
+          end
+        else
+          conditions = { :parent_node_id => parent.id, :child_node_id => self.feature.id }
         end
       end
-      conditions = replace_relations ? { :parent_node_id => parent.id, :child_node_id => self.feature.id } : { :parent_node_id => parent.id, :child_node_id => self.feature.id, :feature_relation_type_id => relation_type.id, :perspective_id => perspective.id }
+      conditions.merge!(:feature_relation_type_id => relation_type.id, :perspective_id => perspective.id) if !replace_relations
       feature_relation = FeatureRelation.find(:first, :conditions => conditions)
       changed = false
       if feature_relation.nil?

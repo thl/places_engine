@@ -17,11 +17,11 @@ list = list || []
 		<th>Label</th>
 		<th>Asymmetric Label</th>
 		<th>Code</th>
+		<th>Asymmetric Code</th>
 	</tr>
 	
 	<% list.each do |item| %>
 	<tr>
-		
 		<td class="listActionsCol">
 			<%= list_actions_for_item(item,
 				:delete_path => admin_feature_relation_type_path(item),
@@ -34,6 +34,7 @@ list = list || []
 		<td><%= item.label %></td>
 		<td><%= item.asymmetric_label unless item.is_symmetric %></td>
 		<td><%= item.code %></td>			
+		<td><%= item.asymmetric_code %></td>			
 	</tr>
 	<% end %>
 </table>

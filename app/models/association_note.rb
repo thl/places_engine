@@ -16,7 +16,7 @@ class AssociationNote < Note
 end
 
 # == Schema Info
-# Schema version: 20100623234636
+# Schema version: 20110217172044
 #
 # Table name: notes
 #
