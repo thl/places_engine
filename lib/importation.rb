@@ -36,9 +36,10 @@ class Importation
   # i.phonetic_systems.code/name, i.orthographic_systems.code/name, BOTH DEPRECATED, INSTEAD USE: i.feature_name_relations.relationship.code
   # i.feature_name_relations.parent_node, i.feature_name_relations.is_translation, 
   # i.feature_name_relations.is_phonetic, i.feature_name_relations.is_orthographic, BOTH DEPRECATED AND USELESS
-  # [i.]feature_types.id
+  # feature_types.delete, [i.]feature_types.id
   # i.geo_code_types.code/name, i.feature_geo_codes.geo_code_value, i.feature_geo_codes.info_source.id/code,
-  # [i.]feature_relations.related_feature.fid, [i.]feature_relations.type.code, [i.]perspectives.code/name, feature_relations.replace
+  # feature_relations.delete, [i.]feature_relations.related_feature.fid, [i.]feature_relations.type.code,
+  # [i.]perspectives.code/name, feature_relations.replace
   # [i.]contestations.contested, [i.]contestations.administrator, [i.]contestations.claimant
   # i.kmaps.id, [i.]kXXX
   # [i.]shapes.lat, [i.]shapes.lng, [i.]shapes.altitude, [i.]shapes.altitude.estimate
@@ -546,6 +547,8 @@ class Importation
   # "categories.time_units.date".  
   def process_feature_types(n)
     feature_ids_with_object_types_added = Array.new
+    delete_types = self.fields.delete('feature_types.delete')
+    self.feature.feature_object_types.clear if !delete_types.blank? && delete_types.downcase == 'yes'
     0.upto(n) do |i|
       prefix = i>0 ? "#{i}.feature_types" : 'feature_types'
       feature_type_id = self.fields.delete("#{prefix}.id")
@@ -614,11 +617,16 @@ class Importation
     end
   end
   
+  # The optional column "feature_relations.related_feature.fid" can specify the THL ID for parent feature.
+  # If such parent is specified, the following columns are required:
+  # "perspectives.code"/"perspectives.name", "feature_relations.type.code"
   def process_feature_relations(n)
-    # The optional column "feature_relations.related_feature.fid" can specify the THL ID for parent feature.
-    # If such parent is specified, the following columns are required:
-    # "perspectives.code"/"perspectives.name", "feature_relations.type.code"
     feature_ids_with_changed_relations = Array.new
+    delete_relations = self.fields.delete('feature_relations.delete')
+    if !delete_relations.blank? && delete_relations.downcase == 'yes'
+      self.feature.all_child_relations.clear
+      self.feature.all_parent_relations.clear
+    end
     replace_relations_str = self.fields.delete('feature_relations.replace')
     if replace_relations_str.blank?
       replace_relation = false
