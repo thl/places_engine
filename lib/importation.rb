@@ -81,7 +81,7 @@ class Importation
       end
       import.populate_fields(row, field_names)
       next unless import.get_feature(current)
-      begin
+      #begin
         import.add_date('features', import.feature)
         import.process_names(44)
         feature_ids_with_object_types_added += import.process_feature_types(4)
@@ -92,10 +92,10 @@ class Importation
         import.process_descriptions(3)
         import.feature.update_attributes({:is_blank => false, :is_public => true})
         import.process_kmaps(15)
-      rescue  Exception => e
-        puts "Something went wrong with feature #{import.feature.pid}!"
-        puts e.to_s
-      end
+      #rescue  Exception => e
+      #  puts "Something went wrong with feature #{import.feature.pid}!"
+      #  puts e.to_s
+      #end
       if import.fields.empty?
         puts "#{import.feature.pid} processed."
       else
@@ -287,20 +287,20 @@ class Importation
         return false
       end
       
-      self.feature = Feature.find_by_old_pid(old_pid)
-      if self.feature.nil?
+      feature = Feature.find_by_old_pid(old_pid)
+      if feature.nil?
         puts "Feature with old pid #{old_pid} was not found."
         return false
       end
     else
-      self.feature = Feature.get_by_fid(fid)
-      if self.feature.nil?
+      feature = Feature.get_by_fid(fid)
+      if feature.nil?
         puts "Feature with THL ID #{fid} was not found."
         return false
-      else
-        return true
       end
     end
+    self.feature = Feature.find(feature.id)
+    return true
   end
   
   # Name is optional. If there is a name, then the required column (for i varying from
