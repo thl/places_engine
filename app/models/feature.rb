@@ -228,16 +228,17 @@ class Feature < ActiveRecord::Base
   end
   
   def categories(options = {})
-    if options[:cumulative]
-      return cumulative_category_feature_associations.collect(&:category).select{|c| c}
-    else
-      return category_features.collect(&:category).select{|c| c}
-    end
+    #if options[:cumulative]
+    #  return cumulative_category_feature_associations.collect(&:category).select{|c| c}
+    #else
+      category_features.collect(&:category).select{|c| c}
+    #end
   end
   
   def category_count(options = {})
-    association = options[:cumulative] || false ? CumulativeCategoryFeatureAssociation : CategoryFeature
-    association.count(:conditions => {:feature_id => self.id})
+    #association = options[:cumulative] || false ? CumulativeCategoryFeatureAssociation : CategoryFeature
+    #association
+    CategoryFeature.count(:conditions => {:feature_id => self.id})
   end
   
   def media_count(options = {})
