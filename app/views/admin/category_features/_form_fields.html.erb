@@ -1,22 +1,27 @@
 <%= error_messages_for model_name %>
-<fieldset>
-	<legend>
-		Knowledge Map Characteristic
-	</legend>
-	<div class="row">
-		<%= f.label :feature %>
-		<span><%= f_label(@object.feature) %></span>
-	</div>
-	<div class="row">
-		<%= f.label :characteristic %>
-		<%= category_selector(nil, :category_feature, :category, false, :hasTree => 'true', :singleSelectionTree => 'true') %>
-	</div>
-	<div class="row">
-		<%= f.label :text_label %>
-		<%= f.text_field :string_value, :class => :text %>
-	</div>
-	<div class="row">
-		<%= f.label :numeric_label %>
-		<%= f.text_field :numeric_value, :class => :text %>
-	</div>
-</fieldset>
+<tr>
+	<td style='text-align: right; font-size:11pt;font-weight:bold;font-size:10pt;white-space:nowrap'><%= f.label :feature %></td>
+	<td style=''><%= f_label(@object.feature) %></td>
+</tr>
+<tr>
+	<td> </td>
+</tr>
+<tr>
+	<td style='background-color: #f1f1f1;text-align: right; font-size:10pt;border: 1pt solid #ccc; border-right-style: none'>Topic Filter</td>
+	<td style='width:100%;background-color: #f1f1f1;border: 1pt solid #ccc; border-left-style: none'><%= topic_filter %></td>
+</tr>
+<tr>
+	<td></td>
+</tr>
+<tr id='characteristic-row'>
+	<td style='text-align:right;font-weight:bold'><%= f.label :characteristic %></td>
+	<td><%= category_selector(nil, :category_feature, :category, false, :hasTree => 'true', :singleSelectionTree => 'true') %></td>
+</tr>
+<tr class='annotation'>
+	<td style='text-align:right;'><%= f.label :text_label %></td>
+	<td><%= f.text_field :string_value, :class => :text, :style => 'padding:3px; width: 300px' %></td>
+</tr>
+<tr class='annotation'>
+	<td style='text-align:right;'><%= f.label :numeric_label %></td>
+	<td><%= f.text_field :numeric_value, :class => :text, :style => 'padding:3px; width: 300px' %></td>
+</tr>
