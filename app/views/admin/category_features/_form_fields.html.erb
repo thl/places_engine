@@ -1,18 +1,9 @@
 <%= error_messages_for model_name %>
 <tr>
-	<td style='text-align: right; font-size:11pt;font-weight:bold;font-size:10pt;white-space:nowrap'><%= f.label :feature %></td>
+	<td style='text-align: right;font-weight:bold;white-space:nowrap'><%= f.label :feature %></td>
 	<td style=''><%= f_label(@object.feature) %></td>
 </tr>
-<tr>
-	<td> </td>
-</tr>
-<tr>
-	<td style='background-color: #f1f1f1;text-align: right; font-size:10pt;border: 1pt solid #ccc; border-right-style: none'>Topic Filter</td>
-	<td style='width:100%;background-color: #f1f1f1;border: 1pt solid #ccc; border-left-style: none'><%= topic_filter %></td>
-</tr>
-<tr>
-	<td></td>
-</tr>
+<%= topic_filter %>
 <tr id='characteristic-row'>
 	<td style='text-align:right;font-weight:bold'><%= f.label :characteristic %></td>
 	<td><%= category_selector(nil, :category_feature, :category, false, :hasTree => 'true', :singleSelectionTree => 'false') %></td>
