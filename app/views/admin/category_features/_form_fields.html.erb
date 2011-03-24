@@ -1,18 +1,15 @@
 <%= error_messages_for model_name %>
-<tr>
-	<td style='text-align: right;font-weight:bold;white-space:nowrap'><%= f.label :feature %></td>
-	<td style=''><%= f_label(@object.feature) %></td>
-</tr>
-<%= topic_filter %>
-<tr id='characteristic-row'>
-	<td style='text-align:right;font-weight:bold'><%= f.label :characteristic %></td>
-	<td><%= category_selector(nil, :category_feature, :category, false, :hasTree => 'true', :singleSelectionTree => 'false') %></td>
-</tr>
-<tr class='annotation'>
-	<td style='text-align:right;'><%= f.label :text_label %></td>
-	<td><%= f.text_field :string_value, :class => :text, :style => 'padding:3px; width: 300px' %></td>
-</tr>
-<tr class='annotation'>
-	<td style='text-align:right;'><%= f.label :numeric_label %></td>
-	<td><%= f.text_field :numeric_value, :class => :text, :style => 'padding:3px; width: 300px' %></td>
-</tr>
+<%
+	options = {
+		:f => f,
+		:subject_label => (f.label :feature),
+		:subject => f_label(@object.feature),
+		:root => nil,
+		:varname => :category_feature,
+		:hastree => 'true',
+		:labels => (f.label :text_label),
+		:labeln => (f.label :numeric_label)
+	}
+%>
+
+<%= category_fields( options ) %>
