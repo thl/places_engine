@@ -1,7 +1,7 @@
 <%= error_messages_for model_name %>
-<%
-	options = {
-		:f => f,
+
+<%= 
+	category_fields({
 		:subject_label => (f.label :feature),
 		:subject => f_label(@object.feature),
 		:root => nil,
@@ -9,7 +9,5 @@
 		:hastree => 'true',
 		:labels => (f.label :text_label),
 		:labeln => (f.label :numeric_label)
-	}
+	}, f )
 %>
-
-<%= category_fields( options ) %>
