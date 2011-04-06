@@ -8,3 +8,4 @@ require File.join(File.dirname(__FILE__), 'app', 'sweepers', 'cached_category_co
 require File.join(File.dirname(__FILE__), 'app', 'sweepers', 'feature_sweeper')
 I18n.load_path += Dir[File.join(File.dirname(__FILE__), 'config', 'locales', '**', '*.yml')]
 CachedCategoryCountSweeper.instance
+ActionController::Base.cache_store = :file_store, File.join(RAILS_ROOT, 'tmp', 'cache')
