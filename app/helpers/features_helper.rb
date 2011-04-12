@@ -37,7 +37,7 @@ module FeaturesHelper
       f_label(node, :class=>:selected)
     else
       f_link(node, features_path(:context_id=>node.id, :filter=>params[:filter]))
-      # f_link(node, feature_path(node), :class => :remote)
+      # f_link(node, feature_path(node.fid), :class => :remote)
     end
   end
   
@@ -47,7 +47,7 @@ module FeaturesHelper
   def popup_attrs(feature)
     {
     :class=>'thickbox',
-    :title=>link_to('Link to this Feature', feature_path(feature))
+    :title=>link_to('Link to this Feature', feature_path(feature.fid))
     }
   end
   
@@ -66,10 +66,10 @@ module FeaturesHelper
   def feature_link_switch(feature)
     if @no_layout
       # show feature in popup
-      f_link(feature, feature_path(feature, popup_params), popup_attrs(feature))
+      f_link(feature, feature_path(feature.fid, popup_params), popup_attrs(feature))
     else
       # load feature as usual
-      f_link(feature, feature_path(feature))
+      f_link(feature, feature_path(feature.fid))
     end
   end
   
@@ -79,7 +79,7 @@ module FeaturesHelper
   def f_popup_link(feature)
     html_attrs = popup_attrs(feature)
     html_attrs[:class] += feature.id.to_s==params[:context_id] ? ' selected' : ''
-    f_link(feature, feature_path(feature, popup_params), html_attrs)
+    f_link(feature, feature_path(feature.fid, popup_params), html_attrs)
   end
   
   #
@@ -107,7 +107,7 @@ module FeaturesHelper
       name_notes_link = note_popup_link_for(name)
       name_time_units_link = time_units_for(name)
     end
-    "#{name.name} (#{name.language}, #{name.writing_system}, #{name.pp_display_string})#{name_notes_link}#{name_time_units_link}"
+    "#{name.name.to_s.s} (#{name.language.to_s.s}, #{name.writing_system.to_s.s}, #{name.pp_display_string.to_s.s})#{name_notes_link}#{name_time_units_link}"
   end
   
   def feature_name_header(feature)

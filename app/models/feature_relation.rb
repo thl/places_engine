@@ -1,16 +1,19 @@
 class FeatureRelation < ActiveRecord::Base
+  attr_accessor :skip_update
   
   extend HasTimespan
   extend IsCitable
   extend IsDateable
   extend IsNotable
   
-  acts_as_family_tree :tree, :node_class => 'Feature', :conditions => {'feature_relations.feature_relation_type_id' => FeatureRelationType.hierarchy_id}
+  acts_as_family_tree :tree, :node_class => 'Feature', :conditions => {'feature_relations.feature_relation_type_id' => FeatureRelationType.hierarchy_ids}
   
   after_save do |record|
-    [record.parent_node, record.child_node].each { |r| r.update_cached_feature_relation_categories if !r.nil? }
-    # we could update this object's (a FeatureRelation) hierarchy but the THL Places-app doesn't use that info in any way yet
-    [record.parent_node, record.child_node].each { |r| r.update_hierarchy if !r.nil? }
+    if !record.skip_update
+      [record.parent_node, record.child_node].each { |r| r.update_cached_feature_relation_categories if !r.nil? }
+      # we could update this object's (a FeatureRelation) hierarchy but the THL Places-app doesn't use that info in any way yet
+      [record.parent_node, record.child_node].each { |r| r.update_hierarchy if !r.nil? }
+    end
   end
   
   after_destroy do |record|
@@ -91,13 +94,13 @@ class FeatureRelation < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20100521170006
+# Schema version: 20110217172044
 #
 # Table name: feature_relations
 #
 #  id                       :integer         not null, primary key
 #  child_node_id            :integer         not null
-#  feature_relation_type_id :integer
+#  feature_relation_type_id :integer         not null
 #  parent_node_id           :integer         not null
 #  perspective_id           :integer         not null
 #  ancestor_ids             :string(255)

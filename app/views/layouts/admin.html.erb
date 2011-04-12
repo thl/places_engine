@@ -1,20 +1,17 @@
 <%= header(:class => 'places') %>
 <div class="shell-1">		
-			<% if @page_title %>
-			<div id="header">
-				<h2><%= @page_title %></h2>
-			</div>
-			<% end %>
-			
-			<div id="bcNav" class="left">
-				<div class="left"><%= render_breadcrumbs %></div>
-				<div class="right"><%= resource_nav %></div>
-			</div>
-			
-			<br class="clear"/>
-			
-			<div id="content-main">
-				<%= yield %>
-			</div>		
+<% if @page_title %>
+     <div id="header">
+       <h2><%= @page_title %></h2>
+     </div>
+<% end %>			
+   <div id="bcNav" class="left">
+     <div class="left"><%= render_breadcrumbs %></div>
+     <div class="right"><%= resource_nav %></div>
+   </div>			
+   <br class="clear"/>			
+   <div id="content-main">
+<%=  yield %>
+   </div>		
 </div>
 <%= footer %>

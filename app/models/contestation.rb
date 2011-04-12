@@ -5,7 +5,7 @@ class Contestation < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20100521170006
+# Schema version: 20110217172044
 #
 # Table name: contestations
 #

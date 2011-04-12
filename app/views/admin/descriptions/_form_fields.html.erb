@@ -15,7 +15,7 @@ input[type=text] {
 <%= error_messages_for :description %>
 
 <p>
-  <b>Description Title<b><br/>
+  <b>Essay Title<b><br/>
   <em>Use title case for capitalization (e.g. An Exciting...)</em>
   <div class="row">
     <%= f.text_field(:title, :class => :text) %>
@@ -23,7 +23,7 @@ input[type=text] {
   <br/>
 </p>
 <p>
-  <b>Description<b><br/>
+  <b>Essay<b><br/>
 	<div class="row">
 		<%= f.text_area :content, :rows => 16, :cols => 65, :class => 'mceEditor' %>
 	</div>

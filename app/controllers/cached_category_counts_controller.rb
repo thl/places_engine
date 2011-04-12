@@ -1,4 +1,6 @@
 class CachedCategoryCountsController < ApplicationController
+  caches_page :index
+  
   # GET /cached_category_counts.xml
   def index
     cached_category_count = CachedCategoryCount.updated_count(params[:category_id].to_i)

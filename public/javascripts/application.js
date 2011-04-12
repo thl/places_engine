@@ -11,7 +11,9 @@ jQuery(document).ready(function(){
 		if (settings.type == 'GET') return;
 		if (typeof(AUTH_TOKEN) == "undefined") return;
 		settings.data = settings.data || "";
-		settings.data += (settings.data ? "&" : "") + "authenticity_token=" + encodeURIComponent(AUTH_TOKEN);
+		if(jQuery.browser.msie){
+			settings.data += (settings.data ? "&" : "") + "authenticity_token=" + encodeURIComponent(AUTH_TOKEN);
+		}
 	});
 })
 

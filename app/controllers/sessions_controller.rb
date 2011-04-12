@@ -33,7 +33,7 @@ class SessionsController < ApplicationController
     self.current_view_id = session.view_id
     self.current_show_advanced_search = session.show_advanced_search
     self.current_show_feature_details = session.show_feature_details
-    redirect_to root_path
+    redirect_to request.env["HTTP_REFERER"].blank? ? root_path : :back
   end
   
   # DELETE /session

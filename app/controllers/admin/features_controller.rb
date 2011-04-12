@@ -1,4 +1,5 @@
 class Admin::FeaturesController < ResourceController::Base
+  cache_sweeper :feature_sweeper, :only => [:update, :destroy]
   
   new_action.before { @object.fid = Feature.generate_pid }
   create.before { @object.is_blank = false }
@@ -17,6 +18,10 @@ class Admin::FeaturesController < ResourceController::Base
   def set_primary_description
     @feature = Feature.find(params[:id])
     #render :action => 'primary_description_set'
+  end
+  
+  def clone
+    redirect_to admin_feature_url(Feature.find(params[:id]).clone_with_names)
   end
   
   private
@@ -39,5 +44,5 @@ class Admin::FeaturesController < ResourceController::Base
         feat.descriptions.update_all("is_primary = false")
         feat.descriptions.update_all("is_primary = true","id=#{primary_desc.id}")
       end
-  end
+  end  
 end

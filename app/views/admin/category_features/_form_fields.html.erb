@@ -1,22 +1,13 @@
 <%= error_messages_for model_name %>
-<fieldset>
-	<legend>
-		Knowledge Map Characteristic
-	</legend>
-	<div class="row">
-		<%= f.label :feature %>
-		<span><%= f_label(@object.feature) %></span>
-	</div>
-	<div class="row">
-		<%= f.label :characteristic %>
-		<%= category_selector(nil, :category_feature, :category, false, :hasTree => 'true', :singleSelectionTree => 'true') %>
-	</div>
-	<div class="row">
-		<%= f.label :text_label %>
-		<%= f.text_field :string_value, :class => :text %>
-	</div>
-	<div class="row">
-		<%= f.label :numeric_label %>
-		<%= f.text_field :numeric_value, :class => :text %>
-	</div>
-</fieldset>
+
+<%= 
+	category_fields({
+		:subject_label => (f.label :feature),
+		:subject => f_label(@object.feature),
+		:root => nil,
+		:varname => :category_feature,
+		:hastree => 'true',
+		:labels => (f.label :text_label),
+		:labeln => (f.label :numeric_label)
+	}, f )
+%>

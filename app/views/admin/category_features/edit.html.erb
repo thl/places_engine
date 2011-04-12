@@ -7,6 +7,12 @@ add_breadcrumb_item 'edit'
 %>
 
 <% form_for [:admin, @object] do |f| %>
-	<%= render :partial=>'form_fields', :locals=>{:f=>f,:object=>@object} %>
-	<%= link_to 'Cancel', object_path %> | <%= submit_tag 'Update' %>
+
+	<%= 
+		category_form_table({
+			:form_partial => 'form_fields',
+			:footer => "#{link_to 'Cancel', object_path} | #{submit_tag 'Update'}"
+		})
+	%>
+
 <% end %>

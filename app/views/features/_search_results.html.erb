@@ -1,31 +1,56 @@
-<% if !@features.nil? && @features.size > 0 %>
+<%
+use_session ||= false
+
+# This partial will only use the session store features as its results if use_session is true
+# and the session[:search] variables aren't blank
+if use_session && !session[:search][:page].blank?
+	
+	# Create a "fake" WillPaginate collection that has the same properties as a Feature collection would
+	pagination_collection = WillPaginate::Collection.new(
+		session[:search][:page],
+		session[:search][:per_page],
+		session[:search][:total_entries]
+	)
+	
+	# This is necessary for calculations involving Collection.length to be correct
+	pagination_collection.replace(features)
+	
+	@params = session[:search][:params]
+
+# Otherwise, just use the actual Feature collection in will_paginate
+else
+	pagination_collection = features
+end
+%>
+
+<% if !features.nil? && features.size > 0 %>
 <div>
 <table>
   <tr>
     <td colspan="2" class="pagination-info-cell">
-	  <%= page_entries_info @features %>
+	  <%= page_entries_info pagination_collection %>
 	</td>
   </tr>
   <tr>
     <td colspan="2" class="pagination-cell">
-	  <%= will_paginate @features, :params => @params %>
+	  <%= will_paginate pagination_collection, :params => @params.merge({:action => :search}) %>
 	</td>
   </tr>
   <tr>
-    <th class="leftText">Name Variations</th>
-    <th class="leftText">Type</th>
+    <th class="leftText"><%= FeatureName.human_name(:count => :many).titleize.s %></th>
+    <th class="leftText"><%= Feature.human_attribute_name(:object_type).s %></th>
   </tr>
-  <% @features.each do |f| %>
+  <% features.each do |f| %>
     <tr class="featureRow" id="feature_<%= f.id %>">
       <td class="leftText">
-		<%= link_to_function h(feature_name_header(f)).s, "NodeTree.showNode(#{f.id}); NodeTree.loadExpandedTree(#{f.id})", { :href => features_url + "##{f.id}" } %>
+		<%= link_to h(feature_name_header(f)).s, feature_path(f.fid) %>
 	</td>
       <td class="leftText"><%=h f.object_types.first.title rescue '' %></td>
     </tr>
   <% end %>
   <tr>
     <td colspan="2" style="padding:0.5em;" class="pagination-cell">
-	  <%= will_paginate @features, :params => @params %>
+	  <%= will_paginate pagination_collection, :params => @params.merge({:action => :search}) %>
 	</td>
   </tr>
 </table>	

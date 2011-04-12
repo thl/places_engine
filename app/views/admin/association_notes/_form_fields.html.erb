@@ -1,3 +1,4 @@
+<% @object.is_public = true if @object.new_record? %>
 <%= tagged_tinymce_script %>
 <fieldset>
 	
@@ -24,7 +25,12 @@
 	<div class="row">
 		<%= f.text_area :content, :rows=>4, :class => 'mceEditor' %>
 	</div>
-	
+
+	<div class="row">
+		<%= f.label :is_public, 'Public?' %>
+		<%= f.check_box :is_public %>
+	</div>
+		
 	<%= link_to_remote 'Add new Author', :url => polymorphic_path([:admin, @object.notable, @object.class.name.tableize], :action => "add_author"), :update => 'update_div', :position => 'before', :method => 'get' %>
 	<div id="authors_div">
 	<%  for author in @object.authors %>

@@ -21,7 +21,7 @@ module ApplicationHelper
   # Creates a breadcrumb trail to the feature
   #
   def f_breadcrumb(feature)
-    content_tag :div, acts_as_family_tree_breadcrumb(feature, breadcrumb_separator) {|r| f_link(r, features_path(:anchor => r.id), {}, {:s => true})}, :class => "breadcrumbs"
+    content_tag :div, acts_as_family_tree_breadcrumb(feature, breadcrumb_separator) {|r| f_link(r, feature_path(r.fid), {}, {:s => true})}, :class => "breadcrumbs"
   end
   
   #
@@ -43,7 +43,13 @@ module ApplicationHelper
   # Can pass a block for item formatting
   #
   def acts_as_family_tree_breadcrumb(aaft_instance, sep=' &gt; ')
-    (aaft_instance.all_parents + [aaft_instance]).collect do |r|
+    if aaft_instance.parent.nil?
+      grandparent = aaft_instance.all_parent_relations.collect(&:parent_node).detect(&:parent)
+      trail = grandparent.nil? ? [aaft_instance] : grandparent.all_parents + [grandparent, aaft_instance]
+    else
+      trail = aaft_instance.all_parents + [aaft_instance]
+    end
+    trail.collect do |r|
       block_given? ? yield(r) : r.to_s
     end.join(sep)
   end
@@ -119,6 +125,17 @@ module ApplicationHelper
     content_tag(:span, h(feature_name.to_s), {:class=>css_class})
   end
   
+  def description_title(d)
+    title = d.title.blank? ? "Essay" : d.title
+    authors = d.authors.empty? ? "" : " <span class='by'> by </span><span class='content_by'>#{join_with_and(d.authors.collect{|a| a.screen_name.to_s.s})}</span>"
+    date = " <span class='last_updated'>(#{h(d.updated_at.to_date.to_formatted_s(:long))})</span>"
+    "#{title}#{authors}#{date}"
+  end
+  
+  def description_simple_title(d)
+    d.title.blank? ? "Essay" : d.title
+  end
+  
   #
   #
   #
@@ -129,8 +146,8 @@ module ApplicationHelper
         link_url = polymorphic_url([object, :association_notes], :association_type => options[:association_type])
       end
     else
-      if object.respond_to?(:notes) && object.notes.length > 0
-        notes = object.notes
+      if object.respond_to?(:notes) && object.public_notes.length > 0
+        notes = object.public_notes
         link_url = polymorphic_url([object, :notes])
       end
     end
@@ -156,8 +173,8 @@ module ApplicationHelper
         notes = object.association_notes_for(options[:association_type])
       end
     else
-      if object.respond_to?(:notes) && object.notes.length > 0
-        notes = object.notes
+      if object.respond_to?(:notes) && object.public_notes.length > 0
+        notes = object.public_notes
         link_url = polymorphic_url([object, :notes])
       end
     end
@@ -177,13 +194,13 @@ module ApplicationHelper
   #
   def note_popup_link(note)
     note_title = note.title.nil? ? "Note" : note.title
-    note_authors = " by #{note.authors.collect{|a| a.fullname}.join(", ")}" if note.authors.length > 0
+    note_authors = " by #{note.authors.collect{|a| a.fullname.to_s.s}.join(", ")}" if note.authors.length > 0
     note_date = " (#{formatted_date(note.updated_at)})"
-    link_title = "#{note_title}#{note_authors}#{note_date}"
+    link_title = "#{note_title.to_s.s}#{note_authors}#{note_date}"
     link_url = polymorphic_url([note.notable, note])
     link_classes = "draggable-pop no-view-alone overflow-y-auto height-350"
     "<span class='has-draggable-popups'>
-      #{link_to(link_title, link_url, :class => link_classes, :title => h(link_title))}
+      #{link_to(link_title, link_url, :class => link_classes, :title => h(note_title))}
     </span>
     <script type='text/javascript'>jQuery(document).ready(function(){ActivateDraggablePopups('.has-draggable-popups');})</script>"
   end
@@ -201,6 +218,23 @@ module ApplicationHelper
     end
   end
   
+  #
+  # Allows for specification of what model names should be displayed as to users (e.g. "location" instead of "shape")
+  #
+  def model_display_name(str)
+    names = {
+      'association_note' => 'note',
+      'description' => 'essay',
+      'feature_geo_code' => 'geo_code',
+      'feature_name' => 'name',
+      'feature_object_type' => 'feature_type',
+      'shape' => 'location',
+      'time_unit' => 'date',
+      'category_feature' => 'kmap_characteristic'
+    }
+    names[str].nil? ? str : names[str]
+  end
+    
   #
   #
   #
@@ -227,12 +261,75 @@ module ApplicationHelper
   end
 
   def stylesheet_files
-    super + ['public']
+    super + ['public', 'jquery-ui-tabs']
+  end
+
+  def custom_secondary_tabs_list
+    # The :index values are necessary for this hash's elements to be sorted properly
+    {
+      :place => {:index => 1, :title => "Place"},
+      :descriptions => {:index => 2, :title => "Essays"},
+      :related => {:index => 3, :title => "Related"}
+    }
+  end
+  
+  def custom_secondary_tabs(current_tab_id=:place)
+
+    @tab_options ||= {}
+    
+    if @tab_options[:entity].blank?
+      tabs = {}
+    else
+      tabs = custom_secondary_tabs_list
+    end
+    
+    current_tab_id = :place unless (tabs.keys << :home).include? current_tab_id
+    
+    tabs = tabs.sort{|a,b| a[1][:index] <=> b[1][:index]}.collect{|tab_id, tab|
+      remove_tab = false
+      if tab[:url].blank? && !@tab_options[:entity].blank?
+        entity = @tab_options[:entity]
+        url = nil
+        count = nil
+        case tab_id
+        when :place
+          url = feature_path(entity.fid)
+        when :descriptions
+          if entity.descriptions.empty?
+            remove_tab = true
+          else
+            url = feature_description_path(entity, entity.descriptions.first)
+            count = entity.descriptions.length
+          end
+        when :related
+          url = related_feature_path(entity)
+          count = nil
+        end
+      else
+        tab_url = tab[:url]
+      end
+      title = count.nil? ? tab[:title] : "#{tab[:title]} (#{count})"
+      
+      remove_tab ? nil : [tab_id, title, url]
+    }.reject{|t| t.nil?}
+    
+    tabs
   end
     
   def shape_display_string(shape)
     return shape.geo_type unless shape.is_point?
-    "Latitude: #{shape.lat}; Longitude: #{shape.lng}"
+    s = "Latitude: #{shape.lat}; Longitude: #{shape.lng}"
+    s << "; Altitude: #{shape.altitude}" if !shape.altitude.nil?
+    s
+  end
+  
+  def altitude_display_string(altitude)
+    a = []
+    a << altitude.estimate if !altitude.estimate.nil?
+    a << "#{altitude.average} (average)" if !altitude.average.nil?
+    a << "#{altitude.minimum} (minimum)" if !altitude.minimum.nil?
+    a << "#{altitude.maximum} (maximum)" if !altitude.maximum.nil?
+    a.empty? ? '' : "Altitude: #{a.join(', ')}"
   end
   
   # TODO: Add rules here based on language of name and perspective.
@@ -286,7 +383,16 @@ module ApplicationHelper
     if output.length < len
       return input
     end
-    output = truncate(input, :length => len, :omission => extension)
+    
+    # We need to be able to call .s on the input, but not on the extension, so we
+    # have to use a modified version of truncate() instead of truncate() itself.
+    # output = truncate(input, :length => len, :omission => extension)
+    l = len - extension.mb_chars.length
+    chars = input.mb_chars
+    # Temporarily removing .s, as it takes a while to run on long strings
+    #output = (chars.length > len ? chars[0...l].s + extension : input).to_s
+    output = (chars.length > len ? chars[0...l] + extension : input).to_s
+    
     output.strip!
     output.gsub!(/\v/, "<br />")
     output
@@ -343,17 +449,27 @@ module ApplicationHelper
       ]
     end
   end
+  
+  def javascript_on_load(*args, &block)
+    if block_given?
+      concat(javascript_tag "$(document).ready(function(){#{capture(&block)}})")
+    else
+      javascript_tag "$(document).ready(function(){#{args.first}})"
+    end
+  end
 
    # Get the URL of the main THL site, based on the current environment (is this defined elsewhere?).
    # This is currently used for loading JavaScript from the main THL site.
    def thl_url
      hostname = Socket.gethostname.downcase
      if hostname == 'dev.thlib.org'
-       return 'http://dev.thlib.org'
+       'http://dev.thlib.org'
+     elsif hostname == 'sds6.itc.virginia.edu'
+       'http://staging.thlib.org'
      elsif hostname =~ /\.local/ && hostname !~ /^a/
-       return 'http://localhost:90'
+       'http://localhost:90'
      else
-       return 'http://www.thlib.org'
+       'http://www.thlib.org'
      end
    end
    

@@ -1,4 +1,6 @@
 class CategoryFeature < ActiveRecord::Base
+  attr_accessor :skip_update
+  
   belongs_to :feature
   belongs_to :category
 
@@ -6,6 +8,29 @@ class CategoryFeature < ActiveRecord::Base
   extend IsCitable
   extend IsDateable
   extend IsNotable
+
+  after_destroy do |record|
+    feature = record.feature
+    CategoryFeature.delete_cumulative_information(record.category, feature.id)
+    feature.touch
+  end
+  
+  before_save do |record|
+    CategoryFeature.delete_cumulative_information(Category.find(record.category_id_was), record.feature_id_was) if record.changed? && !record.category_id_was.nil? && (record.category_id_changed? || record.feature_id_changed?)
+  end
+  
+  after_save do |record|
+    cat = record.category
+    feature = record.feature
+    ([cat] + cat.ancestors).each do |c|
+      if (c.id==cat.id || c.cumulative?) && CumulativeCategoryFeatureAssociation.find(:first, :conditions => {:category_id => c.id, :feature_id => feature.id}).nil?
+        CumulativeCategoryFeatureAssociation.create(:category => c, :feature_id => feature.id)
+      end
+    end
+    Rails.cache.delete('CategoryFeature-max_updated_at')
+    feature.update_cached_feature_relation_categories if !record.skip_update
+    feature.touch
+  end
 
   def to_s
     "#{category.title}"
@@ -26,36 +51,12 @@ class CategoryFeature < ActiveRecord::Base
     options[:joins] = 'LEFT JOIN features f ON f.id=feature_id'
     paginate(options)
   end
-
-  def after_destroy
-    CategoryFeature.delete_cumulative_information(self.category, self.feature_id)
-  end
-  
-  def before_save
-    CategoryFeature.delete_cumulative_information(Category.find(self.category_id_was), self.feature_id_was) if self.changed? && !self.category_id_was.nil? && (self.category_id_changed? || self.feature_id_changed?)
-  end
-  
-  def after_save
-    cat = self.category
-    ([cat] + cat.ancestors).each do |c|
-      if (c.id==cat.id || c.cumulative?) && CumulativeCategoryFeatureAssociation.find(:first, :conditions => {:category_id => c.id, :feature_id => self.feature_id}).nil?
-        CumulativeCategoryFeatureAssociation.create(:category => c, :feature_id => self.feature_id)
-      end
-    end
-    CategoryFeature.update_latest
-    self.feature.update_cached_feature_relation_categories
-  end
   
   def self.latest_update
-    return @@max_updated_at if defined? @@max_updated_at
-    @@max_updated_at = self.update_latest
+    Rails.cache.fetch('CategoryFeature-max_updated_at') { CategoryFeature.maximum(:updated_at) }
   end
   
   private
-  
-  def self.update_latest
-    @@max_updated_at = self.maximum(:updated_at)
-  end
   
   def self.delete_cumulative_information(category, feature_id)
     while !category.nil? && CumulativeCategoryFeatureAssociation.count(:conditions => {:category_id => category.children.collect(&:id), :feature_id => feature_id})==0
@@ -67,7 +68,7 @@ class CategoryFeature < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20100521170006
+# Schema version: 20110217172044
 #
 # Table name: category_features
 #

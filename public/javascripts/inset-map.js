@@ -16,13 +16,13 @@ var InsetMap = {
 		}
 		this.fid = this.getFid();
 		if(this.fid){
-			InsetMap.initMap(fid);		
-			this.layer = InsetMap.addFeatureByFid(fid);
+			InsetMap.initMap();		
+			this.layer = InsetMap.addFeatureByFid(this.fid);
 			this.language = this.getLanguage();
 			if(this.language){
 				this.layer.setLanguage(this.language);
 			}
-			this.layer.zoomToLayer();
+			this.layer.zoomToCqlFilter('fid='+this.fid);
 		}
 	},
 	

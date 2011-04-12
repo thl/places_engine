@@ -2,7 +2,7 @@
 <ul class="normal">
 <% @relations.each do |relation| %>
   <li>
-    <%= "#{f_link(relation.related_feature, features_path(:anchor => relation.related_feature_id), {}, {:s => true})} (from the #{relation.perspective} perspective)" %>
+    <%= "#{f_link(relation.related_feature, feature_path(relation.related_feature.fid), {}, {:s => true})} (from the #{relation.perspective} perspective)" %>
 	<%= note_popup_link_for(relation) %>
 	<%= time_units_for(relation) %>
   </li>

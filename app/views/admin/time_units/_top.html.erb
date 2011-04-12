@@ -1,47 +1,6 @@
-<% @object = @time_unit
-if parent_type.to_s =~ /feature/
-	add_breadcrumb_item features_link
-end
-case parent_type
-when :category_feature
-	add_breadcrumb_item feature_link(@object.dateable.feature)
-	add_breadcrumb_item link_to('kmap characteristics', admin_feature_category_features_path(@object.dateable.feature))
-	add_breadcrumb_item link_to(@parent_object, admin_category_feature_path(@parent_object))
-when :description
-	add_breadcrumb_item features_link
-	add_breadcrumb_item feature_link(@object.dateable.feature)
-	add_breadcrumb_item feature_descriptions_link(@object.dateable.feature)
-	add_breadcrumb_item link_to(@object.dateable.id, admin_feature_description_path(@object.dateable.feature,@object.dateable))
-when :feature
-	add_breadcrumb_item feature_link(@object.dateable)
-when :feature_object_type
-	add_breadcrumb_item feature_link(@object.dateable.feature)
-	add_breadcrumb_item link_to('feature object types', admin_feature_feature_object_types_path(@object.dateable.feature))
-	add_breadcrumb_item link_to(@parent_object, admin_feature_object_type_path(@parent_object))
-when :feature_geo_code
-	add_breadcrumb_item feature_link(@parent_object.feature)
-	add_breadcrumb_item link_to('feature geo codes', admin_feature_feature_geo_codes_path(@parent_object.feature))
-	add_breadcrumb_item link_to(@parent_object, admin_feature_geo_code_path(@parent_object))
-when :feature_relation
-	add_breadcrumb_item feature_link(@object.dateable.child_node)
-	add_breadcrumb_item feature_relations_link(@object.dateable.child_node)
-	add_breadcrumb_item feature_relation_role_label(@object.dateable.child_node, @object.dateable, :use_first=>false)
-when :feature_name
-	add_breadcrumb_item feature_link(@object.dateable.feature)
-	add_breadcrumb_item feature_names_link(@object.dateable.feature)
-	add_breadcrumb_item link_to(@object.dateable.name, admin_feature_name_path(@object.dateable))
-when :feature_name_relation
-	add_breadcrumb_item feature_link(@parent_object.child_node.feature)
-	add_breadcrumb_item feature_names_link(@parent_object.child_node.feature)
-	add_breadcrumb_item link_to(@parent_object.child_node.name, admin_feature_name_path(@parent_object.child_node))
-	add_breadcrumb_item link_to('relations', admin_feature_name_feature_name_relations_path(@parent_object.child_node))
-	add_breadcrumb_item link_to(@parent_object.id, admin_feature_name_relation_path(@parent_object))  
-when :shape
-	add_breadcrumb_item feature_link(@parent_object.feature)
-	add_breadcrumb_item link_to('shapes', admin_feature_shapes_path(@parent_object))
-	add_breadcrumb_item link_to(@parent_object.to_s, admin_feature_shape_path(@parent_object.feature, @parent_object))
-end
-add_breadcrumb_item link_to('dates', collection_path)
+<% @object = @time_unit %>
+<%= render :partial => 'admin/default/breadcrumbs' %>
+<% add_breadcrumb_item link_to('dates', collection_path)
 case params[:action]
 when 'edit'
 	add_breadcrumb_item link_to(@object.to_s, object_path(@object))
@@ -50,8 +9,7 @@ when 'new'
 	add_breadcrumb_item 'new'
 when 'show'
 	add_breadcrumb_item @object.to_s
-when 'index'
-%>
+when 'index' %>
 <div>
 	<div class="left">
 	<%= resource_search_form %>

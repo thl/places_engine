@@ -20,10 +20,15 @@ ActionController::Routing::Routes.draw do |map|
     admin.openid_new 'openid_new', :controller => 'users', :action => 'openid_new'
     admin.openid_create 'openid_create', :controller => 'users', :action => 'create', :requirements => { :method => :post }
     admin.admin '', :controller=>'features', :action=>'index'
-    admin.resources :descriptions do |description|
+    admin.resources :altitudes, :has_many=>[:citations], :belongs_to=>:feature do |altitude|
+      altitude.resources :notes, :collection => {:add_author => :get}
+      altitude.resources :time_units, :collection => {:new_form => :get}
+    end    
+    admin.resources :citations, :has_many => :pages
+    admin.resources :descriptions, :has_many=>[:citations] do |description|
+      description.resources :notes, :collection => {:add_author => :get}
       description.resources :time_units, :collection => {:new_form => :get}
     end
-    admin.resources :citations, :has_many => :pages
     admin.resources :feature_geo_codes, :has_many=>[:citations] do |feature_geo_code|
       feature_geo_code.resources :notes, :collection => {:add_author => :get}
       feature_geo_code.resources :time_units, :collection => {:new_form => :get}
@@ -48,7 +53,7 @@ ActionController::Routing::Routes.draw do |map|
       feature_relation.resources :notes, :collection => {:add_author => :get}
       feature_relation.resources :time_units, :collection => {:new_form => :get}
     end
-    admin.resources :features, :member=>{:locate_for_relation=>:get, :set_primary_description => :get}, :has_many => [ :category_features, :feature_names, :feature_relations, :citations, :feature_object_types, :feature_geo_codes, :shapes] do |feature|
+    admin.resources :features, :member=>{:locate_for_relation=>:get, :set_primary_description => :get, :clone => :post}, :has_many => [ :altitudes, :category_features, :citations, :feature_geo_codes, :feature_names, :feature_object_types, :feature_relations, :shapes] do |feature|
       feature.resources :association_notes, :collection => {:add_author => :get}
       feature.resources :descriptions, :collection => {:add_author => :get}
       feature.resources :time_units, :collection => {:new_form => :get}
@@ -65,21 +70,26 @@ ActionController::Routing::Routes.draw do |map|
     admin.prioritize_feature_object_types 'prioritize_feature_types/:id', :path_prefix => 'admin/features', :controller => 'feature_object_types', :action => 'prioritize'
     admin.prioritize_feature_shapes 'prioritize_feature_shapes/:id', :path_prefix => 'admin/features', :controller => 'shapes', :action => 'prioritize'
   end # end admin urls
-  map.resources :features, :has_many => :association_notes, :member => {:descendants => :get} do |feature|
+  map.resources :features, :has_many => :association_notes, :member => {:descendants => :get, :related => :get} do |feature|
     feature.resources :descriptions, :member => {:expand => :get, :contract => :get, :show => :get}
   end
-  map.resources :feature_geo_codes, :has_many => :notes
-  map.resources :feature_names, :has_many => :notes
-  map.resources :feature_name_relations, :has_many => :notes
-  map.resources :feature_object_types, :has_many => :notes
-  map.resources :category_features, :has_many => :notes
-  map.resources :feature_relations, :has_many => :notes
-  map.resources :shapes, :has_many => :notes
-  map.resources :time_units, :has_many => :notes
+  map.resources :altitudes, :has_many => [:notes, :citations]
+  map.resources :category_features, :has_many => [:notes, :citations]
+  map.resources :description, :has_many => [:notes, :citations]
+  map.resources :feature_geo_codes, :has_many => [:notes, :citations]
+  map.resources :feature_names, :has_many => [:notes, :citations]
+  map.resources :feature_name_relations, :has_many => [:notes, :citations]
+  map.resources :feature_object_types, :has_many => [:notes, :citations]
+  map.resources :feature_relations, :has_many => [:notes, :citations]
+  map.resources :media, :as => 'media_objects', :only => 'show'
+  map.resources :shapes, :has_many => [:notes, :citations]
+  map.resources :time_units, :has_many => [:notes, :citations]
+  map.resources :topics, :only => 'show'
   #map.resources :descriptions, :member => {:expand => :get, :contract => :get}
   map.with_options :path_prefix => 'features', :controller => 'features' do |features|
     features.by_fid 'by_fid/:fids.:format', :action => 'by_fid'
     features.by_old_pid 'by_old_pid/:old_pids', :action => 'by_old_pid'
+    features.by_geo_code 'by_geo_code/:geo_code.:format', :action => 'by_geo_code'
     # Allow an empty :query for feature type searches
     features.by_name 'by_name/:query.:format', :action => 'by_name', :query => /.*?/
     features.gis_resources 'gis_resources/:fids.:format', :action => 'gis_resources'

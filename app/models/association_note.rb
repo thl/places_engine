@@ -10,13 +10,13 @@ class AssociationNote < Note
   end
   
   def association_type_name
-    self.association_type.blank? ? '' : self.association_type.tableize.humanize.downcase
+    association_type.blank? ? '' : model_display_name(association_type.tableize.singularize).humanize
   end
   
 end
 
 # == Schema Info
-# Schema version: 20100521170006
+# Schema version: 20110217172044
 #
 # Table name: notes
 #
@@ -26,6 +26,7 @@ end
 #  association_type  :string(255)
 #  content           :text
 #  custom_note_title :string(255)
+#  is_public         :boolean         default(TRUE)
 #  notable_type      :string(255)
 #  created_at        :timestamp
 #  updated_at        :timestamp

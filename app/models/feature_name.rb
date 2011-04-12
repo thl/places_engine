@@ -1,12 +1,23 @@
 class FeatureName < ActiveRecord::Base
-  
+  attr_accessor :skip_update
   acts_as_family_tree :node, :tree_class=>'FeatureNameRelation'
   
-  after_save { |record| record.feature.update_cached_feature_names} #{ |record| record.update_hierarchy }
+  after_save do |record|
+    feature = record.feature
+    feature.update_cached_feature_names if !record.skip_update
+    feature.touch
+  end #{ |record| record.update_hierarchy
+  
+  after_destroy do |record|
+    feature = record.feature
+    feature.update_cached_feature_names
+    feature.touch
+  end
   
   after_create do |record|
-    feature = record.feature
-    feature.update_name_positions
+    if !record.skip_update
+      record.feature.update_name_positions
+    end
   end
   
   # acts_as_solr
@@ -82,7 +93,7 @@ class FeatureName < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20100521170006
+# Schema version: 20110217172044
 #
 # Table name: feature_names
 #

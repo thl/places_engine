@@ -13,8 +13,10 @@ class DescriptionsController < ApplicationController
   end
   
   def show
-    d = Description.find(params[:id])
-    render :partial => '/descriptions/show', :locals => {:feature => @feature, :d => d}
+    set_common_variables(session)
+    @description = Description.find(params[:id])
+    @tab_options = {:entity => @feature}
+    @current_tab_id = :descriptions
   end
 
   private
@@ -31,5 +33,4 @@ class DescriptionsController < ApplicationController
 	    page.replace_html 'descriptions_div', :partial => '/descriptions/index', :locals => { :feature => @feature, :description => @d}
 	  end
   end
-
 end

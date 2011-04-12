@@ -1,8 +1,12 @@
 class Shape < ActiveRecord::Base
   extend IsDateable
   extend IsNotable
+  extend IsCitable
   
   belongs_to :feature, :foreign_key => 'fid', :primary_key => 'fid'
+  
+  after_save { |record| record.feature.touch if !record.feature.nil? }
+  after_destroy { |record| record.feature.touch if !record.feature.nil? }
   
   set_primary_key "gid"
   
@@ -49,11 +53,14 @@ class Shape < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20100521170006
+# Schema version: 20110217172044
 #
 # Table name: shapes
 #
-#  gid      :integer         not null, primary key
-#  fid      :integer
-#  geometry :geometry
-#  position :integer         not null, default(0)
+#  gid       :integer         not null, primary key
+#  altitude  :integer
+#  area      :
+#  fid       :integer
+#  geometry  :geometry
+#  is_public :boolean         not null, default(TRUE)
+#  position  :integer         not null, default(0)

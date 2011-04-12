@@ -1,48 +1,28 @@
 class FeaturesController < ApplicationController
-  
+  caches_page :show, :if => :api_response?.to_proc
+  caches_action :node_tree_expanded, :cache_path => :tree_cache_path.to_proc, :if => Proc.new { |c| c.request.xhr? }
   #
+  def tree_cache_path
+    "tree/#{current_perspective.id}/#{current_view.id}/node_id_#{params[:id]}"
+  end
   #
   #
   def index
+    set_common_variables(session)
     
-    # Allow for views and perspectives to be set by GET params.  It might be possible to simplify this code...
-    if params[:perspective_id] || params[:view_id]
-      session = Session.new
-      if params[:perspective_id]
-        session.perspective_id = params[:perspective_id]
-        self.current_perspective = Perspective.find(params[:perspective_id])
-      end
-      if params[:view_id]
-        session.view_id = params[:view_id]
-        self.current_view = View.find(params[:view_id])
-      end
-    end
+    @feature = Feature.find(session[:interface][:context_id]) unless session[:interface][:context_id].blank?
+    @tab_options = {:entity => @feature}
+    @current_tab_id = :home
     
-    @top_level_nodes = Feature.current_roots(current_perspective, current_view)
-    @session = Session.new(:perspective_id => self.current_perspective.id, :view_id => self.current_view.id)
-    @perspectives = Perspective.find_all_public
-    @views = View.find(:all, :order => 'name')
-    
+    @active_menu_item = 'search'
+
     # In the event that a Blurb with this code doesn't exist, fail gracefully
     @intro_blurb = Blurb.find_by_code('homepage.intro') || Blurb.new
-    
-    if params[:context_id] && params[:context_id].match(/^[\d]+$/)
-      redirect_to :action => 'index', :anchor => params[:context_id]
-      return false
-    end
-    
+        
     respond_to do |format|
       format.html
       format.xml do
-        if !@context_feature.nil? && (@features.nil? || @features.size==0)
-          render :action => 'context_feature'
-        else
-          if search_scope.blank?
-            render :xml => @features.to_xml
-          else
-            render :action => 'index'
-          end
-        end
+        render :action => 'index'
       end
     end
   end
@@ -51,11 +31,19 @@ class FeaturesController < ApplicationController
   #
   #
   def show
-    @feature = Feature.find(params[:id])
-    respond_to do |format|
-      format.html
-      format.xml
-      format.csv
+    @feature = Feature.get_by_fid(params[:id])
+    if @feature.nil?
+      redirect_to features_url
+    else
+      set_common_variables(session)
+      session[:interface][:context_id] = @feature.id unless @feature.nil?
+      @tab_options = {:entity => @feature}
+      @current_tab_id = :place
+      respond_to do |format|
+        format.html
+        format.xml
+        format.csv
+      end
     end
   end 
 
@@ -65,6 +53,22 @@ class FeaturesController < ApplicationController
   def iframe
     @feature = Feature.find(params[:id])
     render :action => 'iframe', :layout => 'iframe'
+  end
+  
+  def by_geo_code
+    set_common_variables(session)
+    geo_code_type_str = params[:geo_code_type]
+    geo_code_type = GeoCodeType.get_by_code(geo_code_type_str)
+    @feature = nil
+    if !geo_code_type.nil?
+      geo_code = FeatureGeoCode.first(:conditions => {:geo_code_type_id => geo_code_type.id, :geo_code_value => params[:geo_code]})
+      @feature = geo_code.feature if !geo_code.nil?
+    end
+    respond_to do |format|
+      format.html { render :action => 'show' }
+      format.xml  { render :action => 'show' }
+      format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')) }
+    end
   end
     
   #
@@ -107,21 +111,34 @@ class FeaturesController < ApplicationController
       :match => params[:match]
     }
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
+    joins = []
     if !params[:feature_type].blank?
-      options[:joins] = "LEFT JOIN category_features cf ON cf.feature_id = features.id"
-      options[:conditions]['cf.category_id'] = params[:feature_type].split(',')
-      options[:conditions]['cf.type'] = 'FeatureObjectType'
+      joins << "LEFT JOIN cumulative_category_feature_associations ccfa ON ccfa.feature_id = features.id"
+      options[:conditions]['ccfa.category_id'] = params[:feature_type].split(',')
       options[:conditions]['features.is_public'] = 1
       options[:conditions].delete(:is_public)
     end
+    if !params[:characteristic_id].blank?
+      joins << "LEFT JOIN category_features cf ON cf.feature_id = features.id"
+      options[:conditions]['cf.category_id'] = params[:characteristic_id].split(',')
+      options[:conditions]['cf.type'] = nil
+      options[:conditions]['features.is_public'] = 1
+      options[:conditions].delete(:is_public)
+    end  
+    options[:joins] = joins.join(' ') unless joins.empty?
+    options[:select] = "features.*, DISTINCT feature.id" unless joins.empty?
     perform_global_search(options, search_options)
-    #api_render(@features)
+
     respond_to do |format|
       format.html { render :action => 'paginated_show' }
       format.xml  { render :action => 'paginated_show' }
       format.json { render :json => Hash.from_xml(render_to_string(:action => 'paginated_show.xml.builder')) }
     end
-    
+  end
+  
+  def characteristics_list
+    @kmaps_characteristics = CategoryFeature.find(:all, :select => "DISTINCT category_id", :conditions => "type IS NULL")
+    render :json => @kmaps_characteristics.collect{|c| {:id => c.category_id, :name => c.to_s.strip}}.sort_by{|a| a[:name].downcase.strip}
   end
   
   def gis_resources
@@ -137,7 +154,7 @@ class FeaturesController < ApplicationController
     render :text => "Sorry, this request includes too many features for us to currently be able to provide this data." and return if fids.length > 300
     cql_filter = fids.join("+OR+")
     
-  	general_params = "version=1.0.0&typename=thl:roman_popular_poly,thl:roman_popular_pt&layers=thl:roman_popular_poly,thl:roman_popular_pt&projection=EPSG%3A4326&srs=EPSG%3A4326&cql_filter=("+cql_filter+");("+cql_filter+")"
+  	general_params = "version=1.0.0&typename=thl:roman_popular_poly,thl:roman_popular_pt&layers=thl:roman_popular_poly,thl:roman_popular_pt&styles=thl_noscale,thl_noscale&projection=EPSG%3A4326&srs=EPSG%3A4326&cql_filter=("+cql_filter+");("+cql_filter+")"
   	
     case params[:format]
     when 'gml'
@@ -179,14 +196,14 @@ class FeaturesController < ApplicationController
   def search
     options = {
       :page => params[:page] || 1,
-      :per_page => 15,
+      :per_page => 10,
       :conditions => {:is_public => 1}
     }
     search_options = {
       :scope => params[:scope],
       :match => params[:match]
     }
-    search_scope = params[:search_scope]
+    search_scope = params[:search_scope].blank? ? 'global' : params[:search_scope]
     @features = nil
     if !search_scope.blank?
       case search_scope
@@ -198,8 +215,8 @@ class FeaturesController < ApplicationController
         end
       when 'contextual'
         if !params[:object_type].blank?
-          options[:joins] = 'LEFT JOIN category_features cf ON cf.feature_id = features.id'
-          options[:conditions]['cf.category_id'] = params[:object_type].split(',')
+          options[:joins] = "LEFT JOIN cumulative_category_feature_associations ccfa ON ccfa.feature_id = features.id"
+          options[:conditions]['ccfa.category_id'] = params[:object_type].split(',')
           options[:conditions]['features.is_public'] = 1
           options[:conditions].delete(:is_public)
         end
@@ -211,17 +228,59 @@ class FeaturesController < ApplicationController
       when 'name'
         @features = Feature.name_search(params[:filter])
       else
+        joins = []
         if !params[:object_type].blank?
-          options[:joins] = 'LEFT JOIN category_features cf ON cf.feature_id = features.id'
-          options[:conditions]['cf.category_id'] = params[:object_type].split(',')
+          joins << "LEFT JOIN cumulative_category_feature_associations ccfa ON ccfa.feature_id = features.id"
+          options[:conditions]['ccfa.category_id'] = params[:object_type].split(',')
           options[:conditions]['features.is_public'] = 1
           options[:conditions].delete(:is_public)
         end
+        if !params[:characteristic_id].blank?
+          joins << "LEFT JOIN category_features cf ON cf.feature_id = features.id"
+          options[:conditions]['cf.category_id'] = params[:characteristic_id].split(',')
+          options[:conditions]['cf.type'] = nil
+          options[:conditions]['features.is_public'] = 1
+          options[:conditions].delete(:is_public)
+        end
+        if !params[:has_descriptions].blank? && params[:has_descriptions] == '1'
+          search_options[:has_descriptions] = true
+        end
+        options[:joins] = joins.join(' ') unless joins.empty?
+        options[:select] = "features.*, DISTINCT feature.id" unless joins.empty?
         perform_global_search(options, search_options)
       end
     end
     @params = params
-    render :partial => 'search_results', :layout => false
+    
+    # The search params that should be observed when creating the session store of search params
+    valid_search_keys = [
+      :filter,
+    	:scope,
+    	:match,
+    	:search_scope,
+    	:object_type,
+    	:characteristic_id,
+    	:has_descriptions,
+    	:page
+    ]
+    
+    # When using the session store features, we need to provide will_paginate with info about how to render
+    # the pagination, so we'll store it in session[:search], along with the feature ids 
+    session[:search] = {
+      :params => @params.reject{|key, val| !valid_search_keys.include?(key.to_sym)},
+      :page => @params[:page] ||= 1,
+      :per_page => @features.per_page,
+      :total_entries => @features.total_entries,
+      :total_pages => @features.total_pages,
+      :feature_ids => @features.collect{|f|f.id}
+    }
+    
+    # Set the current menu_item to 'results', so that the Results will stay open when the user browses
+    # to a new page
+    session[:interface] = {} if session[:interface].nil?
+    session[:interface][:menu_item] = 'results'
+    
+    render :partial => 'search_results', :locals => {:features => @features}, :layout => false
   end
   
   def feature
@@ -237,8 +296,11 @@ class FeaturesController < ApplicationController
   end
   
   def related
+    set_common_variables(session)
     @feature = Feature.find(params[:id])
-    render :partial => 'related'
+    session[:interface][:context_id] = @feature.id unless @feature.nil?
+    @tab_options = {:entity => @feature}
+    @current_tab_id = :related
   end
   
   def related_list
@@ -279,6 +341,20 @@ class FeaturesController < ApplicationController
     @ancestors_for_current << node.id
     top_level_nodes = Feature.current_roots(current_perspective, current_view)
     render :partial => 'node_tree', :locals => { :children => top_level_nodes }, :layout => false
+  end  
+    
+  def set_session_variables
+    defaults = {
+      :menu_item => "search",
+      :advanced_search => "0"
+    }
+    valid_keys = defaults.keys
+    
+    session[:interface] = {} if session[:interface].nil?
+    params.each do |key, value|
+      session[:interface][key.to_sym] = value if valid_keys.include?(key.to_sym)
+    end
+    render :text => ""
   end
   
   protected
@@ -343,5 +419,11 @@ class FeaturesController < ApplicationController
       f[:has_shapes] = feature.shapes.empty? ? 0 : 1
       #f[:parents] = feature.parents.collect{|p| api_format_feature(p) }
       f
+    end
+    
+    private
+    
+    def api_response?
+      request.format.xml?
     end
 end

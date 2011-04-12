@@ -27,6 +27,10 @@ add_breadcrumb_item @object
 		<label>Longitude</label>
 		<span><%= def_if_blank @object, :lng %></span>
 	</div>
+	<div class="row">
+		<label>Altitude</label>
+		<span><%= def_if_blank @object, :altitude %></span>
+	</div>
 	<% else %>
 	<div class="row">
 		<label>Locations</label>

@@ -1,33 +1,12 @@
-<%= stylesheet_link_tag 'jquery-ui-tabs' %>
-<%= javascript_include_tag 'jquery-form' %>
-<%= javascript_include_tag 'jquery.livequery' %>
-<%= javascript_include_tag 'iframe' %>
-<%= javascript_include_tag "sections/#{controller.controller_name}" %>
+<%= javascript_include_tag 'jquery-form', 'jquery.livequery', 'iframe', "sections/#{controller.controller_name}" %>
 <%= javascript_tag "var AUTH_TOKEN = #{form_authenticity_token.inspect};" if protect_against_forgery? %>
 <script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=<%= google_maps_key %>"></script>
-<%= javascript_include_tag "http://openlayers.org/api/OpenLayers.js" %>
+<%= javascript_include_tag 'http://openlayers.org/api/OpenLayers.js' %>
 <%= javascript_tag "var current_view_code = '#{current_view.code}';" %>
-<%= javascript_include_tag "#{thl_url}/places/maps/interactive/scripts/THLWMS.js" %>
-<%= javascript_include_tag "inset-map" %>
-<script type="text/javascript">
-
-jQuery(document).ready(function(){
-	jQuery("#FeaturePanel").tabs({
-		selected: 0,
-		cache: true
-	});
-	jQuery(window).unbind("scroll");
-});
-
-</script>
+<%= javascript_include_tag "#{thl_url}/places/maps/interactive/scripts/THLWMS.js", 'inset-map' %>
 <div id="FeatureContainer">
 	<div id="FeaturePanelContainer">
 		<div id="FeaturePanel">
-		  <!-- sets up the tabs for jquery -->
-		  <ul>
-		    <li><a href="#FeatureDetail"><span>Feature Detail</span></a></li>
-		    <li><%= link_to( content_tag(:span, "Related Features"), url_for(:action => "related", :id => @feature.id) ) %></li>
-		  </ul>
 		  <div class="left" id="FeatureDetail">
 		    <%= render :partial => "feature", :locals => {:feature => @feature, :show_old_pid => false} %>
 		  </div>
