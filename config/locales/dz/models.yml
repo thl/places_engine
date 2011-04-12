@@ -1,0 +1,45 @@
+# Places dictionary model localization file for Dzongkha.
+dz:
+    activerecord:
+        # Model names will be kept in lower case. Invoke .capitalize or .titleize if you need them in uppercase.
+        models:
+            description:
+                one: 'essay'
+                other: 'essays'
+            feature:
+                one: 'feature'
+                other: 'features'
+            feature_name:
+                one: 'name'
+                other: 'name variations'
+            note:
+                one: 'note'
+                other: 'notes'
+            perspective:
+                one: 'perspective'
+                other: 'perspectives'
+            shape:
+                one: 'location'
+                other: 'locations'
+            user:
+                one: 'user'
+                other: 'users'
+            view:
+                one: 'place name language'
+                other: 'place name languages'
+        # Attribute names will be titleized.
+        attributes:
+            feature:
+                characteristic:
+                    one: 'Characteristic'
+                    other: 'Characteristics'
+                descendant:
+                    one: 'Contained Feature'
+                    other: 'Contained Features'
+                object_type: 'Feature Type'
+                old_pid: 'OLD THL PID'
+                pid: 'THL ID'
+            user:
+                login: 'Login'
+                password: 'Password'
+                remember_me: 'Remember me:'

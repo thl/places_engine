@@ -1,9 +1,10 @@
 class GeoCodeType < SimpleProp
-  
+  has_many :feature_geo_codes
+  has_many :features, :through => :feature_geo_codes
 end
 
 # == Schema Info
-# Schema version: 20100521170006
+# Schema version: 20110217172044
 #
 # Table name: simple_props
 #

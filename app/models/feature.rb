@@ -1,4 +1,6 @@
 class Feature < ActiveRecord::Base
+  attr_accessor :skip_update
+  
   include FeatureExtensionForNamePositioning
   extend IsDateable
   
@@ -9,27 +11,23 @@ class Feature < ActiveRecord::Base
   # after_save {|record| record.update_hierarchy}  
   # acts_as_solr :fields=>[:pid]
   
-  acts_as_family_tree :node, :tree_class => 'FeatureRelation', :conditions => {'feature_relations.feature_relation_type_id' => FeatureRelationType.hierarchy_id}
+  acts_as_family_tree :node, :tree_class => 'FeatureRelation', :conditions => {'feature_relations.feature_relation_type_id' => FeatureRelationType.hierarchy_ids}
   # These are distinct from acts_as_family_tree's parent/child_relations, which only include hierarchical parent/child relations.
-  has_many :all_parent_relations, :class_name => 'FeatureRelation', :foreign_key => 'child_node_id'
-  has_many :all_child_relations, :class_name => 'FeatureRelation', :foreign_key => 'parent_node_id'
-    
-  has_one :xml_document, :class_name=>'XmlDocument', :dependent => :destroy
+  has_many :all_child_relations, :class_name => 'FeatureRelation', :foreign_key => 'parent_node_id', :dependent => :destroy
+  has_many :all_parent_relations, :class_name => 'FeatureRelation', :foreign_key => 'child_node_id', :dependent => :destroy
+  has_many :altitudes, :dependent => :destroy
+  has_many :association_notes, :foreign_key => "notable_id", :dependent => :destroy
+  has_many :cached_feature_names, :dependent => :destroy
+  has_many :category_features, :dependent => :destroy
   has_many :citations, :as => :citable, :dependent => :destroy
-  has_many :feature_object_types, :order => :position
-  has_many :category_features, :conditions => {:type => nil}
-  has_many :association_notes, :foreign_key => "notable_id"
-  has_many :contestations
-  
-  # Multiple descriptions for features
-  has_many :descriptions, :dependent => :destroy
-  
-  # naming inconsistency here (see feature_object_types association) ?
-  has_many :geo_codes, :class_name=>'FeatureGeoCode'
-  has_many :geo_code_types, :through=>:geo_codes
+  has_many :contestations, :dependent => :destroy
   has_many :cumulative_category_feature_associations, :dependent => :destroy
-  has_many :cached_feature_names
+  has_many :descriptions, :dependent => :destroy
+  has_many :feature_object_types, :order => :position, :dependent => :destroy
+  has_many :geo_codes, :class_name=>'FeatureGeoCode', :dependent => :destroy # naming inconsistency here (see feature_object_types association) ?
+  has_many :geo_code_types, :through=>:geo_codes
   has_many :shapes, :foreign_key => 'fid', :primary_key => 'fid'
+  has_one :xml_document, :class_name=>'XmlDocument', :dependent => :destroy
   
   # This fetches root *FeatureNames* (names that don't have parents),
   # within the scope of the current feature
@@ -186,14 +184,29 @@ class Feature < ActiveRecord::Base
       conditions[0] << ' OR features.fid = ?'
       conditions << filter_value.gsub(/[^\d]/, '').to_i
     end
+    
     base_scope={
       # These conditions will apply to all searches
       :conditions => conditions, :include => [:names, :descriptions], :order => 'features.position'
       #:joins => 'left join feature_names on features.id = feature_names.feature_id'
     }
+    
     # Now that we have the base scope setup, apply the custom options and paginate!
-    with_scope(:find=>base_scope) do
-      paginate(options)
+    
+    # For :has_descriptions == true, it appears that there isn't a way to use IS NOT NULL in a :conditions hash, so
+    # we'll use it in a :conditions string in an outer scope.  Is there a way to use IS NOT NULL in
+    # base_scope[:conditions] instead?
+    if !search_options[:has_descriptions].nil? && search_options[:has_descriptions]
+      with_scope(:find => {:conditions => "descriptions.content IS NOT NULL"}) do
+        with_scope(:find=>base_scope) do
+          paginate(options)
+        end
+      end
+    # Otherwise, just use a single scope:
+    else      
+      with_scope(:find=>base_scope) do
+        paginate(options)
+      end
     end
   end
   
@@ -211,7 +224,52 @@ class Feature < ActiveRecord::Base
   # Shortcut for getting all feature_object_types.object_types
   #
   def object_types
-    feature_object_types.collect{ |f| f.category }
+    feature_object_types.collect(&:category).select{|c| c}
+  end
+  
+  def categories(options = {})
+    #if options[:cumulative]
+    #  return cumulative_category_feature_associations.collect(&:category).select{|c| c}
+    #else
+      category_features.collect(&:category).select{|c| c}
+    #end
+  end
+  
+  def category_count(options = {})
+    #association = options[:cumulative] || false ? CumulativeCategoryFeatureAssociation : CategoryFeature
+    #association
+    CategoryFeature.count(:conditions => {:feature_id => self.id})
+  end
+  
+  def media_count(options = {})
+    media_count_hash = Rails.cache.fetch("#{self.cache_key}/media_count") do
+      media_place_count = MediaPlaceCount.find(:all, :params => {:place_id => self.fid}).dup
+      media_count_hash = { 'Medium' => media_place_count.shift.count.to_i }
+      media_place_count.each{|count| media_count_hash[count.medium_type] = count.count.to_i }
+      media_count_hash
+    end
+    type = options[:type]
+    return type.nil? ? media_count_hash['Medium'] : media_count_hash[type]
+  end
+  
+  def kmaps_url
+    TopicalMapResource.get_url + place_path
+  end
+
+  def media_url
+    MediaManagementResource.get_url + place_path
+  end
+
+  def pictures_url
+    MediaManagementResource.get_url + place_path('pictures')
+  end
+
+  def videos_url
+    MediaManagementResource.get_url + place_path('videos')
+  end
+
+  def documents_url
+    MediaManagementResource.get_url + place_path('documents')
   end
   
   #
@@ -242,17 +300,19 @@ class Feature < ActiveRecord::Base
   end
   
   def self.get_by_fid(fid)
-    @cache_by_fids ||= {}
-    obj = @cache_by_fids[fid]
-    if obj.nil?
-      obj = self.find_by_fid(fid)
-      @cache_by_fids[fid] = obj if !obj.nil?
+    Rails.cache.fetch("features-fid/#{fid}") do
+      begin
+        self.find_by_fid(fid)
+      rescue ActiveRecord::ActiveRecordError
+        nil
+      end      
     end
-    obj
   end
-  
-  def association_notes_for(association_type)
-    AssociationNote.find(:all, :conditions => {:notable_type => self.class.name, :notable_id => self.id, :association_type => association_type})
+    
+  def association_notes_for(association_type, options={})
+    conditions = {:notable_type => self.class.name, :notable_id => self.id, :association_type => association_type, :is_public => true}
+    conditions.delete(:is_public) if !options[:include_private].nil? && options[:include_private] == true
+    AssociationNote.find(:all, :conditions => conditions)
   end
     
   def update_object_type_positions
@@ -284,17 +344,41 @@ class Feature < ActiveRecord::Base
   		    :perspective_id => relation.perspective_id
   		  })
   		end
-  		relation.parent_node.feature_object_types.each do |fot|
-  		  CachedFeatureRelationCategory.create({
-  		    :feature_id => relation.child_node_id,
-  		    :related_feature_id => relation.parent_node_id,
-  		    :category_id => fot.category_id,
-  		    :feature_relation_type_id => relation.feature_relation_type_id,
-  		    :feature_is_parent => false,
-  		    :perspective_id => relation.perspective_id
-  		  })
-  		end
+  		parent_node = relation.parent_node
+  		if !parent_node.nil?
+  		  parent_node.feature_object_types.each do |fot|
+    		  CachedFeatureRelationCategory.create({
+    		    :feature_id => relation.child_node_id,
+    		    :related_feature_id => relation.parent_node_id,
+    		    :category_id => fot.category_id,
+    		    :feature_relation_type_id => relation.feature_relation_type_id,
+    		    :feature_is_parent => false,
+    		    :perspective_id => relation.perspective_id
+    		  })
+    		end
+		  end
   	end
+  end
+  
+  def clone_with_names
+    new_feature = Feature.create(:fid => Feature.generate_pid, :is_blank => false, :is_public => true)
+    names = self.names
+    names_to_clones = Hash.new
+    names.each do |name|
+      cloned = name.clone
+      cloned.feature = new_feature
+      cloned.save
+      names_to_clones[name.id] = cloned
+    end
+    relations = Array.new
+    names.each { |name| name.relations.each { |relation| relations << relation if !relations.include? relation } }
+    relations.each do |relation|
+      new_relation = relation.clone
+      new_relation.child_node = names_to_clones[new_relation.child_node.id]
+      new_relation.parent_node = names_to_clones[new_relation.parent_node.id]
+      new_relation.save
+    end
+    return new_feature
   end
       
   private
@@ -302,10 +386,16 @@ class Feature < ActiveRecord::Base
   def self.name_search_options(filter_value, options = {})
     
   end
+  
+  def place_path(type = nil)
+    a = ['places', self.fid]
+    a << type if !type.nil?
+    a.join('/')
+  end
 end
 
 # == Schema Info
-# Schema version: 20100521170006
+# Schema version: 20110217172044
 #
 # Table name: features
 #
@@ -314,8 +404,8 @@ end
 #  fid                        :integer         not null
 #  is_blank                   :boolean         not null
 #  is_name_position_overriden :boolean         not null
-#  is_public                  :integer
+#  is_public                  :integer(2)
 #  old_pid                    :string(255)
 #  position                   :integer         default(0)
-#  created_at                 :timestamp
-#  updated_at                 :timestamp
+#  created_at                 :datetime
+#  updated_at                 :datetime

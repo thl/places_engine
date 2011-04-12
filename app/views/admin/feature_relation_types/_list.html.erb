@@ -12,14 +12,16 @@ list = list || []
 	
 	<tr>
 		<th class="listActionsCol"></th>
+		<th>Is hierarchical</th>
 		<th>Is symmetric</th>
 		<th>Label</th>
 		<th>Asymmetric Label</th>
+		<th>Code</th>
+		<th>Asymmetric Code</th>
 	</tr>
 	
 	<% list.each do |item| %>
 	<tr>
-		
 		<td class="listActionsCol">
 			<%= list_actions_for_item(item,
 				:delete_path => admin_feature_relation_type_path(item),
@@ -27,11 +29,12 @@ list = list || []
 				:view_path   => admin_feature_relation_type_path(item)
 			) %>
 		</td>
-		
+		<td><%= item.is_hierarchical ? 'Yes' : 'No' %></td>		
 		<td><%= item.is_symmetric ? 'Yes' : 'No' %></td>
 		<td><%= item.label %></td>
 		<td><%= item.asymmetric_label unless item.is_symmetric %></td>
-			
+		<td><%= item.code %></td>			
+		<td><%= item.asymmetric_code %></td>			
 	</tr>
 	<% end %>
 </table>

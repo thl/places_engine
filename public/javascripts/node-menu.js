@@ -7,13 +7,15 @@ menu items, which can be toggled with an accordion-like setup.
 The only necessary HTML is the following.  The toggle element and content wrapper div are created dynamically by the object. 
 
 <div id="NodeMenu">
-	<h2>Menu Item 1</h2>
-	<div>
-		Menu item 1's content...
-	</div>
-	<h2>Menu Item 2</h2>
-	<div>
-		Menu item 2's content...
+	<div class="node-menu-content">
+		<h2>Menu Item 1</h2>
+		<div>
+			Menu item 1's content...
+		</div>
+		<h2>Menu Item 2</h2>
+		<div>
+			Menu item 2's content...
+		</div>
 	</div>
 </div>
 
@@ -37,6 +39,12 @@ var NodeMenu = {
 	// The maximum y offset of the menu in its container during page scroll:
 	max_container_offset_y: 400,
 	
+	// The default menu item's name (e.g. 'search') that should be open on initialization (set in init()'s options)
+	default_item: false,
+	
+	// Whether the 'results' menu item should be shown on intialization
+	show_results: false,
+	
 	// Generally for internal use only:
 	div: null,
 	content_div: null,
@@ -50,20 +58,23 @@ var NodeMenu = {
 	mouse_is_down: false,
 	menu_item_indexes: {
 		'search' : 0,
-		'search_results' : 1,
+		'results' : 1,
 		'options' : 2,
-		'tree' : 3
+		'browse' : 3
 	},
 	
-	init: function(div_id, controller){
+	init: function(div_id, controller, options){
+	
+		if(typeof options == "undefined"){
+			options = {}
+		}
+		if(options.default_item){ this.default_item = options.default_item; }
+		if(options.show_results){ this.show_results = options.show_results; }
 	
 		// Set the object's attributes
 		this.div_id = div_id;
 		this.controller = controller;
 		this.div = jQuery("#"+this.div_id);
-		
-		// Wrap the menu items in a div
-		this.div.children().wrapAll('<div class="node-menu-content"></div>');
 		
 		// Add the toggle switch
 		this.div.prepend('<div class="node-menu-toggle"></div>');
@@ -86,14 +97,22 @@ var NodeMenu = {
 		// Set up the menu item toggling
 		this.content_div.find("> div").addClass('item-contracted').hide();
 		
-		// Choose the initial menu item
-		this.content_div.find("> div.default-item").addClass('item-expanded').show();
+		// Open the initial menu item
+		if(this.default_item){
+			this.showMenuItem(this.default_item, 0);
+		}else{
+			this.content_div.find("> div.default-item").addClass('item-expanded').show();
+		}
 		
 		// Set up onclick events for the menu items to create accordion-like toggling
 		this.content_div.find("> h2").click(function(){
 			var sibling_div = jQuery(this).next();
 			if(sibling_div.hasClass('item-contracted')){
 				NodeMenu.toggleMenuItem(sibling_div, true);
+				var menu_item_match = jQuery(this).attr('class').match(/(^|\s)menu-item-(\w+)($|\s)/);
+				if(menu_item_match){
+					NodeMenu.onMenuItemOpen(menu_item_match[2]);
+				}
 			}else{
 				NodeMenu.toggleMenuItem(sibling_div, false);
 			}
@@ -128,7 +147,7 @@ var NodeMenu = {
 		
 		// Make the will_paginate links AJAX-driven 
 		jQuery('#NodeSearchResults .pagination a').live('click', function() {
-			NodeMenu.beginSearch();
+			NodeMenu.onPaginationClick();
 			NodeMenu.scrollToMenuTop();
 			// Unfortunately, there isn't a clean way to POST with .post() using a query string
 			jQuery.ajax({
@@ -136,35 +155,55 @@ var NodeMenu = {
 				url: this.href,
 				success: function(html){
 					jQuery('#NodeSearchResults').html(html);
+					NodeMenu.onPaginationLoad();
+				},
+				error: function(error){
+					NodeMenu.onPaginationLoad();
 				}
 			});
 			return false;
 		});
 		
-		// Hide the search results item by default
-		jQuery('#NodeSearchResults').prev('h2').hide();
+		// Hide the search results item by default, unless it's the default_item (meaning that it's open by default)
+		// or this.show_results is true
+		if(!(this.default_item == 'results' || this.show_results)){
+			jQuery('#NodeSearchResults').prev('h2').hide();
+		}
 		
-		// Cause any links to #[id] to trigger a reloading of the necessary AJAX elements (otherwise, these links
-		// would merely change the location.hash and not load any new content).
-		// We use .livequery instead of the native jQuery .live because there's the latter has an issue with
-		// right-clicking to open the link in a new window--should probably resolve this and use .live instead.
-		jQuery('a[href*=features#]').livequery('click', function(){
-			// Links in the feature tree already have different events attached, so omit those
-			if(jQuery(this).parents('#NodeTree').length == 0){
-				var id = this.href.match(/features#([\d]+)$/);
-				if(id){
-					id = id[1];
-					NodeTree.showNodeAndLoadExpandedTree(id);
-				}
+		// Make old, hash-based links redirect to the appropriate new URL
+		jQuery('a[href*=/features#]').livequery('click', function(){
+			var id = this.href.match(/\/features#([\d]+)$/);
+			if(id){
+				id = id[1];
+				window.location = NodeMenu.controller+id;
+				return false;
+			}
+			return true;
+		});
+
+		jQuery('a[href*=/#]').livequery('click', function(){
+			var id = this.href.match(/\/#([\d]+)$/);
+			if(id){
+				id = id[1];
+				window.location = NodeMenu.controller+id;
+				return false;
 			}
 			return true;
 		});
 		
-		// Check to see if a location.hash exists, and load it if so
-		this.loadLocation();
+		jQuery('a[href*=/?frame=destroy#]').livequery('click', function(){
+			var id = this.href.match(/frame=destroy#([\d]+)$/);
+			if(id){
+				id = id[1];
+				window.location = NodeMenu.controller+id;
+				return false;
+			}
+			return true;
+		});
 		
 		// Bind window scrolling to .moveMenu() 
 		jQuery(window).bind("scroll", function(){NodeMenu.moveMenu();});
+		
 	},
 	
 	// Make the browser scroll to the top of the NodeMenu
@@ -178,28 +217,31 @@ var NodeMenu = {
 	// Methods for toggling menu items
 	
 	// Open the menu item at the specified index
-	showMenuItemByIndex: function(index){
-		this.toggleMenuItem(this.content_div.find("> div").eq(index), true);
+	showMenuItemByIndex: function(index, speed){
+		this.toggleMenuItem(this.content_div.find("> div").eq(index), true, speed);
 	},
 	
-	showMenuItem: function(menu_item){
-		this.showMenuItemByIndex(this.menu_item_indexes[menu_item]);
+	showMenuItem: function(menu_item, speed){
+		this.showMenuItemByIndex(this.menu_item_indexes[menu_item], speed);
 	},
 	
 	// Either collapse or expand a menu item, depending on what show (boolean) is set to
-	toggleMenuItem: function(div, show){
+	toggleMenuItem: function(div, show, speed){
+		if(typeof speed == "undefined"){
+			speed = this.item_toggle_speed;
+		}
 		if(show){
 			this.content_div.find('.item-expanded')
 				.removeClass('item-expanded')
 				.addClass('item-contracted')
-				.hide(this.item_toggle_speed);
+				.hide(speed);
 			div.removeClass('item-contracted');
 			div.addClass('item-expanded');
-			div.show(this.item_toggle_speed);
+			div.show(speed);
 		}else{
 			div.removeClass('item-expanded');
 			div.addClass('item-contracted');
-			div.hide(this.item_toggle_speed);
+			div.hide(speed);
 		}
 	},
 	
@@ -267,14 +309,31 @@ var NodeMenu = {
 		return scrollY;
 	},
 	
-	// Model-specific methods
+	// App-specific methods
 	
 	// Methods for searching
-	beginSearch: function(){
+	beginSearch: function(loading_text){
+		if(typeof loading_text == "undefined"){
+			var loading_text = "Searching...";
+		}
 		this.content_div.find("#NodeSearchResults")
-			.html('<img src="http://thlib.org/global/images/ajax-loader.gif" alt="Searching..." style="display:inline;" /> Searching...')
+			.html('<img src="http://thlib.org/global/images/ajax-loader.gif" alt="" style="display:inline;" /> '+loading_text)
 			.prev('h2').show();
-		this.showMenuItemByIndex(1);
+		this.showMenuItem('results');
+		this.onMenuItemOpen('results');
+	},
+	
+	onPaginationClick: function(loading_text){
+		if(typeof loading_text == "undefined"){
+			var loading_text = "Loading results...";
+		}
+		this.content_div.find("#NodeSearchResults .pagination-info-cell")
+			.html('<img src="http://thlib.org/global/images/ajax-loader.gif" alt="" style="display:inline;" /> '+loading_text);
+		this.content_div.find('#NodeSearchResults td:not(.pagination-info-cell), #NodeSearchResults th').css('opacity', 0.3);
+	},
+	
+	onPaginationLoad: function(){
+		NodeMenu.content_div.find('#NodeSearchResults td:not(.pagination-info-cell), #NodeSearchResults th').css('opacity', 1);
 	},
 	
 	beginFidSearch: function(){
@@ -358,6 +417,25 @@ var NodeMenu = {
 			}
 		}
 		return false;
+	},
+	
+	// App-specific functions and callbacks:
+	
+	onMenuItemOpen: function(menu_item){
+		
+		jQuery.ajax({
+			type: 'POST',
+			url: this.controller+'set_session_variables/0/',
+			data: 'menu_item='+menu_item,
+			success: function(){},
+			error: function(){}
+		});
+		
+		// When the Browse menu item is opened, scroll to the selected node after the menu item has
+		// fully loaded
+		if(menu_item == 'browse'){
+			setTimeout('NodeTree.scrollToSelectedNode(0);', NodeMenu.item_toggle_speed+1);
+		}
 	}
 	
 };

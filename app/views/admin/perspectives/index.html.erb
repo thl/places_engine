@@ -19,16 +19,15 @@
 	
 	<tr>
 		<th class="listActionCol"></th>
+		<th>Is public</th>		
 		<th>Name</th>
 		<th>Code</th>
 	</tr>
 	<% @collection.each do |item| %>
-	<tr>
-		
+	<tr>		
 		<td class="listActionsCol"><%= list_actions_for_item(item) %></td>
-		
+		<td><%= item.is_public ? 'Yes' : 'No' %></td>		
 		<td><%= item.name %></td>
-		
 		<td><%= item.code %></td>
 		
 	</tr>

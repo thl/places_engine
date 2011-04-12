@@ -120,6 +120,14 @@ dl.no-style p {
 	border-bottom:0;
 	background:transparent no-repeat url(http://thlib.org/global/images/icon-page-text.gif);
 }
+.note-content {
+	font-size: 13px;
+	line-height: 18px;
+}
+.note-content p {
+	font-size: 13px;
+	line-height: 18px;
+}
 
 .time-units {
 	font-size:0.9em;
@@ -157,7 +165,7 @@ dl.no-style p {
 
 #FeaturePanel > div{
 	width:99%;
-	border-right:1px solid #ccc;
+	padding-top:15px;
 }
 
 #FeaturePanel .has-right-margin{
@@ -169,7 +177,6 @@ dl.no-style p {
 
 #FeaturePanelContainer {
     min-height:580px;
-    border:solid 1px #ccc;
     position:relative;
     overflow:hidden;
 }
@@ -216,6 +223,7 @@ dl.no-style p {
 	border-width:3px;
 	border-color:#777;
 	float:right;
+	width:246px;
 }
 
 #NodeMenu .node-menu-content > h2{
@@ -264,6 +272,7 @@ dl.no-style p {
 
 #NodeMenu .text{
 	width:225px;
+	height:33px;
 	border:1px solid #CCCCCC;
 }
 
@@ -321,7 +330,7 @@ dl.no-style p {
     max-height:400px;
     min-height:25px;
     overflow:auto;
-	font-size:12px;
+	font-size:13px;
 }
 
 #NodeSearch{
@@ -377,17 +386,16 @@ dl.no-style p {
 	background-color: #fff;
 }
 
-#Overview {
+#Home {
 	margin: 0 auto;
-	padding: 5px; 
 	width: 99%;
 	background-color: #fff;
 }
 
-#Overview p {
+#Home p {
 }
 
-#Overview ul {
+#Home ul {
 	font-size: 13px;
 	list-style-type: disc;
     padding-left: 18px;
@@ -427,8 +435,6 @@ dl.no-style p {
 .shell-1 #FeatureDetails {
 	font-size: 13px; 
 	line-height: 130%;
-	padding: 3px;
-	overflow: auto;
 }
 
 .shell-1 #FeatureDetails h1 {
@@ -444,6 +450,11 @@ dl.no-style p {
 .shell-1 #FeatureDetails h3 {
     margin-top: 9px;
     font-size: 15px;
+}
+
+.shell-1 #FeatureDetails h4 {
+    margin-top: 9px;
+    font-size: 13px;
 }
 
 #FeatureDetails .breadcrumb {
@@ -515,11 +526,6 @@ dl.no-style p {
     background-color:#cdcdcd;
 }
 
-.tib, .tibetan {
-	font-size:13px;
-	line-height:0;
-}
-
 ul{
 	margin:1em;
 	margin-top:0;
@@ -543,6 +549,7 @@ span.arrow {
 /* description styling */
 #descriptions_div a.descriptionplus_icon { background:transparent url(http://thlib.org/global/images/btn-plus-lg.gif) no-repeat scroll 2px center; padding:0 0 0 12px; border-bottom:0px; color: white;}
 #descriptions_div a.descriptionminus_icon  { background:transparent url(http://thlib.org/global/images/btn-minus-lg.gif) no-repeat scroll 2px center; padding:0 0 0 12px; border-bottom:0px; color: white;}
+#descriptions_div > h2.description-title { font-size: 25px; margin-bottom: 10px; }
 
 /* add a margin below each description to separate it from following content */ 
 #descriptions_div > div { margin-bottom: 1em; }
@@ -552,11 +559,17 @@ span.arrow {
 .by { font-size: 14px;}
 .content_by { font-size: 14px; font-variant:small-caps;}
 .last_updated { font-size: 13px;}
-.expanded { padding: 2px; text-align: justify; }
+.expanded { padding: 2px; text-align: justify; margin-left: 10px; }
 
-#descriptions_div h1{ border-bottom: 0px; }
-#descriptions_div p{ text-align: justify; font-size: 13px; }
-#descriptions_div .description-author{ font-size: 14px; }
+#descriptions_div h1{ font-size: 19px; border-bottom: 0px; }
+#descriptions_div h2{ font-size: 18px; }
+#descriptions_div h3{ font-size: 17px; }
+#descriptions_div h4{ font-size: 16px; }
+#descriptions_div p{ text-align: justify; font-size: 15px; }
+#descriptions_div h2.description-title{ font-size: 19px; }
+#descriptions_div h2.description-title a{ text-decoration: underline; }
+#descriptions_div .description-author{ margin-left: 18px; font-size: 14px; }
+#descriptions_div .view-essay-in-publication{ font-size: 13px; margin-bottom: 15px; }
 
 hr {border-style: solid; border-color: color:#404040; border-width: 1px}
 
@@ -567,4 +580,14 @@ hr {border-style: solid; border-color: color:#404040; border-width: 1px}
 #content .shell-1 > .shell-1 {
 	margin: 0;
 	padding: 0;
+}
+
+/* THL-specific */
+
+/* Hide the THL sidebar menu immediately, without waiting from $(document).ready to be triggered */
+#fxSideMenu {
+	display:none;
+}
+#sideMenuLink {
+	background-position:0 0;
 }

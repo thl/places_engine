@@ -9,7 +9,9 @@
 	<tr>
 		<th class="listActionsCol"></th>
 		<th> </th>
-		<th>Description</th>
+		<th>Essay</th>
+		<th>Notes</th>
+		<th>Add Note</th>
 		<th>Dates</th>
 		<th>Add Date</th>
 	</tr>
@@ -37,7 +39,7 @@
 		<%   end %>
 		<% else %>     
 		<%   if !item.authors.empty? %>
-		       <span class='title'>Description</span>
+		       <span class='title'>Essay</span>
 		       <span class='by'><%= ' by ' %></span>
 			   <span class='content_by'><%= "#{ join_with_and(item.authors.collect{|a| a.screen_name})}" %></span>
 		<%   end %>
@@ -47,11 +49,13 @@
 		  <%= truncate_html( def_if_blank(item, :content), 700,
 				'...' + link_to( 'View all', admin_feature_description_path(item.feature, item) ) ) %>
 		</td>
+		<td><%= note_link_list_for item %></td>
+		<td><%= new_note_link_for item %></td>
 		<td><%= time_unit_link_list_for item %></td>
 		<td><%= new_time_unit_link_for item %></td>
 				
 	</tr>
 	<% end %>
 </table>
-<sub>'*' denotes a primary description</sub>
+<sub>'*' denotes a primary essay</sub>
 <% end %>

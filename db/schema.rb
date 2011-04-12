@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100521170006) do
+ActiveRecord::Schema.define(:version => 20100525173430) do
 
   create_table "Birth_rate", :id => false, :force => true do |t|
     t.column "gid", :integer, :null => false
@@ -813,6 +813,7 @@ ActiveRecord::Schema.define(:version => 20100521170006) do
     t.column "dateable_type", :string
     t.column "created_at", :timestamp
     t.column "updated_at", :timestamp
+    t.column "frequency_id", :integer
   end
 
   create_table "timespans", :force => true do |t|

@@ -12,6 +12,11 @@ namespace :position do
       Feature.reset_name_positions
     end
     
+    desc 'Update name positions for feature names'
+    task :update do
+      Feature.update_name_positions
+    end
+    
     desc 'Delete all names with no clearly assigned position'
     task :cleanup do
       FeatureName.destroy_all(['position = ?', 0])

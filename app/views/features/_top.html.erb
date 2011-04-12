@@ -1,0 +1,57 @@
+<%= stylesheet_link_tag 'xml-books' %>
+<%= javascript_include_tag 'jquery-form', 'jquery.livequery', "sections/#{controller.controller_name}" %>
+<%= javascript_tag "var AUTH_TOKEN = #{form_authenticity_token.inspect};" if protect_against_forgery? %>
+<%= javascript_include_tag 'node-menu', 'node-tree' %>
+<script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=<%= google_maps_key %>"></script>
+<%= javascript_include_tag "http://openlayers.org/api/OpenLayers.js" %>
+<%= javascript_tag "var current_view_code = '#{current_view.code}';" %>
+<%= javascript_include_tag "#{thl_url}/places/maps/interactive/scripts/THLWMS.js", 'inset-map', 'characteristic-selector' %>
+<script type="text/javascript">
+jQuery(document).ready(function(){
+	jQuery(window).unbind("scroll");
+	NodeTree.init("NodeTree", "NodeTreeList", "<%= features_path %>/");
+	<%
+		node_menu_options = {}
+		# Set the menu item that should be open when the NodeMenu loads
+		node_menu_options[:default_item] = @active_menu_item ||= session[:interface][:menu_item] unless session[:interface][:menu_item].blank?
+		# Make the Results menu item be shown if a search exists in the session
+		node_menu_options[:show_results] = true unless session[:search].blank?
+	%>
+	NodeMenu.init("NodeMenu", "<%= features_path %>/", <%= node_menu_options.to_json %>);
+	
+	<% unless @kmaps_characteristics.blank? %>
+	var characteristic_data = <%= @kmaps_characteristics.collect{|c| {:id => c.category_id, :name => c.to_s}}.sort_by{|a| a[:name].downcase.strip}.to_json %>;
+	var characteristic_selector = new CharacteristicSelector();
+	characteristic_selector.init('characteristic_selector', {
+		fieldLabel: "<%= Feature.human_attribute_name(:characteristic).titleize %>:",
+		data: characteristic_data
+	});
+	<% end %>
+});
+
+function reset_advanced_search(){
+	// Select "Global" for search scope
+	$("input[name='search_scope']").removeAttr('checked');
+	$('#search_scope_global').attr('checked', 'checked');
+	// Select "Contains" for match
+	$("input[name='match']").removeAttr('checked');
+	$('#match_contains').attr('checked', 'checked');
+	// Select "Full Text" for text scope
+	$("input[name='scope']").removeAttr('checked');
+	$('#scope_full_text').attr('checked', 'checked');
+	// Uncheck has_descriptions
+	$("input[name='has_descriptions']").removeAttr('checked');
+	// Reset all of the fields in the ModelSearcher
+	category_searcher_object_type.resetFields();
+}
+
+</script>
+<%= category_searcher(true, :category_id => 20, :field_name => 'object_type', :field_label => "#{Feature.human_attribute_name(:object_type).s}: ", :exclude_span => true, :options => {:hasTree => 'true'}) %>
+
+<!--<h2>THL Place Dictionary of Tibet &amp; the Himalayas</h2>-->
+<div style="clear:both;"></div>
+
+<div id="FeatureContainer">
+	<div id="FeaturePanelContainer">
+		<%= render :partial => "features/menu" %>
+		<div id="FeaturePanel" class="secondary-universal-navigation">

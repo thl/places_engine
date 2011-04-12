@@ -1,13 +1,16 @@
 class FeatureNameRelation < ActiveRecord::Base
-  
+  attr_accessor :skip_update
+
   acts_as_family_tree :tree, :node_class=>'FeatureName'
   
   after_save do |record|
-    # we could update this object's (a FeatureRelation) hierarchy but the THL Places-app doesn't use that info in any way yet
-    [record.parent_node, record.child_node].each {|r| r.update_hierarchy }
-    feature = record.feature
-    feature.update_name_positions
-    feature.update_cached_feature_names
+    if !record.skip_update
+      # we could update this object's (a FeatureRelation) hierarchy but the THL Places-app doesn't use that info in any way yet
+      [record.parent_node, record.child_node].each {|r| r.update_hierarchy }
+      feature = record.feature
+      feature.update_name_positions
+      feature.update_cached_feature_names
+    end
   end
   
   #TYPES=[
@@ -68,7 +71,7 @@ class FeatureNameRelation < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20100521170006
+# Schema version: 20110217172044
 #
 # Table name: feature_name_relations
 #

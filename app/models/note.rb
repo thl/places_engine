@@ -1,4 +1,7 @@
 class Note < ActiveRecord::Base
+  # Included for use of model_display_name in notable_type_name.  Is there
+  # a better approach to this?
+  include ApplicationHelper
   
   belongs_to :notable, :polymorphic=>true
   belongs_to :note_title
@@ -12,6 +15,10 @@ class Note < ActiveRecord::Base
   
   def title
     self.custom_note_title.blank? ? (self.note_title.nil? ? nil : self.note_title.title) : self.custom_note_title
+  end
+  
+  def notable_type_name
+    notable_type.blank? ? '' : model_display_name(notable_type.tableize.singularize)
   end
   
   def to_s
@@ -41,7 +48,7 @@ class Note < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20100521170006
+# Schema version: 20110217172044
 #
 # Table name: notes
 #
@@ -51,6 +58,7 @@ end
 #  association_type  :string(255)
 #  content           :text
 #  custom_note_title :string(255)
+#  is_public         :boolean         default(TRUE)
 #  notable_type      :string(255)
 #  created_at        :timestamp
 #  updated_at        :timestamp

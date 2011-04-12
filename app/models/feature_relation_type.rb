@@ -31,8 +31,8 @@ class FeatureRelationType < ActiveRecord::Base
   # that is only set to TRUE for this type, and use that to determine which type is used.
   # This seems to be generally satisfactory for now, since a migration creates the initial
   # FeatureRelationTypes.
-  def self.hierarchy_id
-    self.find(:first, :conditions => {:is_symmetric => false}, :order => :id).id
+  def self.hierarchy_ids
+    self.all(:conditions => {:is_hierarchical => true}, :order => :id).collect(&:id)
   end
   
   def to_s
@@ -46,16 +46,27 @@ class FeatureRelationType < ActiveRecord::Base
     )
     paginate(options)
   end
+  
+  def self.get_by_code(code)
+    Rails.cache.fetch("feature_relation_types/code/#{code}") { self.find_by_code(code) }
+  end
+  
+  def self.get_by_asymmetric_code(code)
+    Rails.cache.fetch("feature_relation_types/asymmetric_code/#{code}") { self.find_by_asymmetric_code(code) }
+  end
 end
 
 # == Schema Info
-# Schema version: 20100521170006
+# Schema version: 20110217172044
 #
 # Table name: feature_relation_types
 #
 #  id               :integer         not null, primary key
+#  asymmetric_code  :string(255)
 #  asymmetric_label :string(255)
+#  code             :string(255)     not null
+#  is_hierarchical  :boolean         not null
 #  is_symmetric     :boolean
-#  label            :string(255)
-#  created_at       :timestamp
-#  updated_at       :timestamp
+#  label            :string(255)     not null
+#  created_at       :datetime
+#  updated_at       :datetime

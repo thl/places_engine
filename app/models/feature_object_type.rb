@@ -7,14 +7,13 @@ class FeatureObjectType < CategoryFeature
   #
   belongs_to :perspective
   
-  def after_save
-    super
-    self.feature.update_object_type_positions
+  after_save do |record|
+    record.feature.update_object_type_positions if !record.skip_update
   end
 end
 
 # == Schema Info
-# Schema version: 20100521170006
+# Schema version: 20110217172044
 #
 # Table name: category_features
 #

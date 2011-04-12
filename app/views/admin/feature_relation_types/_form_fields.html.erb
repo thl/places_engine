@@ -3,6 +3,10 @@
 <fieldset>
 	
 	<legend>Feature Relation Type</legend>
+	<div class="row">
+		<%= f.check_box :is_hierarchical %> 
+		<%= f.label :is_hierarchical, "Is Hierarchical" %>
+	</div>
 
 	<div class="row">
 		<%= f.check_box :is_symmetric, :onchange => "$(this).is(':checked') ? $('#asymmetric_label').hide() : $('#asymmetric_label').show()" %> 
@@ -19,4 +23,13 @@
 		<%= f.text_field :asymmetric_label, :class => :text %>
 	</div>
 	
+	<div class="row">
+		<%= f.label :code %>
+		<%= f.text_field :code, :class => :text %>
+	</div>
+	
+	<div class="row">
+		<%= f.label :asymmetric_code %>
+		<%= f.text_field :asymmetric_code, :class => :text %>
+	</div>	
 </fieldset>

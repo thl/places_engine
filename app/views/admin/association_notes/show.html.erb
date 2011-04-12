@@ -18,6 +18,10 @@ add_breadcrumb_item @object.to_s
 	</div>
 	
 	<div class="row">
+		<label>Is Public?: </label> <span><%= @object.is_public? ? "Yes" : "No" %></span>
+	</div>	
+	
+	<div class="row">
 		<table>
 			<tr>
 				<td valign="top">

@@ -1,12 +1,10 @@
 <% if feature.nil? %>
 <div class="left">
   <h2>No Results</h2>
-  <p>There is no feature to display. Please select a feature from the tree.</p>
+  <p>Sorry, this feature couldn't be found. Please use the menu on the right to search or browse for a feature.</p>
 </div>
-<% else
-@context_id = feature.id
-%>
-<div id="FeatureDetails" class="has-right-margin">
+<% else %>
+<div id="FeatureDetails">
   <%= content_tag :h2, feature_name_header(feature) %>
   <%= time_units_for(feature) %>
   
@@ -14,13 +12,14 @@
 	<%= f_breadcrumb(feature) %>
 
 	<% if defined? feature.object_types %>
-	<%= content_tag :h3, "Types" unless feature.object_types.empty? %>
+	<%= content_tag :h3, Feature.human_attribute_name(:object_type, :count => feature.feature_object_types.size).s unless feature.object_types.empty? %>
 	  <ul id="FeatureTypesList">
-	<% feature.feature_object_types.each do |fot| 
+	<% feature.feature_object_types.each do |fot|
 		 ot = fot.category
 		 if !ot.nil? %>
 		 	<li>
-				<%= link_to ot.title, Category.get_url("iframe/#{ot.id}"), :class => "draggable-pop iframe no-view-alone overflow-y-auto width-850 height-488" %>
+				<% # Is there a way to prevent from hard-coding the Geographical Features category id (20) here? %>
+				<%= link_to ot.title, ot.get_url_with_parent %>
 				<%= note_popup_link_for(fot) %>
 				<%= time_units_for(fot) %>
 			</li>
@@ -30,10 +29,11 @@
 	  </ul>
 	  <%= note_popup_link_list_for(feature, {:association_type => FeatureObjectType.model_name}) %>
 	<% end %>
-	<% if defined? feature.category_features %>
-	<%= content_tag :h3, "Characteristics" unless feature.category_features.empty? %>
+	<% if defined? feature.category_features 
+		 category_features = feature.category_features.all(:conditions => {:type => nil}) %>
+	<%= content_tag :h3, Feature.human_attribute_name(:characteristic, :count => :many).s unless category_features.empty? %>
 	  <ul id="CategoryFeaturesList">
-	<% feature.category_features.each do |cfs| 
+	<% category_features.each do |cfs| 
 		 cf = cfs.category
 		 if !cf.nil? 
 			values = []
@@ -41,32 +41,82 @@
 			values << cfs.numeric_value if !cfs.numeric_value.nil?
 			 %>
 		 	<li>
-				<%= cf.root.title %> - <%= link_to cf.title, Category.get_url("iframe/#{cf.id}"), :class => "draggable-pop iframe no-view-alone overflow-y-auto width-850 height-488" %><%= ": #{values.join(', ')}" if !values.empty? %>
+				<%= cf.root.title %> - <%= link_to cf.title, cf.get_url_with_parent %><%= ": #{values.join(', ')}" if !values.empty? %>
 				<%= note_popup_link_for(cfs) %>
 				<%= time_units_for(cfs) %>
 			</li>
 	<%   end
 	   end %>
-	   <%= javascript_tag "$(document).ready(function(){ ActivateDraggablePopups('#CategoryFeaturesList'); });" %>
 	  </ul>
 	  <%= note_popup_link_list_for(feature, {:association_type => CategoryFeature.model_name}) %>
+	<% end 
+
+	  shapes = logged_in? ? feature.shapes : feature.shapes.select(&:is_public?)
+	 
+	   if shapes.empty?
+	     # check if parent has shapes (township)
+	     geographical_parents = feature.all_parent_relations.select{|relation| relation.perspective_id == 2}.collect(&:parent_node)
+        
+         #get the first parent
+         if geographical_parents.length>0
+         	 firstTownship= geographical_parents.at(0)
+	         shapes = logged_in? ? firstTownship.shapes : firstTownship.shapes.select(&:is_public?)
+		     if !shapes.empty?
+		     	map_fid = firstTownship.fid	       
+		     else	     
+		     	map_fid =nil		      	
+		     end
+		 else	     
+	     	#check if county level parent exist  
+	     	county_parents = feature.all_parent_relations.select{|relation| relation.perspective_id == 1068913229}.collect(&:parent_node)
+	     	
+	     	if county_parents.length>0
+	     		firstCounty= county_parents.at(0)
+         		shapes = logged_in? ? firstCounty.shapes : firstCounty.shapes.select(&:is_public?)
+	     		if !shapes.empty?
+	     			map_fid = firstCounty.fid
+	     		else
+	     			map_fid =nil	
+	     		end
+	     	else
+	     		map_fid =nil
+	     	end	
+         end
+	   else
+	     map_fid = feature.fid
+	   end
+	   if !map_fid.nil? %>
+	 <h3>Map</h3>	 
+	 <div id="inset_map" class="fid-<%= map_fid.to_s %> language-<%= current_view.code %>"></div>
+	 <%= javascript_tag "$(document).ready(function(){ InsetMap.init({proxyUrl: '#{ActionController::Base.relative_url_root}/proxy_engine/utils/proxy/?proxy_url='}); });" %>
+	 <%= link_to image_tag("http://www.thlib.org/global/images/icon-map-simple.gif", :alt => "") + " View the full map", "http://www.thlib.org/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}", :class => "view-on-map" %>
+	 <%= link_to image_tag("http://www.thlib.org/global/images/icon-google-maps.png", :alt => "") + " View in Google Maps", "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => map_fid, :format => "kmz"), :target => "_blank", :class => "view-on-map" %>
+	 <%= link_to image_tag("http://www.thlib.org/global/images/icon-google-earth.png", :alt => "") + " View in Google Earth", {:action => :gis_resources, :fids => map_fid, :format => "kmz"}, :target => "_blank", :class => "view-on-map" %>
 	<% end %>
-	<% if !feature.shapes.empty? %>
-		<h3>Map</h3>
-		<div id="inset_map" class="fid-<%= feature.fid.to_s %> language-<%= current_view.code %>"></div>
-		<%= javascript_tag "$(document).ready(function(){ InsetMap.init({proxyUrl: '#{ActionController::Base.relative_url_root}/proxy_engine/utils/proxy/?proxy_url='}); });" %>
-		<%= link_to image_tag("http://www.thlib.org/global/images/icon-map-simple.gif", :alt => "") + " View the full map", "http://www.thlib.org/places/maps/interactive/#fid:#{feature.fid};language:#{current_view.code}", :target => "_blank", :class => "view-on-map" %>
-		<%= link_to image_tag("http://www.thlib.org/global/images/icon-google-maps.png", :alt => "") + " View in Google Maps", "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => feature.fid, :format => "kmz"), :target => "_blank", :class => "view-on-map" %>
-		<%= link_to image_tag("http://www.thlib.org/global/images/icon-google-earth.png", :alt => "") + " View in Google Earth", {:action => :gis_resources, :fids => feature.fid, :format => "kmz"}, :target => "_blank", :class => "view-on-map" %>
-	<% end %>
-	
-	<%= content_tag :h3, "Essays" unless feature.descriptions.blank? %>
+	<%= content_tag :h3, Description.human_name(:count => feature.descriptions.size).titleize.s unless feature.descriptions.blank? %>
 	<%  if !feature.descriptions.empty? %>
 	      <div id='descriptions_div'>
 	<%=     render :partial => '/descriptions/index', :locals => {:feature => feature, :description => nil} %>
 	      </div>
+		  <%= note_popup_link_list_for(feature, {:association_type => Description.model_name}) %>
 	<%  end %>
 	
+	<%
+	  associated_resources = [
+      ["Topics", feature.category_count(:cumulative => true), feature.kmaps_url],
+	    ["Pictures", feature.media_count(:type => 'Picture'), feature.pictures_url],
+	    ["Video", feature.media_count(:type => 'Video'), feature.videos_url],
+	    ["Texts", feature.media_count(:type => 'Document'), feature.documents_url]
+    ]
+	%>
+
+	<% if associated_resources.collect{|ar| ar[1]}.sum > 0 %>
+	<h3>Associated Resources</h3>
+	<ul>
+	  <%= associated_resources.reject{|ar| ar[1] == 0}.collect{|ar| "<li>" + link_to("#{ar[0]} (#{ar[1]})", ar[2]) + "</li>" }.join("") %>
+	</ul>
+	<% end %>
+  	
 	<p>
 		<br />
 		<%= button_to_function "View More Feature Detail", "$('#more_feature_detail').show(); $(this).hide(); $('#less_feature_detail_button').show();", :id => "more_feature_detail_button", :style => ("display:none;" if current_show_feature_details) %>
@@ -75,43 +125,50 @@
 
 <div id="more_feature_detail" style="<%= ("display: none;" unless current_show_feature_details) %>">
 
-	<h3>Names</h3>
+	<h3><%= FeatureName.human_name(:count => feature.names.size).titleize.s %></h3>
 	<%= feature_name_ul(feature,false) %>
 	<dl class="no-style">
 	<% feature.names.roots.each do |name| %>
-		<%= "<dt><strong>Etymology of #{name.name}:</strong></dt><dd>#{name.etymology}</dd>" unless name.etymology.blank? %>
+		<%= "<dt><strong>Etymology of #{name.name.to_s.s}:</strong></dt><dd>#{name.etymology.to_s.s}</dd>" unless name.etymology.blank? %>
 	<% end %>
 	</dl>
 	<%= note_popup_link_list_for(feature, {:association_type => FeatureName.model_name}) %>
 
 	<h3>IDs</h3>
 <%  if show_old_pid %>
-      <p>CURRENT THL ID: <%= feature.pid %></p>
-      <p>OLD THL PID: <%= feature.old_pid %></p>
+      <p><%= "#{ts :current, :what => Feature.human_attribute_name(:pid)}: #{feature.pid}" %></p>
+      <p><%= "#{Feature.human_attribute_name(:old_pid).s}: #{feature.old_pid}" %></p>
 <%  else %>
-      <p>THL ID: <%= feature.pid %></p>
+      <p><%= "#{Feature.human_attribute_name(:pid).s}: #{feature.pid}" %></p>
 <%  end %>
-  	<% feature.geo_codes.each do |geo_code| %>
-			<p>
-				<%= geo_code %>: <%= geo_code.geo_code_value%>
-				<%= note_popup_link_for(geo_code) %>
-				<%= time_units_for(geo_code) %>
-			</p>
-  	<% end %>
+<%  feature.geo_codes.each do |geo_code| %>
+	<p>
+<%=   geo_code %>: <%= geo_code.geo_code_value %>
+<%=   note_popup_link_for(geo_code) %>
+<%=   time_units_for(geo_code) %>
+	</p>
+<%  end %>
 	<%= note_popup_link_list_for(feature, {:association_type => FeatureGeoCode.model_name}) %>
-	
-	<% if !feature.shapes.empty? %>
-		<%= content_tag :h3, "Locations" %>
-		<ul>
-		  <% feature.shapes.each do |shape| %>
+	<%  altitudes = feature.altitudes
+	    if !shapes.empty? || !altitudes.empty? %>
+<%=       content_tag :h3, Shape.human_name(:count => :many).titleize.s %>
+		  <ul>
+<%        shapes.each do |shape| %>
 		    <li>
 				<%=h shape_display_string(shape) %>
 				<%= note_popup_link_for(shape) %>
 				<%= time_units_for(shape) %>
 			</li>
-		  <% end %>	
-		</ul>
-
+<%        end
+          altitudes.each do |altitude| %>
+		    <li>
+				<%=h altitude_display_string(altitude) %>
+				<%= note_popup_link_for(altitude) %>
+				<%= time_units_for(altitude) %>
+			</li>
+<%        end %>	
+		  </ul>
+<%        if !shapes.empty? %>
 			GIS Resources (feature alone)
 				<ul>
 					<li>
@@ -146,11 +203,10 @@
 				</ul>
 				<% end %>
 			<% end %>
-		<%= note_popup_link_list_for(feature, {:association_type => Shape.model_name}) %>
-	<% end %>
-
+<%=         note_popup_link_list_for(feature, {:association_type => Shape.model_name}) %>
+<%        end
+        end %>
 </div>
-	
 </div>
 
 <br class="clear"/>
