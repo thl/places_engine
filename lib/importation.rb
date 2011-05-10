@@ -43,7 +43,8 @@ class Importation
   # [i.]contestations.contested, [i.]contestations.administrator, [i.]contestations.claimant
   # i.kmaps.id, [i.]kXXX
   # [i.]shapes.lat, [i.]shapes.lng, [i.]shapes.altitude,
-  # [i.]shapes.altitude.estimate, [i.]shapes.altitude.minimum, [i.]shapes.altitude.maximum, [i.]shapes.altitude.average
+  # [i.]shapes.altitude.estimate, [i.]shapes.altitude.minimum, [i.]shapes.altitude.maximum,
+  # [i.]shapes.altitude.average, [i.]shapes.altitude.delete
   # [i.]descriptions.content, [i.]descriptions.author.fullname
   
 
@@ -821,6 +822,7 @@ class Importation
         conditions[:maximum] = maximum_str if !maximum_str.blank?
         conditions[:average] = average_str if !average_str.blank?
         if !delete_altitudes.blank? && delete_altitudes.downcase == 'yes'
+          self.feature.shapes.each{ |s| s.update_attribute(:altitude, nil) }
           altitudes.clear
           altitude = altitudes.create(conditions)
         else
