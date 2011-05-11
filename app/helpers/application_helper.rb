@@ -318,9 +318,7 @@ module ApplicationHelper
     
   def shape_display_string(shape)
     return shape.geo_type unless shape.is_point?
-    s = "Latitude: #{shape.lat}; Longitude: #{shape.lng}"
-    s << "; Altitude: #{shape.altitude}" if !shape.altitude.nil?
-    s
+    return "Latitude: #{shape.lat}; Longitude: #{shape.lng}"
   end
   
   def altitude_display_string(altitude)
@@ -329,7 +327,7 @@ module ApplicationHelper
     a << "#{altitude.average} (average)" if !altitude.average.nil?
     a << "#{altitude.minimum} (minimum)" if !altitude.minimum.nil?
     a << "#{altitude.maximum} (maximum)" if !altitude.maximum.nil?
-    a.empty? ? '' : "Altitude: #{a.join(', ')}"
+    a.empty? ? '' : a.join(', ')
   end
   
   # TODO: Add rules here based on language of name and perspective.
