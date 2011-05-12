@@ -4,6 +4,12 @@ module ApplicationHelper
   # Required for truncate_html
   require 'rexml/parsers/pullparser'
   
+  # overrides link_to_remote in vendor/rails/action_pack/lib/action_view/prototype_helper.rb
+  def link_to_remote(name, options = {}, html_options = {})
+    html_options.merge!({:href => url_for(options[:url])}) if ( html_options[:href].nil? || html_options[:href].blank? ) && !options[:url].blank?
+    link_to_function(name, remote_function(options), html_options || options.delete(:html))
+  end
+
   def collection_name
     model_name ? model_name.humanize.downcase.pluralize : nil
   end
