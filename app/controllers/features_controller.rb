@@ -1,6 +1,6 @@
 class FeaturesController < ApplicationController
   caches_page :show, :if => :api_response?.to_proc
-  caches_action :node_tree_expanded, :cache_path => :tree_cache_path.to_proc, :if => Proc.new { |c| c.request.xhr? }
+  caches_action :node_tree_expanded, :cache_path => :tree_cache_path.to_proc #, :if => Proc.new { |c| c.request.xhr? }
   #
   def tree_cache_path
     "tree/#{current_perspective.id}/#{current_view.id}/node_id_#{params[:id]}"

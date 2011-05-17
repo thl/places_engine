@@ -10,10 +10,19 @@ class FeatureRelation < ActiveRecord::Base
   
   after_save do |record|
     if !record.skip_update
+      [record.parent_node, record.child_node].each { |r| r.expire_children_cache if !r.nil? }
       [record.parent_node, record.child_node].each { |r| r.update_cached_feature_relation_categories if !r.nil? }
       # we could update this object's (a FeatureRelation) hierarchy but the THL Places-app doesn't use that info in any way yet
       [record.parent_node, record.child_node].each { |r| r.update_hierarchy if !r.nil? }
     end
+  end
+  
+  before_destroy do |record|
+    node = record.parent_node.nil? ? record.child_node : record.parent_node
+    cacheval = node.id
+    File.delete('tmp/cache/tree_tmp') rescue #no biggie
+    File.open('tmp/cache/tree_tmp', 'w') {|f| f.write(cacheval) }
+    node.expire_children_cache
   end
   
   after_destroy do |record|
@@ -90,7 +99,6 @@ class FeatureRelation < ActiveRecord::Base
     LEFT JOIN features children ON children.id=feature_relations.child_node_id'
     paginate(options)
   end
-  
 end
 
 # == Schema Info
