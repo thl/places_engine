@@ -11,6 +11,5 @@ class FeatureSweeper < ActionController::Caching::Sweeper
   
   def expire_cache(feature)
     expire_page feature_url(feature.fid, :skip_relative_url_root => true, :only_path => true, :format => 'xml')
-    expire_fragment(Regexp.new("/views/tree."))
   end
 end

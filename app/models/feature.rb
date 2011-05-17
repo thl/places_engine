@@ -11,6 +11,8 @@ class Feature < ActiveRecord::Base
   # after_save {|record| record.update_hierarchy}  
   # acts_as_solr :fields=>[:pid]
   
+  after_commit :expire_tree
+  
   acts_as_family_tree :node, :tree_class => 'FeatureRelation', :conditions => {'feature_relations.feature_relation_type_id' => FeatureRelationType.hierarchy_ids}
   # These are distinct from acts_as_family_tree's parent/child_relations, which only include hierarchical parent/child relations.
   has_many :all_child_relations, :class_name => 'FeatureRelation', :foreign_key => 'parent_node_id', :dependent => :destroy
@@ -45,6 +47,23 @@ class Feature < ActiveRecord::Base
       end
       options[:order] ||= 'position'
       proxy_reflection.class_name.constantize.roots(options) #.sort !!! See the FeatureName.<=> method
+    end
+  end
+  
+  def expire_tree
+    spawn(:method => :thread) do
+      node_id = File.open('tmp/cache/tree_tmp', 'r').read.to_i
+      puts "ttz: #{node_id}"
+      n = Feature.find(node_id)
+      unless n.nil?
+        desc = n.descendants
+        unless desc.nil? 
+          ds = desc.collect{ |d| d.id }.push(node_id)
+          ds.each do |d|
+            open("http://localhost:3000/features/node_tree_expanded/#{d}")
+          end
+        end
+      end
     end
   end
   
@@ -379,6 +398,12 @@ class Feature < ActiveRecord::Base
       new_relation.save
     end
     return new_feature
+  end
+  
+  def expire_children_cache
+    nodes = descendants.collect{|c| c.id}.push(id)
+    search = "(#{nodes.join('|') unless nodes.nil?})"
+    ActionController::Base.new.expire_fragment(Regexp.new("/views/tree/.*/node_id_#{search}.*"))
   end
       
   private
