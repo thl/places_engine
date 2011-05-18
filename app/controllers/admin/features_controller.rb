@@ -1,9 +1,10 @@
 class Admin::FeaturesController < ResourceController::Base
   cache_sweeper :feature_sweeper, :only => [:update, :destroy]
   
+  destroy.before { Rails.cache.write('fid', params[:id]) }
   new_action.before { @object.fid = Feature.generate_pid }
   create.before { @object.is_blank = false }
-  update.before { update_primary_description }
+  update.before { update_primary_description; Rails.cache.write('fid', params[:id]) }
   
   before_filter :collection, :only=>:locate_for_relation
   

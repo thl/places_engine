@@ -11,7 +11,7 @@ class Feature < ActiveRecord::Base
   # after_save {|record| record.update_hierarchy}  
   # acts_as_solr :fields=>[:pid]
   
-  after_commit :expire_tree
+  after_commit :reheat_cache
   
   acts_as_family_tree :node, :tree_class => 'FeatureRelation', :conditions => {'feature_relations.feature_relation_type_id' => FeatureRelationType.hierarchy_ids}
   # These are distinct from acts_as_family_tree's parent/child_relations, which only include hierarchical parent/child relations.
@@ -50,20 +50,22 @@ class Feature < ActiveRecord::Base
     end
   end
   
-  def expire_tree
-    spawn(:method => :thread) do
-      node_id = File.open('tmp/cache/tree_tmp', 'r').read.to_i
-      puts "ttz: #{node_id}"
-      n = Feature.find(node_id)
+  def reheat_cache
+    node_id = Rails.cache.read('tree_tmp') rescue nil
+    unless node_id.nil?
+      n = Feature.find(node_id) rescue nil
       unless n.nil?
         desc = n.descendants
-        unless desc.nil? 
+        unless desc.empty? or desc.nil? 
           ds = desc.collect{ |d| d.id }.push(node_id)
           ds.each do |d|
-            open("http://localhost:3000/features/node_tree_expanded/#{d}")
+            spawn(:method => :thread, :nice => 7) do
+              open("http://localhost:3000/features/node_tree_expanded/#{d}")
+            end
           end
         end
       end
+      Rails.cache.delete('tree_tmp')
     end
   end
   

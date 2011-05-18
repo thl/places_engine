@@ -17,12 +17,13 @@ class FeatureRelation < ActiveRecord::Base
     end
   end
   
-  before_destroy do |record|
-    node = record.parent_node.nil? ? record.child_node : record.parent_node
-    cacheval = node.id
-    File.delete('tmp/cache/tree_tmp') rescue #no biggie
-    File.open('tmp/cache/tree_tmp', 'w') {|f| f.write(cacheval) }
-    node.expire_children_cache
+  before_destroy do |r|
+    fid = Rails.cache.read('fid')
+    puts "fid: #{fid}, r.child_node_id: #{r.child_node_id}, r.parent_node_id = #{r.parent_node_id}"
+    if r.child_node_id == fid.to_i
+      Rails.cache.write('tree_tmp', r.parent_node_id)
+      r.parent_node.expire_children_cache unless r.parent_node.nil?
+    end
   end
   
   after_destroy do |record|
