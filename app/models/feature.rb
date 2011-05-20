@@ -8,10 +8,16 @@ class Feature < ActiveRecord::Base
   validates_uniqueness_of :fid
   validates_numericality_of :position, :allow_nil=>true
 
-  # after_save {|record| record.update_hierarchy}  
-  # acts_as_solr :fields=>[:pid]
+  after_save do |r|
+    node = r.parent.nil? ? r : r.parent
+    node.expire_children_cache
+  end
   
-  after_commit :reheat_cache
+  after_update do |r|
+    node = r.parent.nil? ? r : r.parent
+    node.expire_children_cache
+  end
+  # acts_as_solr :fields=>[:pid]
   
   acts_as_family_tree :node, :tree_class => 'FeatureRelation', :conditions => {'feature_relations.feature_relation_type_id' => FeatureRelationType.hierarchy_ids}
   # These are distinct from acts_as_family_tree's parent/child_relations, which only include hierarchical parent/child relations.
@@ -47,25 +53,6 @@ class Feature < ActiveRecord::Base
       end
       options[:order] ||= 'position'
       proxy_reflection.class_name.constantize.roots(options) #.sort !!! See the FeatureName.<=> method
-    end
-  end
-  
-  def reheat_cache
-    node_id = Rails.cache.read('tree_tmp') rescue nil
-    unless node_id.nil?
-      n = Feature.find(node_id) rescue nil
-      unless n.nil?
-        desc = n.descendants
-        unless desc.empty? or desc.nil? 
-          ds = desc.collect{ |d| d.id }.push(node_id)
-          ds.each do |d|
-            spawn(:method => :thread, :nice => 7) do
-              open("http://localhost:3000/features/node_tree_expanded/#{d}")
-            end
-          end
-        end
-      end
-      Rails.cache.delete('tree_tmp')
     end
   end
   

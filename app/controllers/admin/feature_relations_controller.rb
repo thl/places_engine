@@ -5,6 +5,8 @@ class Admin::FeatureRelationsController < ResourceController::Base
   new_action.before {|c| c.send :setup_for_new_relation}
   #create.before :process_feature_relation_type_id_mark
   update.before :process_feature_relation_type_id_mark
+  create.after :store_cache_id
+  destroy.before :store_cache_id
 
   #
   # The create.before wasn't being called (couldn't figure out why not; update.before works
@@ -24,6 +26,12 @@ class Admin::FeatureRelationsController < ResourceController::Base
         format.xml  { render :xml => @object.errors, :status => :unprocessable_entity }
       end
     end
+  end
+  
+  def store_cache_id
+    fr = FeatureRelation.find(params[:id])
+    #puts "fid from feature_relations: #{fr.child_node_id}"
+    Rails.cache.write('fid', fr.child_node_id) 
   end
   
   private

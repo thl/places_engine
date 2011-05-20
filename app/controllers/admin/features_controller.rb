@@ -1,10 +1,16 @@
 class Admin::FeaturesController < ResourceController::Base
   cache_sweeper :feature_sweeper, :only => [:update, :destroy]
   
-  destroy.before { Rails.cache.write('fid', params[:id]) }
+  destroy.before :cache_for_sweeper
   new_action.before { @object.fid = Feature.generate_pid }
-  create.before { @object.is_blank = false }
-  update.before { update_primary_description; Rails.cache.write('fid', params[:id]) }
+  create.before do |r|
+    @object.is_blank = false
+    r.cache_for_sweeper
+  end
+  update.before do |r|
+    update_primary_description;
+    r.cache_for_sweeper
+  end
   
   before_filter :collection, :only=>:locate_for_relation
   
@@ -23,6 +29,10 @@ class Admin::FeaturesController < ResourceController::Base
   
   def clone
     redirect_to admin_feature_url(Feature.find(params[:id]).clone_with_names)
+  end
+  
+  def cache_for_sweeper
+    Rails.cache.write('fid', params[:id])
   end
   
   private
