@@ -10,7 +10,7 @@ class FeatureRelation < ActiveRecord::Base
   
   after_save do |record|
     if !record.skip_update
-      [record.parent_node, record.child_node].each { |r| r.expire_children_cache if !r.nil? }
+      record.expire_cache
       [record.parent_node, record.child_node].each { |r| r.update_cached_feature_relation_categories if !r.nil? }
       # we could update this object's (a FeatureRelation) hierarchy but the THL Places-app doesn't use that info in any way yet
       [record.parent_node, record.child_node].each { |r| r.update_hierarchy if !r.nil? }
@@ -18,18 +18,12 @@ class FeatureRelation < ActiveRecord::Base
   end
   
   before_destroy do |r|
-    fid = Rails.cache.read('fid')
-    puts "fid: #{fid}, r.child_node_id: #{r.child_node_id}, r.parent_node_id = #{r.parent_node_id}"
-    if r.child_node_id == fid.to_i
-      Rails.cache.write('tree_tmp', r.parent_node_id)
-      r.parent_node.expire_children_cache unless r.parent_node.nil?
-    end
+    r.expire_cache
   end
   
   after_destroy do |record|
     [record.parent_node, record.child_node].each { |r| r.update_cached_feature_relation_categories if !r.nil? }
-  end
-  
+  end  
   #
   #
   #
@@ -99,6 +93,15 @@ class FeatureRelation < ActiveRecord::Base
     options[:joins] = 'LEFT JOIN features parents ON parents.id=feature_relations.parent_node_id
     LEFT JOIN features children ON children.id=feature_relations.child_node_id'
     paginate(options)
+  end
+    
+  def expire_cache
+    fid = Rails.cache.read('fid')
+    #puts "fid from fr model: #{fid}, child_node_id: #{child_node_id}, parent_node_id = #{parent_node_id}"
+    if child_node_id == fid.to_i
+      Rails.cache.write('tree_tmp', parent_node_id)
+      parent_node.expire_children_cache unless parent_node.nil?
+    end
   end
 end
 
