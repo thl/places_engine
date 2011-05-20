@@ -25,7 +25,7 @@ class FeatureSweeper < ActionController::Caching::Sweeper
         desc = n.descendants
         unless desc.empty? or desc.nil? 
           ds = [node_id] + desc.collect{ |d| d.id }
-          spawn(:method => :thread, :nice => 15) do
+          spawn(:method => :thread, :nice => 9) do
             ds.each do |d|
               open("#{APP_URI}/features/node_tree_expanded/#{d}")
             end
