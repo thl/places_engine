@@ -75,6 +75,7 @@ class Importation
     feature_ids_with_changed_relations = Array.new
     feature_ids_with_object_types_added = Array.new
     import = Importation.new
+    puts "#{Time.now}: Starting importation."
     CSV.open(filename, 'r', "\t") do |row|
       current+=1
       if field_names.nil?
@@ -99,9 +100,9 @@ class Importation
       #  puts e.to_s
       #end
       if import.fields.empty?
-        puts "#{import.feature.pid} processed."
+        puts "#{Time.now}: #{import.feature.pid} processed."
       else
-        puts "#{import.feature.pid}: the following fields have been ignored: #{import.fields.keys.join(', ')}"
+        puts "#{Time.now}: #{import.feature.pid}: the following fields have been ignored: #{import.fields.keys.join(', ')}"
       end
     end
     puts "Updating cache..."
