@@ -9,11 +9,12 @@ class FeatureName < ActiveRecord::Base
     feature.touch
   end #{ |record| record.update_hierarchy
   
-  after_destroy do |record|
-    feature = record.feature
-    feature.update_cached_feature_names
-    feature.touch
-  end
+  # Too much for the importer to deal with!
+  #after_destroy do |record|
+  #  feature = record.feature
+  #  feature.update_cached_feature_names
+  #  feature.touch
+  #end
   
   after_create do |record|
     if !record.skip_update
