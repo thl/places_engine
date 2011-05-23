@@ -42,7 +42,9 @@ class Importation
   # [i.]perspectives.code/name, feature_relations.replace
   # [i.]contestations.contested, [i.]contestations.administrator, [i.]contestations.claimant
   # i.kmaps.id, [i.]kXXX
-  # [i.]shapes.lat, [i.]shapes.lng, [i.]shapes.altitude, [i.]shapes.altitude.estimate
+  # [i.]shapes.lat, [i.]shapes.lng, [i.]shapes.altitude,
+  # [i.]shapes.altitude.estimate, [i.]shapes.altitude.minimum, [i.]shapes.altitude.maximum,
+  # [i.]shapes.altitude.average, [i.]shapes.altitude.delete
   # [i.]descriptions.content, [i.]descriptions.author.fullname
   
 
@@ -808,11 +810,25 @@ class Importation
       end
       # deal with "extra" altitudes
       estimate_str = self.fields.delete("#{prefix}.altitude.estimate")
-      if !estimate_str.blank?
+      minimum_str = self.fields.delete("#{prefix}.altitude.minimum")
+      maximum_str = self.fields.delete("#{prefix}.altitude.maximum")
+      average_str = self.fields.delete("#{prefix}.altitude.average")
+      if !estimate_str.blank? || !minimum_str.blank? || !maximum_str.blank? || !average_str.blank?
         altitudes = self.feature.altitudes
-        conditions = {:unit_id => 1, :estimate => estimate_str}
-        estimate = altitudes.find(:first, :conditions => conditions)
-        estimate = altitudes.create(conditions) if estimate.nil?
+        delete_altitudes = self.fields.delete("#{prefix}.altitude.delete")
+        conditions = {:unit_id => 1}
+        conditions[:estimate] = estimate_str if !estimate_str.blank?
+        conditions[:minimum] = minimum_str if !minimum_str.blank?
+        conditions[:maximum] = maximum_str if !maximum_str.blank?
+        conditions[:average] = average_str if !average_str.blank?
+        if !delete_altitudes.blank? && delete_altitudes.downcase == 'yes'
+          self.feature.shapes.each{ |s| s.update_attribute(:altitude, nil) }
+          altitudes.clear
+          altitude = altitudes.create(conditions)
+        else
+          altitude = altitudes.find(:first, :conditions => conditions)
+          altitude = altitudes.create(conditions) if altitude.nil?
+        end        
       end
     end
   end
