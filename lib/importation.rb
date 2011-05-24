@@ -119,6 +119,7 @@ class Importation
       feature.update_cached_feature_relation_categories if !feature_ids_with_changed_relations.include? id
       feature.update_object_type_positions
     end
+    puts "#{Time.now}: Importation done."
   end
     
   def add_date(field_prefix, dateable)
@@ -331,8 +332,11 @@ class Importation
     prioritized_names = self.feature.prioritized_names
     # If feature_names.delete is "yes", all names and relations will be deleted.
     delete_feature_names = self.fields.delete('feature_names.delete')
-    names.clear if !delete_feature_names.blank? && delete_feature_names.downcase == 'yes'
-    
+    association_notes = self.feature.association_notes
+    if !delete_feature_names.blank? && delete_feature_names.downcase == 'yes'
+      names.clear
+      association_notes.delete(association_notes.all(:conditions => {:association_type => "FeatureName"}))
+    end
     name_added = false
     name_positions_with_changed_relations = Array.new
     relations_pending_save = Array.new
@@ -349,8 +353,8 @@ class Importation
     0.upto(3) do |i|
       feature_names_note = self.fields.delete(i==0 ? 'feature_names.note' : "feature_names.#{i}.note")
       if !feature_names_note.blank?
-        note = AssociationNote.find(:first, :conditions => { :notable_id => self.feature.id, :notable_type => 'Feature', :association_type => 'FeatureName', :content => feature_names_note })
-        note = AssociationNote.create(:notable => self.feature, :association_type => 'FeatureName', :content => feature_names_note) if note.nil?
+        note = association_notes.find(:first, :conditions => {:association_type => 'FeatureName', :content => feature_names_note })
+        note = association_notes.create(:association_type => 'FeatureName', :content => feature_names_note) if note.nil?
         puts "Feature name note #{feature_names_note} could not be saved for feature #{self.feature.pid}" if note.nil?
       end
     end
