@@ -5,8 +5,8 @@ class Shape < ActiveRecord::Base
   
   belongs_to :feature, :foreign_key => 'fid', :primary_key => 'fid'
   
-  after_save { |record| record.feature.touch if !record.feature.nil? }
-  after_destroy { |record| record.feature.touch if !record.feature.nil? }
+  # after_save { |record| record.feature.touch if !record.feature.nil? }
+  # after_destroy { |record| record.feature.touch if !record.feature.nil? }
   
   set_primary_key "gid"
   

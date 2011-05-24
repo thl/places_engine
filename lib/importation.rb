@@ -539,7 +539,10 @@ class Importation
     
     # running triggers for feature_name
     self.feature.update_name_positions if name_added
-    self.feature.update_cached_feature_names if name_added || name_changed
+    if name_added || name_changed
+      self.feature.update_cached_feature_names
+      self.feature.touch
+    end
     
     # running triggers for feature_name_relation
     name_positions_with_changed_relations.each{|pos| name[pos].update_hierarchy if !name[pos].nil?}
