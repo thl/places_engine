@@ -79,7 +79,7 @@ class Importation
     CSV.open(filename, 'r', "\t") do |row|
       current+=1
       if field_names.nil?
-        field_names = row.collect(&:strip)
+        field_names = row.collect{|c| c.blank? ? c : c.strip }
         next
       end
       import.populate_fields(row, field_names)
