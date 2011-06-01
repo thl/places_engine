@@ -29,6 +29,14 @@ class Importation
     Rails.logger.info "IMPORTER COMMENT (#{Time.now.to_s}): #{msg}"
   end
   
+  def self.content_attributes(object)
+    h = object.attributes
+    h.delete('id')
+    h.delete('updated_at')
+    h.delete('created_at')
+    h
+  end
+  
   # Currently supported fields:
   # features.fid, features.old_pid, feature_names.delete, feature_names.is_primary.delete
   # i.feature_names.name, i.feature_names.position, i.feature_names.is_primary,
@@ -41,11 +49,11 @@ class Importation
   # feature_relations.delete, [i.]feature_relations.related_feature.fid, [i.]feature_relations.type.code,
   # [i.]perspectives.code/name, feature_relations.replace
   # [i.]contestations.contested, [i.]contestations.administrator, [i.]contestations.claimant
-  # i.kmaps.id, [i.]kXXX
+  # i.kmaps.id, [i.]kXXX, kmaps.delete
   # [i.]shapes.lat, [i.]shapes.lng, [i.]shapes.altitude,
   # [i.]shapes.altitude.estimate, [i.]shapes.altitude.minimum, [i.]shapes.altitude.maximum,
   # [i.]shapes.altitude.average, [i.]shapes.altitude.delete
-  # [i.]descriptions.content, [i.]descriptions.author.fullname
+  # [i.]descriptions.title, [i.]descriptions.content, [i.]descriptions.author.fullname
   
 
   # Fields that accept time_units:
@@ -87,6 +95,7 @@ class Importation
       #begin
         import.add_date('features', import.feature)
         import.process_names(44)
+        import.process_kmaps(15)
         feature_ids_with_object_types_added += import.process_feature_types(4)
         import.process_geocodes(4)
         feature_ids_with_changed_relations += import.process_feature_relations(14)
@@ -94,7 +103,6 @@ class Importation
         import.process_shapes(3)
         import.process_descriptions(3)
         import.feature.update_attributes({:is_blank => false, :is_public => true})
-        import.process_kmaps(15)
       #rescue  Exception => e
       #  puts "Something went wrong with feature #{import.feature.pid}!"
       #  puts e.to_s
@@ -135,6 +143,7 @@ class Importation
       start_certainty_id = certainty_id
       end_certainty_id = certainty_id
     end
+    time_units = dateable.time_units
     if date.blank?
       start_date = self.fields.delete("#{field_prefix}.time_units.start.date")
       end_date = self.fields.delete("#{field_prefix}.time_units.end.date")
@@ -144,10 +153,19 @@ class Importation
           if complex_date.nil?
             puts "Date #{date} could not be associated to #{dateable.class.class_name.titleize}."
           else
-            time_unit = dateable.time_units.build(:date => complex_date, :is_range => false, :calendar_id => calendar_id, :frequency_id => frequency_id)
-            if !time_unit.date.nil?
-              time_unit.date.save
-              time_unit.save
+            if !time_units.blank?
+              complex_date_attributes = Importation.content_attributes(complex_date)
+              time_unit = time_units.detect{|t| Importation.content_attributes(t.date) == complex_date_attributes}
+            end
+            attrs = {:is_range => false, :calendar_id => calendar_id, :frequency_id => frequency_id}
+            if time_unit.nil?
+              time_unit = time_units.build(attrs.merge(:date => complex_date))
+              if !time_unit.date.nil?
+                time_unit.date.save
+                time_unit.save
+              end
+            else
+              time_unit.update_attributes(attrs)
             end
           end
         else
@@ -156,10 +174,20 @@ class Importation
           if complex_start_date.nil? || complex_end_date.nil?
             puts "Date #{date} could not be associated to #{dateable.class_name.titleize}."
           else
-            time_unit = dateable.time_units.build(:start_date => complex_start_date, :end_date => complex_end_date, :is_range => true, :calendar_id => calendar_id, :frequency_id => frequency_id)
-            time_unit.start_date.save if !time_unit.start_date.nil?
-            time_unit.end_date.save if !time_unit.end_date.nil?
-            time_unit.save
+            if !time_units.blank?
+              complex_start_date_attributes = Importation.content_attributes(complex_start_date)
+              complex_end_date_attributes = Importation.content_attributes(complex_end_date)
+              time_unit = time_units.detect{|t| Importation.content_attributes(t.start_date) == complex_start_date_attributes && Importation.content_attributes(t.end_date) == complex_end_date_attributes}
+            end
+            attrs = {:is_range => true, :calendar_id => calendar_id, :frequency_id => frequency_id}
+            if time_unit.nil?
+              time_unit = dateable.time_units.build(attrs.merge(:start_date => complex_start_date, :end_date => complex_end_date))
+              time_unit.start_date.save if !time_unit.start_date.nil?
+              time_unit.end_date.save if !time_unit.end_date.nil?
+              time_unit.save
+            else
+              time_unit.update_attributes(attrs)
+            end
           end
         end
       else
@@ -172,20 +200,42 @@ class Importation
           end_day = self.fields.delete("#{field_prefix}.time_units.end.day")
           if (!start_month.blank? || !start_day.blank?) && (!end_month.blank? || !end_day.blank?)
             if start_day==end_day && start_month==end_month
-              complex_date = ComplexDate.create(:day => start_day, :day_certainty_id => start_certainty_id, :month => start_month, :month_certainty_id => start_certainty_id, :season_id => season_id, :season_certainty_id => start_certainty_id)
-              time_unit = dateable.time_units.build(:date => complex_date, :is_range => false, :calendar_id => calendar_id, :frequency_id => frequency_id)
-              time_unit.save
+              complex_date_attributes = {:day => start_day, :day_certainty_id => start_certainty_id, :month => start_month, :month_certainty_id => start_certainty_id, :season_id => season_id, :season_certainty_id => start_certainty_id}
+              time_unit = time_units.detect{|t| Importation.content_attributes(t.date) == complex_date_attributes} if !time_units.blank?
+              attrs = {:is_range => false, :calendar_id => calendar_id, :frequency_id => frequency_id}
+              if time_unit.nil?
+                complex_date = ComplexDate.create(complex_date_attributes)
+                time_unit = dateable.time_units.build(attrs.merge(:date => complex_date))
+                time_unit.save
+              else
+                time_unit.update_attributes(attrs)
+              end
             else
-              complex_start_date = ComplexDate.create(:day => start_day, :day_certainty_id => start_certainty_id, :month => start_month, :month_certainty_id => start_certainty_id, :season_id => season_id, :season_certainty_id => start_certainty_id)
-              complex_end_date = ComplexDate.create(:day => end_day, :day_certainty_id => end_certainty_id, :month => end_month, :month_certainty_id => end_certainty_id, :season_id => season_id, :season_certainty_id => end_certainty_id)
-              time_unit = dateable.time_units.build(:start_date => complex_start_date, :end_date => complex_end_date, :is_range => true, :calendar_id => calendar_id, :frequency_id => frequency_id)            
-              time_unit.save
+              complex_start_date_attributes = {:day => start_day, :day_certainty_id => start_certainty_id, :month => start_month, :month_certainty_id => start_certainty_id, :season_id => season_id, :season_certainty_id => start_certainty_id}
+              complex_end_date_attributes = {:day => end_day, :day_certainty_id => end_certainty_id, :month => end_month, :month_certainty_id => end_certainty_id, :season_id => season_id, :season_certainty_id => end_certainty_id}
+              time_unit = time_units.detect{|t| Importation.content_attributes(t.start_date) == complex_start_date_attributes && Importation.content_attributes(t.end_date) == complex_end_date_attributes} if !time_units.blank?
+              attrs = {:is_range => true, :calendar_id => calendar_id, :frequency_id => frequency_id}
+              if time_unit.nil?
+                complex_start_date = ComplexDate.create(complex_start_date_attributes)
+                complex_end_date = ComplexDate.create(complex_end_date_attributes)
+                time_unit = dateable.time_units.build(attrs.merge(:start_date => complex_start_date, :end_date => complex_end_date))
+                time_unit.save
+              else
+                time_unit.update_attributes(attrs)
+              end
             end
           end
         else
-          complex_date = ComplexDate.create(:day => day, :day_certainty_id => certainty_id, :month => month, :month_certainty_id => certainty_id, :season_id => season_id, :season_certainty_id => certainty_id)
-          time_unit = dateable.time_units.build(:date => complex_date, :is_range => false, :calendar_id => calendar_id, :frequency_id => frequency_id)
-          time_unit.save
+          complex_date_attributes = {:day => day, :day_certainty_id => certainty_id, :month => month, :month_certainty_id => certainty_id, :season_id => season_id, :season_certainty_id => certainty_id}
+          time_unit = time_units.detect{|t| Importation.content_attributes(t.date) == complex_date_attributes} if !time_units.blank?
+          attrs = {:is_range => false, :calendar_id => calendar_id, :frequency_id => frequency_id}
+          if time_unit.nil?
+            complex_date = ComplexDate.create(complex_date_attributes)
+            time_unit = dateable.time_units.build(attrs.merge(:date => complex_date))
+            time_unit.save
+          else
+            time_unit.update_attributes(attrs)
+          end
         end
       end
     else
@@ -193,10 +243,19 @@ class Importation
       if complex_date.nil?
         puts "Date #{date} could not be associated to #{dateable.class.class_name.titleize}."
       else
-        time_unit = dateable.time_units.build(:date => complex_date, :is_range => false, :calendar_id => calendar_id, :frequency_id => frequency_id)
-        if !time_unit.date.nil?
-          time_unit.date.save
-          time_unit.save
+        if !time_units.blank?
+          complex_date_attributes = Importation.content_attributes(complex_date)
+          time_unit = time_units.detect{|t| Importation.content_attributes(t.date) == complex_date_attributes}
+        end
+        attrs = {:is_range => false, :calendar_id => calendar_id, :frequency_id => frequency_id}
+        if time_unit.nil?
+          time_unit = dateable.time_units.build(attrs.merge(:date => complex_date))
+          if !time_unit.date.nil?
+            time_unit.date.save
+            time_unit.save
+          end
+        else
+          time_unit.update_attributes(attrs)
         end
       end
     end            
@@ -422,11 +481,14 @@ class Importation
       relation_conditions[:orthographic_system_id] = orthographic_system.id if !orthographic_system.nil?
       relation_conditions[:phonetic_system_id] = phonetic_system.id if !phonetic_system.nil?
       relation_conditions[:alt_spelling_system_id] = alt_spelling_system.id if !alt_spelling_system.nil?
+      position = self.fields.delete("#{i}.feature_names.position")
       if name[n].nil? || !relation_conditions.empty? && name[n].parent_relations.find(:first, :conditions => relation_conditions).nil?
-        position = self.fields.delete("#{i}.feature_names.position")
-        conditions[:position] = position if !position.nil?
+        conditions[:position] = position if !position.blank?
         name[n] = names.create(conditions.merge({:skip_update => true}))
         name_added = true if !name_added && !name[n].id.nil?
+      elsif !position.blank?
+        name[n].update_attribute(:position, position)
+        name_changed = true
       end
       if name[n].id.nil?
         puts "Name #{name_str} could not be added to feature #{self.feature.pid}."
@@ -797,15 +859,25 @@ class Importation
       shapes_lat = self.fields.delete("#{prefix}.lat")
       shapes_lng = self.fields.delete("#{prefix}.lng")
       if !shapes_lat.blank? && !shapes_lng.blank?
-        shape = Shape.new(:geometry => GeoRuby::SimpleFeatures::Point.new(4326), :fid => self.feature.fid, :altitude => self.fields.delete("#{prefix}.altitude"))
-        geo = shape.geometry
-        geo.y = shapes_lat
-        geo.x = shapes_lng
-        shape.geometry = geo
-        shape.save
-        if shape.id.nil?
-          puts "Shape for feature #{self.feature.pid} could not be saved."
+        shape = self.feature.shapes.detect do |s|
+          g = s.geometry
+          g.x == shapes_lng.to_f && g.y == shapes_lat.to_f
+        end
+        altitude = self.fields.delete("#{prefix}.altitude")
+        if shape.nil?
+          shape = Shape.new(:geometry => GeoRuby::SimpleFeatures::Point.new(4326), :fid => self.feature.fid, :altitude => altitude)
+          geo = shape.geometry
+          geo.y = shapes_lat
+          geo.x = shapes_lng
+          shape.geometry = geo
+          shape.save
+          if shape.id.nil?
+            puts "Shape for feature #{self.feature.pid} could not be saved."
+          end
         else
+          shape.update_attribute(:altitude, altitude) if !altitude.blank? && shape.altitude != altitude
+        end
+        if !shape.nil?
           0.upto(3) do |j|
             second_prefix = j==0 ? prefix : "#{prefix}.#{j}"
             self.add_date(second_prefix, shape)
@@ -844,6 +916,8 @@ class Importation
   def process_kmaps(n)
     # Now deal with i.kmaps.id
     category_features = self.feature.category_features
+    delete_kmaps = self.fields.delete('kmaps.delete')
+    category_features.clear if !delete_kmaps.blank? && delete_kmaps.downcase == 'yes'
     1.upto(n) do |i|
       kmap_str = self.fields.delete("#{i}.kmaps.id")
       next if kmap_str.blank?
