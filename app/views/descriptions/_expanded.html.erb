@@ -1,5 +1,5 @@
 <% title = d.title.blank? ? Description.human_name.titleize.s : d.title %>
-<h2 class="description-title">&#8226; <%= link_to title.s, feature_description_path(feature, d) %></h2>
+<h2 class="description-title">&#8226; <%= link_to title.s, feature_description_path(feature.fid, d) %></h2>
 <p class='description-author'>
     <% if !d.authors.empty? %>
 	    <span class='by'><%= ' by ' %></span>
@@ -11,5 +11,5 @@
 <%= time_units_for d %>
 <div class='expanded' id="desc_truncated_<%= d.id %>">
 	<%= truncate_html(d.content, 700,
-		'... ' + link_to( 'Read more', feature_description_path(d.feature, d) )) %>
+		'... ' + link_to( 'Read more', feature_description_path(d.feature.fid, d) )) %>
 </div>

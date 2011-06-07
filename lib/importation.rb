@@ -53,7 +53,7 @@ class Importation
   # [i.]shapes.lat, [i.]shapes.lng, [i.]shapes.altitude,
   # [i.]shapes.altitude.estimate, [i.]shapes.altitude.minimum, [i.]shapes.altitude.maximum,
   # [i.]shapes.altitude.average, [i.]shapes.altitude.delete
-  # [i.]descriptions.title, [i.]descriptions.content, [i.]descriptions.author.fullname
+  # descriptions.delete, [i.]descriptions.title, [i.]descriptions.content, [i.]descriptions.author.fullname
   
 
   # Fields that accept time_units:
@@ -98,7 +98,7 @@ class Importation
         import.process_kmaps(15)
         feature_ids_with_object_types_added += import.process_feature_types(4)
         import.process_geocodes(4)
-        feature_ids_with_changed_relations += import.process_feature_relations(14)
+        feature_ids_with_changed_relations += import.process_feature_relations(15)
         import.process_contestations(3)
         import.process_shapes(3)
         import.process_descriptions(3)
@@ -833,15 +833,18 @@ class Importation
   # content, author.fullname  
   def process_descriptions(n)
     descriptions = self.feature.descriptions
+    delete_descriptions = self.fields.delete('descriptions.delete')
+    descriptions.clear if !delete_descriptions.blank? && delete_descriptions.downcase == 'yes'
     0.upto(n) do |i|
       prefix = i>0 ? "#{i}.descriptions" : 'descriptions'
       description_content = self.fields.delete("#{prefix}.content")
       if !description_content.blank?
         description_content = "<p>#{description_content}</p>"
         author_name = self.fields.delete("#{prefix}.author.fullname")
+        description_title = self.fields.delete("#{prefix}.title")
         author = author_name.blank? ? nil : User.find_by_fullname(author_name)
-        description = descriptions.find_by_content(description_content) # : descriptions.find(:first, :conditions => ['LEFT(content, 200) = ?', description_content[0...200]])
-        attributes = {:content => description_content, :title => self.fields.delete("#{prefix}.title")}
+        description = description_title.blank? ? descriptions.find_by_content(description_content) : descriptions.find_by_title(description_title) # : descriptions.find(:first, :conditions => ['LEFT(content, 200) = ?', description_content[0...200]])
+        attributes = {:content => description_content, :title => description_title}
         if description.nil?
           description = descriptions.create(attributes)
         else
