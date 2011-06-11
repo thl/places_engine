@@ -471,7 +471,7 @@ module ApplicationHelper
      elsif hostname == 'sds6.itc.virginia.edu'
        'http://staging.thlib.org'
      elsif hostname =~ /\.local/ && hostname !~ /^a/
-       'http://localhost:90'
+       'http://dev.thlib.org'
      else
        'http://www.thlib.org'
      end
