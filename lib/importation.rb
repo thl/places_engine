@@ -30,6 +30,7 @@ class Importation
   end
   
   def self.content_attributes(object)
+    return nil if object.nil?
     h = object.attributes
     h.delete('id')
     h.delete('updated_at')
@@ -147,7 +148,7 @@ class Importation
     if date.blank?
       start_date = self.fields.delete("#{field_prefix}.time_units.start.date")
       end_date = self.fields.delete("#{field_prefix}.time_units.end.date")
-      if !start_date.blank? && !end_date.blank?
+      if !start_date.blank? || !end_date.blank?
         if start_date==end_date
           complex_date = Importation.to_complex_date(start_date, start_certainty_id, season_id)
           if complex_date.nil?
@@ -169,9 +170,9 @@ class Importation
             end
           end
         else
-          complex_start_date = Importation.to_complex_date(start_date, start_certainty_id, season_id)
-          complex_end_date = Importation.to_complex_date(end_date, end_certainty_id, season_id)
-          if complex_start_date.nil? || complex_end_date.nil?
+          complex_start_date = start_date.blank? ? nil : Importation.to_complex_date(start_date, start_certainty_id, season_id)
+          complex_end_date = end_date.blank? ? nil : Importation.to_complex_date(end_date, end_certainty_id, season_id)
+          if complex_start_date.nil? && complex_end_date.nil?
             puts "Date #{date} could not be associated to #{dateable.class_name.titleize}."
           else
             if !time_units.blank?
@@ -620,7 +621,8 @@ class Importation
   def process_feature_types(n)
     feature_ids_with_object_types_added = Array.new
     delete_types = self.fields.delete('feature_types.delete')
-    self.feature.feature_object_types.clear if !delete_types.blank? && delete_types.downcase == 'yes'
+    feature_object_types = self.feature.feature_object_types    
+    feature_object_types.clear if !delete_types.blank? && delete_types.downcase == 'yes'
     0.upto(n) do |i|
       prefix = i>0 ? "#{i}.feature_types" : 'feature_types'
       feature_type_id = self.fields.delete("#{prefix}.id")
@@ -630,7 +632,6 @@ class Importation
         puts "Feature type #{feature_type_id} not found."
         next
       end
-      feature_object_types = self.feature.feature_object_types
       feature_object_type = feature_object_types.find(:first, :conditions => {:category_id => category.id})
       if feature_object_type.nil?
         feature_object_type = feature_object_types.create(:category => category, :skip_update => true)
