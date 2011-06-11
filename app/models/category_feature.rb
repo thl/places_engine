@@ -12,7 +12,7 @@ class CategoryFeature < ActiveRecord::Base
   after_destroy do |record|
     feature = record.feature
     CategoryFeature.delete_cumulative_information(record.category, feature.id)
-    feature.touch
+    # feature.touch
   end
   
   before_save do |record|
@@ -29,7 +29,7 @@ class CategoryFeature < ActiveRecord::Base
     end
     Rails.cache.delete('CategoryFeature-max_updated_at')
     feature.update_cached_feature_relation_categories if !record.skip_update
-    feature.touch
+    # feature.touch
   end
 
   def to_s

@@ -22,7 +22,7 @@ class DescriptionsController < ApplicationController
   private
   # This is tied to features
   def find_feature
-    @feature = Feature.find(params[:feature_id])
+    @feature = Feature.get_by_fid(params[:id]) # Feature.find(params[:feature_id])
   end
     
    
