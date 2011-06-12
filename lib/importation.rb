@@ -182,7 +182,7 @@ class Importation
             end
             attrs = {:is_range => true, :calendar_id => calendar_id, :frequency_id => frequency_id}
             if time_unit.nil?
-              time_unit = dateable.time_units.build(attrs.merge(:start_date => complex_start_date, :end_date => complex_end_date))
+              time_unit = time_units.build(attrs.merge(:start_date => complex_start_date, :end_date => complex_end_date))
               time_unit.start_date.save if !time_unit.start_date.nil?
               time_unit.end_date.save if !time_unit.end_date.nil?
               time_unit.save
@@ -199,14 +199,21 @@ class Importation
           start_day = self.fields.delete("#{field_prefix}.time_units.start.day")
           end_month = self.fields.delete("#{field_prefix}.time_units.end.month")
           end_day = self.fields.delete("#{field_prefix}.time_units.end.day")
-          if (!start_month.blank? || !start_day.blank?) && (!end_month.blank? || !end_day.blank?)
+          if start_month.blank? && start_day.blank? || end_month.blank? && end_day.blank?
+            rabjung_id = self.fields.delete("#{field_prefix}.time_units.date.rabjung_id")
+            if !rabjung_id.blank?
+              complex_date = ComplexDate.create(:rabjung_id => rabjung_id)
+              time_unit = time_units.build(:date => complex_date)
+              time_unit.save
+            end
+          else
             if start_day==end_day && start_month==end_month
               complex_date_attributes = {:day => start_day, :day_certainty_id => start_certainty_id, :month => start_month, :month_certainty_id => start_certainty_id, :season_id => season_id, :season_certainty_id => start_certainty_id}
               time_unit = time_units.detect{|t| Importation.content_attributes(t.date) == complex_date_attributes} if !time_units.blank?
               attrs = {:is_range => false, :calendar_id => calendar_id, :frequency_id => frequency_id}
               if time_unit.nil?
                 complex_date = ComplexDate.create(complex_date_attributes)
-                time_unit = dateable.time_units.build(attrs.merge(:date => complex_date))
+                time_unit = time_units.build(attrs.merge(:date => complex_date))
                 time_unit.save
               else
                 time_unit.update_attributes(attrs)
@@ -219,7 +226,7 @@ class Importation
               if time_unit.nil?
                 complex_start_date = ComplexDate.create(complex_start_date_attributes)
                 complex_end_date = ComplexDate.create(complex_end_date_attributes)
-                time_unit = dateable.time_units.build(attrs.merge(:start_date => complex_start_date, :end_date => complex_end_date))
+                time_unit = time_units.build(attrs.merge(:start_date => complex_start_date, :end_date => complex_end_date))
                 time_unit.save
               else
                 time_unit.update_attributes(attrs)
@@ -232,7 +239,7 @@ class Importation
           attrs = {:is_range => false, :calendar_id => calendar_id, :frequency_id => frequency_id}
           if time_unit.nil?
             complex_date = ComplexDate.create(complex_date_attributes)
-            time_unit = dateable.time_units.build(attrs.merge(:date => complex_date))
+            time_unit = time_units.build(attrs.merge(:date => complex_date))
             time_unit.save
           else
             time_unit.update_attributes(attrs)
@@ -250,7 +257,7 @@ class Importation
         end
         attrs = {:is_range => false, :calendar_id => calendar_id, :frequency_id => frequency_id}
         if time_unit.nil?
-          time_unit = dateable.time_units.build(attrs.merge(:date => complex_date))
+          time_unit = time_units.build(attrs.merge(:date => complex_date))
           if !time_unit.date.nil?
             time_unit.date.save
             time_unit.save
