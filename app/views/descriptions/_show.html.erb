@@ -2,9 +2,9 @@
 	<p>
 <%=   ts :view, :what => t(:other, :what => Description.human_name(:count => :many)) %>:
 		<% description_options = @feature.descriptions.collect{|desc|
-				[strip_tags(description_simple_title(desc)), feature_description_url(@feature, desc)]
+				[strip_tags(description_simple_title(desc)), feature_description_url(@feature.fid, desc)]
 			}.sort %>
-		<%= select_tag :description_menu, options_for_select(description_options, feature_description_url(@feature.id, @description.id)), :onchange => "window.location = jQuery(this).val()" %>
+		<%= select_tag :description_menu, options_for_select(description_options, feature_description_url(@feature.fid, @description.id)), :onchange => "window.location = jQuery(this).val()" %>
 	</p>
 <% end %>
 <div id="descriptions_div">

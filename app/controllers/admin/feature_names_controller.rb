@@ -28,8 +28,10 @@ class Admin::FeatureNamesController < ResourceController::Base
   
   # Overwrite the default destroy method so we can redirect_to(:back)
   def destroy
-    @name = FeatureName.find(params[:id])      
-    @name.destroy
+    name = FeatureName.find(params[:id])
+    feature = name.feature
+    name.destroy
+    feature.update_cached_feature_names # took it out of the model to not choke the importer
     redirect_to(:back)
   end
   

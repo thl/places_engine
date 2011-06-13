@@ -304,7 +304,7 @@ module ApplicationHelper
           if entity.descriptions.empty?
             remove_tab = true
           else
-            url = feature_description_path(entity, entity.descriptions.first)
+            url = feature_description_path(entity.fid, entity.descriptions.first)
             count = entity.descriptions.length
           end
         when :related
