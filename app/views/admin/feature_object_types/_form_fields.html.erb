@@ -1,18 +1,14 @@
 <%= error_messages_for model_name %>
-<fieldset>
-	
-	<legend>
-		Feature Type
-	</legend>
-	
-	<div class="row">
-		<%= f.label :feature %>
-		<span><%= f_label(@object.feature) %></span>
-	</div>
-	
-	<div class="row">
-		<%= f.label :type %>
-		<%= category_selector(@parent_object_type, :feature_object_type, :category, false, :hasTree => 'true', :singleSelectionTree => 'true') %>
-	</div>
-	
-</fieldset>
+
+<%=
+
+	category_fields({
+		:subject_label => (f.label :feature),
+		:subject => f_label(@object.feature),
+		:root => @parent_object_type,
+		:varname => :feature_object_type,
+		:include_js => false,
+		:hastree => 'true'
+	}, f )
+
+%>
