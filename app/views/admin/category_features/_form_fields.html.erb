@@ -2,12 +2,13 @@
 
 <%= 
 	category_fields({
-		:subject_label => (f.label :feature),
-		:subject => f_label(@object.feature),
+		:subject => { :display => f_label(@object.feature), :label => f.label(:feature) },
 		:root => nil,
 		:varname => :category_feature,
 		:hastree => 'true',
-		:labels => (f.label :text_label),
-		:labeln => (f.label :numeric_label)
-	}, f )
+		:extrafields => [
+ 			{:field => f.text_field(:string_value, :style => 'padding:3px; width: 300px'), :label => f.label(:text_label)},
+			{:field => f.text_field(:numeric_value, :style => 'padding:3px; width: 300px'), :label => f.label(:numeric_label)}
+		]
+	})
 %>

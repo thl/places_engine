@@ -60,13 +60,14 @@ function CharacteristicSelector(){
 		this.treeLoading = this.div.find('.tree-loading');
 		this.treeRemove.hide();
 		var thisCharacteristicSelector = this;
-		this.treeRemove.click(function(){
+		jQuery('.tree-remove', this.div).live('click', function(){
 			thisCharacteristicSelector.treeNames.html('');
 			thisCharacteristicSelector.treeRemove.hide();
 			thisCharacteristicSelector.hiddenIdInput.val('');
 			return false;
 		});
 		this.treeLink.click(function(){
+			jQuery('.draggable-popup').hide();
 			if(!thisCharacteristicSelector.popupLoaded){
 				thisCharacteristicSelector.loadPopup();
 			}

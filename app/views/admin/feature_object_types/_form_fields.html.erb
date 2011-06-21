@@ -3,13 +3,12 @@
 <%=
 
 	category_fields({
-		:subject_label => (f.label :feature),
-		:subject => f_label(@object.feature),
+		:subject => {:display => f_label(@object.feature), :label => f.label(:feature)},
 		:root => @parent_object_type,
 		:varname => :feature_object_type,
 		:include_js => false,
 		:hastree => 'true',
 		:selectable => false
-	}, f )
+	})
 
 %>
