@@ -27,7 +27,7 @@ class CachedCategoryCount < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20110217172044
+# Schema version: 20110628205752
 #
 # Table name: cached_category_counts
 #

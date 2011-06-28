@@ -158,8 +158,8 @@
 <%=     '</li>' if altitude_size>1 %>
 <%    end %>
 <%=   altitude_size>1 ? '</ul>' : '</p>' %>
-<%  end %>
-<%  if !shapes.empty? %>
+<%  end
+    if !shapes.empty? %>
 <%=   content_tag :h3, Shape.human_name(:count => shapes.size).titleize.s %>
 <%=   shapes.size>1 ? '<ul>' : '<p>' %>
 <%    shapes.each do |shape| %>
