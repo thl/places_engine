@@ -106,7 +106,7 @@ class FeatureRelation < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20110217172044
+# Schema version: 20110628205752
 #
 # Table name: feature_relations
 #
