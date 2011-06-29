@@ -13,7 +13,7 @@ class FeatureObjectType < CategoryFeature
 end
 
 # == Schema Info
-# Schema version: 20110628205752
+# Schema version: 20110629163847
 #
 # Table name: category_features
 #
@@ -23,6 +23,8 @@ end
 #  perspective_id :integer
 #  numeric_value  :integer
 #  position       :integer         not null, default(0)
+#  show_parent    :boolean
+#  show_root      :boolean         default(TRUE)
 #  string_value   :string(255)
 #  type           :string(255)
 #  created_at     :timestamp

@@ -71,7 +71,7 @@ class FeatureNameRelation < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20110628205752
+# Schema version: 20110629163847
 #
 # Table name: feature_name_relations
 #
