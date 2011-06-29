@@ -1,8 +1,8 @@
 class AddShowParentAndShowRootToCategoryFeature < ActiveRecord::Migration
   def self.up
     change_table :category_features do |t|
-      t.boolean :show_parent, :default => false
-      t.boolean :show_root, :default => true
+      t.boolean :show_parent, :default => false, :null => false
+      t.boolean :show_root, :default => true, :null => false
     end
     
   end
