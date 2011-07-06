@@ -283,11 +283,6 @@ class FeaturesController < ApplicationController
     render :partial => 'search_results', :locals => {:features => @features}, :layout => false
   end
   
-  def feature
-    feature = Feature.find_by_id(params[:id])
-    render :partial => 'feature', :locals => { :feature => feature, :show_old_pid => false }, :layout => false
-  end
-  
   def descendants
     @feature = Feature.find(params[:id])
     descendants = @feature.nil? ? [] : @feature.descendants(:include => {:cached_feature_names => :feature_name}, :order => {'cached_feature_names.view_id' => current_view.id}, :order => 'feature_names.name')
@@ -297,7 +292,7 @@ class FeaturesController < ApplicationController
   
   def related
     set_common_variables(session)
-    @feature = Feature.find(params[:id])
+    @feature = Feature.get_by_fid(params[:id])
     session[:interface][:context_id] = @feature.id unless @feature.nil?
     @tab_options = {:entity => @feature}
     @current_tab_id = :related
