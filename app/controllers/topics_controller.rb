@@ -1,4 +1,6 @@
 class TopicsController < ApplicationController
+  caches_page :feature_descendants
+  
   # GET /topics/1
   # GET /topics/1.xml
   def show
@@ -19,6 +21,17 @@ class TopicsController < ApplicationController
       respond_to do |format|
         format.html { render :template => 'features/list' }
       end
+    end
+  end
+  
+  def feature_descendants
+    feature = Feature.get_by_fid(params[:feature_id])
+    topic = Topic.find(params[:id])
+    @features = feature.all_descendants_by_topic(topic)
+    @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
+    respond_to do |format|
+      format.xml  { render :template => 'features/index' }
+      format.json { render :json => Hash.from_xml(render_to_string(:template => 'features/index.xml.builder')) }
     end
   end
 end

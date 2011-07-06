@@ -72,6 +72,7 @@ ActionController::Routing::Routes.draw do |map|
   end # end admin urls
   map.resources :features, :has_many => :association_notes, :member => {:descendants => :get, :related => :get} do |feature|
     feature.resources :descriptions, :member => {:expand => :get, :contract => :get, :show => :get}
+    feature.by_topic 'by_topic/:id.:format', :controller => 'topics', :action => 'feature_descendants'
   end
   map.resources :altitudes, :has_many => [:notes, :citations]
   map.resources :category_features, :has_many => [:notes, :citations]

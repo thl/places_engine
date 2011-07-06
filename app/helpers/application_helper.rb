@@ -308,7 +308,7 @@ module ApplicationHelper
             count = entity.descriptions.length
           end
         when :related
-          url = related_feature_path(entity)
+          url = related_feature_path(entity.fid)
           count = nil
         end
       else
