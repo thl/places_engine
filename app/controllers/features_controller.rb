@@ -43,6 +43,7 @@ class FeaturesController < ApplicationController
         format.html
         format.xml
         format.csv
+        format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')) }
       end
     end
   end 
