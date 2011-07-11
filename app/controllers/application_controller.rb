@@ -77,7 +77,7 @@ class ApplicationController < ActionController::Base
 
     search_defaults = {
     	:filter => '',
-    	:scope => 'full_text',
+    	:scope => 'name',
     	:match => 'contains',
     	:search_scope => 'global',
     	:has_descriptions => '0'
