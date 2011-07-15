@@ -7,14 +7,13 @@ module TreeCache
   
   def self.reheat( root_node )
     return if root_node.nil?
-    
-    spawn(:method => :thread, :nice => 9) do  
-      if root_node == 0
-        Feature.roots.each{ |n| self.generate(n.id) }
-      else
-        self.generate(root_node)
-      end
+  
+    if root_node == 0
+      Feature.roots.each{ |n| self.generate(n.id) }
+    else
+      self.generate(root_node)
     end
+
   end
   
   def self.generate( root_node )

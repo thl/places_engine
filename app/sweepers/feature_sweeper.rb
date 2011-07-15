@@ -21,7 +21,9 @@ class FeatureSweeper < ActionController::Caching::Sweeper
     node_id = Rails.cache.read('tree_tmp') rescue nil
     unless node_id.nil?
       Rails.cache.delete('tree_tmp')
-      TreeCache.reheat(node_id)
+      spawn(:method => :thread, :nice => 9) do  
+        TreeCache.reheat(node_id)
+      end
     end
   end
 end
