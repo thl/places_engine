@@ -3,6 +3,7 @@ class FeaturesController < ApplicationController
   caches_action :node_tree_expanded, :cache_path => :tree_cache_path.to_proc #, :if => Proc.new { |c| c.request.xhr? }
   #
   def tree_cache_path
+    set_common_variables(session) if params[:view_id] || params[:perspective_id]
     "tree/#{current_perspective.id}/#{current_view.id}/node_id_#{params[:id]}"
   end
   #
@@ -336,6 +337,7 @@ class FeaturesController < ApplicationController
   end
   
   def node_tree_expanded
+    set_common_variables(session) if params[:view_id] || params[:perspective_id]
     node = Feature.find(params[:id])
     @ancestors_for_current = node.current_ancestors(current_perspective, current_view).collect{|a| a.id}
     @ancestors_for_current << node.id
