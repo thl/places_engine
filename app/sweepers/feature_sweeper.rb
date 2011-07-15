@@ -20,19 +20,8 @@ class FeatureSweeper < ActionController::Caching::Sweeper
   def reheat_cache
     node_id = Rails.cache.read('tree_tmp') rescue nil
     unless node_id.nil?
-      n = Feature.find(node_id) rescue nil
-      unless n.nil?
-        desc = n.descendants
-        unless desc.empty? or desc.nil? 
-          ds = [node_id] + desc.collect{ |d| d.id }
-          spawn(:method => :thread, :nice => 9) do
-            ds.each do |d|
-              open("#{APP_URI}/features/node_tree_expanded/#{d}")
-            end
-          end
-        end
-      end
       Rails.cache.delete('tree_tmp')
+      TreeCache.reheat(node_id)
     end
   end
 end

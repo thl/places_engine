@@ -13,10 +13,11 @@ class Feature < ActiveRecord::Base
     node.expire_children_cache
   end
   
-  after_update do |r|
-    node = r.parent.nil? ? r : r.parent
-    node.expire_children_cache
-  end
+  # after_update do |r|
+  #   node = r.parent.nil? ? r : r.parent
+  #   node.expire_children_cache
+  # end
+  
   # acts_as_solr :fields=>[:pid]
   
   acts_as_family_tree :node, :tree_class => 'FeatureRelation', :conditions => {'feature_relations.feature_relation_type_id' => FeatureRelationType.hierarchy_ids}
