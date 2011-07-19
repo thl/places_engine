@@ -930,7 +930,8 @@ class Importation
     delete_kmaps = self.fields.delete('kmaps.delete')
     category_features.clear if !delete_kmaps.blank? && delete_kmaps.downcase == 'yes'
     1.upto(n) do |i|
-      kmap_str = self.fields.delete("#{i}.kmaps.id")
+      kmap_prefix = "#{i}.kmaps"
+      kmap_str = self.fields.delete("#{kmap_prefix}.id")
       next if kmap_str.blank?
       kmap = Category.find(kmap_str.scan(/\d+/).first.to_i)
       if kmap.nil?
@@ -939,10 +940,19 @@ class Importation
       end      
       conditions = { :category_id => kmap.id }
       category_feature = category_features.find(:first, :conditions => conditions)
-      category_feature = category_features.create(conditions) if category_feature.nil?
+      values = {}
+      show_parent = self.fields.delete("#{kmap_prefix}.show_parent")
+      values[:show_parent] = show_parent.downcase=='yes' if !show_parent.blank?
+      show_root = self.fields.delete("#{kmap_prefix}.show_root")
+      values[:show_root] = show_root.downcase=='yes' if !show_root.blank?
+      if category_feature.nil?
+        category_feature = category_features.create(conditions.merge(values))
+      else
+        category_feature.update_attributes(values)
+      end
       next if category_feature.nil?
       0.upto(3) do |j|
-        prefix = j==0 ? "#{i}.kmaps" : "#{i}.kmaps.#{j}"
+        prefix = j==0 ? kmap_prefix : "#{kmap_prefix}.#{j}"
         self.add_date(prefix, category_feature)
         self.add_note(prefix, category_feature)
         self.add_info_source(prefix, category_feature)
@@ -969,6 +979,10 @@ class Importation
       end
       conditions = {:category_id => kmap.id}
       values = {:numeric_value => numeric_value, :string_value => string_value}
+      show_parent = self.fields.delete("#{key}.show_parent")
+      values[:show_parent] = show_parent.downcase=='yes' if !show_parent.blank?
+      show_root = self.fields.delete("#{key}.show_root")
+      values[:show_root] = show_root.downcase=='yes' if !show_root.blank?
       category_feature = category_features.find(:first, :conditions => conditions)
       if category_feature.nil?
         category_feature = category_features.create(conditions.merge(values))

@@ -36,6 +36,7 @@ class Feature < ActiveRecord::Base
   has_many :altitudes, :dependent => :destroy
   has_many :association_notes, :foreign_key => "notable_id", :dependent => :destroy
   has_many :cached_feature_names, :dependent => :destroy
+  has_many :cached_feature_relation_categories, :dependent => :destroy
   has_many :category_features, :dependent => :destroy
   has_many :citations, :as => :citable, :dependent => :destroy
   has_many :contestations, :dependent => :destroy
@@ -85,6 +86,23 @@ class Feature < ActiveRecord::Base
     return children.find(:all, :include => {:cached_feature_names => :feature_name}, :conditions => {'cached_feature_names.view_id' => current_view.id}, :order => 'feature_names.name').select do |c| # children(:include => [:names, :parent_relations])
       c.parent_relations.any? {|cr| cr.perspective==current_perspective}
     end
+  end
+  
+  def all_descendants_by_topic(topic)
+    pending = [self.id]
+    des = []
+    while !pending.empty?
+      e = pending.pop
+      FeatureRelation.all(:select => 'child_node_id', :conditions => {:parent_node_id => e}).each do |r|
+        c = r.child_node_id
+        if !des.include? c
+          des << c
+          pending.push(c)
+        end
+      end
+    end
+    category_id = topic.id
+    des.select{ |f_id| !CumulativeCategoryFeatureAssociation.find(:first, :conditions => {:category_id => category_id, :feature_id => f_id}).nil? }.collect{|f_id| Feature.find(f_id)}
   end
   
   #
@@ -421,7 +439,7 @@ class Feature < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20110628205752
+# Schema version: 20110629163847
 #
 # Table name: features
 #

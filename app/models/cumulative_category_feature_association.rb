@@ -8,7 +8,7 @@ class CumulativeCategoryFeatureAssociation < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20110628205752
+# Schema version: 20110629163847
 #
 # Table name: cumulative_category_feature_associations
 #

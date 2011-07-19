@@ -33,17 +33,23 @@
 		 category_features = feature.category_features.all(:conditions => {:type => nil}) %>
 	<%= content_tag :h3, Feature.human_attribute_name(:characteristic, :count => :many).s unless category_features.empty? %>
 	  <ul id="CategoryFeaturesList">
-	<% category_features.each do |cfs| 
-		 cf = cfs.category
-		 if !cf.nil? 
+	<% category_features.each do |cf| 
+		 c = cf.category
+		 if !c.nil? 
 			values = []
-			values << cfs.string_value if !cfs.string_value.blank?
-			values << cfs.numeric_value if !cfs.numeric_value.nil?
+			values << cf.string_value if !cf.string_value.blank?
+			values << cf.numeric_value if !cf.numeric_value.nil?
 			 %>
 		 	<li>
-				<%= cf.root.title %> - <%= link_to cf.title, cf.get_url_with_parent %><%= ": #{values.join(', ')}" if !values.empty? %>
-				<%= note_popup_link_for(cfs) %>
-				<%= time_units_for(cfs) %>
+<%             if cf.show_root? || cf.show_parent?
+	             prefix = []
+	             prefix << c.root.title if cf.show_root?
+	             prefix << c.parent.title if cf.show_parent? %>
+<%=              "#{prefix.join(': ')} -" %>
+<%			   end %>
+<%=            link_to c.title, c.get_url_with_parent %><%= ": #{values.join(', ')}" if !values.empty? %>
+<%=            note_popup_link_for(cf) %>
+<%=            time_units_for(cf) %>
 			</li>
 	<%   end
 	   end %>
