@@ -9,8 +9,17 @@ class Feature < ActiveRecord::Base
   validates_numericality_of :position, :allow_nil=>true
 
   after_save do |r|
-    node = r.parent.nil? ? r : r.parent
-    node.expire_children_cache
+    if !r.skip_update
+      node = r.parent.nil? ? r : r.parent
+      node.expire_children_cache
+    end
+  end
+  
+  after_destroy do |r|
+    if !r.skip_update
+      node = r.parent.nil? ? r : r.parent
+      node.expire_children_cache
+    end
   end
   
   # after_update do |r|

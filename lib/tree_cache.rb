@@ -1,13 +1,13 @@
 
-module TreeCache
-  
+class TreeCache
+    
   @@cache_dir = "#{ActionController::Base.cache_store.cache_path}/views/tree/"
   @@cache_file_prefix = 'node_id_'
   @@cache_file_suffix = '.cache'
   
   def self.reheat( root_node )
     return if root_node.nil?
-  
+
     if root_node == 0
       Feature.roots.each{ |n| self.generate(n.id) }
     else
@@ -30,11 +30,12 @@ module TreeCache
           unless perspectives.empty?
             views.each do |v|
               perspectives.each do |p|
-                if Dir["#{@@cache_dir}#{p}/#{v}/#{@@cache_file_prefix}#{d}#{@@cache_file_suffix}"].empty?
+                dir = "#{@@cache_dir}#{p}/#{v}/#{@@cache_file_prefix}#{d}#{@@cache_file_suffix}"
+                if Dir[dir].empty?
                   open("#{APP_URI}/features/node_tree_expanded/#{d}?view_id=#{v}&perspective_id=#{p}")
-                  puts "created cache file for id: #{d} – perspective: #{p} – view: #{v}"
+                  puts "created: #{dir}"
                 else
-                  puts "cache file already existed for id: #{d} – perspective: #{p} – view: #{v}"
+                  #puts "cache file already existed for id: #{d} – perspective: #{p} – view: #{v}"
                 end
               end
             end

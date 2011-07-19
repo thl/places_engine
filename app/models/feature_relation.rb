@@ -18,7 +18,9 @@ class FeatureRelation < ActiveRecord::Base
   end
   
   before_destroy do |r|
-    r.expire_cache
+    if !record.skip_update
+      r.expire_cache
+    end
   end
   
   after_destroy do |record|
