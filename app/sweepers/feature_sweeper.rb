@@ -1,5 +1,6 @@
 class FeatureSweeper < ActionController::Caching::Sweeper
   observe Feature, FeatureRelation
+  FORMATS = ['xml', 'json']
   
   def after_save(record)
     expire_cache(record) if record.is_a?(Feature)
@@ -10,7 +11,11 @@ class FeatureSweeper < ActionController::Caching::Sweeper
   end
   
   def expire_cache(feature)
-    expire_page feature_url(feature.fid, :skip_relative_url_root => true, :only_path => true, :format => 'xml')
+    options = {:skip_relative_url_root => true, :only_path => true}
+    FORMATS.each do |format|
+      options[:format] = format
+      expire_page feature_url(feature.fid, options)
+    end
   end
   
   def after_commit(record)
