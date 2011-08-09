@@ -40,6 +40,15 @@ xml.feature(:id => feature.id, :pid => feature.pid, :fid => feature.fid, :header
       parent.object_types.each { |type| xml.feature_type(:title => type.title, :id => type.id) }
     end
   end
+  descriptions = feature.descriptions
+  if !descriptions.empty?
+    descriptions.each do |d|
+      options = {:id => d.id, :is_primary => d.is_primary}
+      options[:source_url] = d.source_url if !d.source_url.blank?
+      options[:title] = d.title if !d.title.blank?
+      xml.description(options)
+    end
+  end
   xml.has_shapes(feature.shapes.empty? ? 0 : 1)
   xml.created_at(feature.created_at, :type => 'datetime')
   xml.updated_at(feature.updated_at, :type => 'datetime')

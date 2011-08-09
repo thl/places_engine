@@ -422,6 +422,6 @@ class FeaturesController < ApplicationController
     private
     
     def api_response?
-      request.format.xml?
+      request.format.xml? || request.format.json?
     end
 end

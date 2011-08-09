@@ -1,7 +1,6 @@
 class Admin::DescriptionsController < ResourceController::Base
-  
+  cache_sweeper :description_sweeper, :only => [:update, :destroy]
   belongs_to :feature
-
   before_filter :collection
 
   create.before { defaults_primary }
@@ -51,23 +50,14 @@ class Admin::DescriptionsController < ResourceController::Base
     end
     
     if feature_id
-      @collection = Description.send(:with_scope, :find=>{:conditions=>['feature_id = ?', feature_id]}) do
-        Description.search(params[:filter], :page=>params[:page])
-      end
+      @collection = Description.send(:with_scope, :find=>{:conditions=>['feature_id = ?', feature_id]}) { Description.search(params[:filter], :page=>params[:page]) }
     else
       @collection = Description.search(params[:filter], :page=>params[:page])
     end
-    
   end
   
   def defaults_primary
-    if parent_object.descriptions.empty?
-      object.is_primary = "true"
-    end
-    if object.is_primary.nil? 
-      object.is_primary = "false"
-    end
+    object.is_primary = 'true' if parent_object.descriptions.empty?
+    object.is_primary = 'false' if object.is_primary.nil?
   end
-
-  
 end
