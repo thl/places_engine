@@ -13,7 +13,7 @@ add_breadcrumb_item 'edit'
 	category_form_table({
 		:form_partial => 'form_fields',
 		:footer => "#{link_to 'Cancel', object_path} | #{submit_tag 'Update'}",
-		:locals => { :f => f, :object => @object }
+		:locals => { :f => f, :object => @object, :single_selection => true }
 	})
 %>
 

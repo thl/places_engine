@@ -1,13 +1,10 @@
 <%= error_messages_for model_name %>
-
-<%=
-
-	category_fields({
+<%=	category_fields({
 		:subject => {:display => f_label(@object.feature), :label => f.label(:feature)},
 		:root => @parent_object_type,
-		:varname => :feature_object_type,
+		:var_name => :feature_object_type,
 		:include_js => false,
-		:selectable => false
-	})
-
-%>
+		:include_styles => true,
+		:selectable => false,
+		:single_selection => single_selection
+	}) %>

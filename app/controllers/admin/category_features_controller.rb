@@ -4,35 +4,25 @@ class Admin::CategoryFeaturesController < ResourceController::Base
   
   def create
     mca_hash = params[:category_feature]
-    mca_cats = mca_hash[:category_id].split(',')
+    mca_cats = mca_hash[:category_id]
     errors = []
     @feature = Feature.find(params[:feature_id])
-    mca_cats.each do |c|
-      unless c.blank?
-        c = c.to_i
-        mca_hash_temp = mca_hash
-        mca_hash_temp[:category_id] = c
-        mca_hash_temp[:feature_id] = @feature.id
-        @cf = CategoryFeature.new(mca_hash_temp)
-        begin
-          @cf.save
-        rescue ActiveRecord::StatementInvalid
-          # ignore duplicate issues. how to add ignore parameter to sql query here without changing to sql completely?
+    if mca_cats.nil?
+      redirect_to admin_feature_url(@feature)
+    elsif mca_cats.size==1
+      mca_hash[:category_id] = mca_cats.first
+      @cf = @feature.category_features.new(mca_hash)
+      respond_to do |format|
+        if @cf.save
+          format.html { redirect_to admin_feature_url(@feature) }
         else
-         #errors.push( @cf.errors )
+          format.html { render :action => "new" }
         end
       end
-    end
-    #puts "ez: #{errors}"
-    respond_to do |format|
-      unless errors.length > 0
-        flash[:notice] = 'Success!'
-        format.html { redirect_to admin_feature_url(@feature) }
-      else
-        flash[:notice] = errors.join(', ')
-        format.html { render :action => "new" }
-      end
-    end
+    else
+      mca_cats.each { |c_id| @feature.category_features.create(:category_id => c_id) }
+      redirect_to admin_feature_url(@feature)
+    end    
   end
   
   def collection

@@ -2,7 +2,7 @@ class CategoryFeature < ActiveRecord::Base
   attr_accessor :skip_update
   
   belongs_to :feature
-  belongs_to :category
+  # belongs_to :category
 
   extend HasTimespan
   extend IsCitable
@@ -24,12 +24,16 @@ class CategoryFeature < ActiveRecord::Base
     feature = record.feature
     ([cat] + cat.ancestors).each do |c|
       if (c.id==cat.id || c.cumulative?) && CumulativeCategoryFeatureAssociation.find(:first, :conditions => {:category_id => c.id, :feature_id => feature.id}).nil?
-        CumulativeCategoryFeatureAssociation.create(:category => c, :feature_id => feature.id)
+        CumulativeCategoryFeatureAssociation.create(:category_id => c.id, :feature_id => feature.id)
       end
     end
     Rails.cache.delete('CategoryFeature-max_updated_at')
     feature.update_cached_feature_relation_categories if !record.skip_update
     # feature.touch
+  end
+  
+  def category
+    Category.find(self.category_id)
   end
 
   def to_s

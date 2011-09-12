@@ -1,13 +1,13 @@
 <%= error_messages_for model_name %>
-
-<%= 
-	category_fields({
+<%= category_fields({
 		:subject => { :display => f_label(@object.feature), :label => f.label(:feature) },
 		:root => nil,
-		:varname => :category_feature,
-		:extrafields => [
+		:var_name => :category_feature,
+		:extra_fields => [
  			{:field => f.text_field(:string_value, :style => 'padding:3px; width: 300px'), :label => f.label(:text_label)},
 			{:field => f.text_field(:numeric_value, :style => 'padding:3px; width: 300px'), :label => f.label(:numeric_label)}
-		]
-	})
-%>
+		],
+		:single_selection => single_selection,
+		:include_js => false,
+		:include_styles => true
+	}) %>
