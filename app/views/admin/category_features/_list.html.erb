@@ -28,7 +28,12 @@
 			) %>
 		</td>		
 		<%= "<td>#{item.feature.pid}</td>" unless hide_feature_id %>
-		<td><%= "#{category.root.title}: #{category.title}" if !item.category.nil? %></td>
+		<td>
+<%        if !category.nil? %>
+<%=         item.category_header %>
+<%=         category.title %>
+<%        end %>
+        </td>
 		<% values = [] 
 		   values << item.string_value if !item.string_value.blank?  
 		   values << item.numeric_value if !item.numeric_value.nil? %>

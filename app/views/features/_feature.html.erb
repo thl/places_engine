@@ -41,12 +41,7 @@
 			values << cf.numeric_value if !cf.numeric_value.nil?
 			 %>
 		 	<li>
-<%             if cf.show_root? || cf.show_parent?
-	             prefix = []
-	             prefix << c.root.title if cf.show_root?
-	             prefix << c.parent.title if cf.show_parent? %>
-<%=              "#{prefix.join(': ')} -" %>
-<%			   end %>
+<%=            cf.category_header %>
 <%=            link_to c.title, c.get_url_with_parent %><%= ": #{values.join(', ')}" if !values.empty? %>
 <%=            note_popup_link_for(cf) %>
 <%=            time_units_for(cf) %>

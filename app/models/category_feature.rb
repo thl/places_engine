@@ -35,6 +35,14 @@ class CategoryFeature < ActiveRecord::Base
   def category
     Category.find(self.category_id)
   end
+  
+  def category_header
+    return '' if !self.show_root? && !self.show_parent?
+    prefix = []
+    prefix << self.category.root.title if self.show_root?
+    prefix << self.category.parent.title if self.show_parent?
+    return "#{prefix.join(': ')} -"
+  end
 
   def to_s
     "#{category.title}"

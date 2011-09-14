@@ -8,7 +8,8 @@
 		:selectable => true,
 		:single_selection => single_selection,
 		:extra_fields => [
- 			{:field => f.text_field(:string_value, :style => 'padding:3px; width: 300px'), :label => f.label(:text_label)},
-			{:field => f.text_field(:numeric_value, :style => 'padding:3px; width: 300px'), :label => f.label(:numeric_label)}
-		]
-	}) %>
+			{:field => f.check_box(:show_parent), :label => CategoryFeature.human_attribute_name(:show_parent).s},
+			{:field => f.check_box(:show_root), :label => CategoryFeature.human_attribute_name(:show_root).s},
+			{:field => f.text_field(:string_value, :style => 'padding:3px; width: 300px'), :label => f.label(:text_label)},
+			{:field => f.text_field(:numeric_value, :style => 'padding:3px; width: 300px'), :label => f.label(:numeric_label)}]
+}) %>
