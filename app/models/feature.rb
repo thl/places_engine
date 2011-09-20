@@ -397,12 +397,13 @@ class Feature < ActiveRecord::Base
   end
   
   def clone_with_names
-    new_feature = Feature.create(:fid => Feature.generate_pid, :is_blank => false, :is_public => true)
+    new_feature = Feature.create(:fid => Feature.generate_pid, :is_blank => false, :is_public => true, :skip_update => true)
     names = self.names
     names_to_clones = Hash.new
     names.each do |name|
       cloned = name.clone
       cloned.feature = new_feature
+      cloned.skip_update = true
       cloned.save
       names_to_clones[name.id] = cloned
     end
@@ -412,8 +413,12 @@ class Feature < ActiveRecord::Base
       new_relation = relation.clone
       new_relation.child_node = names_to_clones[new_relation.child_node.id]
       new_relation.parent_node = names_to_clones[new_relation.parent_node.id]
+      new_relation.skip_update = true
       new_relation.save
     end
+    new_feature.update_name_positions
+    new_feature.update_cached_feature_names
+    names.each{ |name| name.update_hierarchy }
     return new_feature
   end
   
