@@ -21,8 +21,20 @@ class Admin::FeatureNamesController < ResourceController::Base
   
   def set_priorities
     feature = Feature.find(params[:id])
-    feature.names.each { |name| name.update_attribute(:position, params['feature_name'].index(name.id.to_s) + 1) }
-    feature.update_is_name_position_overriden
+    changed = false
+    feature.names.each do |name|
+      name.position = params['feature_name'].index(name.id.to_s) + 1
+      if name.position_changed?
+        name.skip_update = true
+        name.save
+        changed = true
+      end
+    end
+    if changed
+      feature.update_is_name_position_overriden
+      feature.update_cached_feature_names
+      feature.expire_tree_cache
+    end
     render :nothing => true
   end
   

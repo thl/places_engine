@@ -9,10 +9,7 @@ class Feature < ActiveRecord::Base
   validates_numericality_of :position, :allow_nil=>true
 
   after_save do |r|
-    if !r.skip_update
-      node = r.parent.nil? ? r : r.parent
-      node.expire_children_cache
-    end
+    r.expire_tree_cache if !r.skip_update
   end
   
   after_destroy do |r|
@@ -428,6 +425,11 @@ class Feature < ActiveRecord::Base
       next if nodes.blank?
       ActionController::Base.new.expire_fragment(Regexp.new("/views/tree/.*/node_id_(#{nodes.join('|')}).*"))
     end
+  end
+  
+  def expire_tree_cache
+    node = self.parent.nil? ? self : self.parent
+    node.expire_children_cache
   end
       
   private

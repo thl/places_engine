@@ -6,7 +6,7 @@ class FeatureName < ActiveRecord::Base
     feature = record.feature
     Rails.cache.write('tree_tmp', ( feature.parent.nil? ? feature.id : feature.parent.id))
     if !record.skip_update
-      feature.update_cached_feature_names 
+      feature.update_cached_feature_names
       feature.touch
    end
   end #{ |record| record.update_hierarchy

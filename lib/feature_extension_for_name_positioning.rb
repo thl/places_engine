@@ -191,7 +191,7 @@ module FeatureExtensionForNamePositioning
     calculated_order = hash.keys.sort.collect{|i| hash[i].id}
     current_order = self.prioritized_names.collect(&:id)
     self.is_name_position_overriden = current_order != calculated_order
-    self.save
+    self.save if self.changed?
   end
   
   def update_name_positions
