@@ -31,19 +31,25 @@ class CategoryFeature < ActiveRecord::Base
     feature.update_cached_feature_relation_categories if !record.skip_update
     # feature.touch
   end
+    
+  def category_stack
+    stack = []
+    stack << self.label if !label.blank? && self.prefix_label
+    stack << self.category.root.title if self.show_root?
+    stack << self.category.parent.title if self.show_parent?
+    stack << self.category.title
+    stack[stack.size-1] = stack[stack.size-1] + " #{self.label}" if !label.blank? && !self.prefix_label
+    stack
+  end
+  
+  def stacked_category
+    return category_stack.join(' > ')
+  end
   
   def category
     Category.find(self.category_id)
   end
   
-  def category_header
-    return '' if !self.show_root? && !self.show_parent?
-    prefix = []
-    prefix << self.category.root.title if self.show_root?
-    prefix << self.category.parent.title if self.show_parent?
-    return "#{prefix.join(': ')} -"
-  end
-
   def to_s
     "#{category.title}"
   end
@@ -80,7 +86,7 @@ class CategoryFeature < ActiveRecord::Base
 end
 
 # == Schema Info
-# Schema version: 20110629163847
+# Schema version: 20110923232332
 #
 # Table name: category_features
 #
@@ -88,8 +94,10 @@ end
 #  category_id    :integer         not null
 #  feature_id     :integer         not null
 #  perspective_id :integer
+#  label          :string(255)
 #  numeric_value  :integer
 #  position       :integer         not null, default(0)
+#  prefix_label   :boolean         not null, default(TRUE)
 #  show_parent    :boolean         not null
 #  show_root      :boolean         not null, default(TRUE)
 #  string_value   :string(255)

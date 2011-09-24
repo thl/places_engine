@@ -8,7 +8,7 @@
 		<th class="listActionCol"></th>
 		<%= '<th>THL Feature ID</th>' unless hide_feature_id %>
 		<th>Characteristic</th>
-		<th>Label</th>
+		<th>Value</th>
 		<th>Notes</th>
 		<th>Add Note</th>
 		<th>Dates</th>
@@ -28,12 +28,7 @@
 			) %>
 		</td>		
 		<%= "<td>#{item.feature.pid}</td>" unless hide_feature_id %>
-		<td>
-<%        if !category.nil? %>
-<%=         item.category_header %>
-<%=         category.title %>
-<%        end %>
-        </td>
+		<td><%= item.stacked_category if !category.nil? %></td>
 		<% values = [] 
 		   values << item.string_value if !item.string_value.blank?  
 		   values << item.numeric_value if !item.numeric_value.nil? %>

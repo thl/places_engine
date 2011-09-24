@@ -4,7 +4,7 @@ class GeoCodeType < SimpleProp
 end
 
 # == Schema Info
-# Schema version: 20110629163847
+# Schema version: 20110923232332
 #
 # Table name: simple_props
 #

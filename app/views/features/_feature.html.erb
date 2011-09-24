@@ -38,11 +38,11 @@
 		 if !c.nil? 
 			values = []
 			values << cf.string_value if !cf.string_value.blank?
-			values << cf.numeric_value if !cf.numeric_value.nil?
-			 %>
+			values << cf.numeric_value if !cf.numeric_value.nil? 
+			stack = cf.category_stack
+			stack.push(link_to(stack.pop, c.get_url_with_parent))	%>
 		 	<li>
-<%=            cf.category_header %>
-<%=            link_to c.title, c.get_url_with_parent %><%= ": #{values.join(', ')}" if !values.empty? %>
+<%=            stack.join(' > ') %><%= ": #{values.join(', ')}" if !values.empty? %>
 <%=            note_popup_link_for(cf) %>
 <%=            time_units_for(cf) %>
 			</li>

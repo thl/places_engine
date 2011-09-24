@@ -1,6 +1,6 @@
 <%= error_messages_for model_name %>
 <%= category_fields({
-		:subject => { :display => f_label(@object.feature), :label => f.label(:feature) },
+		:subject => {:display => f_label(@object.feature), :label => f.label(:feature) },
 		:root => nil,
 		:var_name => :category_feature,
 		:include_js => false,
@@ -8,8 +8,9 @@
 		:selectable => true,
 		:single_selection => single_selection,
 		:extra_fields => [
-			{:field => f.check_box(:show_parent), :label => CategoryFeature.human_attribute_name(:show_parent).s},
-			{:field => f.check_box(:show_root), :label => CategoryFeature.human_attribute_name(:show_root).s},
-			{:field => f.text_field(:string_value, :style => 'padding:3px; width: 300px'), :label => f.label(:text_label)},
-			{:field => f.text_field(:numeric_value, :style => 'padding:3px; width: 300px'), :label => f.label(:numeric_label)}]
+			{:field => f.text_field(:string_value, :style => 'padding:3px; width: 300px'), :label => f.label(:text_value)},
+			{:field => f.text_field(:numeric_value, :style => 'padding:3px; width: 300px'), :label => f.label(:numeric_value)},
+			{:field => f.check_box(:show_parent), :label => "Show category\'s immediate parent"},
+			{:field => f.check_box(:show_root), :label => 'Show top level Knowledge Map'},
+			{:field => "#{f.text_field(:label)} #{f.radio_button(:prefix_label, true)} Prefix with > &nbsp;&nbsp;&nbsp;&nbsp;#{f.radio_button(:prefix_label, false)} 'SPACE suffix'", :label => CategoryFeature.human_attribute_name(:label)}]
 }) %>
