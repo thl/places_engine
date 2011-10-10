@@ -260,17 +260,7 @@ class Feature < ActiveRecord::Base
     feature_object_types.collect(&:category).select{|c| c}
   end
   
-  def categories(options = {})
-    #if options[:cumulative]
-    #  return cumulative_category_feature_associations.collect(&:category).select{|c| c}
-    #else
-      category_features.collect(&:category).select{|c| c}
-    #end
-  end
-  
-  def category_count(options = {})
-    #association = options[:cumulative] || false ? CumulativeCategoryFeatureAssociation : CategoryFeature
-    #association
+  def category_count
     CategoryFeature.count(:conditions => {:feature_id => self.id})
   end
   

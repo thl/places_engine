@@ -10,9 +10,7 @@ class TopicsController < ApplicationController
     @object_type = "Topic"
     @object_title = @category.title
     @object_url = Category.element_url(@category.id, :format => 'html')
-
-    join = @category.root.id==20 ? :feature_object_types : :category_features
-    @features = Feature.paginate(:conditions => {'category_features.category_id' => @category.id, 'cached_feature_names.view_id' => current_view.id}, :joins => join, :include => {:cached_feature_names => :feature_name}, :order => 'feature_names.name', :page => params[:page] || 1, :per_page => 15)
+    @features = Feature.paginate(:conditions => {'cumulative_category_feature_associations.category_id' => @category.id, 'cached_feature_names.view_id' => current_view.id}, :joins => :cumulative_category_feature_associations, :include => {:cached_feature_names => :feature_name}, :order => 'feature_names.name', :page => params[:page] || 1, :per_page => 15)
     @feature = Feature.find(session[:interface][:context_id]) unless session[:interface][:context_id].blank?
 
     if request.xhr?

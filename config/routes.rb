@@ -16,7 +16,7 @@ ActionController::Routing::Routes.draw do |map|
   map.namespace(:admin) do |admin|
     admin.resources :alt_spelling_systems, :association_notes, :blurbs, :feature_name_types, :feature_relation_types, :feature_types,
                     :geo_code_types, :languages, :note_titles, :notes, :orthographic_systems, :perspectives,
-                    :phonetic_systems, :timespans, :users, :writing_systems, :xml_documents, :views
+                    :phonetic_systems, :users, :writing_systems, :xml_documents, :views
     admin.openid_new 'openid_new', :controller => 'users', :action => 'openid_new'
     admin.openid_create 'openid_create', :controller => 'users', :action => 'create', :requirements => { :method => :post }
     admin.admin '', :controller=>'features', :action=>'index'

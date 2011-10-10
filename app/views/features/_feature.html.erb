@@ -100,10 +100,10 @@
 		  <%= note_popup_link_list_for(feature, {:association_type => Description.model_name}) %>
 	<%  end
 	  associated_resources = [
-      ["Topics", feature.category_count(:cumulative => true), feature.kmaps_url],
-	    ["Pictures", feature.media_count(:type => 'Picture'), feature.pictures_url],
-	    ["Video", feature.media_count(:type => 'Video'), feature.videos_url],
-	    ["Texts", feature.media_count(:type => 'Document'), feature.documents_url]
+      ['Topics', feature.category_count, feature.kmaps_url],
+	    ['Pictures', feature.media_count(:type => 'Picture'), feature.pictures_url],
+	    ['Video', feature.media_count(:type => 'Video'), feature.videos_url],
+	    ['Texts', feature.media_count(:type => 'Document'), feature.documents_url]
     ]
 	if associated_resources.collect{|ar| ar[1]}.sum > 0 %>
 	  <h3>Associated Resources</h3>
