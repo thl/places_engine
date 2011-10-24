@@ -1,35 +1,28 @@
 <%= error_messages_for :feature_relation_type %>
-
 <fieldset>
-	
-	<legend>Feature Relation Type</legend>
-	<div class="row">
-		<%= f.check_box :is_hierarchical %> 
-		<%= f.label :is_hierarchical, "Is Hierarchical" %>
-	</div>
-
-	<div class="row">
-		<%= f.check_box :is_symmetric, :onchange => "$(this).is(':checked') ? $('#asymmetric_label').hide() : $('#asymmetric_label').show()" %> 
-		<%= f.label :is_symmetric, "Is Symmetric" %>
-	</div>
-		
-	<div class="row">
-		<%= f.label :label %>
-		<%= f.text_field :label, :class => :text %>
-	</div>
-	
-	<div class="row" id="asymmetric_label" <%= 'style="display:none;"' if @object.is_symmetric %>>
-		<%= f.label :asymmetric_label %>
-		<%= f.text_field :asymmetric_label, :class => :text %>
-	</div>
-	
-	<div class="row">
-		<%= f.label :code %>
-		<%= f.text_field :code, :class => :text %>
-	</div>
-	
-	<div class="row">
-		<%= f.label :asymmetric_code %>
-		<%= f.text_field :asymmetric_code, :class => :text %>
-	</div>	
+  <legend><%= FeatureRelationType.human_name.titleize.s %></legend>
+  <div class="row">
+<%= f.check_box :is_hierarchical %>
+<%= f.label(:is_hierarchical).s %>
+  </div>
+  <div class="row">
+<%= f.check_box :is_symmetric, :onchange => "$(this).is(':checked') ? $('#asymmetric_label').hide() : $('#asymmetric_label').show()" %>
+<%= f.label(:is_symmetric).s %>
+  </div>
+  <div class="row">
+<%= f.label(:label).s %>
+<%= f.text_field :label, :class => :text %>
+  </div>
+  <div class="row" id="asymmetric_label" <%= 'style="display:none;"' if @object.is_symmetric %>>
+<%= f.label(:asymmetric_label).s %>
+<%= f.text_field :asymmetric_label, :class => :text %>
+  </div>
+  <div class="row">
+<%= f.label(:code).s %>
+<%= f.text_field :code, :class => :text %>
+  </div>
+  <div class="row">
+<%= f.label(:asymmetric_code).s %>
+<%= f.text_field :asymmetric_code, :class => :text %>
+  </div>
 </fieldset>

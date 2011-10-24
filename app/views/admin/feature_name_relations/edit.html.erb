@@ -1,18 +1,13 @@
-<%
-add_breadcrumb_item features_link
-add_breadcrumb_item link_to(@object.feature.pid, admin_feature_path(@object.feature))
-add_breadcrumb_item link_to('names', admin_feature_feature_names_path(@object.feature))
-add_breadcrumb_item link_to(@object.child_node.name, admin_feature_name_path(@object.child_node))
-add_breadcrumb_item link_to('relations', admin_feature_name_feature_name_relations_path(@object.child_node))
-add_breadcrumb_item link_to(@object.parent_node.name, admin_feature_name_relation_path(@object))
-add_breadcrumb_item 'edit'
-%>
-
-<% form_for :feature_name_relation, @object, :url=>admin_feature_name_relation_path(@object), :html=>{:method=>:put} do |f| %>
-	
-	<%#= f.hidden_field :child_node_id, :value=>params[:feature_name_id] %>
-	<%#= f.hidden_field :parent_node_id, :value=>params[:target_id] %>
-	
-	<%= render :partial=>'form_fields', :locals=>{:f=>f} %>
-	<%= link_to 'Cancel', admin_feature_name_relation_path(@object) %> | <strong><%= submit_tag 'Update' %></strong>
+<% add_breadcrumb_item features_link
+   add_breadcrumb_item link_to(@object.feature.pid, admin_feature_path(@object.feature))
+   add_breadcrumb_item link_to(FeatureName.human_name(:count => :many).s, admin_feature_feature_names_path(@object.feature))
+   add_breadcrumb_item link_to(@object.child_node.name, admin_feature_name_path(@object.child_node))
+   add_breadcrumb_item link_to(FeatureNameRelation.human_name(:count => :many).s, admin_feature_name_feature_name_relations_path(@object.child_node))
+   add_breadcrumb_item link_to(@object.parent_node.name, admin_feature_name_relation_path(@object))
+   add_breadcrumb_item ts('edit.this')
+   form_for :feature_name_relation, @object, :url=>admin_feature_name_relation_path(@object), :html=>{:method=>:put} do |f| %>	
+<%#= f.hidden_field :child_node_id, :value=>params[:feature_name_id] %>
+<%#= f.hidden_field :parent_node_id, :value=>params[:target_id] %>
+<%=  render :partial=>'form_fields', :locals=>{:f=>f} %>
+<%=  link_to ts('cancel.this'), admin_feature_name_relation_path(@object) %> | <strong><%= globalized_submit_tag 'update.this' %></strong>
 <% end %>

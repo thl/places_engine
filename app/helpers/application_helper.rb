@@ -247,7 +247,7 @@ module ApplicationHelper
   #
   #
   def yes_no(value)
-    (value.nil? || value==0 || value=='false' || value == false) ? 'no' : 'yes'
+    (value.nil? || value==0 || value=='false' || value == false) ? ts(:negation) : ts(:affirmation)
   end
   
   #

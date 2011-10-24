@@ -1,30 +1,24 @@
 <fieldset>	
-	<legend>
-		Pages for Citation of: <%= @object.citation.citable.id %>
-	</legend>	
+  <legend><%= ts(:for, :what => Page.human_name(:count => :many), :whom => t('citation.of', :what => @object.citation.citable.id)) %></legend>
 <%= f.hidden_field :id %>
-	<div class="row">
-<%= f.label :volume %>
+  <div class="row">
+<%= f.label(:volume).s %>
 <%= f.text_field :volume, :class => :text %>
-    </div>
-	<div class="row">
-<%= f.label :start_page %>
+  </div>
+  <div class="row">
+<%= f.label(:start_page).s %>
 <%= f.text_field :start_page, :class => :text %>
-    </div>
-	<div class="row">
-<%= f.label :start_line %>
+  </div>
+  <div class="row">
+<%= f.label(:start_line).s %>
 <%= f.text_field :start_line, :class => :text %>
-    </div>
-	<div class="row">
-<%= f.label :end_page %>
+  </div>
+  <div class="row">
+<%= f.label(:end_page).s %>
 <%= f.text_field :end_page, :class => :text %>
-	</div>
-	<div class="row">
-<%= f.label :end_line %>
+  </div>
+  <div class="row">
+<%= f.label(:end_line).s %>
 <%= f.text_field :end_line, :class => :text %>
-	</div>
-	<div class="row">
-		<%= f.label '' %>
-		<%= f.label '' %>		
-	</div>  
+  </div>
 </fieldset>

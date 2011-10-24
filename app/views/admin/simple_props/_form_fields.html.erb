@@ -1,34 +1,22 @@
 <%= tagged_tinymce_script %>
-	<%= error_messages_for model_name %>
-
+<%= error_messages_for model_name %>
 <fieldset>
-	
-	<legend>
-		<%= model_name.titleize %>
-	</legend>
-	
-	<%= f.hidden_field :id %>
-	
-	<div class="row">
-		<%= f.label :name %>
-		<%= f.text_field :name, :class => :text %>
-	</div>
-	
-	<div class="row">
-		<%= f.label :code %>
-		<%= f.text_field :code, :class => :text %>
-	</div>
-	
-	<div class="row">
-		<%= f.label :description %>
-	</div>
-	<div class="row">
-		<%= f.text_area :description, :rows=>4, :class => 'mceEditor' %>
-	</div>
-	
-	<div class="row">
-		<%= f.label '' %>
-		<%= f.label '' %>		
-	</div>
-	
+  <legend>
+<%= model.human_name.titleize.s %>
+  </legend>
+<%= f.hidden_field :id %>
+  <div class="row">
+<%= f.label(:name).s %>
+<%= f.text_field :name, :class => :text %>
+  </div>
+  <div class="row">
+<%= f.label(:code).s %>
+<%= f.text_field :code, :class => :text %>
+  </div>
+  <div class="row">
+<%= f.label(:description).s %>
+  </div>
+  <div class="row">
+<%= f.text_area :description, :rows=>4, :class => 'mceEditor' %>
+  </div>
 </fieldset>

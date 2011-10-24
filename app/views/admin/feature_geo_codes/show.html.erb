@@ -1,36 +1,25 @@
-<%
-add_breadcrumb_item features_link
-add_breadcrumb_item feature_link(@object.feature)
-
-add_breadcrumb_item link_to (collection_name, admin_feature_feature_geo_codes_path(@parent_object))
-
-add_breadcrumb_item @object
-%>
-
+<% add_breadcrumb_item features_link
+   add_breadcrumb_item feature_link(@object.feature)
+   add_breadcrumb_item link_to (collection_name, admin_feature_feature_geo_codes_path(@parent_object))
+   add_breadcrumb_item @object %>
 <fieldset>
-	
-	<legend>
-		<%= model_name.titleize %>
-		<%= edit_item_link @object %>
-	</legend>
-	
-	<div class="row">
-		<label>Feature</label>
-		<span><%= def_if_blank(@object, :feature, :name) %></span>
-	</div>
-	
-	<div class="row">
-		<label>Geo Code Type</label>
-		<span><%= def_if_blank @object, :geo_code_type %></span>
-	</div>
-	
-	<div class="row">
-		<label>Geo Code Value</label>
-		<span><%= def_if_blank @object, :geo_code_value %></span>
-	</div>
-	
+  <legend>
+<%= model_name.titleize %>
+<%= edit_item_link @object %>
+  </legend>
+  <div class="row">
+    <label><%= Feature.human_name.titleize.s %></label>
+    <span><%= def_if_blank(@object, :feature, :name) %></span>
+  </div>
+  <div class="row">
+    <label><%= GeoCodeType.human_name.titleize.s %></label>
+    <span><%= def_if_blank @object, :geo_code_type %></span>
+  </div>
+  <div class="row">
+    <label><%= FeatureGeoCode.human_attribute_name(:geo_code_value).s %></label>
+    <span><%= def_if_blank @object, :geo_code_value %></span>
+  </div>	
 </fieldset>
-
 <%= citation_list_fieldset %>
 <%= note_list_fieldset %>
 <%= time_unit_list_fieldset %>

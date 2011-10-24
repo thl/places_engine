@@ -1,24 +1,24 @@
 <fieldset>	
-	<legend>Altitude for <%= @parent_object.name %></legend>	
+	<legend><%= ts :for, :what => Altitude.human_name.titleize, :whom => @parent_object.name %></legend>
 <%= f.hidden_field :id %>
 	<div class="row">
-<%= f.label :average %>
+<%= f.label(:average).s %>
 <%= f.text_field :average, :class => :text %>
     </div>
 	<div class="row">
-<%= f.label :minimum %>
+<%= f.label(:estimate).s %>
+<%= f.text_field :estimate, :class => :text %>
+    </div>
+	<div class="row">
+<%= f.label(:minimum).s %>
 <%= f.text_field :minimum, :class => :text %>
     </div>
 	<div class="row">
-<%= f.label :maximum %>
+<%= f.label(:maximum).s %>
 <%= f.text_field :maximum, :class => :text %>
     </div>
 	<div class="row">
-<%= f.label :unit %>
+<%= f.label(:unit).s %>
 <%= f.collection_select(:unit_id, Unit.options, :id, :title, { :include_blank => false }) %>
 	</div>
-	<div class="row">
-		<%= f.label '' %>
-		<%= f.label '' %>		
-	</div>  
 </fieldset>

@@ -1,14 +1,14 @@
 <% add_breadcrumb_item features_link
    add_breadcrumb_item feature_link(@parent_object)
-   add_breadcrumb_item 'altitudes' %>
+   add_breadcrumb_item Altitude.human_name(:count => :many).s %>
 <div>
-	<div class="right highlight">
-	<% if parent? %>
-		<%= new_item_link [@parent_object, :altitude] %>
-	<% else %>
-		<%= parent_resource_dependency_message %>
-	<% end %>		
-	</div>
+  <div class="right highlight">
+<%  if parent? %>
+<%=   new_item_link [@parent_object, :altitude] %>
+<%  else %>
+<%=   parent_resource_dependency_message %>
+<%  end %>		
+  </div>
 </div>
 <br class="clear"/>
 <%= render :partial => 'list', :locals => { :list => @collection } %>

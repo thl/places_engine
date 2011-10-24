@@ -1,26 +1,21 @@
 <% if list.empty? %>
-	<%= empty_collection_message %>
+<%=  empty_collection_message %>
 <% else %>
-
-<table class="listGrid">
-
-	<tr>
-		<th class="listActionsCol"></th>
-		<th>Name</th>
-		<th>Type</th>
-		<th>Language</th>
-		<th>Script</th>
-		<th>Relationship</th>
-		<th>Priority</th>
-		<th>Notes</th>
-		<th>Add Note</th>
-		<th>Dates</th>
-		<th>Add Date</th>
-	</tr>
-
-	<%= pagination_row :colspan=>8 unless @collection.nil? %>
-
-	<%= feature_name_tr(@feature) %>
-
-</table>
+   <table class="listGrid">
+     <tr>
+       <th class="listActionsCol"></th>
+       <th><%= FeatureName.human_name.titleize.s %></th>
+       <th><%= FeatureNameType.human_name.titleize.s %></th>
+       <th><%= Language.human_name.titleize.s %></th>
+       <th><%= WritingSystem.human_name.titleize.s %></th>
+       <th><%= ts 'relat.ionship.this' %></th>
+       <th><%= ts :priority %></th>
+       <th>Notes</th>
+       <th>Add Note</th>
+       <th>Dates</th>
+       <th>Add Date</th>
+     </tr>
+<%= pagination_row :colspan=>8 unless @collection.nil? %>
+<%= feature_name_tr(@feature) %>
+   </table>
 <% end %>

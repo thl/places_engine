@@ -1,11 +1,58 @@
 # Places dictionary view localization file for English.
 en:
-    choose: 'Choose {{what}}'
+    about: 'About'
+    child: 'Child'
+    choose:
+        from: 'choose from {{what}}'
+        record: 'choose {{what}}'
+    citation:
+        of: 'Citation of {{what}}'
+        unavailable: 'No citations available.'
     current: 'Current {{what}}'
     default: 'Default {{what}}'
+    general_information: 'General Information'
+    is:
+        translation: 'Is {{this}} a translation of {{that}}?'
+        phonetic: 'Is {{this}} a phonetic transcription of {{that}}?'
+        orthographic: 'Is {{this}} an orthographic transliteration of {{that}}?'
+        alt_spelling: 'Is {{this}} an alt. spelling of {{that}}?'
     its_original_publication: 'its original online publication'
+    location:
+        latitude: 'Latitude'
+        longitude: 'Longitude'
     no:
         record: 'No {{what}}'
     other: 'Other {{what}}'
+    prefix:
+        with: 'Prefix with {{what}}'
+    priority: 'Priority'
+    referenced: '{{what}} referenced'
+    relat:
+        ed_to: 'Related To'
+        ionship:
+            between: 'Relationship between {{this}} and {{that}}'
+            this: 'Relationship'
+    relation_this:
+        one: 'relation'
+        many: 'relations'
+    remove: 'remove'
+    set_primary_essay: 'Set Primary Essay'
+    snippet:
+        characteristic_needs_feature: 'Knowledge Map characteristics can only be associated from a feature.'
+        essay_needs_parent: 'An Essay can only be created from a resource that uses one.'
+        feature_geo_code_needs_resource: 'A Feature Geo Code can only be created from a resource that uses one.'
+        feature_name_relation: 'Feature Name Relations are created from a Feature Name.'
+        feature_name_selection: 'Select a new Feature Name to relate to {{what}}.'
+        location: 'Please input decimal degrees in the format of 35.1974, etc. If you have degrees, minutes and seconds, use a conversion program to convert them into decimal degrees. For example, try: <a href="http://www.fcc.gov/mb/audio/bickel/DDDMMSS-decimal.html" target="_blank">http://www.fcc.gov/mb/audio/bickel/DDDMMSS-decimal.html</a>.'
+        primary_essay: "'*' denotes a primary essay"
+        title: 'Use title case for capitalization (e.g. An Exciting...)'
+    suffix:
+        record: '{{what}} suffix'
     switch: 'Switch {{what}}'
+    title: 'Title'
+    type:
+        adjective: 'Type'
+        in: 'Type in {{what}}'
+        value: 'Type Value'
+    value: 'Value'
     view: 'View {{what}}'

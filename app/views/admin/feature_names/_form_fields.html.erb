@@ -1,42 +1,32 @@
 <%= tagged_tinymce_script %>
 <%= error_messages_for :feature_name %>
-
 <fieldset>
-	<legend>General Information</legend>
-	
-	<div class="row">
-		<%= f.label :name %>
-		<%= f.text_field :name, :class => :text %>
-	</div>
-	
-	<div class="row">
-		<%= f.label :feature_name_type_id, 'Type' %>
-		<%= f.collection_select :feature_name_type_id, FeatureNameType.find(:all), :id, :to_s, :include_blank=>true %>
-	</div>
-	
-	<div class="row">
-		<%= f.label :language_id %>
-		<%= f.collection_select :language_id, Language.find(:all).sort{|a,b| a.to_s <=> b.to_s}, :id, :to_s, :include_blank=>true %>
-	</div>
-	
-	<div class="row">
-		<%= f.label :writing_system_id %>
-		<%= f.collection_select :writing_system_id, WritingSystem.find(:all).sort{|a,b| a.to_s <=> b.to_s}, :id, :to_s, :include_blank=>true %>
-	</div>
-	
-	<div class="row">
-		<%= f.label :etymology %>
-	</div>
-	<div class="row">
-		<%= f.text_area :etymology, :rows=>4, :class => 'mceEditor' %>
-	</div>
-	<div class="row">
-		<%= f.label '' %>
-		<%= f.label '' %>		
-	</div>
-	<div class="row">
-		<%= f.label :is_primary_for_romanization, 'Primary for Popular Romanization View?' %>
-		<%= radio_button(:feature_name, :is_primary_for_romanization, :true ) %><b>Yes</b>&nbsp;&nbsp;
-	    <%= radio_button(:feature_name, :is_primary_for_romanization, :false ) %><b>No</b>
-	</div>
+  <legend><%= ts('general_information') %></legend>
+  <div class="row">
+<%= f.label :name, Feature.human_name.titleize.s %>
+<%= f.text_field :name, :class => :text %>
+  </div>
+  <div class="row">
+<%= f.label :feature_name_type_id, FeatureNameType.titleize.s %>
+<%= f.collection_select :feature_name_type_id, FeatureNameType.find(:all), :id, :to_s, :include_blank=>true %>
+  </div>
+  <div class="row">
+<%= f.label :language_id, Language.human_name.titleize.s %>
+<%= f.collection_select :language_id, Language.find(:all).sort{|a,b| a.to_s <=> b.to_s}, :id, :to_s, :include_blank=>true %>
+  </div>
+  <div class="row">
+<%= f.label :writing_system_id, WritingSystem.human_name.titleize.s %>
+<%= f.collection_select :writing_system_id, WritingSystem.find(:all).sort{|a,b| a.to_s <=> b.to_s}, :id, :to_s, :include_blank=>true %>
+  </div>
+  <div class="row">
+<%= f.label(:etymology).s %>
+  </div>
+  <div class="row">
+<%= f.text_area :etymology, :rows=>4, :class => 'mceEditor' %>
+  </div>
+  <div class="row">
+<%= f.label(:is_primary_for_romanization).s %>
+<%= radio_button(:feature_name, :is_primary_for_romanization, :true ) %><b><%= ts(:affirmation) %></b>&nbsp;&nbsp;
+<%= radio_button(:feature_name, :is_primary_for_romanization, :false ) %><b><%= ts(:negation) %></b>
+  </div>
 </fieldset>

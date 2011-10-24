@@ -1,34 +1,24 @@
 <%= tagged_tinymce_script %>
 <fieldset>
-	
-	<legend>
-		Citation for: <%= @object.citable %>
-	</legend>
-	
+	<legend><%= ts(:for, :what => Citation.human_name.titleize, :whom => @object.citable) %></legend>
 	<%= f.hidden_field :id %>
 	<div class="row">
-		<%= f.label :info_source_id, 'Info Source (Document ID from MMS application)' %>
+		<%= f.label(:info_source_id).s %> (Document ID from MMS application)
 		<%= f.text_field :info_source_id, :class => :text %>
 	</div>
 <%  if !@object.id.nil? %>
 	  <div class="row">
-	    <label>Pages</label>
+	    <label><%= Page.human_name(:count => :many).s %></label>
 <%=     @object.pages.collect{|p| "#{p.to_s} #{edit_item_link edit_admin_citation_page_path(@object, p)} #{delete_item_link admin_citation_page_path(@object, p)}"}.join(', ') %>
 	  </div>
 	  <div class="row">
-<%=	    new_item_link(new_admin_citation_page_path(@object), 'Add pages referenced') %>		
+<%=	    new_item_link(new_admin_citation_page_path(@object), ts('add.record', :what => t(:referenced, :what => Page.human_name(:count => :many)))) %>		
 	  </div>
 <%  end %>
 	<div class="row">
-		<%= f.label :notes %>
+<%=   f.label(:notes).s %>
 	</div>
 	<div class="row">
-		<%= f.text_area :notes, :rows=>4, :class => 'mceEditor' %>
+<%=   f.text_area :notes, :rows=>4, :class => 'mceEditor' %>
 	</div>
-	
-	<div class="row">
-		<%= f.label '' %>
-		<%= f.label '' %>		
-	</div>
-  
 </fieldset>

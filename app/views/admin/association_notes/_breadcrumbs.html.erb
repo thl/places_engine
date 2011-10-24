@@ -6,7 +6,7 @@ case parent_type
 when :feature
 	add_breadcrumb_item feature_link(@object.notable)
 end
-add_breadcrumb_item link_to('general notes', collection_path)
+add_breadcrumb_item link_to(AssociationNote.human_name(:count => :many).s, collection_path)
 # AssociationNote.search() needs to be modified to allow for an :association_type filter for this to be meaningful.
 #add_breadcrumb_item link_to(@object.association_type_name, polymorphic_path([:admin, @parent_object, :association_notes], :association_type => @object.association_type))
 %>

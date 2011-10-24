@@ -1,22 +1,12 @@
 <%= tagged_tinymce_script %>
-	<%= error_messages_for model_name %>
-
+<%= error_messages_for model_name %>
 <fieldset>
-	
-	<legend>
-		<%= model_name.titleize %>
-	</legend>
-	
-	<%= f.hidden_field :id %>
-	
-	<div class="row">
-		<%= f.label :title %>
-		<%= f.text_field :title, :class => :text %>
-	</div>
-	
-	<div class="row">
-		<%= f.label '' %>
-		<%= f.label '' %>		
-	</div>
-	
+  <legend>
+<%= NoteTitle.human_name.titleize.s %>
+  </legend>
+<%= f.hidden_field :id %>
+  <div class="row">
+<%= f.label :title, NoteTitle.human_name.titleize.s %>
+<%= f.text_field :title, :class => :text %>
+  </div>
 </fieldset>

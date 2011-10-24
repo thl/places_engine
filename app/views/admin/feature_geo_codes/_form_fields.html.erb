@@ -13,26 +13,20 @@ input[type=text] {
 }
 </style>
 <%= error_messages_for model_name %>
-
 <fieldset>
-	
-	<legend>
-		<%= model_name.titleize %>
-	</legend>
-	
-	<div class="row">
-		<%= f.label :feature %>
-		<span><%= f_label(@object.feature) %></span>
-	</div>
-	
-	<div class="row">
-		<%= f.label :geo_code_type %>
-		<%= f.collection_select(:geo_code_type_id, GeoCodeType.find(:all), :id, :to_s, :include_blank=>true) %>
-	</div>
-	
-	<div class="row">
-		<%= f.label :value %>
-		<%= f.text_field :geo_code_value, :class => :text %>
-	</div>
-	
+  <legend>
+<%= model_name.titleize %>
+  </legend>	
+  <div class="row">
+<%= f.label :feature, Feature.human_name.s %>
+    <span><%= f_label(@object.feature) %></span>
+  </div>
+  <div class="row">
+<%= f.label :geo_code_type, GeoCodeType.human_name.s %>
+<%= f.collection_select(:geo_code_type_id, GeoCodeType.find(:all), :id, :to_s, :include_blank=>true) %>
+  </div>
+  <div class="row">
+<%= f.label(:value).s %>
+<%= f.text_field :geo_code_value, :class => :text %>
+  </div>
 </fieldset>

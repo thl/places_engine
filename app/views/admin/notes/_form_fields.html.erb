@@ -1,46 +1,31 @@
 <% @object.is_public = true if @object.new_record? %>
 <%= tagged_tinymce_script %>
 <fieldset>
-	
-	<legend>
-		Note for: <%= @object.notable %>
-	</legend>
-	
-	<%= f.hidden_field :id %>
-
-	<div class="row">
-		<%= f.label :custom_note_title, "Type in custom title:" %>
-		<%= f.text_field :custom_note_title, :class => :text %>
-	</div>
-
-	<div class="row">
-		<%= f.label :note_title_id, "Or choose from standard titles:" %>
-		<%= f.collection_select :note_title_id, NoteTitle.find(:all).sort{|a,b| a.to_s <=> b.to_s}, :id, :to_s, :include_blank=>true %>
-	</div>
-
-	<div class="row">
-		<%= f.label :content, "Note" %>
-	</div>
-	<div class="row">
-		<%= f.text_area :content, :rows=>4, :class => 'mceEditor' %>
-	</div>
-
-	<div class="row">
-		<%= f.label :is_public, 'Public?' %>
-		<%= f.check_box :is_public %>
-	</div>
-	
-	<%= link_to_remote 'Add new Author', :url => polymorphic_path([:admin, @object.notable, @object.class.name.tableize], :action => "add_author"), :update => 'update_div', :position => 'before', :method => 'get' %>
-	<div id="authors_div">
-	<%  for author in @object.authors %>
-	<%=    render :partial => 'authors_selector', :locals => {:selected => author.id} %>
-	<%   end %>
-	</div>
-	<div id="update_div"/>
-	
-	<div class="row">
-		<%= f.label '' %>
-		<%= f.label '' %>		
-	</div>
-  
+  <legend><%= ts(:for, :what => Note.human_name.titleize, :whom => @object.notable) %></legend>
+<%= f.hidden_field :id %>
+  <div class="row">
+<%= f.label :custom_note_title, ts(:type, :what => Note.human_attribute_name(:custom_note_title)) %>
+<%= f.text_field :custom_note_title, :class => :text %>
+  </div>
+  <div class="row">
+<%= f.label :note_title_id, ts('or.record', :what => t('choose.from', :what => NoteTitle.human_name(:count => :many))).capitalize %>
+<%= f.collection_select :note_title_id, NoteTitle.find(:all).sort{|a,b| a.to_s <=> b.to_s}, :id, :to_s, :include_blank=>true %>
+  </div>
+  <div class="row">
+<%= f.label :content, Note.human_name.titleize.s %>
+  </div>
+  <div class="row">
+<%= f.text_area :content, :rows=>4, :class => 'mceEditor' %>
+  </div>
+  <div class="row">
+<%= f.label(:is_public).s %>
+<%= f.check_box :is_public %>
+  </div>
+<%= link_to_remote ts('add.record', :what => t('new.record', :what => t(:author).capitalize)), :url => polymorphic_path([:admin, @object.notable, @object.class.name.tableize], :action => "add_author"), :update => 'update_div', :position => 'before', :method => 'get' %>
+  <div id="authors_div">
+<%  for author in @object.authors %>
+<%=   render :partial => 'authors_selector', :locals => {:selected => author.id} %>
+<%  end %>
+  </div>
+  <div id="update_div"/>
 </fieldset>

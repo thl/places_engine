@@ -1,26 +1,80 @@
-# Places dictionary model localization file for Dzongkha.
+# Places dictionary model localization file for English.
 dz:
     activerecord:
         # Model names will be kept in lower case. Invoke .capitalize or .titleize if you need them in uppercase.
         models:
+            alt_spelling_system:
+                one: 'alternative spelling system'
+                other: 'alternative spelling systems'
             altitude:
                 one: 'altitude'
                 other: 'altitudes'
+            association_note:
+                one: 'general note'
+                other: 'general notes'
+            blurb:
+                one: 'blurp'
+                other: 'blurps'
+            category_feature:
+                one: 'kmap characteristic'
+                other: 'kmap characteristics'
+            citation:
+                one: 'citation'
+                other: 'citations'
             description:
                 one: 'essay'
                 other: 'essays'
             feature:
                 one: 'feature'
                 other: 'features'
+            feature_geo_code:
+                one: 'geocode'
+                other: 'geocodes'
             feature_name:
                 one: 'name'
                 other: 'name variations'
+            feature_name_relation:
+                one: 'feature name relation'
+                other: 'feature name relations'
+            feature_name_type:
+                one: 'name type'
+                other: 'name types'
+            feature_object_type:
+                one: 'feature type'
+                other: 'feature types'
+            feature_relation:
+                one: 'feature relation'
+                other: 'feature relations'
+            feature_relation_type:
+                one: 'feature relation type'
+                other: 'feature relation types'
+            geo_code_type:
+                one: 'geocode type'
+                other: 'geocode types'
+            language:
+                one: 'language'
+                other: 'languages'
             note:
                 one: 'note'
                 other: 'notes'
+            note_title:
+                one: 'standard title'
+                other: 'standard titles'
             perspective:
                 one: 'perspective'
                 other: 'perspectives'
+            orthographic_system:
+                one: 'orthographic system'
+                other: 'orthographic systems'
+            page:
+                one: 'page'
+                other: 'pages'
+            perspective:
+                one: 'perspective'
+                other: 'perspectives'
+            phonetic_system:
+                one: 'phonetic system'
+                other: 'phonetic systems'
             shape:
                 one: 'location'
                 other: 'locations'
@@ -30,8 +84,34 @@ dz:
             view:
                 one: 'place name language'
                 other: 'place name languages'
+            writing_system:
+                one: 'writing system'
+                other: 'writing systems'
         # Attribute names will be titleized.
         attributes:
+            altitude:
+                average: 'Average'
+                estimate: 'Estimate'
+                maximum: 'Maximum'
+                minimum: 'Minimum'
+            blurp:
+                code: 'Code'
+                content: 'Content'
+                title: 'Title'
+            category_feature:
+                label: 'Label'
+                numeric_value: 'Numeric Value'
+                position: 'Priority'
+                show_parent: "Show category's immediate parent"
+                show_root: 'Show top level Knowledge Map'
+                string_value: 'Text Value'
+            citation:
+                info_source_id: 'Info Source'
+                notes: 'Notes'
+            description:
+                content: 'Content'
+                is_primary: 'Primary?'
+                title: 'Essay Title'
             feature:
                 characteristic:
                     one: 'Characteristic'
@@ -39,10 +119,51 @@ dz:
                 descendant:
                     one: 'Contained Feature'
                     other: 'Contained Features'
+                is_public: 'Public?'
                 object_type: 'Feature Type'
                 old_pid: 'OLD THL PID'
                 pid: 'THL ID'
+            feature_geo_code:
+                geo_code_value: 'Value'
+            feature_name:
+                etymology: 'Etymology'
+                is_primary_for_romanization: 'Primary for Popular Romanization View?'
+            feature_name_relation:
+                is_alt_spelling: 'Alternative Spelling?'
+                is_orthographic: 'Orthographic?'
+                is_phonetic: 'Phonetic?'
+                is_translation: 'Translation?'
+            feature_relation_type:
+                asymmetric_code: 'Asymmetric Code'
+                asymmetric_label: 'Asymmetric Label'
+                code: 'Code'
+                is_hierarchical: 'Hierarchical?'
+                is_symmetric: 'Symmetric?'
+                label: 'Label'
+            note:
+                custom_note_title: 'Custom Title'
+                is_public: 'Public?'
+            page:
+                end_line: 'End Line'
+                end_page: 'End Page'
+                start_line: 'Start Line'
+                start_page: 'Start Page'
+                volume: 'Volume'
+            perspective:
+                code: 'Code'
+                description: 'Description'
+                is_public: 'Public?'
+                name: 'Name'
+            simple_prop:
+                code: 'Code'
+                description: 'Description'
+                name: 'Name'
+            shape:
+                gid: 'GID'
+                altitude: 'Altitude'
+                is_public: 'Public?'
+                position: 'Priority'
             user:
                 login: 'Login'
                 password: 'Password'
-                remember_me: 'Remember me:'
+                remember_me: 'Remember me'

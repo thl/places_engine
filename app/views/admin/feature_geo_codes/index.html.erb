@@ -1,27 +1,18 @@
-<%
-#
-# if we're showing the names of a particular Feature
-#
-if @parent_object
-	add_breadcrumb_item features_link
-	add_breadcrumb_item feature_link(@parent_object)
-end
-
-add_breadcrumb_item 'feature geo codes'
-
-%>
-
+<% # if we're showing the names of a particular Feature
+   if @parent_object
+     add_breadcrumb_item features_link
+     add_breadcrumb_item feature_link(@parent_object)
+   end
+   add_breadcrumb_item FeatureGeoCode.human_name(:count => :many).s %>
 <div>
-	<div class="left"><%= resource_search_form %></div>
-	<div class="right highlight">
-		
-    <% if parent? %>
-      <%= new_item_link [@parent_object, :feature_geo_code] %> for: <%= feature_link(@parent_object) %>			
-    <% else %>
-      A Feature Geo Code can only be created from a resource that uses one.
-    <% end %>
-	</div>
+  <div class="left"><%= resource_search_form %></div>
+  <div class="right highlight">
+<% if parent? %>
+<%=  ts :for, :what => new_item_link([@parent_object, :feature_geo_code]), :whom => feature_link(@parent_object) %>
+<% else %>
+<%=  ts 'snippet.feature_geo_code_needs_resource' %>
+<% end %>
+  </div>
 </div>
 <br class="clear"/>
-
 <%= render :partial => 'list', :locals => { :list => @collection } %>

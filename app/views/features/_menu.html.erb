@@ -79,7 +79,7 @@
 			<% if current_perspective %>
 				<%= render :partial => "features/node_tree", :locals => { :children => @top_level_nodes } %>
 			<% else %>
-				To see a list of features, please <%= link_to ts(:choose, :what => Perspective.human_name), edit_session_path %>.
+				To see a list of features, please <%= link_to ts('choose.record', :what => Perspective.human_name), edit_session_path %>.
 			<% end %>
 		<% else %>
 			<img src="http://thlib.org/global/images/ajax-loader.gif" alt="" style="display:inline;" /> Loading...

@@ -1,50 +1,41 @@
-<% 
-add_breadcrumb_item features_link
-add_breadcrumb_item feature_link(@object.feature)
-add_breadcrumb_item feature_descriptions_link(@object.feature)
-add_breadcrumb_item @object.id
-%>
-
+<% add_breadcrumb_item features_link
+   add_breadcrumb_item feature_link(@object.feature)
+   add_breadcrumb_item feature_descriptions_link(@object.feature)
+   add_breadcrumb_item @object.id %>
 <div>
-<h1>Essay: <%= @object.id %></h1>
+  <h1><%= Description.human_name.titleize.s %>: <%= @object.id %></h1>
 </div>
 <br class="clear"/>
 <fieldset>
-	<legend>Essay <%= edit_item_link @object %></legend>
-
-	<% if !@object.title.blank? %>  
-	<%   if !@object.authors.empty? %>
-		   <span class='title'><%= @object.title %></span>
-		   <span class='by'><%= ' by ' %></span>
-	       <span class='content_by'><%= "#{ join_with_and(@object.authors.collect{|a| a.screen_name})}" %></span>
-	<%   else %>
-	       <span class='title'><%= @object.title %></span>
-	<%   end %>
-	<% else %>     
-	<%   if !@object.authors.empty? %>
-	       <span class='title'>Essay</span>
-	       <span class='by'><%= ' by ' %></span>
-		   <span class='content_by'><%= "#{ join_with_and(@object.authors.collect{|a| a.screen_name})}" %></span>
-	<%   end %>
-	<% end %>
-	 
-	
-	<div class="row">
-		 <label>Content: </label><br/> <span><%= def_if_blank @object, :content %></span>
-	</div>
-	<div class="row">
-		<label>Is Primary?</label> <span><%= yes_no @object.is_primary %></span>
-	</div>
-	
-	<div class="row">
-		<label>Created at: </label> <span><%= @object.created_at.to_formatted_s(:us_datetime) %></span>
-	</div>
-	<div class="row">
-		<label>Update at: </label> <span><%= @object.updated_at.to_formatted_s(:us_datetime) %></span>
-	</div>
-	
+  <legend><%= "#{Description.human_name.titleize.s} #{edit_item_link @object}" %></legend>
+<% if !@object.title.blank?
+     if !@object.authors.empty? %>
+       <span class='title'><%= @object.title %></span>
+       <span class='by'><%= ' by ' %></span>
+       <span class='content_by'><%= "#{ join_with_and(@object.authors.collect{|a| a.screen_name})}" %></span>
+<%   else %>
+       <span class='title'><%= @object.title %></span>
+<%   end
+   else
+     if !@object.authors.empty? %>
+       <span class='title'><%= Description.human_name.titleize.s %></span>
+       <span class='by'><%= ' by ' %></span>
+       <span class='content_by'><%= "#{ join_with_and(@object.authors.collect{|a| a.screen_name})}" %></span>
+<%   end
+   end %>
+   <div class="row">
+     <label><%= Description.human_attribute_name(:content).s %>:</label><br/><span><%= def_if_blank @object, :content %></span>
+   </div>
+   <div class="row">
+     <label><%= Description.human_attribute_name(:is_primary).s %></label> <span><%= yes_no @object.is_primary %></span>
+   </div>
+   <div class="row">
+     <label><%= ts 'creat.e.d' %>:</label> <span><%= @object.created_at.to_formatted_s(:us_datetime) %></span>
+   </div>
+   <div class="row">
+     <label><%= ts 'update.d.this' %>:</label> <span><%= @object.updated_at.to_formatted_s(:us_datetime) %></span>
+   </div>	
 </fieldset>
-
 <%= citation_list_fieldset %>
 <%= note_list_fieldset %>
 <%= time_unit_list_fieldset %>

@@ -3,26 +3,23 @@
    add_breadcrumb_item link_to(collection_name, admin_feature_category_feature_path(@object.feature))
    add_breadcrumb_item @object %>
 <fieldset>
-	<legend>
-		Knowledge Map Characteristic
-		<%= edit_item_link @object %>
-	</legend>
-	<div class="row">
-		<label>Feature</label>
-		<span><%= def_if_blank(@object, :feature, :name) %></span>
-	</div>
-	<div class="row">
-		<label>Characteristic</label>
-		<span><%= @object.stacked_category %></span>
-	</div>
-	<div class="row">
-		<label>String Value</label>
-		<span><%= def_if_blank @object, :string_value %></span>
-	</div>
-	<div class="row">
-		<label>Numeric Value</label>
-		<span><%= def_if_blank @object, :numeric_value %></span>
-	</div>
+  <legend><%= "#{CategoryFeature.human_name.titleize.s} #{edit_item_link @object}" %></legend>
+  <div class="row">
+    <label><%= Feature.human_name.titleize.s %></label>
+    <span><%= def_if_blank(@object, :feature, :name) %></span>
+  </div>
+  <div class="row">
+    <label><%= CategoryFeature.human_name.titleize.s %></label>
+    <span><%= @object.stacked_category %></span>
+  </div>
+  <div class="row">
+    <label><%= CategoryFeature.human_attribute_name(:string_value).s %></label>
+    <span><%= def_if_blank @object, :string_value %></span>
+  </div>
+  <div class="row">
+    <label><%= CategoryFeature.human_attribute_name(:numeric_value).s %></label>
+    <span><%= def_if_blank @object, :numeric_value %></span>
+  </div>
 </fieldset>
 <%= citation_list_fieldset %>
 <%= note_list_fieldset %>

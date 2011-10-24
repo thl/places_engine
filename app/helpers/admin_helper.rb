@@ -132,10 +132,10 @@ module AdminHelper
     end
     "<div#{' class="'+options[:class]+'"' if options[:class]}>
       <label>
-        #{form_builder.radio_button field, yes_value, yes_options} Yes
+        #{form_builder.radio_button field, yes_value, yes_options} #{ts :affirmation}
       </label>
       <label>
-        #{form_builder.radio_button field, no_value, no_options} No
+        #{form_builder.radio_button field, no_value, no_options} #{ts :negation}
       </label>
     </div>"
   end
