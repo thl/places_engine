@@ -30,9 +30,11 @@ class TreeCache
               perspectives.each do |p|
                 dir = "#{@@cache_dir}#{p}/#{v}/#{@@cache_file_prefix}#{d}#{@@cache_file_suffix}"
                 if Dir[dir].empty?
-                  s = "#{APP_URI}/features/node_tree_expanded/#{d}?view_id=#{v}&perspective_id=#{p}"
-                  puts s
-                  open(s)
+                  begin
+                    open("#{APP_URI}/features/node_tree_expanded/#{d}?view_id=#{v}&perspective_id=#{p}")
+                  rescue
+                    puts "#{APP_URI}/features/node_tree_expanded/#{d}?view_id=#{v}&perspective_id=#{p} timed out."
+                  end
                   puts "created: #{dir}"
                 else
                   #puts "cache file already existed for id: #{d} – perspective: #{p} – view: #{v}"
