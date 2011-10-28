@@ -2,7 +2,7 @@ class CumulativeCategoryFeatureAssociation < ActiveRecord::Base
   attr_accessor :skip_update
   
   belongs_to :feature
-  belongs_to :category
+  # belongs_to :category
   
   after_save { |record| CachedCategoryCount.updated_count(record.category_id) if !record.skip_update }
 end

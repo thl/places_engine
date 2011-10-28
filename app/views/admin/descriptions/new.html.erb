@@ -12,6 +12,6 @@
 <%=  f.hidden_field :feature_id, :value => params[:feature_id] %>
 <%=  render :partial => 'form_fields', :locals => {:f => f, :object => object} %>
 <%   #Make the cancel link go back to the selected feature's descriptions if it exists %>
-<%=  link_to(ts'cancel.this', parent_object ? admin_feature_descriptions_path(parent_object) : admin_descriptions_path) %> |
+<%=  link_to(ts('cancel.this'), parent_object ? admin_feature_descriptions_path(parent_object) : admin_descriptions_path) %> |
 <%=  globalized_submit_tag 'creat.e.this', :class => 'submit' %>
 <% end %>

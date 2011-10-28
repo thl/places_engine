@@ -7,7 +7,7 @@
 <%= f.text_field :name, :class => :text %>
   </div>
   <div class="row">
-<%= f.label :feature_name_type_id, FeatureNameType.titleize.s %>
+<%= f.label :feature_name_type_id, FeatureNameType.human_name.titleize.s %>
 <%= f.collection_select :feature_name_type_id, FeatureNameType.find(:all), :id, :to_s, :include_blank=>true %>
   </div>
   <div class="row">

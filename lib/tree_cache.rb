@@ -5,22 +5,20 @@ class TreeCache
   @@cache_file_prefix = 'node_id_'
   @@cache_file_suffix = '.cache'
   
-  def self.reheat( root_node )
-    return if root_node.nil?
-
-    if root_node == 0
-      Feature.roots.each{ |n| self.generate(n.id) }
+  def self.reheat( fid )
+    if fid.blank?
+      Feature.roots.each{ |n| self.generate(n.fid) }
     else
-      self.generate(root_node)
+      self.generate(fid)
     end
 
   end
   
-  def self.generate( root_node )
-    n = Feature.find_by_id(root_node)
+  def self.generate( fid )
+    n = Feature.get_by_fid(fid)
     unless n.nil?
       views = View.all.collect{|v| v.id}
-      ds = [root_node]
+      ds = [n.id]
       desc = n.descendants
       ds += desc.collect{ |d| d.id } unless desc.empty? or desc.nil?
       ds.each do |d|
@@ -32,7 +30,9 @@ class TreeCache
               perspectives.each do |p|
                 dir = "#{@@cache_dir}#{p}/#{v}/#{@@cache_file_prefix}#{d}#{@@cache_file_suffix}"
                 if Dir[dir].empty?
-                  open("#{APP_URI}/features/node_tree_expanded/#{d}?view_id=#{v}&perspective_id=#{p}")
+                  s = "#{APP_URI}/features/node_tree_expanded/#{d}?view_id=#{v}&perspective_id=#{p}"
+                  puts s
+                  open(s)
                   puts "created: #{dir}"
                 else
                   #puts "cache file already existed for id: #{d} – perspective: #{p} – view: #{v}"
