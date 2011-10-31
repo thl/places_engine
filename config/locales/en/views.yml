@@ -34,7 +34,7 @@ en:
             this: 'Relationship'
     relation_this:
         one: 'relation'
-        many: 'relations'
+        other: 'relations'
     remove: 'remove'
     set_primary_essay: 'Set Primary Essay'
     snippet:
