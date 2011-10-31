@@ -1,17 +1,17 @@
 <% add_breadcrumb_item link_to (collection_name, collection_path)
    add_breadcrumb_item @blurb %>
 <fieldset>
-  <legend><%= "#{Blurp.human_name.titleize.s} #{edit_item_link @blurb}" %></legend>
+  <legend><%= "#{Blurb.human_name.titleize.s} #{edit_item_link @blurb}" %></legend>
   <div class="row">
-    <label><%= Blurp.human_attribute_name(:title).s %></label>
+    <label><%= Blurb.human_attribute_name(:title).s %></label>
     <span><%= def_if_blank(@blurb, :title) %></span>
   </div>
   <div class="row">
-    <label><%= Blurp.human_attribute_name(:code).s %></label>
+    <label><%= Blurb.human_attribute_name(:code).s %></label>
     <span><%= def_if_blank @blurb, :code %></span>
   </div>
   <div class="row">
-    <label><%= Blurp.human_attribute_name(:content).s %></label>
+    <label><%= Blurb.human_attribute_name(:content).s %></label>
     <span><%= def_if_blank @blurb, :content %></span>
   </div>	
 </fieldset>
