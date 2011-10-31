@@ -4,7 +4,7 @@
   <legend><%= ts(:for, :what => Note.human_name.titleize, :whom => @object.notable) %></legend>
 <%= f.hidden_field :id %>
   <div class="row">
-<%= f.label :custom_note_title, ts(:type, :what => Note.human_attribute_name(:custom_note_title)) %>
+<%= f.label :custom_note_title, ts('type.in', :what => Note.human_attribute_name(:custom_note_title)) %>
 <%= f.text_field :custom_note_title, :class => :text %>
   </div>
   <div class="row">
