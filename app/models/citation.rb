@@ -7,7 +7,7 @@ class Citation < ActiveRecord::Base
   # Associations
   #
   #
-  belongs_to :info_source, :class_name => 'Document'
+  # belongs_to :info_source, :class_name => 'Document'
   belongs_to :citable, :polymorphic=>true
   has_many :pages
   
@@ -16,6 +16,10 @@ class Citation < ActiveRecord::Base
   # Validation
   #
   #
+  
+  def info_source
+    Document.find(self.info_source_id)
+  end
   
   def to_s
     citable.to_s

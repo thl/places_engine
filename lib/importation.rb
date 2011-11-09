@@ -291,7 +291,7 @@ class Importation
       citations = citable.citations
       citation = citations.find(:first, :conditions => {:info_source_id => info_source.id})
       if citation.nil?
-        citation = citations.create(:info_source => info_source, :notes => notes)
+        citation = citations.create(:info_source_id => info_source.id, :notes => notes)
       else
         citation.update_attribute(:notes, notes) if !notes.nil?
       end
