@@ -17,7 +17,7 @@ class DescriptionsController < ApplicationController
     @descriptions = @feature.descriptions
     respond_to do |format|
       format.xml
-      format.json { render :json => Hash.from_xml(render_to_string(:action => 'index.xml.builder')) }
+      format.json { render :json => Hash.from_xml(render_to_string(:action => 'index.xml.builder')), :callback => params[:callback] }
     end
   end
   
@@ -29,7 +29,7 @@ class DescriptionsController < ApplicationController
     respond_to do |format|
       format.html
       format.xml
-      format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')) }
+      format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')), :callback => params[:callback] }
     end
   end
 
@@ -48,6 +48,6 @@ class DescriptionsController < ApplicationController
   end
   
   def api_response?
-    request.format.xml? || request.format.json?
+    request.format.xml? # JSON because JSONP depends on parameters || request.format.json?
   end
 end

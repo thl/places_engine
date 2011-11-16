@@ -422,6 +422,6 @@ class FeaturesController < ApplicationController
     private
     
     def api_response?
-      request.format.xml? || request.format.json?
+      request.format.xml? # JSON because JSONP depends on parameters || request.format.json?
     end
 end
