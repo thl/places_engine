@@ -44,7 +44,7 @@ class FeaturesController < ApplicationController
         format.html
         format.xml
         format.csv
-        format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')) }
+        format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')), :callback => params[:callback] }
       end
     end
   end 
@@ -69,7 +69,7 @@ class FeaturesController < ApplicationController
     respond_to do |format|
       format.html { render :action => 'show' }
       format.xml  { render :action => 'show' }
-      format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')) }
+      format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')), :callback => params[:callback] }
     end
   end
     
@@ -84,7 +84,7 @@ class FeaturesController < ApplicationController
     respond_to do |format|
       format.html { render :action => 'staff_show' }
       format.xml  { render :action => 'index' }
-      format.json { render :json => Hash.from_xml(render_to_string(:action => 'index.xml.builder')) }
+      format.json { render :json => Hash.from_xml(render_to_string(:action => 'index.xml.builder')), :callback => params[:callback] }
     end
   end
 
@@ -97,7 +97,7 @@ class FeaturesController < ApplicationController
     respond_to do |format|
       format.html { render :action => 'staff_show' }
       format.xml  { render :action => 'index' }
-      format.json { render :json => Hash.from_xml(render_to_string(:action => 'index.xml.builder')) }
+      format.json { render :json => Hash.from_xml(render_to_string(:action => 'index.xml.builder')), :callback => params[:callback] }
     end
   end
   
@@ -134,13 +134,13 @@ class FeaturesController < ApplicationController
     respond_to do |format|
       format.html { render :action => 'paginated_show' }
       format.xml  { render :action => 'paginated_show' }
-      format.json { render :json => Hash.from_xml(render_to_string(:action => 'paginated_show.xml.builder')) }
+      format.json { render :json => Hash.from_xml(render_to_string(:action => 'paginated_show.xml.builder')), :callback => params[:callback] }
     end
   end
   
   def characteristics_list
     @kmaps_characteristics = CategoryFeature.find(:all, :select => "DISTINCT category_id", :conditions => "type IS NULL")
-    render :json => @kmaps_characteristics.collect{|c| {:id => c.category_id, :name => c.to_s.strip}}.sort_by{|a| a[:name].downcase.strip}
+    render :json => @kmaps_characteristics.collect{|c| {:id => c.category_id, :name => c.to_s.strip}}.sort_by{|a| a[:name].downcase.strip}, :callback => params[:callback]
   end
   
   def gis_resources
@@ -399,7 +399,7 @@ class FeaturesController < ApplicationController
       collection[:total_pages] = WillPaginate::ViewHelpers.total_pages_for_collection(features)
       respond_to do |format|
         format.xml { render :xml => collection.to_xml }
-        format.json { render :json => collection.to_json }
+        format.json { render :json => collection.to_json, :callback => params[:callback] }
       end   
     end
     
