@@ -33,7 +33,7 @@
 				<div>
 					Select Scope:
 					<%=  radio_button_tag :search_scope, :global, @search_form_params[:search_scope] == 'global' %> Global
-					<%=  radio_button_tag :search_scope, :contextual, @search_form_params[:search_scope] == 'contextual' %> Contextual
+					<% #  radio_button_tag :search_scope, :contextual, @search_form_params[:search_scope] == 'contextual' Contextual %>
 					<%=  radio_button_tag :search_scope, :fid, @search_form_params[:search_scope] == 'fid' %> THL ID
 				</div>
 				<%=  hidden_field_tag :context_id, "" %>
