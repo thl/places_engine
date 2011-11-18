@@ -54,8 +54,6 @@
 	<div id="NodeOptions" <%= ' style="display:none"' unless active_item == 'options' %>>
       <ul>
 	    <li>
-<%=       ComplexScripts::Language.human_name.titleize.s %>:<br />
-<%=       render(:partial => 'sessions/language_select') %>
 <%        form_for :session, :url => session_path, :html => { :method => 'put' } do |f| %>
 <%=         Perspective.human_name.titleize.s %>:<br />
 <%=         f.collection_select :perspective_id, @perspectives, :id, :name, {}, { :onchange => 'jQuery(this).parents("form:first").submit();' } %>
