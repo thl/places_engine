@@ -430,7 +430,7 @@ module AdminHelper
     if object.respond_to?(:notes) && object.notes.length > 0
       object.notes.enum_with_index.collect{|n, i|
         note_title = n.title.blank? ? "Note" : n.title
-        note_authors = " by #{n.authors.collect(&:fullname).join(", ")}" if n.authors.length > 0
+        note_authors = " by #{n.authors.collect(&:fullname).join(", ").s}" if n.authors.length > 0
         link_to "Note #{i+1}", polymorphic_path([:admin, object, n]), :title => h("#{note_title}#{note_authors}")
       }.join(", ").to_s
     else

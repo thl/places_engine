@@ -160,7 +160,7 @@ module ApplicationHelper
       end
     end
     unless notes.nil?
-      link_title = notes.collect{|n| (n.title.nil? ? "Note" : n.title) + (" by #{n.authors.collect(&:fullname).join(", ")}" if n.authors.length > 0).to_s}.join(", ").to_s
+      link_title = notes.collect{|n| (n.title.nil? ? 'Note' : n.title) + (" by #{n.authors.collect(&:fullname).join(", ").s}" if n.authors.length > 0).to_s}.join(', ')
       link_classes = "draggable-pop no-view-alone overflow-y-auto height-350"
       "<span class='has-draggable-popups note-popup-link'>(" +
         link_to("", link_url, :class => "note-popup-link-icon "+link_classes, :title => h(link_title)) +
@@ -202,7 +202,7 @@ module ApplicationHelper
   #
   def note_popup_link(note)
     note_title = note.title.nil? ? "Note" : note.title
-    note_authors = " by #{note.authors.collect(&:fullname).join(", ")}" if note.authors.length > 0
+    note_authors = " by #{note.authors.collect(&:fullname).join(", ").s}" if note.authors.length > 0
     note_date = " (#{formatted_date(note.updated_at)})"
     link_title = "#{note_title}#{note_authors}#{note_date}"
     link_url = polymorphic_url([note.notable, note])
@@ -377,7 +377,7 @@ module ApplicationHelper
     when 1 then list.first
     when 2 then list.join(' and ')
     when 3 then [list[0..size-2].join(', '), list[size-1]].join(', and ')
-    end
+    end.s
   end
   
   # Custom HTML truncate for PD descriptions, which don't always validate

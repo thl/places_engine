@@ -7,7 +7,7 @@
 <% for person in @people %>
   <tr>
     <td>
-<%=   link_to h(person.fullname), edit_admin_person_path(person) %>
+<%=   link_to h(person.fullname).s, edit_admin_person_path(person) %>
 	</td>
 <%  user = person.user
     if !user.nil? %>
