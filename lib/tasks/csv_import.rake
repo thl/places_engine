@@ -1,18 +1,36 @@
 require 'config/environment'
-require 'vendor/plugins/places_engine/lib/import/essay_import'
-require 'vendor/plugins/places_engine/lib/import/feature_name_match'
+require 'import/essay_import'
+require 'import/feature_name_match'
 namespace :db do
   namespace :import do
     csv_desc = "Use to import CSV containing features into DB.\n" +
                   "Syntax: rake db:import:csv SOURCE=csv-file-name"
-
     desc csv_desc
-    task :csv do
+    task :features do
       source = ENV['SOURCE']
       if source.blank?
         puts csv_desc
       else
-        Importation.do_csv_import(source)
+        FeatureImportation.new.do_feature_import(source)
+      end
+    end
+    
+    desc 'Import essays from URLs'
+    task :essays do
+      source = ENV['SOURCE']
+      options = {}
+      options[:dry_run] = ENV['DRY_RUN'] || false
+      options[:prefix] = ENV['PREFIX'] || ""
+      options[:reader_url] = ENV['READER_URL'] || "http://www.thlib.org/global/php/book_reader.php?url="
+      options[:public_url] = ENV['PUBLIC_URL'] || "" # Example: /places/monasteries/publications/chosphel-book.php#book=
+      options[:full_url] = ENV['FULL_URL'] || nil
+      options[:limit] = ENV['LIMIT'] || nil
+      options[:view_code] = ENV['VIEW'] || nil
+      if source.blank?
+        puts "Please specify a source.\n" +
+             "Syntax: rake db:essay_import:import SOURCE=csv-file-name PREFIX=/bellezza/wb/"
+      else
+        EssayImport.new.import_with_book_reader(source, options)
       end
     end
   end
@@ -36,25 +54,5 @@ namespace :db do
         FeatureNameMatch.match(source, options)
       end
     end
-  end
-  
-  namespace :essay_import do
-    task :import do
-      source = ENV['SOURCE']
-      options = {}
-      options[:dry_run] = ENV['DRY_RUN'] || false
-      options[:prefix] = ENV['PREFIX'] || ""
-      options[:reader_url] = ENV['READER_URL'] || "http://www.thlib.org/global/php/book_reader.php?url="
-      options[:public_url] = ENV['PUBLIC_URL'] || "" # Example: /places/monasteries/publications/chosphel-book.php#book=
-      options[:full_url] = ENV['FULL_URL'] || nil
-      options[:limit] = ENV['LIMIT'] || nil
-      options[:view_code] = ENV['VIEW'] || nil
-      if source.blank?
-        puts "Please specify a source.\n"+
-          "Syntax: rake db:essay_import:import SOURCE=csv-file-name PREFIX=/bellezza/wb/"
-      else
-        EssayImport.import_with_book_reader(source, options)
-      end
-    end
-  end
+  end  
 end

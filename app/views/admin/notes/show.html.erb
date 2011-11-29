@@ -25,7 +25,7 @@
 				</td>
 				<td>
 					<span>
-						<%= @object.authors.blank? ? "-" : @object.authors.collect{|a| a.fullname }.join("<br />") %>
+						<%= @object.authors.blank? ? "-" : @object.authors.collect(&:fullname).join('<br />') %>
 					</span>
 				</td>
 			</tr>

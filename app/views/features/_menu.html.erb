@@ -30,16 +30,15 @@
 				</div>
 				<div id="tmb_category_selector_object_type"></div>
 				<div id="characteristic_selector"></div>
-				<div>
-					Select Scope:
-					<%=  radio_button_tag :search_scope, :global, @search_form_params[:search_scope] == 'global' %> Global
-					<% #  radio_button_tag :search_scope, :contextual, @search_form_params[:search_scope] == 'contextual' Contextual %>
-					<%=  radio_button_tag :search_scope, :fid, @search_form_params[:search_scope] == 'fid' %> THL ID
-				</div>
+<!--			<div>  Select Scope: -->
+<% 				  # radio_button_tag :search_scope, :global, @search_form_params[:search_scope] == 'global' Global
+				  # radio_button_tag :search_scope, :contextual, @search_form_params[:search_scope] == 'contextual' Contextual
+				  # radio_button_tag :search_scope, :fid, @search_form_params[:search_scope] == 'fid' THL ID 
+					%>
+<!--			</div> -->
 				<%=  hidden_field_tag :context_id, "" %>
 			</div>
 			<%= submit_tag 'search', :style => "margin-top: 4px;" %>
-			
 		<% end %>
 	</div>
 	<h2 class="menu-item-results">Results</h2>

@@ -37,7 +37,7 @@
 		
 		<td><%= item.title %></td>
 		
-		<td><%= item.authors.collect{|a| a.fullname }.join("<br />") %></td>
+		<td><%= item.authors.collect(&:fullname).join("<br />") %></td>
 
 	</tr>
 	<% end %>

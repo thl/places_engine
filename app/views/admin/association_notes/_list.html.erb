@@ -25,7 +25,7 @@
 <%=      "<td>#{item.notable}</td>" unless options[:hide_type_value] %>
 <%=      "<td>#{item.association_type_name}</td>" unless options[:hide_association_type] %>
          <td><%= item.title %></td>
-         <td><%= item.authors.collect{|a| a.fullname }.join("<br />") %></td>
+         <td><%= item.authors.collect(&:fullname).join("<br />") %></td>
          <td><%= formatted_date(item.updated_at) %></td>
        </tr>
 <%   end %>

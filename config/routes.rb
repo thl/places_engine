@@ -5,9 +5,6 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :languages
 
-  map.authenticated_system_login  'login', :controller => 'sessions', :action => 'new'
-  map.authenticated_system_logout 'logout', :controller => 'sessions', :action => 'destroy'
-  
   map.resource :session
   map.resources(:categories, :member => {:expand => :get, :contract => :get}) do |category|
     category.resources(:children, :controller => 'categories', :member => {:expand => :get, :contract => :get})
@@ -63,6 +60,7 @@ ActionController::Routing::Routes.draw do |map|
       shape.resources :notes, :collection => {:add_author => :get}
       shape.resources :time_units, :collection => {:new_form => :get}
     end
+    admin.resources :people, :has_one => :user
     admin.resources :time_units do |time_unit|
       time_unit.resources :notes, :collection => {:add_author => :get}
     end

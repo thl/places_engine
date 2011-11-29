@@ -19,8 +19,7 @@ input[type=text] {
 <%= f.text_field(:title, :class => :text) %>
   </div><br/>
 </p>
-<p>
-  <b><%= f.label(:content, Description.human_name.s) %></b><br/>
+<p><b><%= f.label(:content, Description.human_name.s) %></b><br/>
   <div class="row">
 <%= f.text_area :content, :rows => 16, :cols => 65, :class => 'mceEditor' %>
   </div>
@@ -31,7 +30,7 @@ input[type=text] {
 <% end %>
 </div>    
 <div id="is_primary_div">
-<%= f.check_box :is_primary %> 
-<%= f.label(:is_primary).s %>
+<p><%= f.check_box :is_primary %> 
+<%= f.label(:is_primary).s %></p>
 </div>
 <div id="update_div"/>

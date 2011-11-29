@@ -24,7 +24,7 @@
              if !item.authors.empty? %>
                <span class='title'><%= item.title %></span>
                <span class='by'><%= ' by ' %></span>
-               <span class='content_by'><%= "#{ join_with_and(item.authors.collect{|a| a.screen_name})}" %></span>
+               <span class='content_by'><%= join_with_and(item.authors.collect(&:fullname)) %></span>
 <%           else %>
                <span class='title'><%= item.title %></span>
 <%           end
@@ -32,7 +32,7 @@
              if !item.authors.empty? %>
                <span class='title'><%= Description.human_name.titleize.s %></span>
                <span class='by'><%= ' by ' %></span>
-               <span class='content_by'><%= "#{ join_with_and(item.authors.collect{|a| a.screen_name})}" %></span>
+               <span class='content_by'><%= join_with_and(item.authors.collect(&:fullname)) %></span>
 <%           end
            end %>
            <span class='last_updated'>(<%= "#{h(item.updated_at.to_date.to_formatted_s(:long))}" %>)</span>

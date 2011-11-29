@@ -5,7 +5,7 @@
 <% @notes.each do |note| %>
   <h2><%= (note.title.blank? ? Note.human_name.titleize.s : note.title).s %></h2>
   <p>
-	<%= "#{"by "+note.authors.collect{|a| a.fullname }.join(", ")+" " if note.authors.length > 0} (#{note.updated_at.to_date.to_formatted_s(:long)})" %>
+	<%= "#{"by " + note.authors.collect(&:fullname).join(", ")+" " if note.authors.length > 0} (#{note.updated_at.to_date.to_formatted_s(:long)})" %>
   </p>
   <div class="note-content">
 	<%= "#{note.content}".s %>

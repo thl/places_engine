@@ -1,0 +1,6 @@
+<%= render :partial => 'admin/people/show', :locals => {:person => @person} %>
+<%= render :partial => 'show', :locals => {:user => @user} %>
+<p>&nbsp;<br/>
+<%= link_to ts('edit.this'), edit_admin_person_user_path(@person) %> |
+<%= render :partial => 'persistent_links' %>
+</p>

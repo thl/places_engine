@@ -1,0 +1,7 @@
+<h1><%= ts 'edit.ing.record', :what => User.human_name.titleize %></h1>
+<%= error_messages_for :user %>
+<%  form_for([:person, @user], :url => admin_person_user_path(@person), :html => { :method => :put }) do |f| %>
+<%=   render :partial => 'form', :locals => {:f => f} %>
+<p><%= submit_tag 'Update' %></p>
+<%  end %>
+<p><%= render :partial => 'persistent_links' %></p>

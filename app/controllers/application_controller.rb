@@ -19,7 +19,6 @@ class ApplicationController < ActionController::Base
   								:theme_advanced_blockformats => 'p,h1,h2,h3,h4,h5,h6'
   								}
  
-  include AuthenticatedSystem
   include ExceptionNotifiable
   include SessionManager
   

@@ -3,14 +3,14 @@ class Admin::NotesController < ResourceController::Base
 
   before_filter :collection
 
-  edit.before {@authors = User.find(:all, :order => 'fullname') }
+  edit.before {@authors = Person.find(:all, :order => 'fullname') }
 
   create.wants.html { redirect_to polymorphic_url([:admin, object.notable, object]) }
   update.wants.html { redirect_to polymorphic_url([:admin, object.notable, object]) }
   destroy.wants.html { redirect_to polymorphic_url([:admin, object.notable]) }
   
   def add_author
-    @authors = User.find(:all, :order => 'fullname')
+    @authors = Person.find(:all, :order => 'fullname')
     render :partial => 'authors_selector', :locals => {:selected => nil}
   end
     

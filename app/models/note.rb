@@ -5,7 +5,7 @@ class Note < ActiveRecord::Base
   
   belongs_to :notable, :polymorphic=>true
   belongs_to :note_title
-  has_and_belongs_to_many :authors, :class_name => 'User', :join_table => 'authors_notes', :association_foreign_key => 'author_id'
+  has_and_belongs_to_many :authors, :class_name => 'Person', :join_table => 'authors_notes', :association_foreign_key => 'author_id'
   
   before_save :determine_title
   

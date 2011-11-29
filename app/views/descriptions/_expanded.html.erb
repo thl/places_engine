@@ -3,9 +3,9 @@
 <p class='description-author'>
     <% if !d.authors.empty? %>
 	    <span class='by'><%= ' by ' %></span>
-	    <span class='content_by'><%= "#{ join_with_and(d.authors.collect{|a| a.screen_name.to_s.s})}" %></span>
+	    <span class='content_by'><%= join_with_and(d.authors.collect(&:fullname)) %></span>
 	<% end %>
-	<span class='last_updated'>(<%= "#{h(d.updated_at.to_date.to_formatted_s(:long))}" %>)</span>
+	<span class='last_updated'>(<%= h(d.updated_at.to_date.to_formatted_s(:long)) %>)</span>
 	<%= note_popup_link_for(d) %>	
 </p>
 <%= time_units_for d %>

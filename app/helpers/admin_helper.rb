@@ -33,27 +33,27 @@ module AdminHelper
   def resource_nav
     resources = {
       'Admin Home'=>admin_admin_path,
+      'Alt Spelling Systems'=>admin_alt_spelling_systems_path,
       'Blurbs'=>admin_blurbs_path,
+      'Citations'=>admin_citations_path,
       'Features'=>admin_features_path,
+      'Feature Geocodes'=>admin_feature_geo_codes_path,
+      'Feature IDs Generator' => admin_feature_pids_path,
+      'Feature Names'=>admin_feature_names_path,
+      'Feature Name Relations'=>admin_feature_name_relations_path,
+      'Feature Name Types'=>admin_feature_name_types_path,
       'Feature Relations'=>admin_feature_relations_path,
       'Feature Relation Types'=>admin_feature_relation_types_path,
-      'Feature Names'=>admin_feature_names_path,
-      'Feature Name Types'=>admin_feature_name_types_path,
-      'Feature Name Relations'=>admin_feature_name_relations_path,
-      'Feature Geocodes'=>admin_feature_geo_codes_path,
       'Geocode Types'=>admin_geo_code_types_path,
-      'Citations'=>admin_citations_path,
-      'Perspectives'=>admin_perspectives_path,
       'Languages'=>admin_languages_path,
       'Notes'=>admin_notes_path,
       'Note Titles'=>admin_note_titles_path,
-      'Writing Systems'=>admin_writing_systems_path,
-      'Phonetic Systems'=>admin_phonetic_systems_path,
       'Orthographic Systems'=>admin_orthographic_systems_path,
-      'Alt Spelling Systems'=>admin_alt_spelling_systems_path,
-      'Users'=>admin_users_path,
-      'Feature IDs Generator' => admin_feature_pids_path,
-      'Views' => admin_views_path
+      'People'=>admin_people_path,
+      'Perspectives'=>admin_perspectives_path,
+      'Phonetic Systems'=>admin_phonetic_systems_path,
+      'Views' => admin_views_path,
+      'Writing Systems'=>admin_writing_systems_path
     }.sort
     select_tag :resources, options_for_select(resources,  "/#{params[:controller]}"), :id=>:SelectNav
   end
@@ -430,7 +430,7 @@ module AdminHelper
     if object.respond_to?(:notes) && object.notes.length > 0
       object.notes.enum_with_index.collect{|n, i|
         note_title = n.title.blank? ? "Note" : n.title
-        note_authors = " by #{n.authors.collect{|a| a.fullname}.join(", ")}" if n.authors.length > 0
+        note_authors = " by #{n.authors.collect(&:fullname).join(", ")}" if n.authors.length > 0
         link_to "Note #{i+1}", polymorphic_path([:admin, object, n]), :title => h("#{note_title}#{note_authors}")
       }.join(", ").to_s
     else

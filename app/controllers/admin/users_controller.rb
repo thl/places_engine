@@ -1,51 +1,76 @@
 class Admin::UsersController < ApplicationController
+  before_filter :find_person, :except => 'index'
+  
   # GET /users
-  # GET /users.xml
   def index
-    @users = User.find(:all, :order => "UPPER(login)")
-    respond_to do |format|
-      format.html # index.rhtml
-      format.xml  { render :xml => @users.to_xml }
-    end
+    redirect_to admin_people_url
   end
 
-  # GET /users/1
-  # GET /users/1.xml
+  # GET /people/1/user
+  # GET /people/1/user.xml
   def show
-    @user = User.find(params[:id])
+    @user = @person.user
     respond_to do |format|
       format.html # show.rhtml
       format.xml  { render :xml => @user.to_xml }
     end
   end
 
-  # GET /users/1;edit
+  # GET /people/1/user/edit
   def edit
-    @user = User.find(params[:id])
+    @user = @person.user
   end
     
-  # render new.rhtml
+  # GET /people/1/user/new
+  # GET /people/1/user/new.xml
   def new
-    @user = User.new
+    @user = @person.build_user
   end
   
+  def openid_new
+  end
+  
+  # POST /people/1/user
+  # POST /people/1/user.xml
   def create
-    @user = User.new(params[:user])
-    @user.save!
-    flash[:notice] = "User succesfully created!"
-    redirect_to admin_user_url(@user)
+    if using_open_id?
+      authenticate_with_open_id(params['openid_url'], :required => [:nickname, :email]) do |result, identity_url, registration|
+        if result.successful?
+          @user = User.find_by_identity_url(identity_url)
+          if @user.nil?
+            @user = User.new do |u|
+              u.identity_url = identity_url
+              u.login = registration['nickname']
+              u.email = registration['email']
+            end
+            render :action => 'new'
+          else
+            flash[:notice] = "Identity URL already used by another user!"
+            render :action => 'openid_new'
+          end
+        else
+          flash[:notice] = "Could not validate identity URL!"
+          render :action => 'openid_new'
+        end
+      end
+    else
+      @user = @person.build_user(params[:user])
+      @user.save!
+      flash[:notice] = "User succesfully created!"
+      redirect_to admin_person_url(@person)
+    end
   rescue ActiveRecord::RecordInvalid
     render :action => 'new'
   end
 
-  # PUT /users/1
-  # PUT /users/1.xml
+  # PUT /people/1/user
+  # PUT /people/1/user.xml
   def update
-    @user = User.find(params[:id])
+    @user = @person.user
     respond_to do |format|
       if @user.update_attributes(params[:user])
         flash[:notice] = 'User was successfully updated.'
-        format.html { redirect_to admin_user_url(@user) }
+        format.html { redirect_to admin_people_url }
         format.xml  { head :ok }
       else
         format.html do
@@ -56,15 +81,22 @@ class Admin::UsersController < ApplicationController
     end
   end
 
-  # DELETE /users/1
-  # DELETE /users/1.xml
+  # DELETE /people/1/user
+  # DELETE /people/1/user.xml
   def destroy
-    @user = User.find(params[:id])
+    @user = @person.user
     @user.destroy
 
     respond_to do |format|
-      format.html { redirect_to admin_users_url }
+      format.html { redirect_to admin_people_url }
       format.xml  { head :ok }
     end
+  end
+  
+  private
+  
+  def find_person
+    person_id = params[:person_id]
+    @person = person_id.blank? ? nil : Person.find(person_id)
   end
 end

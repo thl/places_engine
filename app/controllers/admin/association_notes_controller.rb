@@ -4,7 +4,7 @@ class Admin::AssociationNotesController < ResourceController::Base
   before_filter :collection
   before_filter :validate_association_type, :only => [:new]
 
-  edit.before {@authors = User.find(:all, :order => 'fullname') }
+  edit.before {@authors = Person.find(:all, :order => 'fullname') }
   new_action.before do
     @object.association_type = params[:association_type]
     @object.notable_type = @parent_object.class.name
@@ -15,7 +15,7 @@ class Admin::AssociationNotesController < ResourceController::Base
   destroy.wants.html { redirect_to polymorphic_url([:admin, object.notable]) }
   
   def add_author
-    @authors = User.find(:all, :order => 'fullname')
+    @authors = Person.find(:all, :order => 'fullname')
     render :partial => 'authors_selector', :locals => {:selected => nil}
   end
   

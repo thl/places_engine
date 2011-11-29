@@ -5,7 +5,7 @@ class Admin::DescriptionsController < ResourceController::Base
 
   create.before { defaults_primary }
 
-  edit.before {@authors = User.find(:all, :order => 'fullname') }
+  edit.before {@authors = Person.find(:all, :order => 'fullname') }
   
   def add_author
     @authors = User.find(:all, :order => 'fullname')
