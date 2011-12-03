@@ -28,7 +28,7 @@ namespace :db do
       options[:view_code] = ENV['VIEW'] || nil
       if source.blank?
         puts "Please specify a source.\n" +
-             "Syntax: rake db:essay_import:import SOURCE=csv-file-name PREFIX=/bellezza/wb/"
+             "Syntax: rake db:import:essays SOURCE=csv-file-name PREFIX=/bellezza/wb/"
       else
         EssayImport.new.import_with_book_reader(source, options)
       end
