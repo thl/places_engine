@@ -1,18 +1,17 @@
 <% active_item = @active_menu_item ||= !session[:interface].blank? && !session[:interface][:menu_item].blank? ? session[:interface][:menu_item] : false %>
-
 <div id="NodeMenu">
 	<div class="node-menu-content">
 	<h2 class="menu-item-search">Search</h2>
 	<div id="NodeSearch" class="default-item" <%= ' style="display:none"' unless active_item == 'search' %>>
 		<% form_remote_for :feature,
 			:url => {:controller => :features, :action => :search },
-			:update => "NodeSearchResults",
-			:condition => "NodeMenu.checkForFidSearch()",
-			:loading => "NodeMenu.beginSearch()" do |form| %>
+			:update => 'NodeSearchResults',
+			:condition => 'NodeMenu.checkForFidSearch()',
+			:loading => 'NodeMenu.beginSearch()' do |form| %>
 			<%= text_field_tag :filter, h(@search_form_params[:filter]), :class=>:text %>
 			<div style="float: right;">
-				<%= link_to_function "Advanced Search", "$('#advanced_search').show(); $(this).hide(); $('#hide_advanced_search_link').show()", :id => "show_advanced_search_link", :style => ("display:none;" if current_show_advanced_search) %>
-				<%= link_to_function "Hide Advanced Search", "$('#advanced_search').hide(); $(this).hide(); $('#show_advanced_search_link').show(); reset_advanced_search();", :id => "hide_advanced_search_link", :style => ("display:none;" unless current_show_advanced_search) %>
+				<%= link_to_function 'Advanced Search', "$('#advanced_search').show(); $(this).hide(); $('#hide_advanced_search_link').show()", :id => "show_advanced_search_link", :style => ("display:none;" if current_show_advanced_search) %>
+				<%= link_to_function 'Hide Advanced Search', "$('#advanced_search').hide(); $(this).hide(); $('#show_advanced_search_link').show(); reset_advanced_search();", :id => "hide_advanced_search_link", :style => ("display:none;" unless current_show_advanced_search) %>
 			</div>
 			<div id="advanced_search" style="<%= "display:none;" unless current_show_advanced_search  %>">
 				<div>
@@ -26,7 +25,7 @@
 				</div>
 				<div>
 					<%=  check_box_tag :has_descriptions, '1', @search_form_params[:has_descriptions] == '1' %>
-					<%=  label_tag :has_descriptions, "Show only entries with essays" %>
+					<%=  label_tag :has_descriptions, 'Show only entries with essays' %>
 				</div>
 				<div id="tmb_category_selector_object_type"></div>
 				<div id="characteristic_selector"></div>
@@ -36,7 +35,9 @@
 				  # radio_button_tag :search_scope, :fid, @search_form_params[:search_scope] == 'fid' THL ID 
 					%>
 <!--			</div> -->
-				<%=  hidden_field_tag :context_id, "" %>
+<%=             hidden_field_tag :context_id, "" %>
+<%=             label_tag :fid, 'Or Go to THL ID:' %>
+<%=             text_field_tag :fid %>
 			</div>
 			<%= submit_tag 'search', :style => "margin-top: 4px;" %>
 		<% end %>

@@ -196,39 +196,39 @@ class FeaturesController < ApplicationController
   end
   
   def search
-    options = {
-      :page => params[:page] || 1,
-      :per_page => 10,
-      :conditions => {:is_public => 1}
-    }
-    search_options = {
-      :scope => params[:scope],
-      :match => params[:match]
-    }
-    search_scope = params[:search_scope].blank? ? 'global' : params[:search_scope]
+    options = { :page => params[:page] || 1, :per_page => 10, :conditions => {:is_public => 1} }
+    search_options = { :scope => params[:scope], :match => params[:match] }
     @features = nil
-    if !search_scope.blank?
-      case search_scope
-      when 'fid'
-        feature = Feature.find(:first, :conditions => {:is_public => 1, :fid => params[:filter].gsub(/[^\d]/, '').to_i})
-        if !feature.id.nil?
-          render :url => {:action => 'expand_and_show',  :id => '59' }, :layout => false
-        else
-        end
-      when 'contextual'
-        if !params[:object_type].blank?
-          options[:joins] = "LEFT JOIN cumulative_category_feature_associations ccfa ON ccfa.feature_id = features.id"
-          options[:conditions]['ccfa.category_id'] = params[:object_type].split(',')
-          options[:conditions]['features.is_public'] = 1
-          options[:conditions].delete(:is_public)
-        end
-        if params[:context_id].blank?
-          perform_global_search(options, search_options)
-        else
-          perform_contextual_search(options, search_options)
-        end
-      when 'name'
-        @features = Feature.name_search(params[:filter])
+    @params = params
+    # The search params that should be observed when creating the session store of search params
+    valid_search_keys = [:filter, :scope, :match, :search_scope, :object_type, :characteristic_id, :has_descriptions, :page ]
+    fid = params[:fid]
+    #search_scope = params[:search_scope].blank? ? 'global' : params[:search_scope]
+    #if !search_scope.blank?
+    #  case search_scope
+    #  when 'fid'
+    #    feature = Feature.find(:first, :conditions => {:is_public => 1, :fid => params[:filter].gsub(/[^\d]/, '').to_i})
+    #    if !feature.id.nil?
+    #      render :url => {:action => 'expand_and_show',  :id => '59' }, :layout => false
+    #    else
+    #    end
+    #  when 'contextual'
+    #    if !params[:object_type].blank?
+    #      options[:joins] = "LEFT JOIN cumulative_category_feature_associations ccfa ON ccfa.feature_id = features.id"
+    #      options[:conditions]['ccfa.category_id'] = params[:object_type].split(',')
+    #      options[:conditions]['features.is_public'] = 1
+    #      options[:conditions].delete(:is_public)
+    #    end
+    #    if params[:context_id].blank?
+    #      perform_global_search(options, search_options)
+    #    else
+    #      perform_contextual_search(options, search_options)
+    #    end
+    #  when 'name'
+    #    @features = Feature.name_search(params[:filter])
+    #  else
+      if !fid.blank?
+        @features = Feature.paginate(:conditions => {:is_public => 1, :fid => fid.gsub(/[^\d]/, '').to_i}, :page => 1)
       else
         joins = []
         if !params[:object_type].blank?
@@ -251,37 +251,16 @@ class FeaturesController < ApplicationController
         options[:select] = "features.*, DISTINCT feature.id" unless joins.empty?
         perform_global_search(options, search_options)
       end
-    end
-    @params = params
-    
-    # The search params that should be observed when creating the session store of search params
-    valid_search_keys = [
-      :filter,
-    	:scope,
-    	:match,
-    	:search_scope,
-    	:object_type,
-    	:characteristic_id,
-    	:has_descriptions,
-    	:page
-    ]
-    
+    #end
     # When using the session store features, we need to provide will_paginate with info about how to render
     # the pagination, so we'll store it in session[:search], along with the feature ids 
-    session[:search] = {
-      :params => @params.reject{|key, val| !valid_search_keys.include?(key.to_sym)},
-      :page => @params[:page] ||= 1,
-      :per_page => @features.per_page,
-      :total_entries => @features.total_entries,
-      :total_pages => @features.total_pages,
-      :feature_ids => @features.collect{|f|f.id}
-    }
-    
+    session[:search] = { :params => @params.reject{|key, val| !valid_search_keys.include?(key.to_sym)},
+      :page => @params[:page] ||= 1, :per_page => @features.per_page, :total_entries => @features.total_entries,
+      :total_pages => @features.total_pages, :feature_ids => @features.collect{|f|f.id} }
     # Set the current menu_item to 'results', so that the Results will stay open when the user browses
     # to a new page
     session[:interface] = {} if session[:interface].nil?
     session[:interface][:menu_item] = 'results'
-    
     render :partial => 'search_results', :locals => {:features => @features}, :layout => false
   end
   
