@@ -140,32 +140,30 @@ class FeaturesController < ApplicationController
 
   def fids_by_name
     params[:filter] = params[:query]
-    options={
-      :conditions => {:is_public => 1}
-    }
+    options = { :conditions => { :is_public => 1 }, :include => :shapes }
     search_options = {
       :scope => params[:scope] || 'name',
       :match => params[:match]
     }
     joins = []
     if !params[:feature_type].blank?
-      joins << "LEFT JOIN cumulative_category_feature_associations ccfa ON ccfa.feature_id = features.id"
+      joins << 'LEFT JOIN cumulative_category_feature_associations ccfa ON ccfa.feature_id = features.id'
       options[:conditions]['ccfa.category_id'] = params[:feature_type].split(',')
       options[:conditions]['features.is_public'] = 1
       options[:conditions].delete(:is_public)
     end
     if !params[:characteristic_id].blank?
-      joins << "LEFT JOIN category_features cf ON cf.feature_id = features.id"
+      joins << 'LEFT JOIN category_features cf ON cf.feature_id = features.id'
       options[:conditions]['cf.category_id'] = params[:characteristic_id].split(',')
       options[:conditions]['cf.type'] = nil
       options[:conditions]['features.is_public'] = 1
       options[:conditions].delete(:is_public)
     end
     options[:joins] = joins.join(' ') unless joins.empty?
-    options[:select] = "features.*, DISTINCT feature.id" unless joins.empty?
+    options[:select] = 'features.*, DISTINCT feature.id' unless joins.empty?
     perform_global_search(options, search_options)
     respond_to do |format|
-      format.json { render :json => {:features => @features.collect(&:fid)}, :callback => params[:callback] }
+      format.json { render :json => { :features => @features.reject{|f| f.shapes.empty?}.collect(&:fid) }, :callback => params[:callback] }
     end
   end
   
