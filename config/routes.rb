@@ -91,6 +91,7 @@ ActionController::Routing::Routes.draw do |map|
     features.by_geo_code 'by_geo_code/:geo_code.:format', :action => 'by_geo_code'
     # Allow an empty :query for feature type searches
     features.by_name 'by_name/:query.:format', :action => 'by_name', :query => /.*?/
+    features.fids_by_name 'fids_by_name/:query.:format', :action => 'fids_by_name', :query => /.*?/
     features.gis_resources 'gis_resources/:fids.:format', :action => 'gis_resources'
   end  
   map.root :controller=>'features', :action=>'index'
