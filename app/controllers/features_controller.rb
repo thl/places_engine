@@ -163,7 +163,7 @@ class FeaturesController < ApplicationController
     options[:select] = 'features.*, DISTINCT feature.id' unless joins.empty?
     perform_global_search(options, search_options)
     respond_to do |format|
-      format.json { render :json => { :features => @features.reject{|f| f.shapes.empty?}[0...300].collect(&:fid) }, :callback => params[:callback] }
+      format.json { render :json => { :features => @features.reject{|f| f.shapes.empty?}[0...100].collect(&:fid) }, :callback => params[:callback] }
     end
   end
   
