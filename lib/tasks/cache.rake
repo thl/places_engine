@@ -1,6 +1,20 @@
 require 'config/environment'
-namespace :db do
-  namespace :cache do
+
+namespace :cache do
+  namespace :tree do
+    desc 'Run to preheat cache for all nodes of the browse tree.'
+    task :heat do
+      fid = ENV['FID']
+      if fid.blank?
+        puts 'Creating cache files...'
+      else
+        puts "Creating cache files for #{fid}..."
+      end
+      TreeCache.reheat(fid) # 0 specifies that all nodes should be re-created. Otherwise, this is the id for the node whose descendants and self should be re-generated
+      puts 'Finished successfully.'
+    end
+  end
+  namespace :db do
     namespace :category do
       desc 'Run to create to empty and re-populate cumulative category association for the first time.'
       task :clear do
@@ -28,5 +42,9 @@ namespace :db do
         puts 'Finished successfully.'
       end
     end
+  end
+  namespace :view do
+      desc "Deletes view cache"
+      task(:clear) { |t| Dir.chdir('public') { ['categories', 'features'].each{ |folder| `rm -rf #{folder}` } } }
   end
 end
