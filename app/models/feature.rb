@@ -102,6 +102,24 @@ class Feature < ActiveRecord::Base
     des.select{ |f_id| !CumulativeCategoryFeatureAssociation.find(:first, :conditions => {:category_id => category_id, :feature_id => f_id}).nil? }.collect{|f_id| Feature.find(f_id)}
   end
   
+  def descendants_by_perspective(perspective)
+    pending = [self]
+    des = [self]
+    des_ids = [self.id]
+    while !pending.empty?
+      e = pending.pop
+      FeatureRelation.all(:select => 'child_node_id', :conditions => {:parent_node_id => e.id, :perspective_id => perspective.id, :feature_relation_type_id => [1, 7]}).each do |r|
+        c = r.child_node
+        if !des_ids.include? c.id
+          des_ids << c.id
+          des << c
+          pending.push(c)
+        end
+      end
+    end
+    des
+  end
+  
   #
   #
   #
@@ -228,11 +246,11 @@ class Feature < ActiveRecord::Base
     # base_scope[:conditions] instead?
     if !search_options[:has_descriptions].nil? && search_options[:has_descriptions]
       with_scope(:find => {:conditions => "descriptions.content IS NOT NULL"}) do
-        with_scope(:find=>base_scope) { options[:page].nil? ? self.all(options) : paginate(options) }
+        with_scope(:find=>base_scope) { options.has_key?(:page) ? paginate(options) : self.all(options) }
       end
     # Otherwise, just use a single scope:
-    else      
-      with_scope(:find=>base_scope) { options[:page].nil? ? self.all(options) : paginate(options) }
+    else
+      with_scope(:find=>base_scope) { options.has_key?(:page) ? paginate(options) : self.all(options) }
     end
   end
   

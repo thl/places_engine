@@ -10,10 +10,10 @@
 			:loading => 'NodeMenu.beginSearch()' do |form| %>
 			<%= text_field_tag :filter, h(@search_form_params[:filter]), :class=>:text %>
 			<div style="float: right;">
-				<%= link_to_function 'Advanced Search', "$('#advanced_search').show(); $(this).hide(); $('#hide_advanced_search_link').show()", :id => "show_advanced_search_link", :style => ("display:none;" if current_show_advanced_search) %>
-				<%= link_to_function 'Hide Advanced Search', "$('#advanced_search').hide(); $(this).hide(); $('#show_advanced_search_link').show(); reset_advanced_search();", :id => "hide_advanced_search_link", :style => ("display:none;" unless current_show_advanced_search) %>
+				<%= link_to_function 'Advanced Search', "$('#advanced_search').show(); $(this).hide(); $('#hide_advanced_search_link').show()", :id => 'show_advanced_search_link', :style => ('display:none;' if current_show_advanced_search) %>
+				<%= link_to_function 'Hide Advanced Search', "$('#advanced_search').hide(); $(this).hide(); $('#show_advanced_search_link').show(); reset_advanced_search();", :id => 'hide_advanced_search_link', :style => ('display:none;' unless current_show_advanced_search) %>
 			</div>
-			<div id="advanced_search" style="<%= "display:none;" unless current_show_advanced_search  %>">
+			<div id="advanced_search" style="<%= 'display:none;' unless current_show_advanced_search  %>">
 				<div>
 					<%=  radio_button_tag :scope, :full_text, @search_form_params[:scope] == 'full_text' %> All Text
 					<%=  radio_button_tag :scope, :name, @search_form_params[:scope] == 'name' %> Name
