@@ -464,21 +464,6 @@ module ApplicationHelper
     end
   end
 
-   # Get the URL of the main THL site, based on the current environment (is this defined elsewhere?).
-   # This is currently used for loading JavaScript from the main THL site.
-   def thl_url
-     hostname = Socket.gethostname.downcase
-     if hostname == 'dev.thlib.org'
-       'http://dev.thlib.org'
-     elsif hostname == 'sds6.itc.virginia.edu'
-       'http://staging.thlib.org'
-     elsif hostname =~ /\.local/ && hostname !~ /^a/
-       'http://dev.thlib.org'
-     else
-       'http://www.thlib.org'
-     end
-   end
-   
    def google_maps_key
      hostname = Socket.gethostname.downcase
      if hostname== 'e-bhutan.bt'

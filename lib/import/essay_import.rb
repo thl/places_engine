@@ -5,7 +5,7 @@ class EssayImport < Importation
   end
   
   def import_with_book_reader(source, options)
-    reader_url = options[:reader_url] || "http://www.thlib.org/global/php/book_reader.php?url="
+    reader_url = options[:reader_url] || "#{ThlSite.get_url}/global/php/book_reader.php?url="
     public_url = options[:public_url] || ""
     essay_prefix = options[:prefix] || ""
     view_code = !options[:view_code].blank? ? options[:view_code].to_s : "roman.popular"

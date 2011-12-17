@@ -49,9 +49,12 @@ xml.feature(:id => feature.id, :pid => feature.pid, :fid => feature.fid, :header
       xml.desc(options)
     end
   end
-  xml.has_shapes(feature.has_shapes? ? 1 : 0)
+  xml.has_shapes(feature.has_shapes? ? 1 : 0, :type => 'integer')
   closest = feature.closest_feature_with_shapes
-  xml.closest_fid_with_shapes(closest.nil? ? nil : closest.fid)
+  closest_fid = closest.nil? ? nil : closest.fid
+  xml.closest_fid_with_shapes(closest_fid, :type => 'integer')
+  url = closest_fid.nil? ? nil : "#{ThlSite.get_url}/places/maps/interactive/#fid:#{closest_fid}"
+  xml.interactive_map_url(url, :type => 'string')
   xml.created_at(feature.created_at, :type => 'datetime')
   xml.updated_at(feature.updated_at, :type => 'datetime')
   xml.related_feature_count(feature.relations.size.to_s, :type => 'integer')
