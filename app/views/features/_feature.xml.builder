@@ -49,7 +49,9 @@ xml.feature(:id => feature.id, :pid => feature.pid, :fid => feature.fid, :header
       xml.desc(options)
     end
   end
-  xml.has_shapes(feature.shapes.empty? ? 0 : 1)
+  xml.has_shapes(feature.has_shapes? ? 1 : 0)
+  closest = feature.closest_feature_with_shapes
+  xml.closest_fid_with_shapes(closest.nil? ? nil : closest.fid)
   xml.created_at(feature.created_at, :type => 'datetime')
   xml.updated_at(feature.updated_at, :type => 'datetime')
   xml.related_feature_count(feature.relations.size.to_s, :type => 'integer')

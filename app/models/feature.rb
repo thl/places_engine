@@ -64,6 +64,32 @@ class Feature < ActiveRecord::Base
     end
   end
   
+  def has_shapes?(options = {})
+    use_log_in_status = options.has_key? :logged_in?
+    shapes = self.shapes
+    return use_log_in_status ? (options[:logged_in?] ? !shapes.empty? : shapes.any?(&:is_public?)) : !shapes.empty?
+  end
+  
+  # Options take :logged_in?
+  def closest_feature_with_shapes(options = {})
+    return self if self.has_shapes?(options)
+    # check if geographical parent has shapes (township)
+    geo_rel = Perspective.get_by_code('geo.rel')
+    first_township_relation = self.all_parent_relations.first(:conditions => {:perspective_id => geo_rel.id})
+    if !first_township_relation.nil?
+      node = first_township_relation.parent_node
+      return node if node.has_shapes?(options)
+    end
+    # check if county parent has shapes (county)
+    pol_admin = Perspective.get_by_code('pol.admin.hier')
+    first_county_relation = self.all_parent_relations.first(:conditions => {:perspective_id => pol_admin.id})
+    if !first_county_relation.nil?
+      node = first_county_relation.parent_node
+      return node if node.has_shapes?(options)
+    end
+    return nil
+  end
+  
   #
   #
   #
