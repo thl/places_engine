@@ -65,7 +65,6 @@ class ApplicationController < ActionController::Base
         self.current_view = View.find(params[:view_id])
       end
     end
-
     @top_level_nodes = Feature.current_roots(current_perspective, current_view)
     @session = Session.new(:perspective_id => self.current_perspective.id, :view_id => self.current_view.id)
     @perspectives = Perspective.find_all_public

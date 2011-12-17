@@ -32,7 +32,7 @@ class FeatureRelationType < ActiveRecord::Base
   # This seems to be generally satisfactory for now, since a migration creates the initial
   # FeatureRelationTypes.
   def self.hierarchy_ids
-    self.all(:conditions => {:is_hierarchical => true}, :order => :id).collect(&:id)
+    Rails.cache.fetch('feature_relation_types/hierarchical_ids') { self.all(:conditions => {:is_hierarchical => true}, :order => :id).collect(&:id) }
   end
   
   def to_s

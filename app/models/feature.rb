@@ -90,6 +90,27 @@ class Feature < ActiveRecord::Base
     return nil
   end
   
+  def closest_parent_by_perspective(perspective)
+    parent_relation = FeatureRelation.first(:select => 'parent_node_id', :conditions => {:child_node_id => self.id, :perspective_id => perspective.id, :feature_relation_type_id => FeatureRelationType.hierarchy_ids})
+    return parent_relation.parent_node if !parent_relation.nil?
+    parent_relation = FeatureRelation.first(:select => 'parent_node_id', :conditions => {:child_node_id => self.id, :perspective_id => perspective.id})
+    return parent_relation.parent_node if !parent_relation.nil?
+    parent_relation = FeatureRelation.first(:select => 'parent_node_id', :conditions => {:child_node_id => self.id})
+    return parent_relation.parent_node if !parent_relation.nil?
+    return nil
+  end
+  
+  def closest_ancestors_by_perspective(perspective)
+    current = self
+    stack = []
+    begin
+      stack.push(current)
+      current = current.closest_parent_by_perspective(perspective)
+    end while !current.nil?
+    stack.reverse
+  end
+  
+  
   #
   #
   #
@@ -127,14 +148,14 @@ class Feature < ActiveRecord::Base
     topic_ids = topic_ids.first if topic_ids.size==1
     des.select{ |f_id| !CumulativeCategoryFeatureAssociation.first(:conditions => {:category_id => topic_ids, :feature_id => f_id}).nil? }.collect{|f_id| Feature.find(f_id)}
   end
-  
+    
   def descendants_by_perspective(perspective)
     pending = [self]
     des = [self]
     des_ids = [self.id]
     while !pending.empty?
       e = pending.pop
-      FeatureRelation.all(:select => 'child_node_id', :conditions => {:parent_node_id => e.id, :perspective_id => perspective.id, :feature_relation_type_id => [1, 7]}).each do |r|
+      FeatureRelation.all(:select => 'child_node_id', :conditions => {:parent_node_id => e.id, :perspective_id => perspective.id, :feature_relation_type_id => FeatureRelationType.hierarchy_ids}).each do |r|
         c = r.child_node
         if !des_ids.include? c.id
           des_ids << c.id
