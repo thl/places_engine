@@ -24,8 +24,9 @@ class TopicsController < ApplicationController
   
   def feature_descendants
     feature = Feature.get_by_fid(params[:feature_id])
-    topic = Topic.find(params[:id])
-    @features = feature.all_descendants_by_topic(topic)
+    topic_ids = params[:id].split(/\D+/)
+    topic_ids.shift if topic_ids.size>0 && topic_ids.first.blank?    
+    @features = feature.all_descendants_by_topic(topic_ids)
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
     respond_to do |format|
       format.xml  { render :template => 'features/index' }

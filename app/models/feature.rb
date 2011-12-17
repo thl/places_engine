@@ -111,7 +111,7 @@ class Feature < ActiveRecord::Base
     end
   end
   
-  def all_descendants_by_topic(topic)
+  def all_descendants_by_topic(topic_ids)
     pending = [self.id]
     des = []
     while !pending.empty?
@@ -124,8 +124,8 @@ class Feature < ActiveRecord::Base
         end
       end
     end
-    category_id = topic.id
-    des.select{ |f_id| !CumulativeCategoryFeatureAssociation.find(:first, :conditions => {:category_id => category_id, :feature_id => f_id}).nil? }.collect{|f_id| Feature.find(f_id)}
+    topic_ids = topic_ids.first if topic_ids.size==1
+    des.select{ |f_id| !CumulativeCategoryFeatureAssociation.first(:conditions => {:category_id => topic_ids, :feature_id => f_id}).nil? }.collect{|f_id| Feature.find(f_id)}
   end
   
   def descendants_by_perspective(perspective)
