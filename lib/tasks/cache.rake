@@ -5,13 +5,13 @@ namespace :cache do
     desc 'Run to preheat cache for all nodes of the browse tree.'
     task :heat do
       fid = ENV['FID']
-      if fid.blank?
-        puts 'Creating cache files...'
-      else
-        puts "Creating cache files for #{fid}..."
-      end
-      TreeCache.reheat(fid) # 0 specifies that all nodes should be re-created. Otherwise, this is the id for the node whose descendants and self should be re-generated
-      puts 'Finished successfully.'
+      perspective_code = ENV['PERSPECTIVE']
+      view_code = ENV['VIEW']
+      start = Time.now
+      puts "#{start}: Creating cache files#{" for #{fid}" if !fid.blank?}..."
+      TreeCache.reheat(fid, perspective_code, view_code) # nil specifies that all nodes should be re-created. Otherwise, this is the id for the node whose descendants and self should be re-generated
+      stop = Time.now
+      puts "#{stop}: Finished successfully. Time lapsed: #{stop - start}"
     end
   end
   namespace :db do

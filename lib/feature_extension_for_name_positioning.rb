@@ -44,9 +44,6 @@ module FeatureExtensionForNamePositioning
   # Notice that this only includes the rules that are different from the popular view.  
   def scholarly_prioritized_name(all_names = prioritized_names)
     return nil if all_names.empty?
-    # First check if its an exception
-    name = all_names.detect{|n| n.is_primary_for_romanization?}
-    return name if !name.nil?
     latin_id = WritingSystem.get_by_code('latin').id
     first_name = all_names.first    
     case first_name[:language_id]
