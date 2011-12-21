@@ -28,9 +28,12 @@ class TreeCache
     current_level = features
     level_number = 0
     done = []
+    cached_time = 0
+    cached_items = 0
+    start = Time.now
     begin
-      start = Time.now
-      puts "#{start}: Starting level #{level_number} with #{current_level.size} features."
+      level_start = Time.now
+      puts "#{level_start}: Starting level #{level_number} with #{current_level.size} features."
       next_level = []
       current_level.each do |f|
         next if f.nil? || done.include?(f.fid)
@@ -44,8 +47,11 @@ class TreeCache
             next if !Dir[cache_dir(f, p, v)].empty?
             url = "#{APP_URI}/features/node_tree_expanded/#{f.id}?view_id=#{v}&perspective_id=#{p}"
             begin
+              cache_start = Time.now
               open(url)
-              puts "L#{level_number}: F#{f.fid} cached."
+              cached_items += 1
+              cached_time += Time.now - cache_start
+              puts "L#{level_number}: F#{f.fid} cached (avg: #{cached_time/cached_items} secs/feature)."
             rescue => e
               puts "F#{f.fid}: #{url} could not be fetched."
             rescue Timeout::Error => e
@@ -55,7 +61,7 @@ class TreeCache
         end
       end
       stop = Time.now
-      puts "#{stop}: Done level #{level_number} taking #{stop-start} for #{current_level.size} features. #{done.size} features so far."
+      puts "#{stop}: Done level #{level_number} taking #{stop-level_start} secs for #{current_level.size} features. #{done.size} features so far (avg: #{(stop-start)/done.size} secs/feature)."
       current_level = next_level.sort{|a, b| a.fid <=> b.fid}
       level_number += 1
     end while !current_level.empty?
