@@ -8,7 +8,7 @@ class TreeCache
   def self.reheat(fid, perspective_code, view_code)
     perspectives = perspective_code.blank? ? nil : [Perspective.get_by_code(perspective_code)]
     views = view_code.blank? ? nil : [View.get_by_code(view_code)]
-    features = fid.blank? ? Feature.roots.reject(&:is_blank?) : [Feature.get_by_fid(fid)]
+    features = fid.blank? ? Feature.roots.reject(&:is_blank?).sort{|a, b| a.fid <=> b.fid} : [Feature.get_by_fid(fid)]
     self.generate(features, perspectives, views)
   end
   
@@ -52,7 +52,7 @@ class TreeCache
         end
         puts "#{f.fid} cached."
       end
-      current_level = next_level
+      current_level = next_level.sort{|a, b| a.fid <=> b.fid}
     end while !current_level.empty?
   end
 end
