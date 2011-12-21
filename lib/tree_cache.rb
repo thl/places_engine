@@ -26,23 +26,32 @@ class TreeCache
     view_ids = views.collect(&:id)
     perspective_ids = perspectives.collect(&:id)
     current_level = features
+    level_number = 0
     done = []
     begin
+      start = Time.now
+      puts "#{start}: Starting level #{level_number} with #{current_level.size} features."
       next_level = []
       current_level.each do |f|
         next if f.nil? || done.include?(f.fid)
         done << f.fid
-        related_perspectives = f.parent_relations.all(:select => 'DISTINCT perspective_id', :conditions => {:perspective_id => perspective_ids}).collect(&:perspective_id)
         next_level += f.child_relations.all(:conditions => {:perspective_id => perspective_ids}).collect(&:child_node)
+        if already_cached(f, perspective_ids, view_ids)
+          puts "#{f.fid} pre db-skipped."
+          next
+        end
+        related_perspectives = f.parent_relations.all(:select => 'DISTINCT perspective_id', :conditions => {:perspective_id => perspective_ids}).collect(&:perspective_id)
         next if related_perspectives.empty?
         view_ids.each do |v|
           related_perspectives.each do |p|
-            dir = cache_dir(f, p, v)
-            next if !Dir[dir].empty?
+            if !Dir[cache_dir(f, p, v)].empty?
+              puts "#{f.fid} skipped."
+              next
+            end
             url = "#{APP_URI}/features/node_tree_expanded/#{f.id}?view_id=#{v}&perspective_id=#{p}"
             begin
               open(url)
-              puts "created: #{dir}"
+              puts "#{f.fid} cached."
             rescue => e
               puts "#{url} could not be fetched."
             rescue Timeout::Error => e
@@ -50,9 +59,11 @@ class TreeCache
             end
           end
         end
-        puts "#{f.fid} cached."
       end
+      stop = Time.now
+      puts "#{stop}: Done level #{level_number} taking #{stop-start} for #{current_level.size} features."
       current_level = next_level.sort{|a, b| a.fid <=> b.fid}
+      level_number += 1
     end while !current_level.empty?
   end
 end
