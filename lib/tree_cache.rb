@@ -36,32 +36,26 @@ class TreeCache
         next if f.nil? || done.include?(f.fid)
         done << f.fid
         next_level += f.child_relations.all(:conditions => {:perspective_id => perspective_ids}).collect(&:child_node)
-        if already_cached(f, perspective_ids, view_ids)
-          puts "#{f.fid} pre db-skipped."
-          next
-        end
+        next if already_cached(f, perspective_ids, view_ids)
         related_perspectives = f.parent_relations.all(:select => 'DISTINCT perspective_id', :conditions => {:perspective_id => perspective_ids}).collect(&:perspective_id)
         next if related_perspectives.empty?
         view_ids.each do |v|
           related_perspectives.each do |p|
-            if !Dir[cache_dir(f, p, v)].empty?
-              puts "#{f.fid} skipped."
-              next
-            end
+            next if !Dir[cache_dir(f, p, v)].empty?
             url = "#{APP_URI}/features/node_tree_expanded/#{f.id}?view_id=#{v}&perspective_id=#{p}"
             begin
               open(url)
-              puts "#{f.fid} cached."
+              puts "L#{level_number}: F#{f.fid} cached."
             rescue => e
-              puts "#{url} could not be fetched."
+              puts "F#{f.fid}: #{url} could not be fetched."
             rescue Timeout::Error => e
-              puts "#{url} timed out."
+              puts "F#{f.fid}: #{url} timed out."
             end
           end
         end
       end
       stop = Time.now
-      puts "#{stop}: Done level #{level_number} taking #{stop-start} for #{current_level.size} features."
+      puts "#{stop}: Done level #{level_number} taking #{stop-start} for #{current_level.size} features. #{done.size} features so far."
       current_level = next_level.sort{|a, b| a.fid <=> b.fid}
       level_number += 1
     end while !current_level.empty?
