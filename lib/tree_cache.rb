@@ -8,8 +8,8 @@ class TreeCache
   def self.reheat(fid, perspective_code, view_code)
     perspectives = perspective_code.blank? ? nil : [Perspective.get_by_code(perspective_code)]
     views = view_code.blank? ? nil : [View.get_by_code(view_code)]
-    fids = fid.blank? ? Feature.roots.collect(&:fid) : [fid]
-    fids.each{ |f| self.generate(f, perspectives, views) }
+    features = fid.blank? ? Feature.roots.reject(&:is_blank?) : [Feature.get_by_fid(fid)]
+    self.generate(features, perspectives, views)
   end
   
   def self.cache_dir(f, p, v)
@@ -20,30 +20,39 @@ class TreeCache
     view_ids.all? { |v| perspective_ids.all? { |p| !Dir[cache_dir(f, p, v)].empty? } }
   end
   
-  def self.generate(fid, perspectives = nil, views = nil)
+  def self.generate(features, perspectives = nil, views = nil)
     perspectives = Perspective.all(:conditions => {:is_public => true}) if perspectives.blank?
     views = View.get_all if views.blank?
-    feature = Feature.get_by_fid(fid)
-    return if feature.nil?
     view_ids = views.collect(&:id)
     perspective_ids = perspectives.collect(&:id)
-    ([feature] + feature.descendants).each do |f|
-      # next if already_cached(f, perspective_ids, view_ids)
-      related_perspectives = f.parent_relations.all(:select => 'DISTINCT perspective_id', :conditions => {:perspective_id => perspective_ids}).collect(&:perspective_id)
-      next if related_perspectives.empty?
-      view_ids.each do |v|
-        related_perspectives.each do |p|
-          dir = cache_dir(f, p, v)
-          next if !Dir[dir].empty?
-          begin
-            open("#{APP_URI}/features/node_tree_expanded/#{f.id}?view_id=#{v}&perspective_id=#{p}")
-            puts "created: #{dir}"
-          rescue
-            puts "#{APP_URI}/features/node_tree_expanded/#{f.id}?view_id=#{v}&perspective_id=#{p} timed out."
+    current_level = features
+    done = []
+    begin
+      next_level = []
+      current_level.each do |f|
+        next if f.nil? || done.include?(f.fid)
+        done << f.fid
+        related_perspectives = f.parent_relations.all(:select => 'DISTINCT perspective_id', :conditions => {:perspective_id => perspective_ids}).collect(&:perspective_id)
+        next_level += f.child_relations.all(:conditions => {:perspective_id => perspective_ids}).collect(&:child_node)
+        next if related_perspectives.empty?
+        view_ids.each do |v|
+          related_perspectives.each do |p|
+            dir = cache_dir(f, p, v)
+            next if !Dir[dir].empty?
+            url = "#{APP_URI}/features/node_tree_expanded/#{f.id}?view_id=#{v}&perspective_id=#{p}"
+            begin
+              open(url)
+              puts "created: #{dir}"
+            rescue => e
+              puts "#{url} could not be fetched."
+            rescue Timeout::Error => e
+              puts "#{url} timed out."
+            end
           end
         end
+        puts "#{f.fid} cached."
       end
-      puts "#{f.fid} cached."
-    end
+      current_level = next_level
+    end while !current_level.empty?
   end
 end
