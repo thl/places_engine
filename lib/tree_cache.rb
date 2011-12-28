@@ -1,9 +1,10 @@
 
 class TreeCache
     
-  @@cache_dir = "#{ActionController::Base.cache_store.cache_path}/views/tree/"
-  @@cache_file_prefix = 'node_id_'
-  @@cache_file_suffix = '.cache'
+  CACHE_DIR = "#{ActionController::Base.cache_store.cache_path}/views/tree/"
+  CACHE_FILE_PREFIX = 'node_id_'
+  CACHE_FILE_SUFFIX = '.cache'
+  TIME_FORMAT = '%.2f'
   
   def self.reheat(fid, perspective_code, view_code)
     perspectives = perspective_code.blank? ? nil : [Perspective.get_by_code(perspective_code)]
@@ -13,11 +14,21 @@ class TreeCache
   end
   
   def self.cache_dir(f, p, v)
-    "#{@@cache_dir}#{p}/#{v}/#{@@cache_file_prefix}#{f.id}#{@@cache_file_suffix}"
+    "#{CACHE_DIR}#{p}/#{v}/#{CACHE_FILE_PREFIX}#{f.id}#{CACHE_FILE_SUFFIX}"
   end
   
   def self.already_cached(f, perspective_ids, view_ids)
     view_ids.all? { |v| perspective_ids.all? { |p| !Dir[cache_dir(f, p, v)].empty? } }
+  end
+  
+  def self.extended_open(url)
+    # open(url) times out in one minute!
+    site_url = URI.parse(url)
+    http = Net::HTTP.new(site_url.host, site_url.port)
+    http.read_timeout=360 # timeout in seconds. Yeah, that's 6 minutes.
+    req = Net::HTTP::Get.new(site_url.request_uri)
+    res = http.start {|web| web.request(req)}
+    res.body
   end
   
   def self.generate(features, perspectives = nil, views = nil)
@@ -48,10 +59,10 @@ class TreeCache
             url = "#{APP_URI}/features/node_tree_expanded/#{f.id}?view_id=#{v}&perspective_id=#{p}"
             begin
               cache_start = Time.now
-              open(url)
+              extended_open(url)
               cached_items += 1
               cached_time += Time.now - cache_start
-              puts "L#{level_number}: F#{f.fid} cached (avg: #{cached_time/cached_items} secs/feature)."
+              puts "L#{level_number}: F#{f.fid} (perspective: #{p}, view: #{v}) cached (avg: #{TIME_FORMAT % (cached_time/cached_items)} secs/feature)."
             rescue => e
               puts "F#{f.fid}: #{url} could not be fetched."
             rescue Timeout::Error => e
@@ -61,7 +72,7 @@ class TreeCache
         end
       end
       stop = Time.now
-      puts "#{stop}: Done level #{level_number} taking #{stop-level_start} secs for #{current_level.size} features. #{done.size} features so far (avg: #{(stop-start)/done.size} secs/feature)."
+      puts "#{stop}: Done level #{level_number} taking #{TIME_FORMAT % (stop-level_start)} secs for #{current_level.size} features. #{done.size} features so far (avg: #{TIME_FORMAT % ((stop-start)/done.size)} secs/feature)."
       current_level = next_level.sort{|a, b| a.fid <=> b.fid}
       level_number += 1
     end while !current_level.empty?
