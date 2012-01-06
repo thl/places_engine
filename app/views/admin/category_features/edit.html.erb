@@ -1,6 +1,6 @@
 <% add_breadcrumb_item features_link
    add_breadcrumb_item feature_link(@object.feature)
-   add_breadcrumb_item link_to(collection_name, collection_path)
+   add_breadcrumb_item link_to(Topic.human_name(:count => :many).s, collection_path)
    add_breadcrumb_item link_to(@object.id, object_path(@object))
    add_breadcrumb_item ts('edit.this')
    form_for [:admin, @object] do |f| %>

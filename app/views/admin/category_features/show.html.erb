@@ -1,6 +1,6 @@
 <% add_breadcrumb_item features_link
    add_breadcrumb_item feature_link(@object.feature)
-   add_breadcrumb_item link_to(collection_name, admin_feature_category_feature_path(@object.feature))
+   add_breadcrumb_item link_to(Topic.human_name(:count => :many).s, admin_feature_category_feature_path(@object.feature))
    add_breadcrumb_item @object %>
 <fieldset>
   <legend><%= "#{CategoryFeature.human_name.titleize.s} #{edit_item_link @object}" %></legend>
@@ -9,7 +9,7 @@
     <span><%= def_if_blank(@object, :feature, :name) %></span>
   </div>
   <div class="row">
-    <label><%= CategoryFeature.human_name.titleize.s %></label>
+    <label><%= Topic.human_name.titleize.s %></label>
     <span><%= @object.stacked_category %></span>
   </div>
   <div class="row">

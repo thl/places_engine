@@ -16,8 +16,8 @@ en:
                 one: 'blurp'
                 other: 'blurps'
             category_feature:
-                one: 'kmap characteristic'
-                other: 'kmap characteristics'
+                one: 'subject or characteristic'
+                other: 'subjects & characteristics'
             citation:
                 one: 'citation'
                 other: 'citations'
@@ -87,6 +87,11 @@ en:
             writing_system:
                 one: 'writing system'
                 other: 'writing systems'
+    activeresource:
+        models:
+            topic:
+                one: 'characteristic'
+                other: 'characteristics'
         # Attribute names will be titleized.
         attributes:
             altitude:
@@ -103,8 +108,8 @@ en:
                 label: 'Label'
                 numeric_value: 'Numeric Value'
                 position: 'Priority'
-                show_parent: "Show category's immediate parent"
-                show_root: 'Show top level Knowledge Map'
+                show_parent: "Show Subject's Immediate Parent"
+                show_root: 'Show Master Subject'
                 string_value: 'Text Value'
             citation:
                 info_source_id: 'Info Source'
@@ -114,9 +119,6 @@ en:
                 is_primary: 'Primary?'
                 title: 'Essay Title'
             feature:
-                characteristic:
-                    one: 'Characteristic'
-                    other: 'Characteristics'
                 descendant:
                     one: 'Contained Feature'
                     other: 'Contained Features'

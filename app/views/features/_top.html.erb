@@ -23,7 +23,7 @@ jQuery(document).ready(function(){
 	var characteristic_data = <%= @kmaps_characteristics.collect{|c| {:id => c.category_id, :name => c.to_s}}.sort_by{|a| a[:name].downcase.strip}.to_json %>;
 	var characteristic_selector = new CharacteristicSelector();
 	characteristic_selector.init('characteristic_selector', {
-		fieldLabel: "<%= Feature.human_attribute_name(:characteristic).titleize %>:",
+		fieldLabel: "<%= Topic.human_name.titleize %>:",
 		data: characteristic_data
 	});
 	<% end %>

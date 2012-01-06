@@ -7,7 +7,7 @@
        <tr>
          <th class="listActionCol"></th>
 <%=     '<th>THL Feature ID</th>' unless hide_feature_id %>
-         <th><%= CategoryFeature.human_name.titleize.s %></th>
+         <th><%= Topic.human_name.titleize.s %></th>
          <th><%= ts :value %></th>
          <th><%= Note.human_name(:count => :many).titleize.s %></th>
          <th><%= ts 'add.record', :what => Note.human_name.titleize %></th>

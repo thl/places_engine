@@ -239,7 +239,7 @@ module ApplicationHelper
       'feature_object_type' => 'feature_type',
       'shape' => 'location',
       'time_unit' => 'date',
-      'category_feature' => 'kmap_characteristic'
+      'category_feature' => Topic.human_name #'kmap_characteristic'
     }
     names[str].nil? ? str : names[str]
   end
