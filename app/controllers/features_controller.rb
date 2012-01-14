@@ -309,11 +309,15 @@ class FeaturesController < ApplicationController
   end
   
   def related
-    set_common_variables(session)
     @feature = Feature.get_by_fid(params[:id])
-    session[:interface][:context_id] = @feature.id unless @feature.nil?
-    @tab_options = {:entity => @feature}
-    @current_tab_id = :related
+    if @feature.nil?
+      redirect_to features_url
+    else
+      set_common_variables(session)
+      session[:interface][:context_id] = @feature.id unless @feature.nil?
+      @tab_options = {:entity => @feature}
+      @current_tab_id = :related
+    end
   end
   
   def related_list
