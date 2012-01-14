@@ -221,7 +221,15 @@ class FeaturesController < ApplicationController
     end
     
     url = geoserver_base+service+"?"+general_params+params
-    send_data(open(url).read, :filename => name, :type => type, :disposition => 'attachment')
+    begin
+      send_data(open(url).read, :filename => name, :type => type, :disposition => 'attachment')
+    rescue => e
+      render :nothing => true      
+    rescue OpenURI::HTTPError => e
+      render :nothing => true
+    rescue Timeout::Error => e
+      render :nothing => true
+    end
   end
   
   def search
