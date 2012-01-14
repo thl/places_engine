@@ -224,7 +224,7 @@ class FeaturesController < ApplicationController
     begin
       send_data(open(url).read, :filename => name, :type => type, :disposition => 'attachment')
     rescue => e
-      render :nothing => true      
+      render :nothing => true
     rescue OpenURI::HTTPError => e
       render :nothing => true
     rescue Timeout::Error => e
