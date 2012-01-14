@@ -4,20 +4,22 @@ class TopicsController < ApplicationController
   # GET /topics/1
   # GET /topics/1.xml
   def show
-    set_common_variables(session)
-
     @category = Category.find(params[:id])
-    @object_type = Topic.human_name(:count => :many).titleize
-    @object_title = @category.title
-    @object_url = Category.element_url(@category.id, :format => 'html')
-    @features = Feature.paginate(:conditions => {'cumulative_category_feature_associations.category_id' => @category.id, 'cached_feature_names.view_id' => current_view.id}, :joins => :cumulative_category_feature_associations, :include => {:cached_feature_names => :feature_name}, :order => 'feature_names.name', :page => params[:page] || 1, :per_page => 15)
-    @feature = Feature.find(session[:interface][:context_id]) unless session[:interface][:context_id].blank?
-
-    if request.xhr?
-      render :partial => 'features/list'
+    if @category.nil?
+      redirect_to features_url
     else
-      respond_to do |format|
-        format.html { render :template => 'features/list' }
+      set_common_variables(session)
+      @object_type = Topic.human_name(:count => :many).titleize
+      @object_title = @category.title
+      @object_url = Category.element_url(@category.id, :format => 'html')
+      @features = Feature.paginate(:conditions => {'cumulative_category_feature_associations.category_id' => @category.id, 'cached_feature_names.view_id' => current_view.id}, :joins => :cumulative_category_feature_associations, :include => {:cached_feature_names => :feature_name}, :order => 'feature_names.name', :page => params[:page] || 1, :per_page => 15)
+      @feature = Feature.find(session[:interface][:context_id]) unless session[:interface][:context_id].blank?
+      if request.xhr?
+        render :partial => 'features/list'
+      else
+        respond_to do |format|
+          format.html { render :template => 'features/list' }
+        end
       end
     end
   end

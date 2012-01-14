@@ -22,14 +22,18 @@ class DescriptionsController < ApplicationController
   end
   
   def show
-    set_common_variables(session)
-    @description = Description.find(params[:id])
-    @tab_options = {:entity => @feature}
-    @current_tab_id = :descriptions
-    respond_to do |format|
-      format.html
-      format.xml
-      format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')), :callback => params[:callback] }
+    if @feature.nil?
+      redirect_to features_url
+    else
+      set_common_variables(session)
+      @description = Description.find(params[:id])
+      @tab_options = {:entity => @feature}
+      @current_tab_id = :descriptions
+      respond_to do |format|
+        format.html
+        format.xml
+        format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')), :callback => params[:callback] }
+      end
     end
   end
 

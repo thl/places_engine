@@ -219,16 +219,19 @@ class FeaturesController < ApplicationController
     else
      geoserver_base = 'http://www.thlib.org:8080/thdl-geoserver/'
     end
-    
-    url = geoserver_base+service+"?"+general_params+params
-    begin
-      send_data(open(url).read, :filename => name, :type => type, :disposition => 'attachment')
-    rescue => e
+    if service.nil?
       render :nothing => true
-    rescue OpenURI::HTTPError => e
-      render :nothing => true
-    rescue Timeout::Error => e
-      render :nothing => true
+    else
+      url = geoserver_base+service+"?"+general_params+params
+      begin
+        send_data(open(url).read, :filename => name, :type => type, :disposition => 'attachment')
+      rescue => e
+        render :nothing => true
+      rescue OpenURI::HTTPError => e
+        render :nothing => true
+      rescue Timeout::Error => e
+        render :nothing => true
+      end
     end
   end
   
