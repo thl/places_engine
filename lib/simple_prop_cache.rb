@@ -5,15 +5,15 @@ module SimplePropCache
   
   module ClassMethods
     def get_all
-      Rails.cache.fetch("#{self.model_name}/all") { self.find(:all, :order => 'created_at') }
+      Rails.cache.fetch("#{self.model_name}/all", :expires_in => 1.day) { self.find(:all, :order => 'created_at') }
     end
     
     def get_by_code(code)
-      Rails.cache.fetch("simple-props-code/#{code}") { self.find_by_code(code) }
+      Rails.cache.fetch("simple-props-code/#{code}", :expires_in => 1.day) { self.find_by_code(code) }
     end
     
     def get_by_name(name)
-      Rails.cache.fetch("#{self.model_name}-name/#{name}") { self.find_by_name(name) }
+      Rails.cache.fetch("#{self.model_name}-name/#{name}", :expires_in => 1.day) { self.find_by_name(name) }
     end
     
     def get_by_code_or_name(code, name)

@@ -48,11 +48,11 @@ class FeatureRelationType < ActiveRecord::Base
   end
   
   def self.get_by_code(code)
-    Rails.cache.fetch("feature_relation_types/code/#{code}") { self.find_by_code(code) }
+    Rails.cache.fetch("feature_relation_types/code/#{code}", :expires_in => 1.day) { self.find_by_code(code) }
   end
   
   def self.get_by_asymmetric_code(code)
-    Rails.cache.fetch("feature_relation_types/asymmetric_code/#{code}") { self.find_by_asymmetric_code(code) }
+    Rails.cache.fetch("feature_relation_types/asymmetric_code/#{code}", :expires_in => 1.day) { self.find_by_asymmetric_code(code) }
   end
 end
 
