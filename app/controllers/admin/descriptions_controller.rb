@@ -8,7 +8,7 @@ class Admin::DescriptionsController < ResourceController::Base
   edit.before {@authors = Person.find(:all, :order => 'fullname') }
   
   def add_author
-    @authors = User.find(:all, :order => 'fullname')
+    @authors = Person.find(:all, :order => 'fullname')
     render :partial => 'authors_selector', :locals => {:selected => nil}
   end
 
