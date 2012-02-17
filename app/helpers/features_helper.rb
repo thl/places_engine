@@ -127,7 +127,7 @@ module FeaturesHelper
   end
 
   def stylesheet_files
-    super + ['jquery.draggable.popup']
+    super + ['jquery.draggable.popup', 'interface_utils']
   end
 
 end
