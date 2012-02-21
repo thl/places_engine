@@ -107,12 +107,12 @@ class Feature < ActiveRecord::Base
   def closest_hierarchical_feature_by_perspective(perspective)
     Rails.cache.fetch("features/#{self.fid}/closest_hierarchical_feature_by_perspective/#{perspective.id}", :expires_in => 1.hour) do
       ancestors = self.closest_ancestors_by_perspective(perspective).dup
-      parent = ancestors.shift
       hierarchy_ids = FeatureRelationType.hierarchy_ids
-      while true
-        child = ancestors.shift
-        break parent if child.nil? || FeatureRelation.first(:conditions => {:child_node_id => child.id, :parent_node_id => parent.id, :perspective_id => perspective.id, :feature_relation_type_id => hierarchy_ids}).nil?
+      parent = ancestors.shift
+      child = ancestors.shift
+      while !child.nil? && !FeatureRelation.first(:conditions => {:child_node_id => child.id, :parent_node_id => parent.id, :perspective_id => perspective.id, :feature_relation_type_id => hierarchy_ids}).nil?
         parent = child
+        child = ancestors.shift
       end
       parent
     end
