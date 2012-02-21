@@ -72,42 +72,62 @@ class Feature < ActiveRecord::Base
   
   # Options take :logged_in?
   def closest_feature_with_shapes(options = {})
-    return self if self.has_shapes?(options)
-    # check if geographical parent has shapes (township)
-    geo_rel = Perspective.get_by_code('geo.rel')
-    first_township_relation = self.all_parent_relations.first(:conditions => {:perspective_id => geo_rel.id})
-    if !first_township_relation.nil?
-      node = first_township_relation.parent_node
-      return node if node.has_shapes?(options)
+    Rails.cache.fetch("features/#{self.fid}/closest_feature_with_shapes", :expires_in => 1.hour) do
+      break self if self.has_shapes?(options)
+      # check if geographical parent has shapes (township)
+      geo_rel = Perspective.get_by_code('geo.rel')
+      first_township_relation = self.all_parent_relations.first(:conditions => {:perspective_id => geo_rel.id})
+      if !first_township_relation.nil?
+        node = first_township_relation.parent_node
+        break node if node.has_shapes?(options)
+      end
+      # check if county parent has shapes (county)
+      pol_admin = Perspective.get_by_code('pol.admin.hier')
+      first_county_relation = self.all_parent_relations.first(:conditions => {:perspective_id => pol_admin.id})
+      if !first_county_relation.nil?
+        node = first_county_relation.parent_node
+        break node if node.has_shapes?(options)
+      end
+      nil
     end
-    # check if county parent has shapes (county)
-    pol_admin = Perspective.get_by_code('pol.admin.hier')
-    first_county_relation = self.all_parent_relations.first(:conditions => {:perspective_id => pol_admin.id})
-    if !first_county_relation.nil?
-      node = first_county_relation.parent_node
-      return node if node.has_shapes?(options)
-    end
-    return nil
   end
   
   def closest_parent_by_perspective(perspective)
-    parent_relation = FeatureRelation.first(:select => 'parent_node_id', :conditions => {:child_node_id => self.id, :perspective_id => perspective.id, :feature_relation_type_id => FeatureRelationType.hierarchy_ids})
-    return parent_relation.parent_node if !parent_relation.nil?
-    parent_relation = FeatureRelation.first(:select => 'parent_node_id', :conditions => {:child_node_id => self.id, :perspective_id => perspective.id})
-    return parent_relation.parent_node if !parent_relation.nil?
-    parent_relation = FeatureRelation.first(:select => 'parent_node_id', :conditions => {:child_node_id => self.id})
-    return parent_relation.parent_node if !parent_relation.nil?
-    return nil
+    Rails.cache.fetch("features/#{self.fid}/closest_parent_by_perspective/#{perspective.id}", :expires_in => 1.hour) do
+      parent_relation = FeatureRelation.first(:select => 'parent_node_id', :conditions => {:child_node_id => self.id, :perspective_id => perspective.id, :feature_relation_type_id => FeatureRelationType.hierarchy_ids})
+      break parent_relation.parent_node if !parent_relation.nil?
+      parent_relation = FeatureRelation.first(:select => 'parent_node_id', :conditions => {:child_node_id => self.id, :perspective_id => perspective.id})
+      break parent_relation.parent_node if !parent_relation.nil?
+      parent_relation = FeatureRelation.first(:select => 'parent_node_id', :conditions => {:child_node_id => self.id})
+      break parent_relation.parent_node if !parent_relation.nil?
+      nil
+    end
+  end
+  
+  def closest_hierarchical_feature_by_perspective(perspective)
+    Rails.cache.fetch("features/#{self.fid}/closest_hierarchical_feature_by_perspective/#{perspective.id}", :expires_in => 1.hour) do
+      ancestors = self.closest_ancestors_by_perspective(perspective).dup
+      parent = ancestors.shift
+      hierarchy_ids = FeatureRelationType.hierarchy_ids
+      while true
+        child = ancestors.shift
+        break parent if child.nil? || FeatureRelation.first(:conditions => {:child_node_id => child.id, :parent_node_id => parent.id, :perspective_id => perspective.id, :feature_relation_type_id => hierarchy_ids}).nil?
+        parent = child
+      end
+      parent
+    end
   end
   
   def closest_ancestors_by_perspective(perspective)
-    current = self
-    stack = []
-    begin
-      stack.push(current)
-      current = current.closest_parent_by_perspective(perspective)
-    end while !current.nil?
-    stack.reverse
+    Rails.cache.fetch("features/#{self.fid}/closest_ancestors_by_perspective/#{perspective.id}", :expires_in => 1.hour) do
+      current = self
+      stack = []
+      begin
+        stack.push(current)
+        current = current.closest_parent_by_perspective(perspective)
+      end while !current.nil?
+      stack.reverse
+    end
   end
   
   
@@ -195,8 +215,8 @@ class Feature < ActiveRecord::Base
   #
   #
   #
-  def current_ancestors(current_perspective, current_view)
-    return ancestors(:include => {:cached_feature_names => :feature_name}, :conditions => {'cached_feature_names.view_id' => current_view.id}, :order => 'feature_names.name').select do |c|
+  def current_ancestors(current_perspective)
+    return ancestors.select do |c|
       c.child_relations.any? {|cr| cr.perspective==current_perspective}
     end
   end

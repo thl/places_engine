@@ -358,9 +358,9 @@ class FeaturesController < ApplicationController
   def node_tree_expanded
     set_common_variables(session) if params[:view_id] || params[:perspective_id]
     node = Feature.find(params[:id])
-    @ancestors_for_current = node.closest_ancestors_by_perspective(current_perspective).collect{|a| a.id}
-    # @ancestors_for_current = node.current_ancestors(current_perspective, current_view).collect{|a| a.id}
-    # @ancestors_for_current << node.id
+    # @ancestors_for_current = node.closest_ancestors_by_perspective(current_perspective).collect{|a| a.id}
+    @ancestors_for_current = node.current_ancestors(current_perspective).collect(&:id)
+    @ancestors_for_current << node.id
     top_level_nodes = Feature.current_roots(current_perspective, current_view)
     render :partial => 'node_tree', :locals => { :children => top_level_nodes }, :layout => false
   end  
