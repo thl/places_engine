@@ -18,15 +18,12 @@ jQuery(document).ready(function(){
 		node_menu_options[:show_results] = true unless session[:search].blank?
 	%>
 	NodeMenu.init("NodeMenu", "<%= features_path %>/", <%= node_menu_options.to_json %>);
-	
-	<% unless @kmaps_characteristics.blank? %>
-	var characteristic_data = <%= @kmaps_characteristics.collect{|c| {:id => c.category_id, :name => c.to_s}}.sort_by{|a| a[:name].downcase.strip}.to_json %>;
+	var characteristic_data = <%= CategoryFeature.get_json_data %>;
 	var characteristic_selector = new CharacteristicSelector();
 	characteristic_selector.init('characteristic_selector', {
 		fieldLabel: "<%= Topic.human_name.titleize %>:",
 		data: characteristic_data
 	});
-	<% end %>
 });
 
 function reset_advanced_search(){

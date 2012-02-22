@@ -168,8 +168,7 @@ class FeaturesController < ApplicationController
   end
   
   def characteristics_list
-    @kmaps_characteristics = CategoryFeature.find(:all, :select => "DISTINCT category_id", :conditions => "type IS NULL")
-    render :json => @kmaps_characteristics.collect{|c| {:id => c.category_id, :name => c.to_s.strip}}.sort_by{|a| a[:name].downcase.strip}, :callback => params[:callback]
+    render :json => CategoryFeature.get_json_data, :callback => params[:callback]
   end
   
   def gis_resources

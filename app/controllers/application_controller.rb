@@ -70,9 +70,6 @@ class ApplicationController < ActionController::Base
     @perspectives = Perspective.find_all_public
     @views = View.find(:all, :order => 'name')
 
-    # These are used for the "Characteristics" field in the search
-    @kmaps_characteristics = CategoryFeature.find(:all, :select => "DISTINCT category_id", :conditions => "type IS NULL")
-
     search_defaults = {
     	:filter => '',
     	:scope => 'name',

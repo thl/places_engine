@@ -28,6 +28,7 @@ class CategoryFeature < ActiveRecord::Base
       end
     end
     Rails.cache.delete('CategoryFeature-max_updated_at')
+    Rails.cache.delete('category_feature/get_json_data')
     feature.update_cached_feature_relation_categories if !record.skip_update
     # feature.touch
   end
@@ -72,6 +73,10 @@ class CategoryFeature < ActiveRecord::Base
   
   def self.latest_update
     Rails.cache.fetch('CategoryFeature-max_updated_at') { CategoryFeature.maximum(:updated_at) }
+  end
+  
+  def self.get_json_data
+    Rails.cache.fetch('category_feature/get_json_data') { CategoryFeature.all(:select => 'DISTINCT category_id', :conditions => {:type => nil}).collect{|c| {:id => c.category_id, :name => c.to_s}}.sort_by{|a| a[:name].downcase.strip}.to_json }
   end
   
   private
