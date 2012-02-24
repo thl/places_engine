@@ -104,17 +104,20 @@ class Feature < ActiveRecord::Base
     end
   end
   
-  def closest_hierarchical_feature_by_perspective(perspective)
+  def closest_hierarchical_feature_id_by_perspective(perspective)
     Rails.cache.fetch("features/#{self.fid}/closest_hierarchical_feature_by_perspective/#{perspective.id}", :expires_in => 1.hour) do
-      ancestors = self.closest_ancestors_by_perspective(perspective).dup
-      hierarchy_ids = FeatureRelationType.hierarchy_ids
-      parent = ancestors.shift
-      child = ancestors.shift
-      while !child.nil? && !FeatureRelation.first(:conditions => {:child_node_id => child.id, :parent_node_id => parent.id, :perspective_id => perspective.id, :feature_relation_type_id => hierarchy_ids}).nil?
-        parent = child
-        child = ancestors.shift
+      ancestor_ids = self.closest_ancestors_by_perspective(perspective).collect(&:id)
+      root_ids = Feature.current_roots_by_perspective(perspective).collect(&:id)
+      parent_id = (root_ids & ancestor_ids).first
+      break root_ids.first if parent_id.nil?
+      ancestor_ids.delete(parent_id)
+      relation = FeatureRelation.first(:conditions => {:perspective_id => perspective.id, :parent_node_id => parent_id, :child_node_id => ancestor_ids, :feature_relation_type_id => FeatureRelationType.hierarchy_ids})
+      while !relation.nil?
+        ancestor_ids.delete(parent_id)
+        parent_id = relation.child_node_id
+        relation = FeatureRelation.first(:conditions => {:perspective_id => perspective.id, :parent_node_id => parent_id, :child_node_id => ancestor_ids, :feature_relation_type_id => FeatureRelationType.hierarchy_ids})
       end
-      parent
+      parent_id
     end
   end
   
@@ -130,19 +133,31 @@ class Feature < ActiveRecord::Base
     end
   end
   
-  
   #
   #
   #
   def self.current_roots(current_perspective, current_view)
-    with_scope(:find => {:include => {:cached_feature_names => :feature_name}, :conditions => {'features.is_blank' => false, 'cached_feature_names.view_id' => current_view.id}, :order => 'feature_names.name'}) do
-      roots.select do |r|
-        # if ANY of the child relations are current, return true to nab this Feature
-        r.child_relations.any? {|cr| cr.perspective==current_perspective }
+    Rails.cache.fetch("features/current_roots/#{current_perspective.id}/#{current_view.id}", :expires_in => 1.day) do
+      with_scope(:find => {:include => {:cached_feature_names => :feature_name}, :conditions => {'features.is_blank' => false, 'cached_feature_names.view_id' => current_view.id}, :order => 'feature_names.name'}) do
+        roots.select do |r|
+          # if ANY of the child relations are current, return true to nab this Feature
+          r.child_relations.any? {|cr| cr.perspective==current_perspective }
+        end
       end
     end
   end
-    
+
+  def self.current_roots_by_perspective(current_perspective)
+    Rails.cache.fetch("features/current_roots/#{current_perspective.id}", :expires_in => 1.day) do
+      with_scope(:find => {:conditions => {'features.is_blank' => false}}) do
+        roots.select do |r|
+          # if ANY of the child relations are current, return true to nab this Feature
+          r.child_relations.any? {|cr| cr.perspective==current_perspective }
+        end
+      end
+    end
+  end
+
   #
   #
   #

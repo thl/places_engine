@@ -88,7 +88,7 @@
 </div>
 
 <% unless @feature.nil? %>
-	<%= javascript_on_load "NodeTree.loadExpandedTree(#{@feature.closest_hierarchical_feature_by_perspective(current_perspective).id})" %>
+	<%= javascript_on_load "NodeTree.loadExpandedTree(#{@feature.closest_hierarchical_feature_id_by_perspective(current_perspective)})" %>
 <% end %>
 
 <% # If a search is made via GET params (e.g. /features?filter=china), we need to perform it.
