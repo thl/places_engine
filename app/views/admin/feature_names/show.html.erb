@@ -47,30 +47,26 @@ add_breadcrumb_item @object.name
 	<br class="clear"/>
 	<% if object.parents.empty? && object.children.empty? %>
   	<%= empty_collection_message("Currently not related to any other Feature Names.")%>
-	<% end %>
-
-  <% unless @object.parents.empty? %>
+	<% end
+     unless @object.parents.empty? %>
   	<%= content_tag(:h3, 'Parents') %>
   	<% (@object.parents).each do |parent| %>
       <div class="row">
-    	  <%= render :partial => 'admin/feature_name_relations/relations_list', :locals => { :list => parent.relations.select {|r| r.child_node == @object}, :parent => parent, :options => {:hide_child => true, :hide_related_to => true} } %>
+<%=     parent.name %>
+<%=     render :partial => 'admin/feature_name_relations/relations_list', :locals => { :list => parent.relations.select {|r| r.child_node == @object}, :parent => parent, :options => {:hide_child => true, :hide_related_to => true} } %>
       </div>
-  	<% end %>
-
-	<% end %>
-	
-	<% unless @object.children.empty? %>
+<%     end
+     end
+	 unless @object.children.empty? %>
   	<%= content_tag(:h3, 'Children')%>
   	<% (@object.children).each do |child| %>
       <div class="row">
         '<%= @object.name %>' Has a transliteration of <%= link_to child.name, admin_feature_name_path(child) %>
       	<%= render :partial => 'admin/feature_name_relations/relations_list', :locals => { :list => child.relations.select {|r| r.parent_node == @object} } %>
       </div>
-  	<% end %>
-	<% end %>
-
+  	<% end
+	 end %>
 </fieldset>
-
 <%= citation_list_fieldset %>
 <%= note_list_fieldset %>
 <%= time_unit_list_fieldset %>
