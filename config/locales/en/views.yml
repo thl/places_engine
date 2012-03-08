@@ -25,24 +25,42 @@ en:
     other: 'Other {{what}}'
     prefix:
         with: 'Prefix with {{what}}'
-    priority: 'Priority'
+    priorit:
+        y: 'Priority'
+        ization_of:
+            feature_types: 'Prioritization of Feature Types'
+            locations: 'Prioritization of Locations'
+            names: 'Prioritization of Names'
+            shapes: 'Prioritization of Shapes'
     referenced: '{{what}} referenced'
     relat:
         ed_to: 'Related To'
-        ionship:
-            between: 'Relationship between {{this}} and {{that}}'
-            this: 'Relationship'
-    relation_this:
-        one: 'relation'
-        other: 'relations'
+        ion:
+            location: 'locating relation'
+            ship:
+                between: 'Relationship between {{this}} and {{that}}'
+                this: 'Relationship'
+            this:
+                one: 'relation'
+                other: 'relations'
     remove: 'remove'
     set_primary_essay: 'Set Primary Essay'
     snippet:
         characteristic_needs_feature: 'Knowledge Map characteristics can only be associated from a feature.'
         essay_needs_parent: 'An Essay can only be created from a resource that uses one.'
-        feature_geo_code_needs_resource: 'A Feature Geo Code can only be created from a resource that uses one.'
-        feature_name_relation: 'Feature Name Relations are created from a Feature Name.'
-        feature_name_selection: 'Select a new Feature Name to relate to {{what}}.'
+        feature:
+            geo_code_needs_resource: 'A Feature Geo Code can only be created from a resource that uses one.'
+            name:
+                creation: 'A feature name can only be created from a resource that uses one.'
+                drag_priority: 'Click a name and drag to a new location to indicate the priority between the different names. This priority sequencing of names will be used to decide which name to show on maps, the navigational tree, and other contexts. Thus if there are two version of popular romanization of a name, for example, the prioritized one will be chosen; of if there are two alternative names, the prioritized one will be displayed; and so forth.'
+                has_transliteration: '{{what}} has a transliteration of {{whom}}'
+                not_related: 'Currently not related to any other Feature Names.'
+                relation: 'Feature name relations are created from a feature name.'
+                selection: 'Select a new feature name to relate to {{what}}.'
+            return: "Return to this feature's home page"
+            type:
+                creation: 'Feature types can only be created from a feature.'
+                drag_priority: 'Click a feature type and drag to a new location to indicate the priority between the different feature types. This priority sequencing of feature types will be used to decide which feature types to show on maps, the navigational tree, and other contexts.'
         location: 'Please input decimal degrees in the format of 35.1974, etc. If you have degrees, minutes and seconds, use a conversion program to convert them into decimal degrees. For example, try: <a href="http://www.fcc.gov/mb/audio/bickel/DDDMMSS-decimal.html" target="_blank">http://www.fcc.gov/mb/audio/bickel/DDDMMSS-decimal.html</a>.'
         primary_essay: "'*' denotes a primary essay"
         title: 'Use title case for capitalization (e.g. An Exciting...)'

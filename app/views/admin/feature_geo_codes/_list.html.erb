@@ -9,7 +9,7 @@
        <th><%= FeatureGeoCode.human_attribute_name(:geo_code_value).s %></th>
        <th><%= GeoCodeType.human_name.titleize.s %></th>
        <th><%= Note.human_name(:count => :many).titleize.s %></th>
-       <th><%= ts 'add.record', :what => Note.human_name.titleize.s %></th>
+       <th><%= ts 'add.record', :what => Note.human_name.titleize %></th>
        <th><%= ts(:date_this, :count => :many).s %></th>
        <th><%= ts 'add.record', :what => t(:date_this) %></th>
      </tr>

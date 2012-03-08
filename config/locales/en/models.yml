@@ -107,7 +107,6 @@ en:
             category_feature:
                 label: 'Label'
                 numeric_value: 'Numeric Value'
-                position: 'Priority'
                 show_parent: "Show Subject's Immediate Parent"
                 show_root: 'Show Master Subject'
                 string_value: 'Text Value'
@@ -165,7 +164,6 @@ en:
                 gid: 'GID'
                 altitude: 'Altitude'
                 is_public: 'Public?'
-                position: 'Priority'
             user:
                 login: 'Login'
                 password: 'Password'

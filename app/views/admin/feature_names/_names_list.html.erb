@@ -1,57 +1,45 @@
 <% if list.empty? %>
-	<%= empty_collection_message %>
+<%=  empty_collection_message %>
 <% else %>
-
-<table class="listGrid">
-	
-	<%= pagination_row :colspan=>10 unless @collection.nil? %>
-	
-	<tr>
-		<th class="listActionsCol"></th>
-		<th>Name</th>
-		<th>Type</th>
-		<th>Language</th>
-		<th>Script</th>
-		<th>Relationship</th>
-		<th>Priority</th>
-		<th>Notes</th>
-		<th>Add Note</th>
-		<th>Dates</th>
-		<th>Add Date</th>
-	</tr>
-	<% list.each do |item| %>
-	<tr>
-		<td class="centerText">
-			<% if @locating_relation %>
-			<%= form_tag new_admin_feature_name_feature_name_relation_path(@object), {:method=>:get} %>
-				<%= hidden_field_tag :target_id, item.id %>
-				<%= submit_tag 'Select' %>
-			</form>
-			<% else %>
-			<%= list_actions_for_item(item,
-				{
-				  :delete_path => admin_feature_feature_name_path(item.feature, item),
-				  :edit_path   => admin_feature_feature_name_path(item.feature, item),
-				  :view_path   => admin_feature_feature_name_path(item.feature, item),
-				  :hide_view   => true
-			  }
-			) %>
-			<% end %>
-		</td>
-		
-		<td><%= concise_fname_breadcrumb(item) %></td>
-		
-		<td><%= def_if_blank(item, :class) %></td>
-		<td><%= def_if_blank(item, :language) %></td>
-		<td><%= def_if_blank(item, :writing_system) %></td>
-		<td><%= fn_relationship(item) %></td>
-		<td><%= item.position.to_s %></td>
-		<td><%= note_link_list_for item %></td>
-		<td><%= new_note_link_for item %></td>
-		<td><%= time_unit_link_list_for item %></td>
-		<td><%= new_time_unit_link_for item %></td>
-		
-	</tr>
-	<% end %>
+     <table class="listGrid">
+<%=  pagination_row :colspan=>10 unless @collection.nil? %>	
+     <tr>
+       <th class="listActionsCol"></th>
+       <th><%= FeatureName.human_name.titleize.s %></th>
+       <th><%= FeatureNameType.human_name.titleize.s %></th>
+       <th><%= Language.human_name.titleize.s %></th>
+       <th><%= WritingSystem.human_name.titleize.s %></th>
+       <th><%= ts 'relat.ion.ship.this' %></th>
+       <th><%= ts 'priorit.y' %></th>
+       <th><%= Note.human_name(:count => :many).titleize.s %></th>
+       <th><%= ts 'add.record', :what => Note.human_name.titleize %></th>
+       <th><%= ts(:date_this, :count => :many).s %></th>
+       <th><%= ts 'add.record', :what => t(:date_this) %></th>
+     </tr>
+<%   list.each do |item| %>
+     <tr>
+       <td class="centerText">
+<%     if @locating_relation %>
+<%=      form_tag new_admin_feature_name_feature_name_relation_path(@object), {:method=>:get} %>
+<%=      hidden_field_tag :target_id, item.id %>
+<%=      globalized_submit_tag 'select.this' %>
+         </form>
+<%     else 
+         path = admin_feature_feature_name_path(item.feature, item) %>
+<%=      list_actions_for_item(item, :delete_path => path, :edit_path => path, :view_path => path, :hide_view   => true) %>
+<%     end %>
+       </td>
+       <td><%= concise_fname_breadcrumb(item) %></td>
+       <td><%= def_if_blank(item, :class) %></td>
+       <td><%= def_if_blank(item, :language) %></td>
+       <td><%= def_if_blank(item, :writing_system) %></td>
+       <td><%= fn_relationship(item) %></td>
+       <td><%= item.position.to_s %></td>
+       <td><%= note_link_list_for item %></td>
+       <td><%= new_note_link_for item %></td>
+       <td><%= time_unit_link_list_for item %></td>
+       <td><%= new_time_unit_link_for item %></td>
+     </tr>
+<%   end %>
 </table>
 <% end %>

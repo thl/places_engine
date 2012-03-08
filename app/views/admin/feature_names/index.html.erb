@@ -1,45 +1,34 @@
-<%
-#
-# if we're showing the names of a particular Feature
-#
+<% # if we're showing the names of a particular Feature
 if @parent_object
 	add_breadcrumb_item features_link
 	add_breadcrumb_item feature_link(@parent_object)
-	add_breadcrumb_item 'names'
+	add_breadcrumb_item FeatureName.human_name(:count => :many).s
 end
-
 if @locating_relation
 	add_breadcrumb_item features_link
 	add_breadcrumb_item feature_link(@object.feature)
-	add_breadcrumb_item link_to('names', admin_feature_feature_names_path(@object.feature))
+	add_breadcrumb_item link_to(FeatureName.human_name(:count => :many).s, admin_feature_feature_names_path(@object.feature))
 	add_breadcrumb_item link_to(@object.id, admin_feature_feature_name_path(@object.feature, @object))
-	add_breadcrumb_item 'locating relation'
-end
-%>
-
+	add_breadcrumb_item ts('relat.ion.location')
+end %>
 <div>
-	<div class="right"><%= resource_search_form %></div>
-	<% if @parent_object %>
-		<h2>Feature Names for <%= f_label(@parent_object)  %></h2>
-	<% end %>
-	<% unless @locating_relation %>
-		<div class="highlight left">	
-		<% if parent? %>
-			<% # Don't show the new link if there is no @feature (a feature name must belong to a features) %>
-			<%= new_item_link [@parent_object, :feature_name] %> for: <%= feature_link(@parent_object) %>			
-		<% else %>
-			A Feature Name can only be created from a resource that uses one.
-		<% end %>
-		</div>
-	<% end %>
+  <div class="right"><%= resource_search_form %></div>
+<% if @parent_object %>
+     <h2><%= ts :for, :what => FeatureName.human_name(:count => :many).titleize, :whom => f_label(@parent_object) %></h2>
+<% end %>
+<% unless @locating_relation %>
+     <div class="highlight left">	
+<%     # Don't show the new link if there is no @feature (a feature name must belong to a features) %>
+<%=    parent? ? ts(:for, :what => new_item_link [@parent_object, :feature_name], :whom => feature_link(@parent_object)) : ts('snippet.feature.name.creation') %>
+     </div>
+<% end %>
 </div>
 <br class="clear"/>
 <br class="clear"/>
 <% if @locating_relation %>
 <div>
-<h1>Select a new feature name to relate to <%=h @object.name %></h1>
+<h1><%= ts 'snippet.feature.name.selection', :what => h(@object.name) %></h1>
 </div>
 <br class="clear"/>
 <% end %>
-
 <%= render :partial => 'names_list', :locals => { :list => @collection } %>

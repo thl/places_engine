@@ -4,16 +4,16 @@
      add_breadcrumb_item link_to(FeatureName.human_name(:count => :many).s, admin_feature_feature_names_path(@parent_object.feature))
      add_breadcrumb_item link_to(@parent_object.name, admin_feature_name_path(@parent_object))
    end
-   add_breadcrumb_item ts('relation_this', :count => :many) %>
+   add_breadcrumb_item ts('relation.this', :count => :many) %>
 <div>
   <div class="left">
 <%= resource_search_form %>
   </div>
   <div class="right highlight">
 <%  if parent? %>
-<%=   link_to ts('snippet.feature_name_selection', :what => highlight(@parent_object.name)), locate_for_relation_admin_feature_name_path(@parent_object) %>
+<%=   link_to ts('snippet.feature.name.selection', :what => highlight(@parent_object.name)), locate_for_relation_admin_feature_name_path(@parent_object) %>
 <%  else %>
-<%=   ts 'snippet.feature_name_relation' %>
+<%=   ts 'snippet.feature.name.relation' %>
 <%  end %>
   </div>
 </div>

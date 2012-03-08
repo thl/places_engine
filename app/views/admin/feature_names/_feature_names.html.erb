@@ -8,12 +8,12 @@
        <th><%= FeatureNameType.human_name.titleize.s %></th>
        <th><%= Language.human_name.titleize.s %></th>
        <th><%= WritingSystem.human_name.titleize.s %></th>
-       <th><%= ts 'relat.ionship.this' %></th>
-       <th><%= ts :priority %></th>
-       <th>Notes</th>
-       <th>Add Note</th>
-       <th>Dates</th>
-       <th>Add Date</th>
+       <th><%= ts 'relat.ion.ship.this' %></th>
+       <th><%= ts 'priorit.y' %></th>
+       <th><%= Note.human_name(:count => :many).titleize.s %></th>
+       <th><%= ts 'add.record', :what => Note.human_name.titleize %></th>
+       <th><%= ts(:date_this, :count => :many).s %></th>
+       <th><%= ts 'add.record', :what => t(:date_this) %></th>
      </tr>
 <%= pagination_row :colspan=>8 unless @collection.nil? %>
 <%= feature_name_tr(@feature) %>

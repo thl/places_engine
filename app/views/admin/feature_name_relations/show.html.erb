@@ -2,7 +2,7 @@
    add_breadcrumb_item feature_link(@object.feature)
    add_breadcrumb_item feature_names_link(@object.feature)
    add_breadcrumb_item feature_name_link(@object.child_node)
-   add_breadcrumb_item link_to(ts('relation_this', :count => :many), admin_feature_name_feature_name_relations_path(@object.child_node))
+   add_breadcrumb_item link_to(ts('relation.this', :count => :many), admin_feature_name_feature_name_relations_path(@object.child_node))
    add_breadcrumb_item @object %>
 <fieldset>
   <legend><%= ts :general_information %> <%= edit_item_link @object %></legend>
