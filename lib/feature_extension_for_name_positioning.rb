@@ -269,8 +269,14 @@ module FeatureExtensionForNamePositioning
       self.find(:all).select { |f| f.restructure_chinese_names }
     end
         
-    def reset_positions
-      self.find(:all).reject { |f| f.prioritized_name.nil? }.sort_by(&:prioritized_name).each_with_index{|f, i| f.update_attribute(:position,i+1)}
+    def reset_positions(view = View.get_by_code('roman.popular'))
+      # self.all.reject { |f| f.prioritized_name(view).blank? }.sort_by{|f| f.prioritized_name(view).name }.each_with_index{|f, i| f.update_attribute(:position,i+1)}
+      puts "#{Time.now}: Getting prioritized names..."
+      temp = self.all.collect{ |f| [f.prioritized_name(view), f] }.reject{|a| a[0].nil?}
+      temp.each{|a| a[0] = a[0].name}
+      sorted = temp.reject{|a| a[0].blank?}.sort{|a, b| a[0] <=> b[0]}
+      puts "#{Time.now}: Updating positions..."
+      sorted.each_with_index{|a, i| a[1].update_attribute(:position,i+1)}
     end
     
     def update_cached_feature_names

@@ -7,10 +7,6 @@ class Feature < ActiveRecord::Base
   validates_presence_of :fid
   validates_uniqueness_of :fid
   validates_numericality_of :position, :allow_nil=>true
-
-  after_save do |r|
-    r.expire_tree_cache if !r.skip_update
-  end
   
   after_destroy do |r|
     if !r.skip_update
@@ -314,8 +310,11 @@ class Feature < ActiveRecord::Base
       conditions = build_like_conditions(%W(descriptions.content feature_names.name), filter_value, {:match => search_options[:match]})
     end
     if !conditions.blank?
-      conditions[0] << ' OR features.fid = ?'
-      conditions << filter_value.gsub(/[^\d]/, '').to_i
+      fid = filter_value.gsub(/[^\d]/, '')
+      if !fid.blank?
+        conditions[0] << ' OR features.fid = ?'
+        conditions << fid.to_i
+      end
     end
     base_scope={
       # These conditions will apply to all searches
@@ -332,6 +331,7 @@ class Feature < ActiveRecord::Base
       end
     # Otherwise, just use a single scope:
     else
+      debugger
       with_scope(:find=>base_scope) { options.has_key?(:page) ? paginate(options) : self.all(options) }
     end
   end

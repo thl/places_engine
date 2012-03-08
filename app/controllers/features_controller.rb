@@ -295,7 +295,7 @@ class FeaturesController < ApplicationController
     # the pagination, so we'll store it in session[:search], along with the feature ids 
     session[:search] = { :params => @params.reject{|key, val| !valid_search_keys.include?(key.to_sym)},
       :page => @params[:page] ||= 1, :per_page => @features.per_page, :total_entries => @features.total_entries,
-      :total_pages => @features.total_pages, :feature_ids => @features.collect{|f|f.id} }
+      :total_pages => @features.total_pages, :feature_ids => @features.collect(&:id) }
     # Set the current menu_item to 'results', so that the Results will stay open when the user browses
     # to a new page
     session[:interface] = {} if session[:interface].nil?
@@ -406,18 +406,12 @@ class FeaturesController < ApplicationController
     end
     
     def perform_global_search(options, search_options={})
-      @features = Feature.search(
-        params[:filter],
-        options,
-        search_options
-      )
+      @features = Feature.search(params[:filter], options, search_options)
     end
     
     def api_render(features, options={})
       collection = {}
-      collection[:features] = features.collect{|f|
-        api_format_feature(f)
-      }
+      collection[:features] = features.collect{|f| api_format_feature(f)}
       collection[:page] = params[:page] || 1
       collection[:total_pages] = WillPaginate::ViewHelpers.total_pages_for_collection(features)
       respond_to do |format|
