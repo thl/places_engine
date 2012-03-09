@@ -1,5 +1,5 @@
 class FeatureSweeper < ActionController::Caching::Sweeper
-  observe Feature, FeatureRelation
+  observe Feature, FeatureName, FeatureRelation
   FORMATS = ['xml', 'json']
   
   def after_save(record)

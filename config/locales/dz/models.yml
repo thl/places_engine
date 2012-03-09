@@ -46,8 +46,8 @@ dz:
                 one: 'feature relation'
                 other: 'feature relations'
             feature_relation_type:
-                one: 'feature relation type'
-                other: 'feature relation types'
+                one: 'role'
+                other: 'roles'
             geo_code_type:
                 one: 'geocode type'
                 other: 'geocode types'
@@ -87,11 +87,6 @@ dz:
             writing_system:
                 one: 'writing system'
                 other: 'writing systems'
-    activeresource:
-        models:
-            topic:
-                one: 'characteristic'
-                other: 'characteristics'
         # Attribute names will be titleized.
         attributes:
             altitude:
@@ -99,6 +94,7 @@ dz:
                 estimate: 'Estimate'
                 maximum: 'Maximum'
                 minimum: 'Minimum'
+                unit: 'Unit'
             blurp:
                 code: 'Code'
                 content: 'Content'
@@ -169,3 +165,8 @@ dz:
                 login: 'Login'
                 password: 'Password'
                 remember_me: 'Remember me'
+    activeresource:
+        models:
+            topic:
+                one: 'characteristic'
+                other: 'characteristics'

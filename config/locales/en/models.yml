@@ -87,11 +87,6 @@ en:
             writing_system:
                 one: 'writing system'
                 other: 'writing systems'
-    activeresource:
-        models:
-            topic:
-                one: 'characteristic'
-                other: 'characteristics'
         # Attribute names will be titleized.
         attributes:
             altitude:
@@ -168,3 +163,8 @@ en:
                 login: 'Login'
                 password: 'Password'
                 remember_me: 'Remember me'
+    activeresource:
+        models:
+            topic:
+                one: 'characteristic'
+                other: 'characteristics'
