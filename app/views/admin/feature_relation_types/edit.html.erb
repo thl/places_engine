@@ -1,10 +1,8 @@
-<%
-add_breadcrumb_item link_to('feature relation types', admin_feature_relation_types_path)
-add_breadcrumb_item link_to(@object.to_s, object_path)
-add_breadcrumb_items 'edit'
-%>
-
-<% form_for [:admin, @object] do |f| %>
-	<%= render :partial=>'form_fields', :locals=>{:f=>f,:object=>@object} %>
-	<%= link_to('Cancel', admin_feature_relation_types_path(@object)) %> | <%= submit_tag 'Update' %>
+<% add_breadcrumb_item link_to(FeatureRelationType.human_name(:count => :many).s, admin_feature_relation_types_path)
+   add_breadcrumb_item link_to(@object.to_s, object_path)
+   add_breadcrumb_items ts('edit.this')
+   form_for [:admin, @object] do |f| %>
+<%=  render :partial=>'form_fields', :locals=>{:f=>f,:object=>@object} %>
+<%=  link_to ts('cancel.this'), admin_feature_relation_types_path(@object) %> |
+<%=  globalized_submit_tag 'update.this' %>
 <% end %>

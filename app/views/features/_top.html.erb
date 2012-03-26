@@ -25,7 +25,6 @@ jQuery(document).ready(function(){
 		data: characteristic_data
 	});
 });
-
 function reset_advanced_search(){
 	// Select "Global" for search scope
 	$("input[name='search_scope']").removeAttr('checked');
@@ -41,13 +40,10 @@ function reset_advanced_search(){
 	// Reset all of the fields in the ModelSearcher
 	category_searcher_object_type.resetFields();
 }
-
 </script>
 <%= category_searcher(true, :category_id => 20, :field_name => 'object_type', :field_label => "#{Feature.human_attribute_name(:object_type).s}: ", :exclude_span => true, :options => {:hasTree => 'true'}) %>
-
 <!--<h2>THL Place Dictionary of Tibet &amp; the Himalayas</h2>-->
 <div style="clear:both;"></div>
-
 <div id="FeatureContainer">
 	<div id="FeaturePanelContainer">
 		<%= render :partial => "features/menu" %>

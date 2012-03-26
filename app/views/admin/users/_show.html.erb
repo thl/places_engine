@@ -1,4 +1,4 @@
-<h2>User Information</h2>
+<h2><%= ts 'information.user' %></h2>
 <%= display_if_not_blank User.human_attribute_name(:identity_url).s, h(user.identity_url) %>
 <%= display_if_not_blank User.human_attribute_name(:login).s, h(user.login) %>
 <%= display_if_not_blank User.human_attribute_name(:email).s, h(user.email) %>

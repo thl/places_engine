@@ -16,7 +16,7 @@ function toggle_yes_radio(select_element, radio_prefix){
 </div>
 <br class="clear"/>
 <fieldset>
-  <legend><%= ts(:general_information) %></legend>
+  <legend><%= ts('information.general') %></legend>
   <div class="inlineRow">
 <%= f.label :is_translation, ts('is.translation', :this => feature_name_label(@object.child_node), :that => feature_name_label(@object.parent_node)) %>
 <%= yes_no_radios(f, :is_translation, {:class => 'yesno-inline'}) %>

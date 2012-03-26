@@ -39,9 +39,6 @@ en:
             feature_name_type:
                 one: 'name type'
                 other: 'name types'
-            feature_object_type:
-                one: 'feature type'
-                other: 'feature types'
             feature_relation:
                 one: 'feature relation'
                 other: 'feature relations'
@@ -117,7 +114,9 @@ en:
                     one: 'Contained Feature'
                     other: 'Contained Features'
                 is_public: 'Public?'
-                object_type: 'Feature Type'
+                object_type:
+                    one: 'Feature Type'
+                    other: 'Feature Types'
                 old_pid: 'OLD THL PID'
                 pid: 'THL ID'
             feature_geo_code:
@@ -159,6 +158,8 @@ en:
                 gid: 'GID'
                 altitude: 'Altitude'
                 is_public: 'Public?'
+                latitude: 'Latitude'
+                longitude: 'Longitude'
             user:
                 login: 'Login'
                 password: 'Password'

@@ -11,9 +11,9 @@
   </div>
   <div class="right highlight">
 <%  if parent? %>
-<%=   link_to ts('snippet.feature.name.selection', :what => highlight(@parent_object.name)), locate_for_relation_admin_feature_name_path(@parent_object) %>
+<%=   link_to ts('select.relation', :what => FeatureName.human_name, :whom => highlight(@parent_object.name)), locate_for_relation_admin_feature_name_path(@parent_object) %>
 <%  else %>
-<%=   ts 'snippet.feature.name.relation' %>
+<%=   ts 'creat.e.requirement', :what => FeatureNameRelation.human_name, :whom => FeatureName.human_name %>
 <%  end %>
   </div>
 </div>

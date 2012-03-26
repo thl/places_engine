@@ -1,13 +1,12 @@
-<h1>Generate Feature Range</h1>
-<%  form_for(:feature_pid, :url => admin_feature_pids_path) do |f| %>
-      <p>
-        <b>Number of features to generate</b><br />
-<%=     f.text_field :count %>
-      </p>
-      <p><%= submit_tag 'Create' %></p>
-<%  end %>
+<h1><%= ts 'creat.e.record', :what => t('feature.range') %></h1>
+<% form_for(:feature_pid, :url => admin_feature_pids_path) do |f| %>
+   <p><b><%= ts 'feature.numbers_to_generate' %></b><br />
+<%=  f.text_field :count %>
+   </p>
+   <p><%= globalized_submit_tag 'creat.e.this' %></p>
+<% end %>
 <p>&nbsp;<br/>
-<%= link_to 'See unused Feature IDs', available_admin_feature_pids_path %> |
-<%= link_to 'Cancel new', admin_feature_pids_path %> |
-<%= link_to 'Back to admin', admin_admin_path %>
+<%= link_to ts('see.record', :what => t('feature.unused_ids')), available_admin_feature_pids_path %> |
+<%= link_to ts('cancel.record', :what => t('new.this')), admin_feature_pids_path %> |
+<%= link_to ts('back.to', :what => t(:admin)), admin_admin_path %>
 </p>

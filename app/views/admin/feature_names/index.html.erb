@@ -19,7 +19,7 @@ end %>
 <% unless @locating_relation %>
      <div class="highlight left">	
 <%     # Don't show the new link if there is no @feature (a feature name must belong to a features) %>
-<%=    parent? ? ts(:for, :what => new_item_link [@parent_object, :feature_name], :whom => feature_link(@parent_object)) : ts('snippet.feature.name.creation') %>
+<%=    parent? ? ts(:for, :what => new_item_link [@parent_object, :feature_name], :whom => feature_link(@parent_object)) : ts('creat.e.requirement', :what => FeatureNameRelation.human_name, :whom => t('snippet.feature.name.resource')) %>
      </div>
 <% end %>
 </div>
@@ -27,7 +27,7 @@ end %>
 <br class="clear"/>
 <% if @locating_relation %>
 <div>
-<h1><%= ts 'snippet.feature.name.selection', :what => h(@object.name) %></h1>
+<h1><%= ts 'select.relation', :what => FeatureName.human_name, :whom => h(@object.name) %></h1>
 </div>
 <br class="clear"/>
 <% end %>

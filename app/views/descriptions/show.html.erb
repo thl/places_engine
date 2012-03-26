@@ -1,11 +1,8 @@
 <%= render :partial => "features/top" %>
-
-			<div id="FeatureDescription">
-				<div class="has-right-margin">
-					<%= render :partial => "show" %>
-				</div>
-			</div>
-
-<%= javascript_on_load "document.title = 'THL Place Dictionary - #{description_simple_title(@description)}'" %>
-
+<div id="FeatureDescription">
+  <div class="has-right-margin">
+<%= render :partial => "show" %>
+  </div>
+</div>
+<%= javascript_on_load "document.title = '#{ts 'app.short'} - #{description_simple_title(@description)}'" %>
 <%= render :partial => "features/bottom" %>

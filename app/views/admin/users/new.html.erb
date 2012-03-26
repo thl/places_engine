@@ -2,7 +2,7 @@
 <%= render :partial => 'admin/people/show', :locals => {:person => @person} %>
 <%  form_for [:person, @user], :url => admin_person_user_path(@person) do |f| -%>
 <%=   render :partial => 'form', :locals => {:f => f} %>
-      <p><%= submit_tag 'Create' %></p>
+      <p><%= globalized_submit_tag 'creat.e.this' %></p>
 <%  end -%>
 <p>&nbsp;<br/>
 <%= link_to ts('cancel.record', :what => t('new.this')), admin_people_path %></p>

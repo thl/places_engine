@@ -1,7 +1,7 @@
 <%= render :partial => "features/top" %>  
 <div class="left" id="RelatedPlaces">
   <div class="has-right-margin has-ajax-pagination">
-    <h2>Places Associated with <%= @object_title %></h2>
+    <h2><%= ts 'associate.d.with', :what => Feature.human_name(:count => :many).titleize, :whom => @object_title %></h2>
     <div class="pagination-click-results">
 <%=   render :partial => "features/list" %>
     </div>
@@ -10,7 +10,7 @@
     </p>
   </div>
 </div>
-<%= javascript_on_load "document.title = 'THL Place Dictionary of Tibet & the Himalayas'" %>
+<%= javascript_on_load "document.title = '#{ts 'app.this'}'" %>
 <script type="text/javascript">
 jQuery(document).ready(function(){
   // Ajaxify the pagination for lists of features

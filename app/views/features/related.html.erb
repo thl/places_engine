@@ -4,5 +4,5 @@
 <%= render :partial => "related" %>
   </div>
 </div>
-<%= javascript_on_load "document.title = 'THL Place Dictionary - #{feature_name_header(@feature)} - Related Places'" %>		
+<%= javascript_on_load "document.title = '#{ts 'app.short'} - #{feature_name_header(@feature)} - #{ts 'relat.ed.record', :what => Feature.human_name.titleize}'" %>		
 <%= render :partial => "bottom" %>

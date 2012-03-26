@@ -1,14 +1,8 @@
-<%
-#
-# if we're showing the shapes of a particular Feature
-#
-if @parent_object
-	add_breadcrumb_item features_link
-	add_breadcrumb_item feature_link(@parent_object)
-	add_breadcrumb_item collection_name
-end
-%>
-
+<% # if we're showing the shapes of a particular Feature
+   if @parent_object
+     add_breadcrumb_item features_link
+     add_breadcrumb_item feature_link(@parent_object)
+     add_breadcrumb_item collection_name
+   end %>
 <br class="clear"/>
-
 <%= render :partial => 'list', :locals => { :list => @collection } %>

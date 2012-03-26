@@ -1,25 +1,18 @@
-<%
-if parent?
-	add_breadcrumb_item features_link
-	add_breadcrumb_item(feature_link(@parent_object)) if parent?
-	add_breadcrumb_item 'relations'
-else
-	add_breadcrumb_item 'feature relations'
-end
-%>
-
+<% if parent?
+     add_breadcrumb_item features_link
+     add_breadcrumb_item(feature_link(@parent_object)) if parent?
+   end
+   add_breadcrumb_item FeatureRelation.human_name(:count => :many).s %>
 <div>
-	<div class="left"><%= resource_search_form %></div>
-	<div class="right highlight">
-		<% if @parent_object %>
-			<% # Don't provide a way to create a new relation if there is no @parent_object %>
-			<%= link_to 'Locate', locate_for_relation_admin_feature_path(@parent_object) %> a Feature for <%= feature_link(@parent_object) %> to relate to
-		<% else %>
-			Feature Relations must be created from a <%= link_to 'Feature', admin_features_path %>.
-		<% end %>
-	</div>
+  <div class="left"><%= resource_search_form %></div>
+  <div class="right highlight">
+<% if @parent_object
+   # Don't provide a way to create a new relation if there is no @parent_object
+%><%= link_to ts('select.relation', :what => Feature.human_name, :whom => feature_link(@parent_object)) %>
+<% else %>
+<%=  ts 'creat.e.requirement', :what => FeatureRelation.human_name, :whom => Feature.human_name %>
+<% end %>
+  </div>
 </div>
-
 <br class="clear"/>
-
 <%= render :partial => 'list', :locals => { :list => @collection, :parent => @parent_object } %>

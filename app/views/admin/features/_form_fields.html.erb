@@ -1,20 +1,20 @@
 <fieldset>
   <legend><%= "#{Feature.human_name.titleize.s}: #{@object.name}" %></legend>
 <%= f.hidden_field :fid %>
-<% unless @object.new_record? %>
-     <div class="row">
-<%=    f.label :created_at, ts('creat.e.d') %>
-<%=    @object.created_at.to_formatted_s(:us_datetime) %>
-     </div>
-     <div class="row">
-<%=    f.label :updated_at, ts('update.d.this') %>
-<%=    @object.updated_at.to_formatted_s(:us_datetime) %>
-     </div>
-<% else
-     @object.is_public = true
-   end %>
-   <div class="row">
+<%  unless @object.new_record? %>
+    <div class="row">
+<%=   f.label :created_at, ts('creat.e.d') %>
+<%=   @object.created_at.to_formatted_s(:us_datetime) %>
+    </div>
+    <div class="row">
+<%=   f.label :updated_at, ts('update.d.this') %>
+<%=   @object.updated_at.to_formatted_s(:us_datetime) %>
+    </div>
+<%  else
+      @object.is_public = true
+    end %>
+  <div class="row">
 <%=  f.label(:is_public).s %>
 <%=  f.check_box :is_public %>
-   </div>	
+  </div>	
 </fieldset>

@@ -1,28 +1,20 @@
-<%
-add_breadcrumb_item link_to (collection_name, collection_path)
-add_breadcrumb_item @object
-%>
-
+<% add_breadcrumb_item link_to (collection_name, collection_path)
+   add_breadcrumb_item @object %>
 <fieldset>
-	
-	<legend>
-		<%= model_name.titleize %>
-		<%= edit_item_link @object %>
-	</legend>
-	
-	<div class="row">
-		<label>Name</label>
-		<span><%= def_if_blank(@object, :name) %></span>
-	</div>
-	
-	<div class="row">
-		<label>Code</label>
-		<span><%= def_if_blank @object, :code %></span>
-	</div>
-	
-	<div class="row">
-		<label>Description</label>
-		<span><%= def_if_blank @object, :description %></span>
-	</div>
-	
+  <legend>
+<%= model_name.titleize %>
+<%= edit_item_link @object %>
+  </legend>
+  <div class="row">
+    <label><%= SimpleProp.human_attribute_name(:name).s %></label>
+    <span><%= def_if_blank(@object, :name) %></span>
+  </div>
+  <div class="row">
+    <label><%= SimpleProp.human_attribute_name(:code).s %></label>
+    <span><%= def_if_blank @object, :code %></span>
+  </div>
+  <div class="row">
+    <label><%= SimpleProp.human_attribute_name(:description).s %></label>
+    <span><%= def_if_blank @object, :description %></span>
+  </div>
 </fieldset>

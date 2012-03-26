@@ -7,7 +7,7 @@
        <tr>
          <th class="listActionsCol"> </th>
 <%=     "<th>#{ts :child}</th>" unless options[:hide_child] %>
-<%=     "<th>#{ts 'relat.ed_to'}</th>" unless options[:hide_related_to] %>
+<%=     "<th>#{ts 'relat.ed.to'}</th>" unless options[:hide_related_to] %>
          <th><%= FeatureNameRelation.human_attribute_name(:is_translation).s %></th>
          <th><%= FeatureNameRelation.human_attribute_name(:is_phonetic).s %></th>
          <th><%= FeatureNameRelation.human_attribute_name(:is_orthographic).s %></th>

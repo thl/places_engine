@@ -1,6 +1,5 @@
-<% add_breadcrumb_items features_link, 'new' %>
-
-<% form_for @object, :url=>collection_path do |f| %>
-	<%= render :partial=>'form_fields', :locals=>{:f=>f} %>
-	<%= link_to 'Cancel', collection_path %> | <%= submit_tag 'Create', :class=>'submit' %>
+<% add_breadcrumb_items features_link, ts('new.this')
+   form_for @object, :url=>collection_path do |f| %>
+<%=  render :partial=>'form_fields', :locals=>{:f=>f} %>
+<%=  link_to ts('cancel.this'), collection_path %> | <%= globalized_submit_tag 'creat.e.this', :class=>'submit' %>
 <% end %>

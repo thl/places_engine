@@ -1,100 +1,90 @@
 <% active_item = @active_menu_item ||= !session[:interface].blank? && !session[:interface][:menu_item].blank? ? session[:interface][:menu_item] : false %>
 <div id="NodeMenu">
-	<div class="node-menu-content">
-	<h2 class="menu-item-search">Search</h2>
-	<div id="NodeSearch" class="default-item" <%= ' style="display:none"' unless active_item == 'search' %>>
-		<% form_remote_for :feature,
-			:url => {:controller => :features, :action => :search },
-			:update => 'NodeSearchResults',
-			:condition => 'NodeMenu.checkForFidSearch()',
-			:loading => 'NodeMenu.beginSearch()' do |form| %>
-			<%= text_field_tag :filter, h(@search_form_params[:filter]), :class=>:text %>
-			<div style="float: right;">
-				<%= link_to_function 'Advanced Search', "$('#advanced_search').show(); $(this).hide(); $('#hide_advanced_search_link').show()", :id => 'show_advanced_search_link', :style => ('display:none;' if current_show_advanced_search) %>
-				<%= link_to_function 'Hide Advanced Search', "$('#advanced_search').hide(); $(this).hide(); $('#show_advanced_search_link').show(); reset_advanced_search();", :id => 'hide_advanced_search_link', :style => ('display:none;' unless current_show_advanced_search) %>
-			</div>
-			<div id="advanced_search" style="<%= 'display:none;' unless current_show_advanced_search  %>">
-				<div>
-					<%=  radio_button_tag :scope, :full_text, @search_form_params[:scope] == 'full_text' %> All Text
-					<%=  radio_button_tag :scope, :name, @search_form_params[:scope] == 'name' %> Name
-				</div>
-				<div>
-					<%=  radio_button_tag :match, :contains, @search_form_params[:match] == 'contains' %> Contains
-					<%=  radio_button_tag :match, :begins, @search_form_params[:match] == 'begins' %> Starts with
-					<%=  radio_button_tag :match, :exactly, @search_form_params[:match] == 'exactly' %> Exactly
-				</div>
-				<div>
-					<%=  check_box_tag :has_descriptions, '1', @search_form_params[:has_descriptions] == '1' %>
-					<%=  label_tag :has_descriptions, 'Show only entries with essays' %>
-				</div>
-				<div id="tmb_category_selector_object_type"></div>
-				<div id="characteristic_selector"></div>
-<!--			<div>  Select Scope: -->
-<% 				  # radio_button_tag :search_scope, :global, @search_form_params[:search_scope] == 'global' Global
-				  # radio_button_tag :search_scope, :contextual, @search_form_params[:search_scope] == 'contextual' Contextual
-				  # radio_button_tag :search_scope, :fid, @search_form_params[:search_scope] == 'fid' THL ID 
-					%>
-<!--			</div> -->
-<%=             hidden_field_tag :context_id, "" %>
-<%=             label_tag :fid, 'Or Go to THL ID:' %>
-<%=             text_field_tag :fid %>
-			</div>
-			<%= submit_tag 'search', :style => "margin-top: 4px;" %>
-		<% end %>
-	</div>
-	<h2 class="menu-item-results">Results</h2>
-	<div id="NodeSearchResults" <%= ' style="display:none"' unless active_item == 'results' %>>
-		<% if session[:search].blank? %>
-			Use the search field above to search for features.
-		<% else %>
-			<%= render :partial => 'features/search_results', :locals => {:use_session => true, :features => Feature.find(session[:search][:feature_ids])} %>
-		<% end %>
-	</div>
-	<h2 class="menu-item-options">Options</h2>
-	<div id="NodeOptions" <%= ' style="display:none"' unless active_item == 'options' %>>
+  <div class="node-menu-content">
+    <h2 class="menu-item-search"><%= ts 'search.this' %></h2>
+    <div id="NodeSearch" class="default-item" <%= ' style="display:none"' unless active_item == 'search' %>>
+<%  form_remote_for :feature, :url => {:controller => :features, :action => :search }, :update => 'NodeSearchResults',
+      :condition => 'NodeMenu.checkForFidSearch()', :loading => 'NodeMenu.beginSearch()' do |form| %>
+<%=   text_field_tag :filter, h(@search_form_params[:filter]), :class=>:text %>
+      <div style="float: right;">
+<%=     link_to_function ts('search.advanced'), "$('#advanced_search').show(); $(this).hide(); $('#hide_advanced_search_link').show()", :id => 'show_advanced_search_link', :style => ('display:none;' if current_show_advanced_search) %>
+<%=     link_to_function ts(:hide, :what => t('search.advanced')), "$('#advanced_search').hide(); $(this).hide(); $('#show_advanced_search_link').show(); reset_advanced_search();", :id => 'hide_advanced_search_link', :style => ('display:none;' unless current_show_advanced_search) %>
+      </div>
+      <div id="advanced_search" style="<%= 'display:none;' unless current_show_advanced_search  %>">
+        <div>
+<%=       radio_button_tag :scope, :full_text, @search_form_params[:scope] == 'full_text' %> <%= ts 'search.full_text' %>
+<%=       radio_button_tag :scope, :name, @search_form_params[:scope] == 'name' %> <%= FeatureName.human_name.titleize.s %>
+        </div>
+        <div>
+<%=       radio_button_tag :match, :contains, @search_form_params[:match] == 'contains' %> <%= ts 'search.contains' %>
+<%=       radio_button_tag :match, :begins, @search_form_params[:match] == 'begins' %> <%= ts 'search.begins' %>
+<%=       radio_button_tag :match, :exactly, @search_form_params[:match] == 'exactly' %> <%= ts 'search.exactly' %>
+        </div>
+        <div>
+<%=       check_box_tag :has_descriptions, '1', @search_form_params[:has_descriptions] == '1' %>
+<%=       label_tag :has_descriptions, ts('snippet.essay.with') %>
+        </div>
+        <div id="tmb_category_selector_object_type"></div>
+        <div id="characteristic_selector"></div>
+<!--    <div>  Select Scope: -->
+<%        # radio_button_tag :search_scope, :global, @search_form_params[:search_scope] == 'global' Global
+          # radio_button_tag :search_scope, :contextual, @search_form_params[:search_scope] == 'contextual' Contextual
+          # radio_button_tag :search_scope, :fid, @search_form_params[:search_scope] == 'fid' THL ID 
+%>
+<!--    </div> -->
+<%=     hidden_field_tag :context_id, "" %>
+<%=     label_tag :fid, 'Or Go to THL ID:' %>
+<%=     text_field_tag :fid %>
+      </div>
+<%=   globalized_submit_tag 'search.this', :style => "margin-top: 4px;" %>
+<%  end %>
+    </div>
+    <h2 class="menu-item-results"><%= ts 'search.results' %></h2>
+    <div id="NodeSearchResults" <%= ' style="display:none"' unless active_item == 'results' %>>
+<%  if session[:search].blank? %>
+<%=   ts 'snippet.search' %>
+<%  else %>
+<%=   render :partial => 'features/search_results', :locals => {:use_session => true, :features => Feature.find(session[:search][:feature_ids])} %>
+<%  end %>
+    </div>
+    <h2 class="menu-item-options"><%= ts :options %></h2>
+    <div id="NodeOptions" <%= ' style="display:none"' unless active_item == 'options' %>>
       <ul>
-	    <li>
-<%        form_for :session, :url => session_path, :html => { :method => 'put' } do |f| %>
-<%=         Perspective.human_name.titleize.s %>:<br />
-<%=         f.collection_select :perspective_id, @perspectives, :id, :name, {}, { :onchange => 'jQuery(this).parents("form:first").submit();' } %>
-            <br />
-<%=         View.human_name.titleize.s %>:<br />
-<%=         f.collection_select :view_id, @views, :id, :name, {}, { :onchange => 'jQuery(this).parents("form:first").submit();' } %>
-            <br />
-            Show Feature Details:<br />
-<%=         f.select :show_feature_details, [['Yes', true], ['No', false]], {:selected => current_show_feature_details}, { :onchange => 'jQuery(this).parents("form:first").submit();' } %>
-            <br />
-            Show Advanced Search:<br />
-<%=         f.select :show_advanced_search, [['Yes', true], ['No', false]], {:selected => current_show_advanced_search}, { :onchange => 'jQuery(this).parents("form:first").submit();' } %>
-<%        end %>
+        <li>
+<%      form_for :session, :url => session_path, :html => { :method => 'put' } do |f| %>
+<%=       Perspective.human_name.titleize.s %>:<br />
+<%=       f.collection_select :perspective_id, @perspectives, :id, :name, {}, { :onchange => 'jQuery(this).parents("form:first").submit();' } %>
+          <br />
+<%=       View.human_name.titleize.s %>:<br />
+<%=       f.collection_select :view_id, @views, :id, :name, {}, { :onchange => 'jQuery(this).parents("form:first").submit();' } %>
+          <br />
+<%=       ts 'show.record', :what => t('feature.detail', :count => :many) %>:<br />
+<%=       f.select :show_feature_details, [['Yes', true], ['No', false]], {:selected => current_show_feature_details}, { :onchange => 'jQuery(this).parents("form:first").submit();' } %>
+          <br />
+<%=       ts 'show.record', :what => t('search.advanced') %>:<br />
+<%=       f.select :show_advanced_search, [[t(:affirmation), true], [t(:negation), false]], {:selected => current_show_advanced_search}, { :onchange => 'jQuery(this).parents("form:first").submit();' } %>
+<%      end %>
         </li>
       </ul>
-	</div>
-	<h2 class="menu-item-browse"><%= ts 'browse.this' %></h2>
-	<div id="NodeTree" <%= ' style="display:none"' unless active_item == 'browse' %>>
-		<div id="NodeTreeList">
-		<% if @feature.nil? %>
-			<% if current_perspective %>
-				<%= render :partial => "features/node_tree", :locals => { :children => @top_level_nodes } %>
-			<% else %>
-				To see a list of features, please <%= link_to ts('choose.record', :what => Perspective.human_name), edit_session_path %>.
-			<% end %>
-		<% else %>
-			<img src="http://thlib.org/global/images/ajax-loader.gif" alt="" style="display:inline;" /> Loading...
-		<% end %>
-		</div>
-	</div>
-	</div>
+    </div>
+    <h2 class="menu-item-browse"><%= ts 'browse.this' %></h2>
+    <div id="NodeTree" <%= ' style="display:none"' unless active_item == 'browse' %>>
+      <div id="NodeTreeList">
+<%    if @feature.nil? %>
+<%=       render :partial => "features/node_tree", :locals => { :children => @top_level_nodes } %>
+<%    else %>
+        <img src="http://thlib.org/global/images/ajax-loader.gif" alt="" style="display:inline;" /> <%= ts :loading %>
+<%    end %>
+      </div>
+    </div>
+  </div>
 </div>
-
 <% unless @feature.nil? %>
-	<%= javascript_on_load "NodeTree.loadExpandedTree(#{@feature.closest_hierarchical_feature_id_by_perspective(current_perspective)})" %>
-<% end %>
-
-<% # If a search is made via GET params (e.g. /features?filter=china), we need to perform it.
-valid_search_params = [:filter, :context_id, :match, :object_type, :characteristic_id, :scope, :search_scope, :has_descriptions].collect{|p| p.to_s }
-%>
-<% unless (params.keys & valid_search_params).empty? %>
-  <%= link_to_remote '', { :update => "NodeSearchResults", :url => params.merge({ :action => 'search' }), :loading => "NodeMenu.beginSearch()" }, { :id => 'ajax_search_results', :style => "display:none;" } %>
-  <%= javascript_on_load "jQuery('#ajax_search_results').click()" %>
+<%=  javascript_on_load "NodeTree.loadExpandedTree(#{@feature.closest_hierarchical_feature_id_by_perspective(current_perspective)})" %>
+<% end
+   # If a search is made via GET params (e.g. /features?filter=china), we need to perform it.
+   valid_search_params = [:filter, :context_id, :match, :object_type, :characteristic_id, :scope, :search_scope, :has_descriptions].collect{|p| p.to_s }
+   unless (params.keys & valid_search_params).empty? %>
+<%=  link_to_remote '', { :update => "NodeSearchResults", :url => params.merge({ :action => 'search' }), :loading => "NodeMenu.beginSearch()" }, { :id => 'ajax_search_results', :style => "display:none;" } %>
+<%=  javascript_on_load "jQuery('#ajax_search_results').click()" %>
 <% end %>

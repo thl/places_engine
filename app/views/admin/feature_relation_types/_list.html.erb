@@ -1,42 +1,31 @@
-<%
-list = list || []
-%>
-
-<% if list.empty? %>
-	<%= empty_collection_message %>
+<% list = list || [] 
+   if list.empty? %>
+<%=  empty_collection_message %>
 <% else %>
-
-<table class="listGrid">
-	
-	<%= pagination_row :colspan=>3 unless @collection.nil? %>
-	
-	<tr>
-		<th class="listActionsCol"></th>
-		<th>Is hierarchical</th>
-		<th>Is symmetric</th>
-		<th>Label</th>
-		<th>Asymmetric Label</th>
-		<th>Code</th>
-		<th>Asymmetric Code</th>
-	</tr>
-	
-	<% list.each do |item| %>
-	<tr>
-		<td class="listActionsCol">
-			<%= list_actions_for_item(item,
-				:delete_path => admin_feature_relation_type_path(item),
-				:edit_path   => edit_admin_feature_relation_type_path(item),
-				:view_path   => admin_feature_relation_type_path(item)
-			) %>
-		</td>
-		<td><%= item.is_hierarchical ? 'Yes' : 'No' %></td>		
-		<td><%= item.is_symmetric ? 'Yes' : 'No' %></td>
-		<td><%= item.label %></td>
-		<td><%= item.asymmetric_label unless item.is_symmetric %></td>
-		<td><%= item.code %></td>			
-		<td><%= item.asymmetric_code %></td>			
-	</tr>
-	<% end %>
-</table>
-
+   <table class="listGrid">
+<%=  pagination_row :colspan=>3 unless @collection.nil? %>
+     <tr>
+       <th class="listActionsCol"></th>
+       <th><%= FeatureRelationType.human_attribute_name(:is_hierarchical).s %></th>
+       <th><%= FeatureRelationType.human_attribute_name(:is_symmetric).s %></th>
+       <th><%= FeatureRelationType.human_attribute_name(:label).s %></th>
+       <th><%= FeatureRelationType.human_attribute_name(:asymmetric_label).s %></th>
+       <th><%= FeatureRelationType.human_attribute_name(:code).s %></th>
+       <th><%= FeatureRelationType.human_attribute_name(:asymmetric_code).s %></th>
+     </tr>  
+<%   list.each do |item| %>
+     <tr>
+<%     path = admin_feature_relation_type_path(item) %>
+       <td class="listActionsCol">
+<%=    list_actions_for_item item, :delete_path => path, :edit_path => edit_admin_feature_relation_type_path(item), :view_path => path %>
+       </td>
+       <td><%= item.is_hierarchical ? ts(:affirmation) : ts(:negation) %></td>    
+       <td><%= item.is_symmetric ? ts(:affirmation) : ts(:negation) %></td>
+       <td><%= item.label %></td>
+       <td><%= item.asymmetric_label unless item.is_symmetric %></td>
+       <td><%= item.code %></td>      
+       <td><%= item.asymmetric_code %></td>      
+     </tr>
+<%   end %>
+   </table>
 <% end %>

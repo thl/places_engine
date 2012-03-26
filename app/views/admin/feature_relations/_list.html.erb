@@ -1,62 +1,45 @@
-<%
-parent = parent || nil
-use_first = use_first.nil? ? true : use_first
-use_names = use_names.nil? ? false : use_names
-%>
-
-<% if list.empty? %>
-	<%= empty_collection_message %>
+<% parent = parent || nil
+   use_first = use_first.nil? ? true : use_first
+   use_names = use_names.nil? ? false : use_names
+   if list.empty? %>
+<%=  empty_collection_message %>
 <% else %>
-
-<table class="listGrid">
-	
-	<%= pagination_row :colspan=>6 unless @collection.nil? %>
-	
-	<tr>
-		<th class="listActionsCol"></th>
-		<th>Relation</th>
-		<th>Perspective</th>
-		<th>Notes</th>
-		<th>Add Note</th>
-		<th>Dates</th>
-		<th>Add Date</th>
-	</tr>
-	
-	<% list.each do |item| %>
-	<tr>
-		
-		<td class="listActionsCol">
-			<%
-			# when the delete link is clicked, we need to keep the url context (the delete does a redirect)
-			# if we're viewing the relation as part of a feature (/features/xxx/feature_relations),
-			# then we want to come back to the features' relations
-			# if we're viewing the relations without a feature context (/feature_relations)
-			# we want to come back to that just the relations view
-			%>
-			<%= list_actions_for_item(item,
-				:delete_path => parent ? admin_feature_feature_relation_path(parent, item) : admin_feature_relation_path(item),
-				:edit_path   => parent ? edit_admin_feature_feature_relation_path(parent, item) : admin_feature_relation_path(item),
-				:view_path   => parent ? admin_feature_feature_relation_path(parent, item) : admin_feature_relation_path(item)
-			) %>
-		</td>
-		
-		<td class="leftText">
-			<%
-			# if there is a parent_object (feature id in the url)
-			# display the relationship, relative to the feature (parent_object)
-			# else, display the relation, relative to the relations child node
-			%>
-			<%= feature_relation_role_label(parent || item.child_node, item, :use_first => use_first, :use_names => use_names, :link_relation => false, :show_feature_types => true) %>
-		</td>
-		
-		<td><%= item.perspective %></td>
-		<td><%= note_link_list_for item %></td>
-		<td><%= new_note_link_for item %></td>
-		<td><%= time_unit_link_list_for item %></td>
-		<td><%= new_time_unit_link_for item %></td>
-			
-	</tr>
-	<% end %>
-</table>
-
+   <table class="listGrid">
+<%=  pagination_row :colspan=>6 unless @collection.nil? %>
+     <tr>
+       <th class="listActionsCol"></th>
+       <th><%= FeatureRelation.human_name.titleize.s %></th>
+       <th><%= Perspective.human_name.titleize.s %></th>
+       <th><%= Note.human_name(:count => :many).titleize.s %></th>
+       <th><%= ts 'add.record', :what => Note.human_name.titleize %></th>
+       <th><%= ts :date_this, :count => :many %></th>
+       <th><%= ts 'add.record', :what => t(:date_this) %></th>
+     </tr>
+<%   list.each do |item| %>
+     <tr>   
+       <td class="listActionsCol">
+<%     # when the delete link is clicked, we need to keep the url context (the delete does a redirect)
+       # if we're viewing the relation as part of a feature (/features/xxx/feature_relations),
+       # then we want to come back to the features' relations
+       # if we're viewing the relations without a feature context (/feature_relations)
+       # we want to come back to that just the relations view
+       parent_path = admin_feature_feature_relation_path(parent, item)
+       path = admin_feature_relation_path(item) %>
+<%=    list_actions_for_item item, :view_path => parent ? parent_path : path, :delete_path => parent ? parent_path : path,
+         :edit_path => parent ? edit_admin_feature_feature_relation_path(parent, item) : path %>
+       </td>
+       <td class="leftText">
+<%     # if there is a parent_object (feature id in the url)
+       # display the relationship, relative to the feature (parent_object)
+       # else, display the relation, relative to the relations child node
+%><%=  feature_relation_role_label(parent || item.child_node, item, :use_first => use_first, :use_names => use_names, :link_relation => false, :show_feature_types => true) %>
+       </td>
+       <td><%= item.perspective %></td>
+       <td><%= note_link_list_for item %></td>
+       <td><%= new_note_link_for item %></td>
+       <td><%= time_unit_link_list_for item %></td>
+       <td><%= new_time_unit_link_for item %></td>
+     </tr>
+<%   end %>
+   </table>
 <% end %>

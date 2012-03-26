@@ -1,7 +1,7 @@
-<h1>Feature ID Generator</h1>
+<h1><%= ts 'feature.id_generator' %></h1>
 <p><%= @message %></p>
 <p>&nbsp;<br/>
-<%= link_to 'See unused Feature IDs', available_admin_feature_pids_path %> |
-<%= new_item_link new_admin_feature_pid_path, 'New feature range' %> |
-<%= link_to 'Back to admin', admin_admin_path %>
+<%= link_to ts('see.record', :what => t('feature.unused_ids')), available_admin_feature_pids_path %> |
+<%= new_item_link new_admin_feature_pid_path, ts('new.record', :what => t('feature.range')) %> |
+<%= link_to ts('back.to', :what => t(:admin)), admin_admin_path %>
 </p>

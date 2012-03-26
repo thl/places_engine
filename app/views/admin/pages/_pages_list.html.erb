@@ -1,34 +1,29 @@
 <% options ||= {}
    if list.empty? %>
-<%=  empty_collection_message("No pages available.") %>
+<%=  empty_collection_message t('no.record', :what => t(:available, :what => Page.human_name)).capitalize.s %>
 <% else %>
-<table class="listGrid">
-<%= pagination_row :colspan=>6 unless list.nil? %>
-	<tr>
-		<th class="listActionsCol"></th>
-		<th>Volume</th>
-		<th>Start Page</th>
-		<th>Start Line</th>
-		<th>End Page</th>
-		<th>End Line</th>
-	</tr>
-<%  list.each do |item| %>
-	<tr>
-		<td class="listActionsCol">
-		  <%= list_actions_for_item(item,
-  		  {
-  		    :delete_path => polymorphic_path([:admin, item.citation, item]),
-  		    :edit_path => edit_polymorphic_path([:admin, item.citation, item]),
-  		    :view_path => polymorphic_path([:admin, item.citation, item])
-  		  }
-		  ) %>
-		</td>		
-		<td><%= item.volume %></td>
-		<td><%= item.start_page %></td>
-		<td><%= item.start_line %></td>
-		<td><%= item.end_page %></td>
-		<td><%= item.end_line %></td>
-	</tr>
-	<% end %>	
-</table>
+   <table class="listGrid">
+<%=  pagination_row :colspan=>6 unless list.nil? %>
+     <tr>
+       <th class="listActionsCol"></th>
+       <th><%= Page.human_attribute_name(:volume).s %></th>
+       <th><%= Page.human_attribute_name(:start_page).s %></th>
+       <th><%= Page.human_attribute_name(:start_line).s %></th>
+       <th><%= Page.human_attribute_name(:end_page).s %></th>
+       <th><%= Page.human_attribute_name(:end_line).s %></th>
+     </tr>
+<%   list.each do |item| %>
+     <tr>
+       <td class="listActionsCol">
+<%       path = polymorphic_path([:admin, item.citation, item]) %>
+<%=      list_actions_for_item(item, :delete_path => path, :view_path => path, :edit_path => edit_polymorphic_path([:admin, item.citation, item])) %>
+       </td>    
+       <td><%= item.volume %></td>
+       <td><%= item.start_page %></td>
+       <td><%= item.start_line %></td>
+       <td><%= item.end_page %></td>
+       <td><%= item.end_line %></td>
+     </tr>
+<%   end %>  
+   </table>
 <% end %>
