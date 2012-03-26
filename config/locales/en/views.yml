@@ -43,6 +43,8 @@ en:
     location:
         latitude: 'Latitude'
         longitude: 'Longitude'
+    log:
+        in: 'Log in'
     map:
         earth: 'Google Earth'
         full: 'the full map'
@@ -82,6 +84,8 @@ en:
         gis:
             contained_features: 'GIS Resources (including contained features)'
             feature_alone: 'GIS Resources (feature alone)'
+    session:
+        preferences: 'Session Preferences'
     set_primary_essay: 'Set Primary Essay'
     snippet:
         characteristic_needs_feature: 'Knowledge Map characteristics can only be associated from a feature.'
