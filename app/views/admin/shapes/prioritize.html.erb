@@ -22,7 +22,7 @@ jQuery(document).ready(function(){
    <table class="listGrid" id="featureShapesList">
 <%=  pagination_row :colspan=>6 unless @collection.nil? %>
      <tr>
-       <th><%= Shape.human_attibute_name(:gid).s %></th>
+       <th><%= Shape.human_attribute_name(:gid).s %></th>
        <th><%= Shape.human_name(:count => :many).titleize.s %></th>
        <th><%= ts 'priorit.y' %></th>
      </tr>

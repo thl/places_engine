@@ -6,7 +6,7 @@
 </div>
 <br class="clear"/>
 <fieldset>
-  <legend>General Information <%= edit_item_link @object %></legend>
+  <legend><%= ts 'information.general' %> <%= edit_item_link @object %></legend>
   <div class="row">
     <label><%= FeatureName.human_name.titleize.s %>:</label> <span><%= @object.name %></span>
   </div>
@@ -33,7 +33,7 @@
   </div>
 </fieldset>
 <fieldset>
-  <legend><%= FeatureNameRelation.human_name(:count => :many).s %> <%#= link_to 'View', admin_feature_name_feature_name_relations_path(@object) %></legend>
+  <legend><%= FeatureNameRelation.human_name(:count => :many).titleize.s %> <%#= link_to 'View', admin_feature_name_feature_name_relations_path(@object) %></legend>
   <div class="left highlight">
     <%= link_to ts('select.relation', :what => FeatureName.human_name, :whom => highlight(@object.name)), locate_for_relation_admin_feature_name_path(@object) %>.
   </div>

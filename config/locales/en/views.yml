@@ -50,7 +50,6 @@ en:
         full: 'the full map'
         google: 'Google Maps'
         this: 'Map'
-    more: 'More {{what}}'
     no:
         record: 'No {{what}}'
     other: 'Other {{what}}'

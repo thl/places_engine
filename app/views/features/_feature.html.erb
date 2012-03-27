@@ -64,7 +64,7 @@
 <%=  javascript_tag "$(document).ready(function(){ InsetMap.init({proxyUrl: '#{ActionController::Base.relative_url_root}/proxy_engine/utils/proxy/?proxy_url='}); });" %>
 <%=  link_to image_tag("#{ThlSite.get_url}/global/images/icon-map-simple.gif", :alt => "") + " #{ts 'view.record', :what => t('map.full')}", "#{ThlSite.get_url}/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}", :class => "view-on-map" %>
 <%=  link_to image_tag("#{ThlSite.get_url}/global/images/icon-google-maps.png", :alt => "") + " #{ts :in, :what => t('view.this'), :where => t('map.google')}", "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => map_fid, :format => "kmz"), :target => "_blank", :class => "view-on-map" %>
-<%=  link_to image_tag("#{ThlSite.get_url}/global/images/icon-google-earth.png", :alt => "") + " #{ts :in:, :what => 'view.this', :where => t('map.earth')}", {:action => :gis_resources, :fids => map_fid, :format => "kmz"}, :target => "_blank", :class => "view-on-map" %>
+<%=  link_to image_tag("#{ThlSite.get_url}/global/images/icon-google-earth.png", :alt => "") + " #{ts :in, :what => t('view.this'), :where => t('map.earth')}", {:action => :gis_resources, :fids => map_fid, :format => "kmz"}, :target => "_blank", :class => "view-on-map" %>
 <% end %>
 <%= content_tag :h3, Description.human_name(:count => feature.descriptions.size).titleize.s unless feature.descriptions.blank? %>
 <% if !feature.descriptions.empty? %>
@@ -85,7 +85,7 @@
 <% end %>
    <p>
      <br />
-<%=  button_to_function ts('view.record', :what => t(:more, :what => t('feature.detail'))), "$('#more_feature_detail').show(); $(this).hide(); $('#less_feature_detail_button').show();", :id => "more_feature_detail_button", :style => ("display:none;" if current_show_feature_details) %>
+<%=  button_to_function ts('view.record', :what => t('more.record', :what => t('feature.detail'))), "$('#more_feature_detail').show(); $(this).hide(); $('#less_feature_detail_button').show();", :id => "more_feature_detail_button", :style => ("display:none;" if current_show_feature_details) %>
 <%=  button_to_function ts(:hide, :what => t('feature.detail')), "$('#more_feature_detail').hide(); $(this).hide(); $('#more_feature_detail_button').show();", :id => "less_feature_detail_button", :style => ("display:none;" unless current_show_feature_details) %>
    </p>
 <div id="more_feature_detail" style="<%= ("display: none;" unless current_show_feature_details) %>">
@@ -93,7 +93,7 @@
 <%=  feature_name_ul(feature,false) %>
     <dl class="no-style">
 <%  feature.names.roots.each do |name| %>
-<%=   ts(:for, :what => "<dt><strong>#{FeatureName.human_attribute_name(:etymology)}</strong></dt>", :whom => "<dd>#{name.name.to_s}</dd>") unless name.etymology.blank? %>
+      <%= "<dt><strong>#{ts(:for, :what => FeatureName.human_attribute_name(:etymology), :whom => name.name.to_s)}:</dt></strong><dd>#{name.etymology.to_s.s}</dd>" unless name.etymology.blank? %>
 <%  end %>
     </dl>
 <%= note_popup_link_list_for(feature, {:association_type => FeatureName.model_name}) %>

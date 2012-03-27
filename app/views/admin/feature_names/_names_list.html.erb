@@ -13,8 +13,8 @@
        <th><%= ts 'priorit.y' %></th>
        <th><%= Note.human_name(:count => :many).titleize.s %></th>
        <th><%= ts 'add.record', :what => Note.human_name.titleize %></th>
-       <th><%= ts :date_this, :count => :many %></th>
-       <th><%= ts 'add.record', :what => t(:date_this) %></th>
+       <th><%= t('date.this', :count => :many).titleize.s %></th>
+       <th><%= ts 'add.record', :what => t('date.this').titleize %></th>
      </tr>
 <%   list.each do |item| %>
      <tr>
