@@ -1,0 +1,129 @@
+# Places dictionary view localization file for Dzongkha.
+dz:
+    about: 'About'
+    app:
+        short : 'THL Place Dictionary'
+        this: 'THL Place Dictionary of Tibet & the Himalayas'
+    by: 'by {{whom}}'
+    child: 'Child'
+    choose:
+        from: 'choose from {{what}}'
+        record: 'choose {{what}}'
+    citation:
+        of: 'Citation of {{what}}'
+        unavailable: 'No citations available.'
+    clone:
+        into: 'Clone {{what}} into {{whom}}'
+        record: 'Clone {{what}}'
+    current: 'Current {{what}}'
+    default: 'Default {{what}}'
+    entry: 'THL Place Dictionary Entry'
+    feature:
+        detail:
+            one: 'Feature Detail'
+            other: 'Feature Details'
+        id_generator: 'Feature ID Generator'
+        numbers_to_generate: 'Number of features to generate'
+        range: 'Feature Range'
+        record:
+            one: '{{what}} feature'
+            other: '{{what}} features'
+        unused_ids: 'Unused Feature IDs'
+    hide: 'Hide {{what}}'
+    information: 
+        general: 'General Information'
+        user: 'User Information'
+    is:
+        translation: 'Is {{this}} a translation of {{that}}?'
+        phonetic: 'Is {{this}} a phonetic transcription of {{that}}?'
+        orthographic: 'Is {{this}} an orthographic transliteration of {{that}}?'
+        alt_spelling: 'Is {{this}} an alt. spelling of {{that}}?'
+    its_original_publication: 'its original online publication'
+    loading: 'Loading...'
+    location:
+        latitude: 'Latitude'
+        longitude: 'Longitude'
+    log:
+        in: 'Log in'
+    map:
+        earth: 'Google Earth'
+        full: 'the full map'
+        google: 'Google Maps'
+        this: 'Map'
+    no:
+        record: 'No {{what}}'
+    other: 'Other {{what}}'
+    perspective: 'the {{what}} perspective'
+    prefix:
+        with: 'Prefix with {{what}}'
+    priorit:
+        y: 'Priority'
+        ization_of:
+            feature_types: 'Prioritization of Feature Types'
+            locations: 'Prioritization of Locations'
+            names: 'Prioritization of Names'
+            shapes: 'Prioritization of Shapes'
+    read_more: 'Read more'
+    referenced: '{{what}} referenced'
+    relat:
+        ed:
+            record: 'Related {{what}}'
+            to: 'Related To'
+        ion:
+            location: 'locating relation'
+            ship:
+                between: 'Relationship between {{this}} and {{that}}'
+                this: 'Relationship'
+                to: 'relationship to {{what}}'
+            this:
+                one: 'relation'
+                other: 'relations'
+    remove: 'remove'
+    resource:
+        gis:
+            contained_features: 'GIS Resources (including contained features)'
+            feature_alone: 'GIS Resources (feature alone)'
+    session:
+        preferences: 'Session Preferences'
+    set_primary_essay: 'Set Primary Essay'
+    snippet:
+        characteristic_needs_feature: 'Knowledge Map characteristics can only be associated from a feature.'
+        essay:
+            needs_parent: 'An Essay can only be created from a resource that uses one.'
+            primary: "'*' denotes a primary essay"
+            with: 'Show only entries with essays'
+        feature:
+            geo_code_needs_resource: 'A Feature Geo Code can only be created from a resource that uses one.'
+            name:
+                drag_priority: 'Click a name and drag to a new location to indicate the priority between the different names. This priority sequencing of names will be used to decide which name to show on maps, the navigational tree, and other contexts. Thus if there are two version of popular romanization of a name, for example, the prioritized one will be chosen; of if there are two alternative names, the prioritized one will be displayed; and so forth.'
+                has_transliteration: '{{what}} has a transliteration of {{whom}}'
+                not_related: 'Currently not related to any other Feature Names.'
+                resource: 'resource that uses one'
+            not:
+                contains: 'This Feature does not contain other Features.'
+                found: "Sorry, this feature couldn't be found. Please use the menu on the right to search or browse for a feature."
+                related: 'Sorry, this feature does not currently have any related features.'
+            return: "Return to this feature's home page"
+            too_many: 'Sorry, this feature contains too many features for us to currently be able to provide this data.'
+            type:
+                drag_priority: 'Click a feature type and drag to a new location to indicate the priority between the different feature types. This priority sequencing of feature types will be used to decide which feature types to show on maps, the navigational tree, and other contexts.'
+        location:
+            drag_priority: 'Click a location and drag to a new location to indicate the priority between the different locations. This priority sequencing of locations will be used to decide which locations to show on maps, the navigational tree, and other contexts.'
+            input: 'Please input decimal degrees in the format of 35.1974, etc. If you have degrees, minutes and seconds, use a conversion program to convert them into decimal degrees. For example, try: <a href="http://www.fcc.gov/mb/audio/bickel/DDDMMSS-decimal.html" target="_blank">http://www.fcc.gov/mb/audio/bickel/DDDMMSS-decimal.html</a>.'
+        search: 'Use the search field above to search for features.'
+        title: 'Use title case for capitalization (e.g. An Exciting...)'
+    suffix:
+        record: '{{what}} suffix'
+    switch: 'Switch {{what}}'
+    title: 'Title'
+    tree:
+        collapse: 'Collapse {{what}}'
+        expand: 'Expand {{what}}'
+    type:
+        adjective: 'Type'
+        in: 'Type in {{what}}'
+        value: 'Type Value'
+    value: 'Value'
+    view:
+        record: 'View {{what}}'
+        this: 'View'

@@ -1,4 +1,4 @@
-# Places dictionary model localization file for English.
+# Places dictionary model localization file for Dzongkha.
 dz:
     activerecord:
         # Model names will be kept in lower case. Invoke .capitalize or .titleize if you need them in uppercase.

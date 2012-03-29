@@ -1,0 +1,171 @@
+# Places dictionary model localization file for Tibetan.
+bo:
+    activerecord:
+        # Model names will be kept in lower case. Invoke .capitalize or .titleize if you need them in uppercase.
+        models:
+            alt_spelling_system:
+                one: 'ཚིག་འབྲུ་དེད་ནས་འབྲི་བའི་ཐབས་ལམ་གཞན།'
+                other: 'ཚིག་འབྲུ་དེད་ནས་འབྲི་བའི་ཐབས་ལམ་གཞན།༼  མང་ཚིག  ༽'
+            altitude:
+                one: 'རྒྱ་མཚོའི་ངོས་ལས་མཐོ་ཚད།'
+                other: 'རྒྱ་མཚོའི་ངོས་ལས་མཐོ་ཚད། ༼  མང་ཚིག  ༽'
+            association_note:
+                one: 'སྤྱིར་བཏང་གི་མཆན་འགྲེལ།'
+                other: 'སྤྱིར་བཏང་གི་མཆན་འགྲེལ།  ༼  མང་ཚིག  ༽'
+            blurb:
+                one: 'མཚམས་སྦྱོར་རགས་བསྡུས།'
+                other: 'མཚམས་སྦྱོར་རགས་བསྡུས། ༼  མང་ཚིག  ༽'
+            category_feature:
+                one: 'ཤེས་བྱའི་མཛོད་ཀྱི་ཁྱད་ཆོས།'
+                other: 'ཤེས་བྱའི་མཛོད་ཀྱི་ཁྱད་ཆོས།'
+            citation:
+                one: 'མཆན་འགོད་པ། ལུང་འདྲེན་པ།'
+                other: 'མཆན་འགོད་པ། ལུང་འདྲེན་པ།'
+            description:
+                one: 'རྩོམ་ཡིག'
+                other: 'རྩོམ་ཡིག'
+            feature:
+                one: 'ཁྱད་རྟགས།'
+                other: 'ཁྱད་རྟགས།  ༼  མང་ཚིག ༽'
+            feature_geo_code:
+                one: 'ས་བབ་ཀྱི་ཨང་རྟགས།'
+                other: 'ས་བབ་ཀྱི་ཨང་རྟགས།  ༼  མང་ཚིག ༽'
+            feature_name:
+                one: 'མིང་།'
+                other: 'མིང་གཞན།'
+            feature_name_relation:
+                one: 'ཁྱད་རྟགས་མིང་གི་འབྲེལ་བ།'
+                other: 'ཁྱད་རྟགས་མིང་གི་འབྲེལ་བ། ༼  མང་ཚིག  ༽'
+            feature_name_type:
+                one: 'མིང་གི་རིགས།'
+                other: 'མིང་གི་རིགས། ༼  མང་ཚིག  ༽'
+            feature_relation:
+                one: 'ཁྱད་རྟགས་ཀྱི་འབྲེལ་བ།'
+                other: 'ཁྱད་རྟགས་ཀྱི་འབྲེལ་བ། ༼  མང་ཚིག༽'
+            feature_relation_type:
+                one: 'ཁྱད་རྟགས་ཀྱི་འབྲེལ་བའི་རིགས།'
+                other: 'ཁྱད་རྟགས་ཀྱི་འབྲེལ་བའི་རིགས།  ༼  མང་ཚིག༽'
+            geo_code_type:
+                one: 'ས་བབ་ཨང་རྟགས་ཀྱི་རིགས།'
+                other: 'ས་བབ་ཨང་རྟགས་ཀྱི་རིགས།   ༼  མང་ཚིག༽'
+            language:
+                one: 'སྐད་ཡིག'
+                other: 'སྐད་ཡིག༼  མང་ཚིག༽'
+            note:
+                one: 'མཆན་འགྲེལ།'
+                other: 'མཆན་འགྲེལ།   ༼  མང་ཚིག༽'
+            note_title:
+                one: 'ཚད་ལྡན་གྱི་ཁ་བྱང་།'
+                other: 'ཚད་ལྡན་གྱི་ཁ་བྱང་།   ༼  མང་ཚིག༽'
+            perspective:
+                one: 'མཐོང་རྒྱའི་སྣེ་ཟུར།'
+                other: 'མཐོང་རྒྱའི་སྣེ་ཟུར།  ༼  མང་ཚིག༽'
+            orthographic_system:
+                one: 'དག་ཡིག'
+                other: 'དག་ཡིག༼  མང་ཚིག༽'
+            page:
+                one: 'ཤོག་ངོས།'
+                other: 'ཤོག་ངོས།  ༼  མང་ཚིག༽'
+            perspective:
+                one: 'མཐོང་རྒྱའི་སྣེ་ཟུར།'
+                other: 'མཐོང་རྒྱའི་སྣེ་ཟུར།  ༼  མང་ཚིག༽'
+            phonetic_system:
+                one: 'སྒྲ་སྐད་གྱི་རྒྱུད་ཁོངས།'
+                other: 'སྒྲ་སྐད་གྱི་རྒྱུད་ཁོངས།'
+            shape:
+                one: 'གནས་ས།'
+                other: 'གནས་ས།  ༼  མང་ཚིག༽'
+            user:
+                one: 'བེད་སྤྱོད་གཏོང་མཁན།'
+                other: 'བེད་སྤྱོད་གཏོང་མཁན།  ༼  མང་ཚིག༽'
+            view:
+                one: 'ས་གནས་ཀྱི་མིང་གི་སྐད།'
+                other: 'ས་གནས་ཀྱི་མིང་གི་སྐད།  ༼  མང་ཚིག༽'
+            writing_system:
+                one: 'འབྲི་བའི་རྒྱུད་ཁོངས།'
+                other: 'འབྲི་བའི་རྒྱུད་ཁོངས།  ༼  མང་ཚིག༽'
+        # Attribute names will be titleized.
+        attributes:
+            altitude:
+                average: 'ཆ་སྙོམས།'
+                estimate: 'སྔོན་རྩིས།'
+                maximum: 'གྲངས་ཐང་ཆེ་ཤོས།'
+                minimum: 'གྲངས་ཐང་ཆུང་ཤོས།'
+                unit:
+            blurp:
+                code: 'ཚབ་ཨང་།'
+                content: 'ནང་དོན།'
+                title: 'གདོང་འཛར།'
+            category_feature:
+                label: 'གྲངས་འབོར།'
+                numeric_value: 'སྔོན་སྤྱོད་རིམ་པ།'
+                show_parent: 'རིགས་དབྱེའི་ཁྲོད་ཀྱི་ཆོ་རིགས་འཆར་བ།'
+                show_root: 'ཤེས་བྱའི་མཛོད་ཀྱི་གོང་གྲས་རྣམས་འཆར་བ།'
+                string_value: 'དཔེ་ཆའི་གྲངས་ཐང་།'
+            citation:
+                info_source_id:
+                notes: 'མཆན་འགྲེལ།'
+            description:
+                content: 'ཁ་བྱང་།'
+                is_primary: 'གཙོ་བོ་ཡིན།'
+                title: 'རྩོམ་ཡིག་གི་ཁ་བྱང་།'
+            feature:
+                descendant:
+                    one: 'སྣོད་པའི་ཁྱད་རྟགས།'
+                    other: 'སྣོད་པའི་ཁྱད་རྟགས།   ༼  མང་ཚིག༽'
+                is_public: 'སྤྱི་སྤྱོད་ཡིན།'
+                object_type:
+                    one: 'ཁྱད་རྟགས་ཀྱི་རིགས།'
+                    other: 'ཁྱད་རྟགས་ཀྱི་རིགས།  ༼  མང་ཚིག༽'
+                old_pid: 'THL Idརྙིང་པ།'
+                pid: 'THL ID'
+            feature_geo_code:
+                geo_code_value: 'གྲངས་ཐང་།'
+            feature_name:
+                etymology: 'ཚིག་ཁུངས།'
+                is_primary_for_romanization: 'རོ་མའི་ཡིག་གཟུགས་ཀྱི་མཐོང་རིས་གཙོ་བཟུང་བྱས་པ།  '
+            feature_name_relation:
+                is_alt_spelling: 'སྦྱོར་འབྲི་བའམ།'
+                is_orthographic: 'དག་ཡིག'
+                is_phonetic: 'སྒྲ་སྒྱུར།'
+                is_translation: 'ཡིག་སྒྱུར།'
+            feature_relation_type:
+                asymmetric_code: 'ཆ་འགྲིག་མེད་པའི་ཚབ་ཨང་།'
+                asymmetric_label: 'ཆ་འགྲིག་མེད་པའི་གདོང་འཛར།'
+                code: 'ཚབ་ཨང་།'
+                is_hierarchical: 'རིམ་འབྱེད་ཀྱི་རྣམ་པ།'
+                is_symmetric: 'ཆ་འགྲིག་གི་རྣམ་པ།'
+                label: 'གདོང་འཛར།'
+            note:
+                custom_note_title: 'མཚན་ཉིད་རང་འཇོག་གི་ཁ་བྱང་།'
+                is_public: 'སྤྱི་སྤྱོད་པའམ།'
+            page:
+                end_line: 'མཇུག་ཕྲེང་།'
+                end_page: 'ཞབས་ཤོག'
+                start_line: 'འགོ་ཚུགས་ཀྱི་ཕྲེང་།'
+                start_page: 'འགོ་འཛུགས་ཀྱི་ཤོག་ངོས།'
+                volume: 'བམ་པོ།'
+            perspective:
+                code: 'ཚབ་ཨང་།'
+                description: 'ཞིབ་བརྗོད།'
+                is_public: 'སྤྱི་སྤྱོད་པའམ།'
+                name: 'མིང་།'
+            simple_prop:
+                code: 'ཚབ་ཨང་།'
+                description: 'ཞིབ་བརྗོད།'
+                name: 'མིང་།'
+            shape:
+                gid: 'GID'
+                altitude: 'རྒྱ་མཚོའི་ངོས་ལས་མཐོ་ཚད།'
+                is_public: 'སྤྱི་སྤྱོད་པའམ།'
+                latitude:
+                longitude:
+            user:
+                login: 'ཐོ་འགོད།'
+                password: 'གསང་ཨང་།'
+                remember_me: 'ང་ངེས་རོགས་གནང་།'
+    activeresource:
+        models:
+            topic:
+                one: 'ཁྱད་ཆོས།'
+                other: 'ཁྱད་ཆོས།   ༼  མང་ཚིག༽'
