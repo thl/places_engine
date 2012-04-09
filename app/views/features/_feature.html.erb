@@ -85,15 +85,15 @@
 <% end %>
    <p>
      <br />
-<%=  button_to_function ts('view.record', :what => t('more.record', :what => t('feature.detail'))), "$('#more_feature_detail').show(); $(this).hide(); $('#less_feature_detail_button').show();", :id => "more_feature_detail_button", :style => ("display:none;" if current_show_feature_details) %>
+<%=  button_to_function ts('view.record', :what => t('more.record', :what => t('feature.detail'))), "$('#more_feature_detail').show(); $(this).hide(); $('#less_feature_detail_button').show(); frame_service.set_iframe_height()", :id => "more_feature_detail_button", :style => ("display:none;" if current_show_feature_details) %>
 <%=  button_to_function ts(:hide, :what => t('feature.detail')), "$('#more_feature_detail').hide(); $(this).hide(); $('#more_feature_detail_button').show();", :id => "less_feature_detail_button", :style => ("display:none;" unless current_show_feature_details) %>
    </p>
 <div id="more_feature_detail" style="<%= ("display: none;" unless current_show_feature_details) %>">
     <h3><%= FeatureName.human_name(:count => feature.names.size).titleize.s %></h3>
-<%=  feature_name_ul(feature,false) %>
+<%= feature_name_ul(feature,false) %>
     <dl class="no-style">
 <%  feature.names.roots.each do |name| %>
-      <%= "<dt><strong>#{ts(:for, :what => FeatureName.human_attribute_name(:etymology), :whom => name.name.to_s)}:</dt></strong><dd>#{name.etymology.to_s.s}</dd>" unless name.etymology.blank? %>
+<%=   "<dt><strong>#{ts(:for, :what => FeatureName.human_attribute_name(:etymology), :whom => name.name.to_s)}:</dt></strong><dd>#{name.etymology.to_s.s}</dd>" unless name.etymology.blank? %>
 <%  end %>
     </dl>
 <%= note_popup_link_list_for(feature, {:association_type => FeatureName.model_name}) %>
