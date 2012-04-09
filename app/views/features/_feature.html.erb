@@ -85,7 +85,7 @@
 <% end %>
    <p>
      <br />
-<%=  button_to_function "View More Feature Detail", "$('#more_feature_detail').show(); $(this).hide(); $('#less_feature_detail_button').show();", :id => "more_feature_detail_button", :style => ("display:none;" if current_show_feature_details) %>
+<%=  button_to_function "View More Feature Detail", "$('#more_feature_detail').show(); $(this).hide(); $('#less_feature_detail_button').show(); frame_service.set_iframe_height()", :id => "more_feature_detail_button", :style => ("display:none;" if current_show_feature_details) %>
 <%=  button_to_function "Hide Feature Detail", "$('#more_feature_detail').hide(); $(this).hide(); $('#more_feature_detail_button').show();", :id => "less_feature_detail_button", :style => ("display:none;" unless current_show_feature_details) %>
    </p>
 <div id="more_feature_detail" style="<%= ("display: none;" unless current_show_feature_details) %>">
