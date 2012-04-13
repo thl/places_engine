@@ -1,44 +1,34 @@
-<%
-add_breadcrumb_item link_to('feature relation types', admin_feature_relation_types_path)
-add_breadcrumb_item @object.to_s
-%>
-
+<% add_breadcrumb_item link_to(FeatureRelationType.human_name(:count => :many).s, admin_feature_relation_types_path)
+   add_breadcrumb_item @object.to_s %>
 <fieldset>
-	
-	<legend>
-		Feature Relation Type
-		<%= edit_item_link @object %>
-	</legend>
-
-	<div class="row">
-		<label>Is Hierarchical</label>
-		<span><%= @object.is_hierarchical ? 'Yes' : 'No' %></span>
-	</div>
-
-	<div class="row">
-		<label>Is Symmetric</label>
-		<span><%= @object.is_symmetric ? 'Yes' : 'No' %></span>
-	</div>
-		
-	<div class="row">
-		<label>Label</label>
-		<span><%= @object.label %></span>
-	</div>
-	
-	<% unless @object.is_symmetric %>
-	<div class="row">
-		<label>Asymmetric Label</label>
-		<span><%= @object.asymmetric_label %></span>
-	</div>
-	<% end %>
-
-	<div class="row">
-		<label>Code</label>
-		<span><%= @object.code %></span>
-	</div>
-
-	<div class="row">
-		<label>Asymmetric Code</label>
-		<span><%= @object.asymmetric_code %></span>
-	</div>	
+  <legend>
+<%= FeatureRelationType.human_name.titleize.s %>
+<%= edit_item_link @object %>
+  </legend>
+  <div class="row">
+    <label><%= FeatureRelationType.human_attribute_name(:is_hierarchical).s %></label>
+    <span><%= @object.is_hierarchical ? ts(:affirmation) : ts(:negation) %></span>
+  </div>
+  <div class="row">
+    <label><%= FeatureRelationType.human_attribute_name(:is_symmetric).s %></label>
+    <span><%= @object.is_symmetric ? ts(:affirmation) : ts(:negation) %></span>
+  </div>
+  <div class="row">
+    <label><%= FeatureRelationType.human_attribute_name(:label).s %></label>
+    <span><%= @object.label %></span>
+  </div>
+<% unless @object.is_symmetric %>
+   <div class="row">
+     <label><%= FeatureRelationType.human_attribute_name(:asymmetric_label).s %></label>
+     <span><%= @object.asymmetric_label %></span>
+   </div>
+<% end %>
+  <div class="row">
+    <label><%= FeatureRelationType.human_attribute_name(:code).s %></label>
+    <span><%= @object.code %></span>
+  </div>
+  <div class="row">
+    <label><%= FeatureRelationType.human_attribute_name(:asymmetric_code).s %></label>
+    <span><%= @object.asymmetric_code %></span>
+  </div>  
 </fieldset>

@@ -2,53 +2,40 @@
 <%= javascript_include_tag 'jquery.ajax.sortable' %>
 <script type="text/javascript">
 jQuery(document).ready(function(){
-	jQuery('#featureShapesList').ajaxSortable({
-		action: '<%= "/admin/shapes/set_priorities" %>',
-		object_id: <%= @feature.id.to_s %>
-	});
+  jQuery('#featureShapesList').ajaxSortable({
+    action: '<%= "/admin/shapes/set_priorities" %>',
+    object_id: <%= @feature.id.to_s %>
+  });
 });
 </script>
-
-<%
-add_breadcrumb_item features_link
-add_breadcrumb_item feature_link(@feature)
-add_breadcrumb_item "Change Prioritization of Shapes"
-%>
-
+<% add_breadcrumb_item features_link
+   add_breadcrumb_item feature_link(@feature)
+   add_breadcrumb_item ts('change.record', :what => t('priorit.ization_of.shapes')) %>
 <div>
-<h1>Change Prioritization of Locations: <%= f_label(@feature) %></h1>
+  <h1><%= ts('change.record', :what => t('priorit.ization_of.locations')) %>: <%= f_label(@feature) %></h1>
 </div>
-<p class="page-tip">
-	Click a location and drag to a new location to indicate the priority between the different locations. This priority sequencing of locations will be used to decide which locations to show on maps, the navigational tree, and other contexts.
-</p>
-
-<% list = @feature.shapes %>
-
-<% if list.empty? %>
-	<%= empty_collection_message %>
+<p class="page-tip"><%= ts 'snippet.location.drag_priority' %></p>
+<% list = @feature.shapes
+   if list.empty? %>
+<%=  empty_collection_message %>
 <% else %>
-
-<table class="listGrid" id="featureShapesList">
-	
-	<%= pagination_row :colspan=>6 unless @collection.nil? %>
-	
-	<tr>
-		<th>GID</th>
-		<th>Locations</th>
-		<th>Priority</th>
-	</tr>
-	<% list.sort!{ |a,b| a.position <=> b.position } %>
-	<% list.each do |item| %>
-	<tr id="feature_shape_<%= item.id.to_s %>">
-		<td><%= item.gid.to_s %></td>
-		<td><%=h shape_display_string(item) %></td>
-		<td class="sortable-priority-value"><%= item.position.to_s %></td>
-		
-	</tr>
-	<% end %>
-</table>
+   <table class="listGrid" id="featureShapesList">
+<%=  pagination_row :colspan=>6 unless @collection.nil? %>
+     <tr>
+       <th><%= Shape.human_attribute_name(:gid).s %></th>
+       <th><%= Shape.human_name(:count => :many).titleize.s %></th>
+       <th><%= ts 'priorit.y' %></th>
+     </tr>
+<%   list.sort!{ |a,b| a.position <=> b.position } %>
+<%   list.each do |item| %>
+     <tr id="feature_shape_<%= item.id.to_s %>">
+       <td><%= item.gid.to_s %></td>
+       <td><%=h shape_display_string(item) %></td>
+       <td class="sortable-priority-value"><%= item.position.to_s %></td>
+     </tr>
+<%   end %>
+   </table>
 <% end %>
-
 <div class="returnLink">
-<%= link_to "&#8592; Return to this feature's home page", admin_feature_path(@feature) %>
+<%= link_to "&#8592; #{ts 'snippet.feature.return'}", admin_feature_path(@feature) %>
 </div>

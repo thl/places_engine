@@ -1,5 +1,5 @@
 <h2>
-  <%= link_to "Browse #{current_perspective}", features_path(:filter => filter) %> (<%= link_to ts(:switch, :what => Perspective.human_name), edit_session_path %>)
+  <%= link_to ts('browse.record', :what => current_perspective), features_path(:filter => filter) %> (<%= link_to ts(:switch, :what => Perspective.human_name), edit_session_path %>)
 </h2>
 <ul>
 <%= new_tree_builder.build( context_feature ) { |node| !node.is_blank? && node.is_public? } %>

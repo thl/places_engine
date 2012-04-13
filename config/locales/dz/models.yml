@@ -1,4 +1,4 @@
-# Places dictionary model localization file for English.
+# Places dictionary model localization file for Dzongkha.
 dz:
     activerecord:
         # Model names will be kept in lower case. Invoke .capitalize or .titleize if you need them in uppercase.
@@ -39,9 +39,6 @@ dz:
             feature_name_type:
                 one: 'name type'
                 other: 'name types'
-            feature_object_type:
-                one: 'feature type'
-                other: 'feature types'
             feature_relation:
                 one: 'feature relation'
                 other: 'feature relations'
@@ -102,7 +99,6 @@ dz:
             category_feature:
                 label: 'Label'
                 numeric_value: 'Numeric Value'
-                position: 'Priority'
                 show_parent: "Show Subject's Immediate Parent"
                 show_root: 'Show Master Subject'
                 string_value: 'Text Value'
@@ -118,7 +114,9 @@ dz:
                     one: 'Contained Feature'
                     other: 'Contained Features'
                 is_public: 'Public?'
-                object_type: 'Feature Type'
+                object_type:
+                    one: 'Feature Type'
+                    other: 'Feature Types'
                 old_pid: 'OLD THL PID'
                 pid: 'THL ID'
             feature_geo_code:
@@ -160,7 +158,8 @@ dz:
                 gid: 'GID'
                 altitude: 'Altitude'
                 is_public: 'Public?'
-                position: 'Priority'
+                latitude: 'Latitude'
+                longitude: 'Longitude'
             user:
                 login: 'Login'
                 password: 'Password'

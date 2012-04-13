@@ -1,9 +1,6 @@
-<%
-add_breadcrumb_item link_to(collection_name, collection_path)
-add_breadcrumb_item 'new'
-%>
-
-<% form_for [:admin, @object] do |f| %>
-	<%= render :partial=>'admin/simple_props/form_fields', :locals=>{:f=>f,:object=>@object} %>
-	<%= link_to 'Cancel', collection_path %> | <%= submit_tag 'Create' %>
+<% add_breadcrumb_item link_to(collection_name, collection_path)
+   add_breadcrumb_item ts('new.this')
+   form_for [:admin, @object] do |f| %>
+<%=  render :partial=>'admin/simple_props/form_fields', :locals=>{:f=>f,:object=>@object} %>
+<%=  link_to ts('cancel.this'), collection_path %> | <%= globalized_submit_tag 'creat.e.this' %>
 <% end %>

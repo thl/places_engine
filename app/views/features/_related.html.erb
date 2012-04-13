@@ -50,14 +50,14 @@ function on_category_click(ajax_div_id){
 
   // Change the Ajax div's "expanded/contracted" state.
   if(is_hidden){
-	link_parent.removeClass('expandable-link-expanded').addClass('expandable-link-contracted');
+  link_parent.removeClass('expandable-link-expanded').addClass('expandable-link-contracted');
   }else{
-	link_parent.removeClass('expandable-link-contracted').addClass('expandable-link-expanded');
+  link_parent.removeClass('expandable-link-contracted').addClass('expandable-link-expanded');
   }
 
   // If the ajax_div is now hidden, return false so that the Ajax isn't called again.
   if(is_hidden){
-	return false;
+  return false;
   }
   return true;
 }
@@ -81,55 +81,42 @@ function collapse_all_categories(){
 
 <% feature_label = fname_labels(@feature).s
    relation_counts = CachedFeatureRelationCategory.find(:all, :select => "feature_relation_type_id, feature_is_parent, COUNT(DISTINCT related_feature_id) AS count", :group => "feature_relation_type_id, feature_is_parent", :conditions => {:feature_id => @feature.id}, :order => :feature_relation_type_id)
-
    if relation_counts.length > 0 %>
-<p>
-  <%= link_to_function "Expand all", "expand_all_categories()", :class => "expand-all-categories expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
-  <%= link_to_function "Collapse all", "collapse_all_categories()", :class => "collapse-all-categories expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
-</p>
-
-<div class="related-features-categories has-ajax-pagination has-hash-feature-links">
-<% relation_counts.each do |rc|
-	feature_relation_type = FeatureRelationType.find(rc[:feature_relation_type_id])
-	feature_is_parent = rc[:feature_is_parent]
-	count = rc[:count]
-  %>
-
-  <h3><%= feature_label %> <%= "#{feature_is_parent ? feature_relation_type.label : feature_relation_type.asymmetric_label}" %> the following features (<%= count %>):</h3>
-  <% # Is there a way to :include => categories and use an :order instead of this .sort{}?
-    CachedFeatureRelationCategory.count(:all, :group => 'category_id', :conditions => {:feature_id => @feature.id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent}).sort{|a,b|
-    # Some of these .finds are returning nil, but it's not clear why.
-    if Category.find(a[0]).nil? || Category.find(b[0]).nil?
-      0
-    else
-      Category.find(a[0]).title.casecmp(Category.find(b[0]).title)
-    end
-    }.each do |c|
-      category_id, count = c
-      category = Category.find(category_id)
-      # This has returned nil in some cases on production, so we need to check it to prevent a fatal error below
-      unless category.nil?
-        div_id = "list_#{category_id}_#{feature_relation_type.id}_#{feature_is_parent}" %>
-        <p>
-          <strong>
-  	      <%= link_to_remote Category.find(category_id).title, :url => {:action => :related_list, :id => @feature.id, :category_id => category_id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent.to_s}, :update => div_id,
-              :before => "if(!on_category_click('#{div_id}')){return false;}", :html => {:class => "expandable-link-contracted"}
-          %>
-  	      </strong> (<%= count %>)
-        </p>
-        <div id="<%= div_id %>" style="display:none;" class="related-feature-list pagination-click-results"></div>
-    <% end
-    end
-  end %>
-</div>
-
+   <p>
+<%=  link_to_function ts('tree.expand', :what => t('all.these')), "expand_all_categories()", :class => "expand-all-categories expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
+<%=  link_to_function ts('tree.collapse', :what => t('all.these')), "collapse_all_categories()", :class => "collapse-all-categories expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
+   </p>
+   <div class="related-features-categories has-ajax-pagination has-hash-feature-links">
+<%   relation_counts.each do |rc|
+       feature_relation_type = FeatureRelationType.find(rc[:feature_relation_type_id])
+       feature_is_parent = rc[:feature_is_parent]
+       count = rc[:count] %>
+       <h3><%= feature_label %> <%= "#{feature_is_parent ? feature_relation_type.label : feature_relation_type.asymmetric_label}" %> the following features (<%= count %>):</h3>
+<%     # Is there a way to :include => categories and use an :order instead of this .sort{}?
+       CachedFeatureRelationCategory.count(:all, :group => 'category_id', :conditions => {:feature_id => @feature.id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent}).sort do |a,b|
+         # Some of these .finds are returning nil, but it's not clear why.
+         Category.find(a[0]).nil? || Category.find(b[0]).nil? ? 0 : Category.find(a[0]).title.casecmp(Category.find(b[0]).title)
+       end.each do |c|
+       category_id, count = c
+       category = Category.find(category_id)
+       # This has returned nil in some cases on production, so we need to check it to prevent a fatal error below
+       unless category.nil?
+         div_id = "list_#{category_id}_#{feature_relation_type.id}_#{feature_is_parent}" %>
+         <p><strong>
+<%=        link_to_remote Category.find(category_id).title, :url => {:action => :related_list, :id => @feature.id, :category_id => category_id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent.to_s}, :update => div_id,
+             :before => "if(!on_category_click('#{div_id}')){return false;}", :html => {:class => "expandable-link-contracted"} %>
+         </strong> (<%= count %>)
+         </p>
+         <div id="<%= div_id %>" style="display:none;" class="related-feature-list pagination-click-results"></div>
+<%     end
+     end %>
+   </div>
+<% end %>
 <br />
 <p>
-  <%= link_to_function "Expand all", "expand_all_categories()", :class => "expand-all-categories expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
-  <%= link_to_function "Collapse all", "collapse_all_categories()", :class => "collapse-all-categories expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
+<%= link_to_function ts('tree.expand', :what => t('all.these')), "expand_all_categories()", :class => "expand-all-categories expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
+<%= link_to_function ts('tree.collapse', :what => t('all.these')), "collapse_all_categories()", :class => "collapse-all-categories expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
 </p>
 <% else %>
-<p>
-  Sorry, this feature does not currently have any related features.
-</p>
+     <p><%= ts 'snippet.feature.not.related' %></p>
 <% end %>

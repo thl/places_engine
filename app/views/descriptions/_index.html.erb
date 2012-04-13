@@ -1,19 +1,11 @@
 <% feature.descriptions.find(:all, :order => 'is_primary DESC, title').each do |d| %>
-	<div id="<%= "#{d.id}_descdiv" %>">
-<%  if description.nil?
-		  # Temporarily only showing contracted, while HTML truncation is fixed
-      if d.is_primary? && false %>
-		<%=   render :partial => 'descriptions/expanded', :locals => {:feature => feature, :d => d} %>
-<%	  else %>
-		<%=   render :partial => 'descriptions/contracted', :locals => {:feature => feature, :d => d} %>
-<%    end %>
-<%  else
-      # Temporarily only showing contracted, while HTML truncation is fixed
-      if d == description && false %>
-<%=     render :partial => 'descriptions/expanded', :locals => {:feature => feature, :d => d} %>
-<%	  else %>
-<%=     render :partial => 'descriptions/contracted', :locals => {:feature => feature, :d => d} %>
-<%    end %>
-<%  end %>
-    </div>
+   <div id="<%= "#{d.id}_descdiv" %>">
+<%   if description.nil?
+       # Temporarily only showing contracted, while HTML truncation is fixed
+%><%=  render :partial => 'descriptions/contracted', :locals => {:feature => feature, :d => d} %>
+<%   else
+       # Temporarily only showing contracted, while HTML truncation is fixed
+%><%=  render :partial => 'descriptions/contracted', :locals => {:feature => feature, :d => d} %>
+<%   end %>
+   </div>
 <% end %>

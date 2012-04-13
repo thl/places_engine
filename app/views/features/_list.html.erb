@@ -1,6 +1,6 @@
 <% if @features.empty? %>
 	<p>
-	  No associated places were found.
+<%=   t('found.none.records', :what => t('associate.d.record', :what => Feature.human_name)).capitalize.s %>
 	</p>
 <% else %>
 	<ul style="list-style-type:square; margin-left:2em;">

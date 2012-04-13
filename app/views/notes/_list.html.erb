@@ -3,12 +3,10 @@
   <h2><%= ts :for, :what => Note.human_name(:count => @notes.size).titleize, :whom => @parent_object %></h2>
 <% end %>
 <% @notes.each do |note| %>
-  <h2><%= (note.title.blank? ? Note.human_name.titleize.s : note.title).s %></h2>
-  <p>
-	<%= "#{"by " + note.authors.collect(&:fullname).join(", ")+" " if note.authors.length > 0} (#{note.updated_at.to_date.to_formatted_s(:long)})" %>
-  </p>
-  <div class="note-content">
-	<%= "#{note.content}".s %>
-  </div>
+    <h2><%= (note.title.blank? ? Note.human_name.titleize.s : note.title).s %></h2>
+    <p>
+<%=   ts(:by, :whom => note.authors.collect(&:fullname).join(', ')) if note.authors.size > 0 %> (<%= note.updated_at.to_date.to_formatted_s(:long) %>)
+    </p>
+    <div class="note-content"><%= "#{note.content}".s %></div>
 <% end %>
 </div>

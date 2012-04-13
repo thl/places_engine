@@ -1,52 +1,36 @@
 <% if list.empty? %>
-	<%= empty_collection_message %>
+<%=  empty_collection_message %>
 <% else %>
-
-<table class="listGrid">
-	
-	<tr>
-		<th class="listActionCol"></th>
-		<th>GID</th>
-		<th>Locations</th>
-		<th>Priority</th>
-		<th>Notes</th>
-		<th>Add Note</th>
-		<th>Dates</th>
-		<th>Add Date</th>
-	</tr>
-	
-	<% list = list.sort_by{|a| a.position} %>
-	<% list.each do |item| %>
-	<tr>
-		
-		<td class="listActionsCol">
-			<%= 
-				if item.is_point?
-					list_actions_for_item(item,
-						:delete_path => item.feature ? admin_feature_shape_path(item.feature, item) : admin_shape_path(item),
-						:edit_path   => item.feature ? edit_admin_feature_shape_path(item.feature, item) : admin_shape_path(item),
-						:view_path	 => item.feature ? admin_feature_shape_path(item.feature, item) : admin_shape_path(item)
-					)
-				else
-					list_actions_for_item(item,
-						:hide_delete => true,
-						:hide_edit   => true,
-						:view_path	 => item.feature ? admin_feature_shape_path(item.feature, item) : admin_shape_path(item)
-					)
-				end
-  			%>
-		</td>
-		
-		<td><%= item.gid.to_s %></td>
-		<td><%=h shape_display_string(item) %></td>
-		<td><%= item.position.to_s %></td>
-		<td><%= note_link_list_for item %></td>
-		<td><%= new_note_link_for item %></td>
-		<td><%= time_unit_link_list_for item %></td>
-		<td><%= new_time_unit_link_for item %></td>
-		
-	</tr>
-	<% end %>
-</table>
-
+   <table class="listGrid">  
+     <tr>
+       <th class="listActionCol"></th>
+       <th><%= Shape.human_attribute_name(:gid).s %></th>
+       <th><%= Shape.human_name(:count => :many).titleize.s %></th>
+       <th><%= ts 'priorit.y' %></th>
+       <th><%= Note.human_name(:count => :many).titleize.s %></th>
+       <th><%= ts 'add.record', :what => Note.human_name.titleize %></th>
+       <th><%= t('date.this', :count => :many).titleize.s %></th>
+       <th><%= ts 'add.record', :what => t('date.this').titleize %></th>
+     </tr>
+<%   list = list.sort_by{|a| a.position} %>
+<%   list.each do |item| %>
+     <tr>
+       <td class="listActionsCol">
+<%     path = item.feature ? admin_feature_shape_path(item.feature, item) : admin_shape_path(item) %>
+<%=    if item.is_point?
+         list_actions_for_item(item, :delete_path => path, :view_path => path, :edit_path => item.feature ? edit_admin_feature_shape_path(item.feature, item) : admin_shape_path(item))
+       else
+         list_actions_for_item(item, :hide_delete => true, :hide_edit => true, :view_path => path)
+       end %>
+       </td>
+       <td><%= item.gid.to_s %></td>
+       <td><%=h shape_display_string(item) %></td>
+       <td><%= item.position.to_s %></td>
+       <td><%= note_link_list_for item %></td>
+       <td><%= new_note_link_for item %></td>
+       <td><%= time_unit_link_list_for item %></td>
+       <td><%= new_time_unit_link_for item %></td> 
+     </tr>
+<%   end %>
+   </table>
 <% end %>

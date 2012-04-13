@@ -68,7 +68,7 @@ ActionController::Routing::Routes.draw do |map|
     admin.prioritize_feature_object_types 'prioritize_feature_types/:id', :path_prefix => 'admin/features', :controller => 'feature_object_types', :action => 'prioritize'
     admin.prioritize_feature_shapes 'prioritize_feature_shapes/:id', :path_prefix => 'admin/features', :controller => 'shapes', :action => 'prioritize'
   end # end admin urls
-  map.resources :features, :has_many => :association_notes, :member => {:descendants => :get, :related => :get} do |feature|
+  map.resources :features, :has_many => :association_notes, :member => {:descendants => :get, :related => :get}, :collection => {:search => :get} do |feature|
     feature.resources :descriptions, :member => {:expand => :get, :contract => :get, :show => :get}
     feature.by_topic 'by_topic/:id.:format', :controller => 'topics', :action => 'feature_descendants'
   end

@@ -1,8 +1,8 @@
-<h1>Edit Session Preferences</h1>
+<h1><%= ts 'edit.record', :what => 'session.preferences' %></h1>
 <% form_for(:session, :url => session_path, :html => { :method => 'put' }) do |f| %>
-<p><label for="perspective_id"><%= ts(:default, :what => Perspective.human_name.titleize) %></label><br/>
-<%= f.collection_select(:perspective_id, @perspectives, :id, :name) %></p>
-<p><label for="view_id"><%= ts(:default, :what => View.human_name.titleize) %></label><br/>
-<%= f.collection_select(:view_id, @views, :id, :name) %></p>
-<p><%= submit_tag 'Update' %></p>
+     <p><label for="perspective_id"><%= ts(:default, :what => Perspective.human_name.titleize) %></label><br/>
+<%=  f.collection_select(:perspective_id, @perspectives, :id, :name) %></p>
+     <p><label for="view_id"><%= ts(:default, :what => View.human_name.titleize) %></label><br/>
+<%=  f.collection_select(:view_id, @views, :id, :name) %></p>
+     <p><%= globalized_submit_tag 'update.this' %></p>
 <% end -%>

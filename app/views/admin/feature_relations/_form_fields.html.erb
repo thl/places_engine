@@ -1,7 +1,7 @@
 <%= error_messages_for :feature_relation %>
 <% @object[:feature_relation_type_id_] = @object.feature_relation_type_id %>
 <fieldset>
-  <legend><%= ts(:for, :what => t('relation_this').titleize, :whom => fname_labels(@parent_object)) %></legend>
+  <legend><%= ts(:for, :what => t('relation.this').titleize, :whom => fname_labels(@parent_object)) %></legend>
 <%= f.hidden_field :parent_node_id %>
 <%= f.hidden_field :child_node_id %>
   <div class="row">

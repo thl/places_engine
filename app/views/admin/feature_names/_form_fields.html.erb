@@ -1,7 +1,7 @@
 <%= tagged_tinymce_script %>
 <%= error_messages_for :feature_name %>
 <fieldset>
-  <legend><%= ts('general_information') %></legend>
+  <legend><%= ts('information.general') %></legend>
   <div class="row">
 <%= f.label :name, Feature.human_name.titleize.s %>
 <%= f.text_field :name, :class => :text %>

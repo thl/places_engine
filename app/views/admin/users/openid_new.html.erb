@@ -1,10 +1,10 @@
-<h1>Create User Account</h1>
+<h1><%= ts 'creat.e.this', :what => User.human_name.titleize %></h1>
 <% form_tag(admin_openid_create_path) do -%>
-<p>
-    <label for="openid_url">OpenID URL</label><br/>
-    <%= text_field_tag 'openid_url' %>
-</p>
-<p>Not using OpenID? <%= link_to 'Skip this step.', new_admin_user_path %></p>
-<p><%= submit_tag 'Create user' %></p>
+     <p>
+       <label for="openid_url">OpenID URL</label><br/>
+<%=    text_field_tag 'openid_url' %>
+     </p>
+     <p>Not using OpenID? <%= link_to 'Skip this step.', new_admin_user_path %></p>
+     <p><%= globalized_submit_tag 'creat.e.this' %></p>
 <% end -%>
-<p><%= link_to 'Back', admin_users_path %></p>
+<p><%= link_to ts('back.this'), admin_users_path %></p>
