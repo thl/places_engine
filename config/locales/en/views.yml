@@ -4,19 +4,19 @@ en:
     app:
         short : 'THL Place Dictionary'
         this: 'THL Place Dictionary of Tibet & the Himalayas'
-    by: 'by {{whom}}'
+    by: 'by %{whom}'
     child: 'Child'
     choose:
-        from: 'choose from {{what}}'
-        record: 'choose {{what}}'
+        from: 'choose from %{what}'
+        record: 'choose %{what}'
     citation:
-        of: 'Citation of {{what}}'
+        of: 'Citation of %{what}'
         unavailable: 'No citations available.'
     clone:
-        into: 'Clone {{what}} into {{whom}}'
-        record: 'Clone {{what}}'
-    current: 'Current {{what}}'
-    default: 'Default {{what}}'
+        into: 'Clone %{what} into %{whom}'
+        record: 'Clone %{what}'
+    current: 'Current %{what}'
+    default: 'Default %{what}'
     entry: 'THL Place Dictionary Entry'
     feature:
         detail:
@@ -26,18 +26,18 @@ en:
         numbers_to_generate: 'Number of features to generate'
         range: 'Feature Range'
         record:
-            one: '{{what}} feature'
-            other: '{{what}} features'
+            one: '%{what} feature'
+            other: '%{what} features'
         unused_ids: 'Unused Feature IDs'
-    hide: 'Hide {{what}}'
+    hide: 'Hide %{what}'
     information: 
         general: 'General Information'
         user: 'User Information'
     is:
-        translation: 'Is {{this}} a translation of {{that}}?'
-        phonetic: 'Is {{this}} a phonetic transcription of {{that}}?'
-        orthographic: 'Is {{this}} an orthographic transliteration of {{that}}?'
-        alt_spelling: 'Is {{this}} an alt. spelling of {{that}}?'
+        translation: 'Is %{this} a translation of %{that}?'
+        phonetic: 'Is %{this} a phonetic transcription of %{that}?'
+        orthographic: 'Is %{this} an orthographic transliteration of %{that}?'
+        alt_spelling: 'Is %{this} an alt. spelling of %{that}?'
     its_original_publication: 'its original online publication'
     loading: 'Loading...'
     location:
@@ -51,11 +51,11 @@ en:
         google: 'Google Maps'
         this: 'Map'
     no:
-        record: 'No {{what}}'
-    other: 'Other {{what}}'
-    perspective: 'the {{what}} perspective'
+        record: 'No %{what}'
+    other: 'Other %{what}'
+    perspective: 'the %{what} perspective'
     prefix:
-        with: 'Prefix with {{what}}'
+        with: 'Prefix with %{what}'
     priorit:
         y: 'Priority'
         ization_of:
@@ -64,17 +64,17 @@ en:
             names: 'Prioritization of Names'
             shapes: 'Prioritization of Shapes'
     read_more: 'Read more'
-    referenced: '{{what}} referenced'
+    referenced: '%{what} referenced'
     relat:
         ed:
-            record: 'Related {{what}}'
+            record: 'Related %{what}'
             to: 'Related To'
         ion:
             location: 'locating relation'
             ship:
-                between: 'Relationship between {{this}} and {{that}}'
+                between: 'Relationship between %{this} and %{that}'
                 this: 'Relationship'
-                to: 'relationship to {{what}}'
+                to: 'relationship to %{what}'
             this:
                 one: 'relation'
                 other: 'relations'
@@ -96,7 +96,7 @@ en:
             geo_code_needs_resource: 'A Feature Geo Code can only be created from a resource that uses one.'
             name:
                 drag_priority: 'Click a name and drag to a new location to indicate the priority between the different names. This priority sequencing of names will be used to decide which name to show on maps, the navigational tree, and other contexts. Thus if there are two version of popular romanization of a name, for example, the prioritized one will be chosen; of if there are two alternative names, the prioritized one will be displayed; and so forth.'
-                has_transliteration: '{{what}} has a transliteration of {{whom}}'
+                has_transliteration: '%{what} has a transliteration of %{whom}'
                 not_related: 'Currently not related to any other Feature Names.'
                 resource: 'resource that uses one'
             not:
@@ -113,17 +113,17 @@ en:
         search: 'Use the search field above to search for features.'
         title: 'Use title case for capitalization (e.g. An Exciting...)'
     suffix:
-        record: '{{what}} suffix'
-    switch: 'Switch {{what}}'
+        record: '%{what} suffix'
+    switch: 'Switch %{what}'
     title: 'Title'
     tree:
-        collapse: 'Collapse {{what}}'
-        expand: 'Expand {{what}}'
+        collapse: 'Collapse %{what}'
+        expand: 'Expand %{what}'
     type:
         adjective: 'Type'
-        in: 'Type in {{what}}'
+        in: 'Type in %{what}'
         value: 'Type Value'
     value: 'Value'
     view:
-        record: 'View {{what}}'
+        record: 'View %{what}'
         this: 'View'
