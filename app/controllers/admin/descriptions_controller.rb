@@ -9,7 +9,9 @@ class Admin::DescriptionsController < ResourceController::Base
   
   def add_author
     @authors = Person.find(:all, :order => 'fullname')
-    render :partial => 'authors_selector', :locals => {:selected => nil}
+    render :update do |page|
+      page.call "$('#update_div').before", render(:partial => 'authors_selector', :locals => {:selected => nil})
+    end if request.xhr?
   end
 
   #def contract
@@ -50,7 +52,7 @@ class Admin::DescriptionsController < ResourceController::Base
     end
     
     if feature_id
-      @collection = Description.send(:with_scope, :find=>{:conditions=>['feature_id = ?', feature_id]}) { Description.search(params[:filter], :page=>params[:page]) }
+      @collection = Description.send(:with_scope, :find=>where(['feature_id = ?', feature_id])) { Description.search(params[:filter], :page=>params[:page]) }
     else
       @collection = Description.search(params[:filter], :page=>params[:page])
     end

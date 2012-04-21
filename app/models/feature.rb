@@ -134,18 +134,19 @@ class Feature < ActiveRecord::Base
   #
   def self.current_roots(current_perspective, current_view)
     Rails.cache.fetch("features/current_roots/#{current_perspective.id}/#{current_view.id}", :expires_in => 1.day) do
-      with_scope(:find => {:include => {:cached_feature_names => :feature_name}, :conditions => {'features.is_blank' => false, 'cached_feature_names.view_id' => current_view.id}, :order => 'feature_names.name'}) do
-        roots.select do |r|
+      joins(:cached_feature_names => :feature_name).where(:is_blank => false, :cached_feature_names => {:view_id => current_view.id}).order('feature_names.name').roots.find_all do |r|
+#      with_scope(:find => includes(:cached_feature_names => :feature_name).where(:is_blank => false, :cached_feature_names => {:view_id => current_view.id}).order('feature_names.name')) do
+ #       roots.find_all do |r|
           # if ANY of the child relations are current, return true to nab this Feature
           r.child_relations.any? {|cr| cr.perspective==current_perspective }
         end
-      end
+    #  end
     end
   end
 
   def self.current_roots_by_perspective(current_perspective)
     Rails.cache.fetch("features/current_roots/#{current_perspective.id}", :expires_in => 1.day) do
-      with_scope(:find => {:conditions => {'features.is_blank' => false}}) do
+      with_scope(:find => where('features.is_blank' => false)) do
         roots.select do |r|
           # if ANY of the child relations are current, return true to nab this Feature
           r.child_relations.any? {|cr| cr.perspective==current_perspective }
@@ -283,10 +284,8 @@ class Feature < ActiveRecord::Base
       ]
     end
     
-    base_scope = {
-      :conditions => conditions
-    }
-    results = with_scope(:find=>base_scope) do
+    base_scope = conditions
+    results = with_scope(:find=>where(base_scope)) do
       self.search(filter, options, search_options)
     end
     # the context feature might not be returned
@@ -316,28 +315,25 @@ class Feature < ActiveRecord::Base
         conditions << fid.to_i
       end
     end
-    base_scope={
-      # These conditions will apply to all searches
-      :conditions => conditions, :include => [:names, :descriptions], :order => 'features.position'
-      #:joins => 'left join feature_names on features.id = feature_names.feature_id'
-    }
+    base_includes = [:names, :descriptions]
+    base_order = 'features.position'
     # Now that we have the base scope setup, apply the custom options and paginate!
     # For :has_descriptions == true, it appears that there isn't a way to use IS NOT NULL in a :conditions hash, so
     # we'll use it in a :conditions string in an outer scope.  Is there a way to use IS NOT NULL in
     # base_scope[:conditions] instead?
     if !search_options[:has_descriptions].nil? && search_options[:has_descriptions]
-      with_scope(:find => {:conditions => "descriptions.content IS NOT NULL"}) do
-        with_scope(:find=>base_scope) { options.has_key?(:page) ? paginate(options) : self.all(options) }
+      with_scope(:find => where('descriptions.content IS NOT NULL')) do
+        with_scope(:find=>where(conditions).includes(base_includes).order(base_order)) { options.has_key?(:page) ? paginate(options) : self.all(options) }
       end
     # Otherwise, just use a single scope:
     else
-      with_scope(:find=>base_scope) { options.has_key?(:page) ? paginate(options) : self.all(options) }
+      with_scope(:find=>where(conditions).includes(base_includes).order(base_order)) { options.has_key?(:page) ? paginate(options) : self.all(options) }
     end
   end
   
   def self.name_search(filter_value, options = {})
     options.merge!({:include => :names, :conditions => ['features.is_public = ? AND feature_names.name ILIKE ?', 1, "%#{filter_value}%"], :order => 'features.position'})
-    Feature.find(:all, options)
+    Feature.where(options)
   end
 
   def self.name_search_paginate(filter_value, options = {})

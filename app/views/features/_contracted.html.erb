@@ -3,6 +3,6 @@
       <span class="node-empty"></span>
 <%  else
       ancestors = (contracted.current_ancestors(current_perspective).collect(&:id) + [contracted.id.to_s]).join(',') %>
-<%=   link_to_remote '', { :update => "node_#{contracted.id}_div", :url => { :action => 'expanded', :id => contracted.id}, :complete => "NodeTree.hideOtherBranches('"+ancestors+"'); NodeTree.reselectNode()" }, { :class => 'node-plus', :href => feature_url(contracted.fid) } %>
+<%=   link_to '', {:action => 'expanded'}, :id => contracted.id, :update => "node_#{contracted.id}_div", :complete => "NodeTree.hideOtherBranches('"+ancestors+"'); NodeTree.reselectNode()", :class => 'node-plus', :href => feature_url(contracted.fid) %>
 <%  end %>
 <%= render :partial => 'features/selectable_node', :locals => { :node => contracted } %>

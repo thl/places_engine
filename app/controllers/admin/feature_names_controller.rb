@@ -73,7 +73,7 @@ class Admin::FeatureNamesController < ResourceController::Base
       feature_id = object.feature_id
     end
     if feature_id
-      @collection = FeatureName.send(:with_scope, :find=>{:conditions=>{:feature_id => feature_id}}) do
+      @collection = FeatureName.send(:with_scope, :find=>where(:feature_id => feature_id)) do
         FeatureName.search(params[:filter], :page=>params[:page])
       end
     else

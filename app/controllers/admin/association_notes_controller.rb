@@ -16,7 +16,9 @@ class Admin::AssociationNotesController < ResourceController::Base
   
   def add_author
     @authors = Person.find(:all, :order => 'fullname')
-    render :partial => 'authors_selector', :locals => {:selected => nil}
+    render :update do |page|
+      page.call "$('#update_div').before", render(:partial => 'authors_selector', :locals => {:selected => nil})
+    end if request.xhr?
   end
   
   protected
@@ -29,7 +31,7 @@ class Admin::AssociationNotesController < ResourceController::Base
   def collection
     @parent_object ||= parent_object
     if parent?
-      AssociationNote.send(:with_scope, :find=>{:conditions=>['notable_id = ? AND notable_type = ?', @parent_object.id, @parent_object.class.to_s]}) do
+      AssociationNote.send(:with_scope, :find=>where(['notable_id = ? AND notable_type = ?', @parent_object.id, @parent_object.class.to_s])) do
         @collection = AssociationNote.search(params[:filter], :page=>params[:page])
       end
     else

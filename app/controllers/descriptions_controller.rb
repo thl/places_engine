@@ -47,7 +47,7 @@ class DescriptionsController < ApplicationController
     #find a way to save selected expanded description
     render :update do |page|
 	    yield(page) if block_given?
-	    page.replace_html 'descriptions_div', :partial => '/descriptions/index', :locals => { :feature => @feature, :description => @d}
+	    page.call "$('#descriptions_div').html", render(:partial => '/descriptions/index', :locals => { :feature => @feature, :description => @d})
 	  end
   end
   

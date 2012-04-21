@@ -143,7 +143,7 @@ module FeatureExtensionForNamePositioning
     Rails.cache.fetch("#{self.cache_key}/combined_name", :expires_in => 1.hour) { self.names.size > 0 ? prioritized_names.collect(&:name).join(sep) : self.pid }
   end
   
-  def calculate_name_positions(names = self.names.roots(:order => 'feature_names.created_at'), position = 1)
+  def calculate_name_positions(names = self.names.roots.order('feature_names.created_at'), position = 1)
     sorted_names = Hash.new
     if names.size == 1
       # If there is only one name tree, it will be automatically assigned priority=1 value without need from editor.
@@ -231,7 +231,7 @@ module FeatureExtensionForNamePositioning
     end
   end
   
-  def reset_name_positions(names = self.names.roots(:order => 'feature_names.created_at'), position = 1)
+  def reset_name_positions(names = self.names.roots.order('feature_names.created_at'), position = 1)
     calculate_name_positions(names, position).each { |pos, name| name.update_attribute(:position, pos) }
   end
   

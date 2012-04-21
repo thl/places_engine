@@ -5,12 +5,13 @@ module ApplicationHelper
   require 'rexml/parsers/pullparser'
   
   # overrides link_to_remote in vendor/rails/action_pack/lib/action_view/prototype_helper.rb
-  def link_to_remote(name, options = {}, html_options = {})
-    html_options.merge!({:href => url_for(options[:url])}) if ( html_options[:href].nil? || html_options[:href].blank? ) && !options[:url].blank?
-    option_html = options.delete(:html)
-    html_options.merge!(option_html) if !option_html.nil?
-    link_to_function(name, remote_function(options), html_options)
-  end
+  # THIS NEEDS TO BE RADICALLY FIXED!
+  #def link_to_remote(name, options = {}, html_options = {})
+  #  html_options.merge!({:href => url_for(options[:url])}) if ( html_options[:href].nil? || html_options[:href].blank? ) && !options[:url].blank?
+  #  option_html = options.delete(:html)
+  #  html_options.merge!(option_html) if !option_html.nil?
+  #  link_to_function(name, remote_function(options), html_options)
+  #end
 
   def collection_name
     model_name ? model_name.humanize.downcase.pluralize : nil
@@ -22,7 +23,7 @@ module ApplicationHelper
   def blank_label; '-'; end
   
   def breadcrumb_separator
-    "&nbsp;<span class='arrow'>&gt;</span>&nbsp;"
+    "&nbsp;<span class='arrow'>&gt;</span>&nbsp;".html_safe
   end
 
   #
@@ -138,7 +139,7 @@ module ApplicationHelper
     title = d.title.blank? ? "Essay" : d.title
     authors = d.authors.empty? ? "" : " <span class='by'> by </span><span class='content_by'>#{join_with_and(d.authors.collect(&:fullname))}</span>"
     date = " <span class='last_updated'>(#{h(d.updated_at.to_date.to_formatted_s(:long))})</span>"
-    "#{title}#{authors}#{date}"
+    "#{title}#{authors}#{date}".html_safe
   end
   
   def description_simple_title(d)
@@ -163,11 +164,11 @@ module ApplicationHelper
     unless notes.nil?
       link_title = notes.collect{|n| (n.title.nil? ? 'Note' : n.title) + (" by #{n.authors.collect(&:fullname).join(", ").s}" if n.authors.length > 0).to_s}.join(', ')
       link_classes = "draggable-pop no-view-alone overflow-y-auto height-350"
-      "<span class='has-draggable-popups note-popup-link'>(" +
+      ("<span class='has-draggable-popups note-popup-link'>(" +
         link_to("", link_url, :class => "note-popup-link-icon "+link_classes, :title => h(link_title)) +
         link_to("See Note", link_url, :class => "note-popup-link-text "+link_classes, :title => h(link_title)) +
       ")</span>" +
-      "<script type='text/javascript'>jQuery(document).ready(function(){ActivateDraggablePopups('.has-draggable-popups');})</script>"
+      "<script type='text/javascript'>jQuery(document).ready(function(){ActivateDraggablePopups('.has-draggable-popups');})</script>").html_safe
     else
       ""
     end
@@ -190,11 +191,11 @@ module ApplicationHelper
     if !notes.nil? && notes.length > 0 
       # Wrapping this in a <p /> makes its font size incorrect, so for now, we'll achieve the top margin with
       # a <br />.
-      '<br />
+      ('<br />
       <strong>Notes:</strong>
       <ul class="note-popup-link-list">' +
         notes.collect{|n| "<li>#{note_popup_link(n)}</li>" }.join() +
-      '</ul>'
+      '</ul>').html_safe
     end
   end
   
@@ -211,7 +212,7 @@ module ApplicationHelper
     "<span class='has-draggable-popups'>
       #{link_to(link_title, link_url, :class => link_classes, :title => h(note_title))}
     </span>
-    <script type='text/javascript'>jQuery(document).ready(function(){ActivateDraggablePopups('.has-draggable-popups');})</script>"
+    <script type='text/javascript'>jQuery(document).ready(function(){ActivateDraggablePopups('.has-draggable-popups');})</script>".html_safe
   end
   
   #
@@ -222,7 +223,7 @@ module ApplicationHelper
       time_units = object.time_units_ordered_by_date
       if time_units.length > 0
         time_units_list = time_units.collect{|tu| "#{tu}#{note_popup_link_for(tu)}" }.reject{|str| str.blank?}.join("; ")
-        "<span class='time-units'>(#{time_units_list})</span>"
+        "<span class='time-units'>(#{time_units_list})</span>".html_safe
       end
     end
   end
@@ -255,7 +256,7 @@ module ApplicationHelper
   #
   #
   def highlight(string)
-    '<span class="highlight">' + string + '</span>'
+    ('<span class="highlight">' + string + '</span>').html_safe
   end
   
   def side_column_links
@@ -266,7 +267,7 @@ module ApplicationHelper
     str += "<li>#{link_to 'Editing Help', '#wiki=/access/wiki/site/c06fa8cf-c49c-4ebc-007f-482de5382105/thl%20place%20dictionary%20editorial%20manual.html', {:hreflang => 'Editorial Manual'}}</li>" if logged_in?
     str += "<li>#{link_to 'Feature Thesaurus', "#iframe=#{Category.get_url('20/children')}", {:hreflang => 'Feature Thesaurus'}}</li>"
     str += "</ul>"
-    return str
+    return str.html_safe
   end
 
   def stylesheet_files
@@ -402,7 +403,7 @@ module ApplicationHelper
     
     output.strip!
     output.gsub!(/\v/, "<br />")
-    output
+    output.html_safe
   end
   
   # HTML truncate for valid HTML, requires REXML::Parsers::PullParser
@@ -434,15 +435,14 @@ module ApplicationHelper
       results << "</#{tag}>"
     end
 
-    results.to_s + (input.length > len ? extension : '')
+    (results.to_s + (input.length > len ? extension : '')).html_safe
   end
   
   # Override the default page_entries_info from will_paginate
   def page_entries_info(collection, options = {})
     entry_name = options[:entry_name] ||
       (collection.empty?? 'entry' : collection.first.class.name.underscore.sub('_', ' '))
-    
-    if collection.total_pages < 2
+    (if collection.total_pages < 2
       case collection.size
       when 0; "No #{entry_name.pluralize} found"
       when 1; "Displaying <b>1</b> #{entry_name}"
@@ -454,12 +454,13 @@ module ApplicationHelper
         collection.offset + collection.length,
         collection.total_entries
       ]
-    end
+    end).html_safe
   end
   
   def javascript_on_load(*args, &block)
     if block_given?
-      concat(javascript_tag "$(document).ready(function(){#{capture(&block)}})")
+      content = with_output_buffer(&block)
+      javascript_tag "$(document).ready(function(){#{content}})"
     else
       javascript_tag "$(document).ready(function(){#{args.first}})"
     end

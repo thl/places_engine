@@ -24,7 +24,7 @@ class Admin::NotesController < ResourceController::Base
   def collection
     @parent_object ||= parent_object
     if parent?
-      Note.send(:with_scope, :find=>{:conditions=>['notable_id = ? AND notable_type = ?', @parent_object.id, @parent_object.class.to_s]}) do
+      Note.send(:with_scope, :find=>where(['notable_id = ? AND notable_type = ?', @parent_object.id, @parent_object.class.to_s])) do
         @collection = Note.search(params[:filter], :page=>params[:page])
       end
     else

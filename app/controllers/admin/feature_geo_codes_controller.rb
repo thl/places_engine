@@ -13,7 +13,7 @@ class Admin::FeatureGeoCodesController < ResourceController::Base
     @parent_object ||= parent_object
     feature_id=params[:feature_id]
     if feature_id
-      @collection = FeatureGeoCode.send(:with_scope, :find=>{:conditions=>['feature_id = ?', feature_id]}) do
+      @collection = FeatureGeoCode.send(:with_scope, :find=>where(['feature_id = ?', feature_id])) do
         FeatureGeoCode.search(params[:filter], :page=>params[:page])
       end
     else

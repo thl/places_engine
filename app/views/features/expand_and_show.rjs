@@ -2,6 +2,6 @@
 id = params[:id]
 node = Feature.find(id)
 ancestors = node.current_ancestors(current_perspective).collect(&:id)
-page.replace_html "node_#{id}_div", :partial => "expanded", :locals => { :expanded => node }
+page.call "$('#node_#{id}_div').html", render(:partial => "expanded", :locals => { :expanded => node })
 page.call "NodeTree.showNode", id
 page.call "NodeTree.hideOtherBranches", ancestors.join(",")+","+id

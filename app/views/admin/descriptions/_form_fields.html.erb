@@ -23,7 +23,7 @@ input[type=text] {
   <div class="row">
 <%= f.text_area :content, :rows => 16, :cols => 65, :class => 'mceEditor' %>
   </div>
-<p><%= link_to_remote ts('add.record', :what => t('new.record', :what => t(:author))), :url => add_author_admin_feature_descriptions_path(@object.feature), :update => 'update_div', :position => 'before', :method => 'get' %></p>
+<p><%= link_to ts('add.record', :what => t('new.record', :what => t(:author))), add_author_admin_feature_descriptions_path(@object.feature), :remote => true %></p>
 <div id="authors_div">
 <% for author in @object.authors %>
 <%=  render :partial => 'authors_selector', :locals => {:selected => author.id} %>

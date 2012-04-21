@@ -58,6 +58,7 @@ module Admin::FeaturesHelper
     html += ' '
     html += link_to 'clear', :context_id=>params[:context_id] if params[:filter]
     html += '</form></div>'
+    html.html_safe
   end
   
   #

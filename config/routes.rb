@@ -1,123 +1,192 @@
-ActionController::Routing::Routes.draw do |map|
-  #map.resources :descriptions
-
-  map.resources :contestations
-
-  map.resources :languages
-
-  map.resource :session
-  map.resources(:categories, :member => {:expand => :get, :contract => :get}) do |category|
-    category.resources(:children, :controller => 'categories', :member => {:expand => :get, :contract => :get})
-    category.resources(:counts, :controller => 'cached_category_counts')
+Rails.application.routes.draw do
+  resources :contestations, :languages
+  resource :session
+  resources :categories do
+    member do
+      get :expand
+      get :contract
+    end
+    resources :children do
+      member do
+        get :expand
+        get :contract
+      end
+    end
+    resources :counts
   end
-  map.namespace(:admin) do |admin|
-    admin.resources :alt_spelling_systems, :association_notes, :blurbs, :feature_name_types, :feature_relation_types, :feature_types,
-                    :geo_code_types, :languages, :note_titles, :notes, :orthographic_systems, :perspectives,
-                    :phonetic_systems, :users, :writing_systems, :xml_documents, :views
-    admin.openid_new 'openid_new', :controller => 'users', :action => 'openid_new'
-    admin.openid_create 'openid_create', :controller => 'users', :action => 'create', :requirements => { :method => :post }
-    admin.admin '', :controller=>'features', :action=>'index'
-    admin.resources :altitudes, :has_many=>[:citations], :belongs_to=>:feature do |altitude|
-      altitude.resources :notes, :collection => {:add_author => :get}
-      altitude.resources :time_units, :collection => {:new_form => :get}
-    end    
-    admin.resources :citations, :has_many => :pages
-    admin.resources :descriptions, :has_many=>[:citations] do |description|
-      description.resources :notes, :collection => {:add_author => :get}
-      description.resources :time_units, :collection => {:new_form => :get}
+  namespace :admin do
+    resources :alt_spelling_systems, :association_notes, :blurbs, :feature_name_types, :feature_relation_types,
+      :feature_types, :geo_code_types, :languages, :note_titles, :notes, :orthographic_systems, :perspectives,
+      :phonetic_systems, :users, :writing_systems, :xml_documents, :views
+    match 'openid_new' => 'users#openid_new'
+    match 'openid_create' => 'users#create', :via => :post
+    root :to => 'features#index'
+    resources :citations do
+      resources :pages
     end
-    admin.resources :feature_geo_codes, :has_many=>[:citations] do |feature_geo_code|
-      feature_geo_code.resources :notes, :collection => {:add_author => :get}
-      feature_geo_code.resources :time_units, :collection => {:new_form => :get}
+    resources :descriptions do
+      resources :citations
+      resources :notes do
+        get :add_author, :on => :collection
+      end
+      resources :time_units do
+        get :new_form, :on => :collection
+      end
     end
-    admin.resources :feature_object_types, :has_many=>[:citations], :belongs_to=>:feature do |feature_object_type|
-      feature_object_type.resources :notes, :collection => {:add_author => :get}
-      feature_object_type.resources :time_units, :collection => {:new_form => :get}
+    resources :feature_geo_codes do
+      resources :citations
+      resources :notes do
+        get :add_author, :on => :collection
+      end
+      resources :time_units do
+        get :new_form, :on => :collection
+      end
     end
-    admin.resources :category_features, :has_many=>[:citations], :belongs_to=>:feature do |feature_object_type|
-      feature_object_type.resources :notes, :collection => {:add_author => :get}
-      feature_object_type.resources :time_units, :collection => {:new_form => :get}
+    resources :feature_relations do
+      resources :citations
+      resources :notes do
+        get :add_author, :on => :collection
+      end
+      resources :time_units do
+        get :new_form, :on => :collection
+      end
     end
-    admin.resources :feature_name_relations, :has_many=>[:citations], :belongs_to=>[:feature_name] do |feature_name_relation|
-      feature_name_relation.resources :notes, :collection => {:add_author => :get}
+    resources :features do
+      member do
+        get :set_primary_description
+        get :locate_for_relation
+        post :clone
+      end
+      resources :citations, :feature_geo_codes, :feature_relations
+      resources :altitudes do
+        resources :citations
+        resources :notes do
+          get :add_author, :on => :collection
+        end
+        resources :category_features do
+          resources :citations
+          resources :notes do
+            get :add_author, :on => :collection
+          end
+          resources :time_units do
+            get :new_form, :on => :collection
+          end
+        end
+        resources :time_units do
+          get :new_form, :on => :collection
+        end
+      end
+      resources :association_notes do
+        get :add_author, :on => :collection
+      end
+      resources :descriptions do
+        get :add_author, :on => :collection
+      end
+      resources :feature_names do
+        resources :citations
+        get :locate_for_relation, :on => :member
+        resources :notes do
+          get :add_author, :on => :collection
+        end
+        resources :feature_name_relations do
+          resources :citations
+          resources :notes do
+            get :add_author, :on => :collection
+          end
+        end
+        resources :time_units do
+          get :new_form, :on => :collection
+        end
+      end
+      resources :feature_object_types do
+        resources :citations
+        resources :notes do
+          get :add_author, :on => :collection
+        end
+        resources :time_units do
+          get :new_form, :on => :collection
+        end
+      end
+      resources :time_units do
+        get :new_form, :on => :collection
+      end
     end
-    admin.resources :feature_names, :member=>{:locate_for_relation=>:get}, :has_many=>[:feature_name_relations, :citations], :belongs_to=>:feature do |feature_name|
-      feature_name.resources :notes, :collection => {:add_author => :get}
-      feature_name.resources :time_units, :collection => {:new_form => :get}
+    resources :feature_pids do
+      get :available, :on => :collection
     end
-    admin.resources :features_relation_types
-    admin.resources :feature_relations, :has_many=>[:citations] do |feature_relation|
-      feature_relation.resources :notes, :collection => {:add_author => :get}
-      feature_relation.resources :time_units, :collection => {:new_form => :get}
+    resources :people do
+      resource :user
     end
-    admin.resources :features, :member=>{:locate_for_relation=>:get, :set_primary_description => :get, :clone => :post}, :has_many => [ :altitudes, :category_features, :citations, :feature_geo_codes, :feature_names, :feature_object_types, :feature_relations, :shapes] do |feature|
-      feature.resources :association_notes, :collection => {:add_author => :get}
-      feature.resources :descriptions, :collection => {:add_author => :get}
-      feature.resources :time_units, :collection => {:new_form => :get}
+    resources :shapes do
+      resources :notes do
+        get :add_author, :on => :collection
+      end
+      resources :time_units do
+        get :new_form, :on => :collection
+      end
     end
-    admin.resources :feature_pids, :collection => {:available => :get}
-    admin.resources :shapes do |shape|
-      shape.resources :notes, :collection => {:add_author => :get}
-      shape.resources :time_units, :collection => {:new_form => :get}
+    resources :time_units do
+      resources :notes do
+        get :add_author, :on => :collection
+      end
     end
-    admin.resources :people, :has_one => :user
-    admin.resources :time_units do |time_unit|
-      time_unit.resources :notes, :collection => {:add_author => :get}
-    end
-    admin.prioritize_feature_names 'prioritize_feature_names/:id', :path_prefix => 'admin/features', :controller => 'feature_names', :action => 'prioritize'
-    admin.prioritize_feature_object_types 'prioritize_feature_types/:id', :path_prefix => 'admin/features', :controller => 'feature_object_types', :action => 'prioritize'
-    admin.prioritize_feature_shapes 'prioritize_feature_shapes/:id', :path_prefix => 'admin/features', :controller => 'shapes', :action => 'prioritize'
-  end # end admin urls
-  map.resources :features, :has_many => :association_notes, :member => {:descendants => :get, :related => :get}, :collection => {:search => :get} do |feature|
-    feature.resources :descriptions, :member => {:expand => :get, :contract => :get, :show => :get}
-    feature.by_topic 'by_topic/:id.:format', :controller => 'topics', :action => 'feature_descendants'
+    match 'prioritize_feature_names/:id' => 'feature_names#prioritize', :as => :prioritize_feature_names, :path_prefix => 'admin/features'
+    match 'prioritize_feature_types/:id' => 'feature_object_types#prioritize', :as => :prioritize_feature_object_types, :path_prefix => 'admin/features'
+    match 'prioritize_feature_shapes/:id' => 'shapes#prioritize', :as => :prioritize_feature_shapes, :path_prefix => 'admin/features'
   end
-  map.resources :altitudes, :has_many => [:notes, :citations]
-  map.resources :category_features, :has_many => [:notes, :citations]
-  map.resources :description, :has_many => [:notes, :citations]
-  map.resources :feature_geo_codes, :has_many => [:notes, :citations]
-  map.resources :feature_names, :has_many => [:notes, :citations]
-  map.resources :feature_name_relations, :has_many => [:notes, :citations]
-  map.resources :feature_object_types, :has_many => [:notes, :citations]
-  map.resources :feature_relations, :has_many => [:notes, :citations]
-  map.resources :media, :as => 'media_objects', :only => 'show'
-  map.resources :shapes, :has_many => [:notes, :citations]
-  map.resources :time_units, :has_many => [:notes, :citations]
-  map.resources :topics, :only => 'show'
-  #map.resources :descriptions, :member => {:expand => :get, :contract => :get}
-  map.with_options :path_prefix => 'features', :controller => 'features' do |features|
-    features.by_fid 'by_fid/:fids.:format', :action => 'by_fid'
-    features.by_old_pid 'by_old_pid/:old_pids', :action => 'by_old_pid'
-    features.by_geo_code 'by_geo_code/:geo_code.:format', :action => 'by_geo_code'
-    # Allow an empty :query for feature type searches
-    features.by_name 'by_name/:query.:format', :action => 'by_name', :query => /.*?/
-    features.fids_by_name 'fids_by_name/:query.:format', :action => 'fids_by_name', :query => /.*?/
-    features.gis_resources 'gis_resources/:fids.:format', :action => 'gis_resources'
-  end  
-  map.root :controller=>'features', :action=>'index'
-  
-  map.connect ':controller/:action/:id.:format'
-  map.connect ':controller/:action/:id'
-  
-  # The priority is based upon order of creation: first created -> highest priority.
-  
-  # Sample of regular route:
-  # map.connect 'products/:id', :controller => 'catalog', :action => 'view'
-  # Keep in mind you can assign values other than :controller and :action
-  
-  # Sample of named route:
-  # map.purchase 'products/:id/purchase', :controller => 'catalog', :action => 'purchase'
-  # This route can be invoked with purchase_url(:id => product.id)
-  
-  # You can have the root of your site routed by hooking up '' 
-  # -- just remember to delete public/index.html.
-  # map.connect '', :controller => "welcome"
-  
-  # Allow downloading Web Service WSDL as a file with an extension
-  # instead of a file named 'wsdl'
-  #map.connect ':controller/service.wsdl', :action => 'wsdl'
-  
-  # Install the default route as the lowest priority.
-  #map.connect ':controller/:action/:id.:format'
-  #map.connect ':controller/:action/:id'
+  resources :features do
+    get :search, :on => :collection
+    resources :association_notes
+    member do
+      get :descendants
+      get :related
+    end
+    resources :descriptions do
+      member do
+        get :expand
+        get :show
+        get :contract
+      end
+    end
+    match 'by_topic/:id.:format' => 'topics#feature_descendants', :as => :by_topic
+  end
+  resources :altitudes do
+    resources :notes, :citations
+  end
+  resources :category_features do
+    resources :notes, :citations
+  end
+  resources :description do
+    resources :notes, :citations
+  end
+  resources :feature_geo_codes do
+    resources :notes, :citations
+  end
+  resources :feature_names do
+    resources :notes, :citations
+  end
+  resources :feature_name_relations do
+    resources :notes, :citations
+  end
+  resources :feature_object_types do
+    resources :notes, :citations
+  end
+  resources :feature_relations do
+    resources :notes, :citations
+  end
+  resources :media, :only => "show", :path => 'media_objects'
+  resources :shapes do
+    resources :notes, :citations
+  end
+  resources :time_units do
+    resources :notes, :citations
+  end
+  resources :topics, :only => "show"
+  match 'by_fid/:fids.:format' => 'features#by_fid', :as => :by_fid, :path_prefix => 'features'
+  match 'by_old_pid/:old_pids' => 'features#by_old_pid', :as => :by_old_pid, :path_prefix => 'features'
+  match 'by_geo_code/:geo_code.:format' => 'features#by_geo_code', :as => :by_geo_code, :path_prefix => 'features'
+  match 'by_name/:query.:format' => 'features#by_name', :as => :by_name, :query => /.*?/, :path_prefix => 'features'
+  match 'fids_by_name/:query.:format' => 'features#fids_by_name', :as => :fids_by_name, :query => /.*?/, :path_prefix => 'features'
+  match 'gis_resources/:fids.:format' => 'features#gis_resources', :as => :gis_resources, :path_prefix => 'features'
+  root :to => 'features#index'
 end

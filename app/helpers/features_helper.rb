@@ -99,7 +99,7 @@ module FeaturesHelper
       html += feature_name_ul(nil, use_links, name.children.find(:all, :order => 'position'), completed)
       html += '</li>'
     end
-    html.blank? ? '' : "<ul style='margin:0;'>#{html}</ul>"
+    (html.blank? ? '' : "<ul style='margin:0;'>#{html}</ul>").html_safe
   end
   
   def feature_name_display(name, options={})
@@ -118,7 +118,7 @@ module FeaturesHelper
 
   def generate_will_paginate_link(page, text)
     # slippery way of getting this link to be ajaxy and to 'know' its url; see views/features/_descendants.html.erb
-    "<a href='#' class='ajax_get' name='#{url_for(params.merge(:page => page != 1 ? page : nil))}'>#{text}</a>"
+    "<a href='#' class='ajax_get' name='#{url_for(params.merge(:page => page != 1 ? page : nil))}'>#{text}</a>".html_safe
   end
   
   
@@ -129,5 +129,4 @@ module FeaturesHelper
   def stylesheet_files
     super + ['jquery.draggable.popup', 'interface_utils']
   end
-
 end

@@ -15,7 +15,7 @@ class Admin::CitationsController < ResourceController::Base
   def collection
     @parent_object ||= parent_object
     if parent?
-      Citation.send(:with_scope, :find=>{:conditions=>['citable_id = ? AND citable_type = ?', @parent_object.id, @parent_object.class.to_s]}) do
+      Citation.send(:with_scope, :find=>where(['citable_id = ? AND citable_type = ?', @parent_object.id, @parent_object.class.to_s])) do
         @collection = Citation.search(params[:filter], :page=>params[:page])
       end
     else

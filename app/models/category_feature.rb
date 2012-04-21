@@ -59,7 +59,7 @@ class CategoryFeature < ActiveRecord::Base
   validates_presence_of :category_id
   
   def self.contextual_search(filter, context_id, options={})
-    with_scope(:find=>{:conditions=>{:feature_id => context_id}}) do
+    with_scope(:find=>where(:feature_id => context_id)) do
       search(filter, options)
     end
   end

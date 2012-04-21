@@ -17,7 +17,7 @@ class Admin::FeatureNameRelationsController < ResourceController::Base
     feature_name_id = params[:feature_name_id]
     
     if feature_name_id
-      @collection = FeatureNameRelation.send(:with_scope, :find=>{:conditions=>['child_node_id = ?', feature_name_id]}) do
+      @collection = FeatureNameRelation.send(:with_scope, :find=>where(['child_node_id = ?', feature_name_id])) do
         FeatureNameRelation.search(params[:filter], :page=>params[:page])
       end
     else

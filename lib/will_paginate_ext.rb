@@ -1,7 +1,7 @@
-require 'will_paginate'
-require 'will_paginate/view_helpers'
+# Using will_paginate gem. require 'will_paginate' no longer necessary. Gemfile does that.
+# require 'will_paginate/view_helpers/link_renderer'
 
-WillPaginate::LinkRenderer.class_eval do
+WillPaginate::ViewHelpers::LinkRenderer.class_eval do
   
   def page_link_or_span(page, span_class, text = nil)
     text ||= page.to_s

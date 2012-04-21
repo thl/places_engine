@@ -41,5 +41,4 @@ module FeaturesTreeHelper
   def node_li_value(node, target)
     node.to_s
   end
-  
 end

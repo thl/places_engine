@@ -27,7 +27,7 @@ module AdminHelper
     end
     items << view_item_link(options[:view_path], options[:view_name]) unless options[:hide_view]
     items << delete_item_link(options[:delete_path], options[:delete_name]) unless options[:hide_delete]
-    '<span class="listActions">'+items.join(' | ')+'</span>'
+    ('<span class="listActions">'+items.join(' | ')+'</span>').html_safe
   end
   
   def resource_nav
@@ -70,6 +70,7 @@ module AdminHelper
     html += ' '
     html += link_to('clear', resolved_collection_path, extra_hidden_fields) if params[:filter]
     html += '</form></div>'
+    html.html_safe
   end
   
   #
@@ -83,15 +84,15 @@ module AdminHelper
         <div style='position:absolute;'>#{@collection.total_entries} Total</div>
         #{content}
       </th>
-    </tr>"
+    </tr>".html_safe
   end
   
   def parent_resource_dependency_message
-    "A #{model_name.titleize} can only be created from a resource that uses one."
+    "A #{model_name.titleize} can only be created from a resource that uses one.".html_safe
   end
   
   def empty_collection_message(message="No #{model_name.titleize.pluralize} found.")
-    "<div class='info'>#{message}</div>"
+    "<div class='info'>#{message}</div>".html_safe
   end
   
   #
@@ -118,7 +119,7 @@ module AdminHelper
       :delete=>"Deleting #{name}"
     }
     found = map[params[:action].to_sym]
-    @page_title = [@page_title, (found.nil? ? default : found), title].join(': ')
+    @page_title = [@page_title, (found.nil? ? default : found), title].join(': ').html_safe
   end
   
   #
@@ -137,7 +138,7 @@ module AdminHelper
       <label>
         #{form_builder.radio_button field, no_value, no_options} #{ts :negation}
       </label>
-    </div>"
+    </div>".html_safe
   end
     
   #
@@ -212,7 +213,7 @@ module AdminHelper
       html += feature_name_ul(nil, use_links, name.children, completed)
       html += '</li>'
     end
-    html.blank? ? '' : "<ul style='margin:0;'>#{html}</ul>"
+    (html.blank? ? '' : "<ul style='margin:0;'>#{html}</ul>").html_safe
   end
   
   #
@@ -260,7 +261,7 @@ module AdminHelper
       html += '</tr>'
       html += feature_name_tr(nil, name.children, completed).to_s
     end
-    html.blank? ? '' : "<ul style='margin:0;'>#{html}</ul>"
+    (html.blank? ? '' : "<ul style='margin:0;'>#{html}</ul>").html_safe
   end  
   #
   #
@@ -284,7 +285,7 @@ module AdminHelper
   #
   #
   def feature_label(feature)
-    "<span class='featureLabel' title='#{h feature.name}'>#{fname_labels(feature)}</span>"
+    "<span class='featureLabel' title='#{h feature.name}'>#{fname_labels(feature)}</span>".html_safe
   end
   
   #
@@ -339,7 +340,7 @@ module AdminHelper
   #
   #
   def feature_name_label(feature_name)
-    '<span class="featureNameLabel">' + feature_name.to_s + '</span>'
+    ('<span class="featureNameLabel">' + feature_name.to_s + '</span>').html_safe
   end
 
   #
@@ -384,7 +385,7 @@ module AdminHelper
     "<h4>General Notes</h4>
   	  #{highlighted_new_item_link new_polymorphic_path([:admin, @object, :association_note], :association_type => association_type), 'New Note'}
     	<br class='clear'/>
-  	  #{render :partial => 'admin/association_notes/list', :locals => { :list => @object.association_notes_for(association_type, :include_private => true), :options => {:hide_type => true, :hide_type_value => true, :hide_association_type => true, :hide_empty_collection_message => true} }}"
+  	  #{render :partial => 'admin/association_notes/list', :locals => { :list => @object.association_notes_for(association_type, :include_private => true), :options => {:hide_type => true, :hide_type_value => true, :hide_association_type => true, :hide_empty_collection_message => true} }}".html_safe
   end
   
   def note_list_fieldset(object=nil)
@@ -397,7 +398,7 @@ module AdminHelper
     	<br class='clear'/>
     	#{render :partial => 'admin/notes/list', :locals => { :list => object.notes, :options => {:hide_type => true, :hide_type_value => true} }}
     </fieldset>"
-    html
+    html.html_safe
   end
   
   def citation_list_fieldset(options={})
@@ -410,7 +411,7 @@ module AdminHelper
     	<br class='clear'/>
     	#{render :partial => 'admin/citations/citations_list', :locals => { :list => object.citations, :options => {:hide_type => true, :hide_type_value => true} }}
     </fieldset>"
-    html
+    html.html_safe
   end
   
   def time_unit_list_fieldset(options={})
@@ -423,7 +424,7 @@ module AdminHelper
     	<br class='clear'/>
     	#{render :partial => 'admin/time_units/list', :locals => { :list => object.time_units, :options => {:hide_type => true, :hide_type_value => true} }}
     </fieldset>"
-    html
+    html.html_safe
   end
     
   def note_link_list_for(object)

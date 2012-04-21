@@ -3,7 +3,7 @@
   <div class="node-menu-content">
     <h2 class="menu-item-search"><%= ts 'search.this' %></h2>
     <div id="NodeSearch" class="default-item" <%= ' style="display:none"' unless active_item == 'search' %>>
-<%  form_remote_for :feature, :url => {:controller => :features, :action => :search }, :update => 'NodeSearchResults',
+<%  form_for :feature, {:controller => :features, :action => :search }, :remote => true, :update => 'NodeSearchResults',
       :condition => 'NodeMenu.checkForFidSearch()', :loading => 'NodeMenu.beginSearch()' do |form| %>
 <%=   text_field_tag :filter, h(@search_form_params[:filter]), :class=>:text %>
       <div style="float: right;">

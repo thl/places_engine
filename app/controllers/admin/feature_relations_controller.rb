@@ -42,7 +42,7 @@ class Admin::FeatureRelationsController < ResourceController::Base
     filter = params[:filter]
     page = params[:page]
     if feature_id
-      @collection = FeatureRelation.send(:with_scope, :find=>{:conditions=>['parent_node_id = ? OR child_node_id = ?', feature_id, feature_id]}) do
+      @collection = FeatureRelation.send(:with_scope, :find=>where(['parent_node_id = ? OR child_node_id = ?', feature_id, feature_id])) do
         FeatureRelation.search(filter, :page=>page)
       end
     else
