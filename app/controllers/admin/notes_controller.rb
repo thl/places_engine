@@ -11,7 +11,7 @@ class Admin::NotesController < ResourceController::Base
   
   def add_author
     @authors = Person.find(:all, :order => 'fullname')
-    render :partial => 'authors_selector', :locals => {:selected => nil}
+    # renders add_author.js.erb
   end
     
   protected

@@ -14,11 +14,9 @@ class Admin::AssociationNotesController < ResourceController::Base
   update.wants.html { redirect_to polymorphic_url([:admin, object.notable, object]) }
   destroy.wants.html { redirect_to polymorphic_url([:admin, object.notable]) }
   
+  # renders add_author.js.erb
   def add_author
     @authors = Person.find(:all, :order => 'fullname')
-    render :update do |page|
-      page.call "$('#update_div').before", render(:partial => 'authors_selector', :locals => {:selected => nil})
-    end if request.xhr?
   end
   
   protected

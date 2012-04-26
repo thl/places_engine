@@ -7,11 +7,9 @@ class Admin::DescriptionsController < ResourceController::Base
 
   edit.before {@authors = Person.find(:all, :order => 'fullname') }
   
+  # renders add_author.js.erb
   def add_author
     @authors = Person.find(:all, :order => 'fullname')
-    render :update do |page|
-      page.call "$('#update_div').before", render(:partial => 'authors_selector', :locals => {:selected => nil})
-    end if request.xhr?
   end
 
   #def contract

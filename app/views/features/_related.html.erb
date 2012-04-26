@@ -100,11 +100,10 @@ function collapse_all_categories(){
        category_id, count = c
        category = Category.find(category_id)
        # This has returned nil in some cases on production, so we need to check it to prevent a fatal error below
-       unless category.nil?
-         div_id = "list_#{category_id}_#{feature_relation_type.id}_#{feature_is_parent}" %>
+       unless category.nil? %>
          <p><strong>
-<%=        link_to_remote Category.find(category_id).title, :url => {:action => :related_list, :id => @feature.id, :category_id => category_id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent.to_s}, :update => div_id,
-             :before => "if(!on_category_click('#{div_id}')){return false;}", :html => {:class => "expandable-link-contracted"} %>
+<%=        link_to Category.find(category_id).title, {:action => :related_list, :id => @feature.id, :category_id => category_id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent.to_s},
+             :onclick => "if(!on_category_click('#{div_id}')){return false;}", :class => "expandable-link-contracted" %>
          </strong> (<%= count %>)
          </p>
          <div id="<%= div_id %>" style="display:none;" class="related-feature-list pagination-click-results"></div>

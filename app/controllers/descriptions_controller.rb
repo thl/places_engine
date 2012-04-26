@@ -7,10 +7,10 @@ class DescriptionsController < ApplicationController
     render :partial => '/descriptions/contracted', :locals => {:feature => @feature, :d => d}
   end
   
+  # renders expand.js.erb
   def expand
     @d = Description.find(params[:id])
-    @description =  Description.find(params[:id])
-    render_descriptions
+    @description =  Description.find(params[:id])    
   end
   
   def index
@@ -42,15 +42,7 @@ class DescriptionsController < ApplicationController
   def find_feature
     @feature = Feature.get_by_fid(params[:feature_id]) # Feature.find(params[:feature_id])
   end
-  
-  def render_descriptions
-    #find a way to save selected expanded description
-    render :update do |page|
-	    yield(page) if block_given?
-	    page.call "$('#descriptions_div').html", render(:partial => '/descriptions/index', :locals => { :feature => @feature, :description => @d})
-	  end
-  end
-  
+    
   def api_response?
     request.format.xml? # JSON because JSONP depends on parameters || request.format.json?
   end

@@ -76,7 +76,7 @@ class CategoryFeature < ActiveRecord::Base
   end
   
   def self.get_json_data
-    Rails.cache.fetch('category_feature/get_json_data') { CategoryFeature.all(:select => 'DISTINCT category_id', :conditions => {:type => nil}).collect{|c| {:id => c.category_id, :name => c.to_s}}.sort_by{|a| a[:name].downcase.strip}.to_json }
+    Rails.cache.fetch('category_feature/get_json_data') { CategoryFeature.all(:select => 'DISTINCT category_id', :conditions => {:type => nil}).collect{|c| {:id => c.category_id, :name => c.to_s}}.sort_by{|a| a[:name].downcase.strip}.to_json.html_safe }
   end
   
   private

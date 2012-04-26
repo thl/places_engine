@@ -300,7 +300,7 @@ class FeaturesController < ApplicationController
     # to a new page
     session[:interface] = {} if session[:interface].nil?
     session[:interface][:menu_item] = 'results'
-    render :partial => 'search_results', :locals => {:features => @features}, :layout => false
+    # renders search.js.erb
   end
   
   def descendants
@@ -324,13 +324,15 @@ class FeaturesController < ApplicationController
   
   def related_list
     @feature = Feature.find(params[:id])
+    @feature_relation_type.find(params[:feature_relation_type_id])
+    @feature_is_parent = params[:feature_is_parent]
     @category = Category.find(params[:category_id])
     @relations = CachedFeatureRelationCategory.find(:all,
       :conditions => {
           'cached_feature_relation_categories.feature_id' => params[:id],
           'cached_feature_relation_categories.category_id' => params[:category_id],
-          'cached_feature_relation_categories.feature_relation_type_id' => params[:feature_relation_type_id],
-          'cached_feature_relation_categories.feature_is_parent' => params[:feature_is_parent],
+          'cached_feature_relation_categories.feature_relation_type_id' => @feature_relation_type,
+          'cached_feature_relation_categories.feature_is_parent' => @feature_is_parent,
           'cached_feature_names.view_id' => current_view.id
       },
       # Should associations be set up to allow for this to be handled with :include instead?
@@ -345,13 +347,19 @@ class FeaturesController < ApplicationController
     
   # The following three methods are used with the Node Tree
   def expanded
-    node = Feature.find(params[:id])
-    render :partial => 'expanded', :locals => { :expanded => node }, :layout => false
+    @node = Feature.find(params[:id])
+    if request.xhr?
+      @ancestors = (@node.current_ancestors(current_perspective).collect(&:id) + [@node.id.to_s]).join(',')
+      # response would be handled by expanded.js.erb
+    else
+      redirect_to @node
+    end
   end
 
   def contracted
-    node = Feature.find(params[:id])
-    render :partial => 'contracted', :locals => { :contracted => node }, :layout => false
+    @node = Feature.find(params[:id])
+    redirect_to(feature_url(@node)) if !request.xhr?
+    # response would be handled by contracted.js.erb
   end
   
   def node_tree_expanded

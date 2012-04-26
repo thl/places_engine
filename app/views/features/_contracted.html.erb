@@ -1,8 +1,7 @@
 <%  has_no_children = contracted.current_children(current_perspective, current_view).empty? 
     if has_no_children %>
       <span class="node-empty"></span>
-<%  else
-      ancestors = (contracted.current_ancestors(current_perspective).collect(&:id) + [contracted.id.to_s]).join(',') %>
-<%=   link_to '', {:action => 'expanded'}, :id => contracted.id, :update => "node_#{contracted.id}_div", :complete => "NodeTree.hideOtherBranches('"+ancestors+"'); NodeTree.reselectNode()", :class => 'node-plus', :href => feature_url(contracted.fid) %>
+<%  else %>
+<%=   link_to '', {:action => 'expanded', :id => contracted.id}, :remote => true, :class => 'node-plus' %>
 <%  end %>
 <%= render :partial => 'features/selectable_node', :locals => { :node => contracted } %>

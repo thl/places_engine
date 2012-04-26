@@ -2,7 +2,7 @@
     if children.empty? %>
       <span class="node-empty"></span>
 <%  else %>
-<%= link_to_remote '', { :update => "node_#{expanded.id}_div", :url => { :action => 'contracted', :id => expanded.id }, :complete => "NodeTree.reselectNode()" }, { :class => 'node-minus', :href => feature_url(expanded.fid) } %>
+<%= link_to '', { :action => 'contracted', :id => expanded.id }, :remote => true, :class => 'node-minus' %>
 <%  end %>
 <%= render :partial => 'features/selectable_node', :locals => { :node => expanded } %>
 <%= render :partial => 'features/node_tree', :locals => { :children => children } %>

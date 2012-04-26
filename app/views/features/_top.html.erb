@@ -10,14 +10,12 @@
 jQuery(document).ready(function(){
 	jQuery(window).unbind("scroll");
 	NodeTree.init("NodeTree", "NodeTreeList", "<%= features_path %>/");
-	<%
-		node_menu_options = {}
-		# Set the menu item that should be open when the NodeMenu loads
-		node_menu_options[:default_item] = @active_menu_item ||= session[:interface][:menu_item] unless session[:interface][:menu_item].blank?
-		# Make the Results menu item be shown if a search exists in the session
-		node_menu_options[:show_results] = true unless session[:search].blank?
-	%>
-	NodeMenu.init("NodeMenu", "<%= features_path %>/", <%= node_menu_options.to_json %>);
+<%  node_menu_options = {}
+  # Set the menu item that should be open when the NodeMenu loads
+    node_menu_options[:default_item] = @active_menu_item ||= session[:interface][:menu_item] unless session[:interface][:menu_item].blank?
+  # Make the Results menu item be shown if a search exists in the session
+    node_menu_options[:show_results] = true unless session[:search].blank? %>
+	NodeMenu.init("NodeMenu", "<%= features_path %>/", <%= node_menu_options.to_json.html_safe %>);
 	var characteristic_data = <%= CategoryFeature.get_json_data %>;
 	var characteristic_selector = new CharacteristicSelector();
 	characteristic_selector.init('characteristic_selector', {

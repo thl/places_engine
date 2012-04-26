@@ -189,4 +189,6 @@ Rails.application.routes.draw do
   match 'fids_by_name/:query.:format' => 'features#fids_by_name', :as => :fids_by_name, :query => /.*?/, :path_prefix => 'features'
   match 'gis_resources/:fids.:format' => 'features#gis_resources', :as => :gis_resources, :path_prefix => 'features'
   root :to => 'features#index'
+  
+  match ':controller(/:action(/:id(.:format)))'
 end
