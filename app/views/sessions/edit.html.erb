@@ -1,5 +1,5 @@
 <h1><%= ts 'edit.record', :what => 'session.preferences' %></h1>
-<% form_for(:session, :url => session_path, :html => { :method => 'put' }) do |f| %>
+<%= form_for(:session, :url => session_path, :html => { :method => 'put' }) do |f| %>
      <p><label for="perspective_id"><%= ts(:default, :what => Perspective.human_name.titleize) %></label><br/>
 <%=  f.collection_select(:perspective_id, @perspectives, :id, :name) %></p>
      <p><label for="view_id"><%= ts(:default, :what => View.human_name.titleize) %></label><br/>

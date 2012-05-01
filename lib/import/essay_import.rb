@@ -13,7 +13,7 @@ class EssayImport < Importation
     limit = options[:limit].blank? ? false : options[:limit].to_i
     
     created_descriptions_filename = "tmp/created_descriptions.csv"
-    created_descriptions_filename = "#{RAILS_ROOT}/#{created_descriptions_filename}"
+    created_descriptions_filename = Rails.root.join(created_descriptions_filename).to_s
     
     fids_not_found = []
     essays_not_found = []

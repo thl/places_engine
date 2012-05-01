@@ -306,7 +306,7 @@ module AdminHelper
   
   def load_child_names(feature_name, list)
     return if feature_name.children.empty?
-    feature_name.children.find(:all, :order => 'position').each do |c|
+    feature_name.children.order('position').each do |c|
       list << c
       load_child_names(c, list)
     end

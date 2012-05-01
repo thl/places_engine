@@ -9,7 +9,7 @@ class Admin::FeaturePidsController < ApplicationController
   # GET /feature_pids/available.xml
   def available
     # @feature_count = Feature.count(:conditions => {:is_blank => true})
-    @features = Feature.find(:all, :conditions => {:is_blank => true}, :order => 'fid')
+    @features = Feature.where(:is_blank => true).order('fid')
     respond_to do |format|
       format.html # available.html.erb
       format.xml  { render :xml => @feature_count.to_xml }

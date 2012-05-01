@@ -72,14 +72,14 @@ class Feature < ActiveRecord::Base
       break self if self.has_shapes?(options)
       # check if geographical parent has shapes (township)
       geo_rel = Perspective.get_by_code('geo.rel')
-      first_township_relation = self.all_parent_relations.first(:conditions => {:perspective_id => geo_rel.id})
+      first_township_relation = self.all_parent_relations.where(:perspective_id => geo_rel.id).first
       if !first_township_relation.nil?
         node = first_township_relation.parent_node
         break node if node.has_shapes?(options)
       end
       # check if county parent has shapes (county)
       pol_admin = Perspective.get_by_code('pol.admin.hier')
-      first_county_relation = self.all_parent_relations.first(:conditions => {:perspective_id => pol_admin.id})
+      first_county_relation = self.all_parent_relations.where(:perspective_id => pol_admin.id).first
       if !first_county_relation.nil?
         node = first_county_relation.parent_node
         break node if node.has_shapes?(options)
@@ -90,11 +90,11 @@ class Feature < ActiveRecord::Base
   
   def closest_parent_by_perspective(perspective)
     Rails.cache.fetch("features/#{self.fid}/closest_parent_by_perspective/#{perspective.id}", :expires_in => 1.hour) do
-      parent_relation = FeatureRelation.first(:select => 'parent_node_id', :conditions => {:child_node_id => self.id, :perspective_id => perspective.id, :feature_relation_type_id => FeatureRelationType.hierarchy_ids})
+      parent_relation = FeatureRelation.where(:child_node_id => self.id, :perspective_id => perspective.id, :feature_relation_type_id => FeatureRelationType.hierarchy_ids).select('parent_node_id').first
       break parent_relation.parent_node if !parent_relation.nil?
-      parent_relation = FeatureRelation.first(:select => 'parent_node_id', :conditions => {:child_node_id => self.id, :perspective_id => perspective.id})
+      parent_relation = FeatureRelation.where(:child_node_id => self.id, :perspective_id => perspective.id).select('parent_node_id').first
       break parent_relation.parent_node if !parent_relation.nil?
-      parent_relation = FeatureRelation.first(:select => 'parent_node_id', :conditions => {:child_node_id => self.id})
+      parent_relation = FeatureRelation.where(:child_node_id => self.id).select('parent_node_id').first
       break parent_relation.parent_node if !parent_relation.nil?
       nil
     end
@@ -107,11 +107,11 @@ class Feature < ActiveRecord::Base
       parent_id = (root_ids & ancestor_ids).first
       break root_ids.first if parent_id.nil?
       ancestor_ids.delete(parent_id)
-      relation = FeatureRelation.first(:conditions => {:perspective_id => perspective.id, :parent_node_id => parent_id, :child_node_id => ancestor_ids, :feature_relation_type_id => FeatureRelationType.hierarchy_ids})
+      relation = FeatureRelation.where(:perspective_id => perspective.id, :parent_node_id => parent_id, :child_node_id => ancestor_ids, :feature_relation_type_id => FeatureRelationType.hierarchy_ids).first
       while !relation.nil?
         ancestor_ids.delete(parent_id)
         parent_id = relation.child_node_id
-        relation = FeatureRelation.first(:conditions => {:perspective_id => perspective.id, :parent_node_id => parent_id, :child_node_id => ancestor_ids, :feature_relation_type_id => FeatureRelationType.hierarchy_ids})
+        relation = FeatureRelation.where(:perspective_id => perspective.id, :parent_node_id => parent_id, :child_node_id => ancestor_ids, :feature_relation_type_id => FeatureRelationType.hierarchy_ids).first
       end
       parent_id
     end
@@ -159,7 +159,7 @@ class Feature < ActiveRecord::Base
   #
   #
   def current_children(current_perspective, current_view)
-    return children.find(:all, :include => {:cached_feature_names => :feature_name}, :conditions => {'cached_feature_names.view_id' => current_view.id}, :order => 'feature_names.name').select do |c| # children(:include => [:names, :parent_relations])
+    return children.includes(:cached_feature_names => :feature_name).where('cached_feature_names.view_id' => current_view.id).order('feature_names.name').select do |c| # children(:include => [:names, :parent_relations])
       c.parent_relations.any? {|cr| cr.perspective==current_perspective}
     end
   end
@@ -210,7 +210,7 @@ class Feature < ActiveRecord::Base
   #
   #
   def current_parents(current_perspective, current_view)
-    return parents.find(:all, :include => {:cached_feature_names => :feature_name}, :conditions => {'cached_feature_names.view_id' => current_view.id}, :order => 'feature_names.name').select do |c| # parents(:include => [:names, :child_relations])
+    return parents.includes(:cached_feature_names => :feature_name).where('cached_feature_names.view_id' => current_view.id).order('feature_names.name').select do |c| # parents(:include => [:names, :child_relations])
       c.child_relations.any? {|cr| cr.perspective==current_perspective}
     end
   end
@@ -237,7 +237,7 @@ class Feature < ActiveRecord::Base
   # This is distinct from acts_as_family_tree's relations method, which only finds hierarchical child and parent relations.
   #
   def all_relations
-    FeatureRelation.find(:all, :conditions => ['child_node_id = ? OR parent_node_id = ?', id, id])
+    FeatureRelation.where(['child_node_id = ? OR parent_node_id = ?', id, id])
   end
   
   def feature_relations
@@ -331,14 +331,8 @@ class Feature < ActiveRecord::Base
     end
   end
   
-  def self.name_search(filter_value, options = {})
-    options.merge!({:include => :names, :conditions => ['features.is_public = ? AND feature_names.name ILIKE ?', 1, "%#{filter_value}%"], :order => 'features.position'})
-    Feature.where(options)
-  end
-
-  def self.name_search_paginate(filter_value, options = {})
-    options.merge!({:include => :names, :conditions => ['features.is_public = ? AND feature_names.name ILIKE ?', 1, "%#{filter_value}%"], :order => 'features.position'})
-    Feature.paginate(options)
+  def self.name_search(filter_value)
+    Feature.includes(:names).where(['features.is_public = ? AND feature_names.name ILIKE ?', 1, "%#{filter_value}%"]).order('features.position')
   end
   
   #
@@ -403,11 +397,11 @@ class Feature < ActiveRecord::Base
   end
   
   def self.blank
-    Feature.find(:all).reject{|f| f.associated? }
+    Feature.all.reject{|f| f.associated? }
   end
   
   def self.associated
-    Feature.find(:all).select{|f| f.associated? }
+    Feature.all.select{|f| f.associated? }
   end
   
   def self.get_by_fid(fid)
@@ -423,11 +417,11 @@ class Feature < ActiveRecord::Base
   def association_notes_for(association_type, options={})
     conditions = {:notable_type => self.class.name, :notable_id => self.id, :association_type => association_type, :is_public => true}
     conditions.delete(:is_public) if !options[:include_private].nil? && options[:include_private] == true
-    AssociationNote.find(:all, :conditions => conditions)
+    AssociationNote.where(conditions)
   end
     
   def update_object_type_positions
-    feature_object_types.find(:all, :conditions => {:position => 0}, :order => 'created_at').inject(feature_object_types.maximum(:position)+1) do |pos, fot|
+    feature_object_types.where(:position => 0).order('created_at').inject(feature_object_types.maximum(:position)+1) do |pos, fot|
       fot.update_attribute(:position, pos)
       pos + 1
     end

@@ -1,5 +1,5 @@
 <h1><%= ts 'creat.e.this', :what => User.human_name.titleize %></h1>
-<% form_tag(admin_openid_create_path) do -%>
+<%= form_tag(admin_openid_create_path) do -%>
      <p>
        <label for="openid_url">OpenID URL</label><br/>
 <%=    text_field_tag 'openid_url' %>

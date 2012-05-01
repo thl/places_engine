@@ -4,7 +4,7 @@ class Admin::AssociationNotesController < ResourceController::Base
   before_filter :collection
   before_filter :validate_association_type, :only => [:new]
 
-  edit.before {@authors = Person.find(:all, :order => 'fullname') }
+  edit.before {@authors = Person.order('fullname') }
   new_action.before do
     @object.association_type = params[:association_type]
     @object.notable_type = @parent_object.class.name
@@ -16,7 +16,7 @@ class Admin::AssociationNotesController < ResourceController::Base
   
   # renders add_author.js.erb
   def add_author
-    @authors = Person.find(:all, :order => 'fullname')
+    @authors = Person.order('fullname')
   end
   
   protected

@@ -9,8 +9,8 @@ class FeatureNameMatch
   def self.match(source, options={})
     options[:matched_filename] ||= "tmp/matched_name_results.csv"
     options[:unmatched_filename] ||= "tmp/unmatched_name_results.csv"
-    matched_filename = "#{RAILS_ROOT}/#{options[:matched_filename]}"
-    unmatched_filename = "#{RAILS_ROOT}/#{options[:unmatched_filename]}"
+    matched_filename = Rails.root(options[:matched_filename]).to_s
+    unmatched_filename = Rails.root(options[:unmatched_filename]).to_s
     limit = options[:limit].blank? ? false : options[:limit].to_i
     matched_items = []
     unmatched_items = []

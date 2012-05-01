@@ -14,6 +14,6 @@ class Admin::AltitudesController < ResourceController::Base
   
   def collection
     @parent_object ||= parent_object
-    @collection = Altitude.paginate(:conditions => {:feature_id => @parent_object.id}, :page => params[:page])
+    @collection = Altitude.where(:feature_id => @parent_object.id).page(params[:page])
   end
 end

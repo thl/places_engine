@@ -5,11 +5,11 @@ class Admin::DescriptionsController < ResourceController::Base
 
   create.before { defaults_primary }
 
-  edit.before {@authors = Person.find(:all, :order => 'fullname') }
+  edit.before {@authors = Person.order('fullname') }
   
   # renders add_author.js.erb
   def add_author
-    @authors = Person.find(:all, :order => 'fullname')
+    @authors = Person.order('fullname')
   end
 
   #def contract

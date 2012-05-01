@@ -14,6 +14,6 @@ class Admin::PagesController < ResourceController::Base
   
   def collection
     @parent_object ||= parent_object
-    @collection = Page.paginate(:conditions => {:citation_id => @parent_object.id}, :page => params[:page])
+    @collection = Page.where(:citation_id => @parent_object.id).page(params[:page])
   end
 end

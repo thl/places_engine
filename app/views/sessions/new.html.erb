@@ -1,5 +1,5 @@
 <h1><%= User.human_attribute_name(:login).s %></h1>
-<% form_for(:session, :url => session_path, :html => { :method => 'post' }) do |f| %>
+<%= form_for(:session, :url => session_path, :html => { :method => 'post' }) do |f| %>
      <p><label for="login"><%= User.human_attribute_name(:login).s %></label><br/>
 <%=  f.text_field :login %></p>
      <p><label for="password"><%= User.human_attribute_name(:password).s %></label><br/>

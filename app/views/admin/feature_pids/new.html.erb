@@ -1,5 +1,5 @@
 <h1><%= ts 'creat.e.record', :what => t('feature.range') %></h1>
-<% form_for(:feature_pid, :url => admin_feature_pids_path) do |f| %>
+<%= form_for(:feature_pid, :url => admin_feature_pids_path) do |f| %>
    <p><b><%= ts 'feature.numbers_to_generate' %></b><br />
 <%=  f.text_field :count %>
    </p>

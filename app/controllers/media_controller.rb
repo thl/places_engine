@@ -7,7 +7,7 @@ class MediaController < ApplicationController
       redirect_to features_url
     else
       set_common_variables(session)
-      @features = Feature.paginate(:conditions => {'features.fid' => Medium.find(@medium.id).feature_ids, 'cached_feature_names.view_id' => current_view.id}, :include => {:cached_feature_names => :feature_name}, :order => 'feature_names.name', :page => params[:page] || 1, :per_page => 15)
+      @features = Feature.where('features.fid' => Medium.find(@medium.id).feature_ids, 'cached_feature_names.view_id' => current_view.id).includes(:cached_feature_names => :feature_name).paginate(:page => params[:page] || 1, :per_page => 15).order('feature_names.name')
       @object_type = "Media"
       @object_title = "Medium #{@medium.id}"
       @object_url = Medium.element_url(@medium.id, :format => 'html')

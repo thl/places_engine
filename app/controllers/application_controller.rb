@@ -67,7 +67,7 @@ class ApplicationController < ActionController::Base
     @top_level_nodes = Feature.current_roots(current_perspective, current_view)
     @session = Session.new(:perspective_id => self.current_perspective.id, :view_id => self.current_view.id)
     @perspectives = Perspective.find_all_public
-    @views = View.find(:all, :order => 'name')
+    @views = View.order('name')
 
     search_defaults = {
     	:filter => '',

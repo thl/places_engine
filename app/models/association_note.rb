@@ -6,7 +6,7 @@ class AssociationNote < Note
   default_scope :conditions => "association_type IS NOT NULL"
   
   def self.find_by_object_and_association(object, association)
-    self.find(:all, :conditions => {:notable_type => object.class.name, :association_type => association})
+    self.where(:notable_type => object.class.name, :association_type => association)
   end
   
   def association_type_name

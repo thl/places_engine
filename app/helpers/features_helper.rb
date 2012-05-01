@@ -96,7 +96,7 @@ module FeaturesHelper
       html += '<li style="margin-left:1em; list-style:none;">'
       html += '<b>&gt;</b>&nbsp;' unless name.is_original?
       html += (use_links ? link_to(feature_name_display(name), admin_feature_name_path(name)) : feature_name_display(name, {:show_association_links => true}))
-      html += feature_name_ul(nil, use_links, name.children.find(:all, :order => 'position'), completed)
+      html += feature_name_ul(nil, use_links, name.children.order('position'), completed)
       html += '</li>'
     end
     (html.blank? ? '' : "<ul style='margin:0;'>#{html}</ul>").html_safe

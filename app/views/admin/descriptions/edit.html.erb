@@ -7,7 +7,7 @@
 <h1><%= ts 'edit.ing.record', :what => "#{Description.human_name.titleize} #{@object.id}" %></h1>
 </div>
 <br class="clear"/>
-<% form_for @object, :url=>admin_feature_description_path(parent_object,@object), :html => {:method => :put} do |f| %>
+<%= form_for @object, :url=>admin_feature_description_path(parent_object,@object), :html => {:method => :put} do |f| %>
 <%=  render :partial => 'form_fields', :locals => {:f => f} %>
      <p><%=  link_to ts('cancel.this'), admin_feature_description_path(parent_object,@object) %> | <%= globalized_submit_tag 'update.this' %></p>
 <% end %>

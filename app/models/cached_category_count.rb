@@ -2,7 +2,7 @@ class CachedCategoryCount < ActiveRecord::Base
   belongs_to :category
   
   def self.updated_count(category_id, force_update = false)
-    cached_count = CachedCategoryCount.find(:first, :conditions => {:category_id => category_id})
+    cached_count = CachedCategoryCount.where(:category_id => category_id).first
     latest_update = CategoryFeature.latest_update
     non_existent = false
     if cached_count.nil?
@@ -18,8 +18,8 @@ class CachedCategoryCount < ActiveRecord::Base
       cached_count.count = 0
       cached_count.count_with_shapes = 0
     else
-      cached_count.count = CumulativeCategoryFeatureAssociation.count(:conditions => {:category_id => category_id})
-      cached_count.count_with_shapes = CumulativeCategoryFeatureAssociation.count('id', :distinct => true, :conditions => ['category_id = ? AND geometry IS NOT NULL', category_id], :joins => {:feature => :shapes})
+      cached_count.count = CumulativeCategoryFeatureAssociation.where(:category_id => category_id).count
+      cached_count.count_with_shapes = CumulativeCategoryFeatureAssociation.where(['category_id = ? AND geometry IS NOT NULL', category_id]).joins(:feature => :shapes).select('DISTINCT id').count
       cached_count.save
     end
     return cached_count

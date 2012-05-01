@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
       :show_feature_details => self.current_show_feature_details,
       :show_advanced_search => self.current_show_advanced_search)
     @perspectives = Perspective.find_all_public
-    @views = View.find(:all, :order => 'name')
+    @views = View.order('name')
   end
     
   # PUT /session

@@ -63,7 +63,7 @@ class FeaturesController < ApplicationController
     geo_code_type = GeoCodeType.get_by_code(geo_code_type_str)
     @feature = nil
     if !geo_code_type.nil?
-      geo_code = FeatureGeoCode.first(:conditions => {:geo_code_type_id => geo_code_type.id, :geo_code_value => params[:geo_code]})
+      geo_code = FeatureGeoCode.where(:geo_code_type_id => geo_code_type.id, :geo_code_value => params[:geo_code]).first
       @feature = geo_code.feature if !geo_code.nil?
     end
     respond_to do |format|
@@ -267,7 +267,7 @@ class FeaturesController < ApplicationController
     #    @features = Feature.name_search(params[:filter])
     #  else
       if !fid.blank?
-        @features = Feature.paginate(:conditions => {:is_public => 1, :fid => fid.gsub(/[^\d]/, '').to_i}, :page => 1)
+        @features = Feature.where(:is_public => 1, :fid => fid.gsub(/[^\d]/, '').to_i).page(1)
       else
         joins = []
         if !params[:object_type].blank?
@@ -305,7 +305,7 @@ class FeaturesController < ApplicationController
   
   def descendants
     @feature = Feature.find(params[:id])
-    descendants = @feature.nil? ? [] : @feature.descendants(:include => {:cached_feature_names => :feature_name}, :order => {'cached_feature_names.view_id' => current_view.id}, :order => 'feature_names.name')
+    descendants = @feature.nil? ? [] : @feature.descendants.includes(:cached_feature_names => :feature_name).where('cached_feature_names.view_id' => current_view.id).order('feature_names.name')
     descendants = descendants.paginate(:page => params[:page] || 1, :per_page => 10)
     render :partial => 'descendants', :locals => { :descendants => descendants }
   end
@@ -327,18 +327,15 @@ class FeaturesController < ApplicationController
     @feature_relation_type.find(params[:feature_relation_type_id])
     @feature_is_parent = params[:feature_is_parent]
     @category = Category.find(params[:category_id])
-    @relations = CachedFeatureRelationCategory.find(:all,
-      :conditions => {
+    @relations = CachedFeatureRelationCategory.where(
           'cached_feature_relation_categories.feature_id' => params[:id],
           'cached_feature_relation_categories.category_id' => params[:category_id],
           'cached_feature_relation_categories.feature_relation_type_id' => @feature_relation_type,
           'cached_feature_relation_categories.feature_is_parent' => @feature_is_parent,
           'cached_feature_names.view_id' => current_view.id
-      },
+      ).joins('INNER JOIN "cached_feature_names" ON "cached_feature_relation_categories".related_feature_id = "cached_feature_names".feature_id INNER JOIN "feature_names" ON "cached_feature_names".feature_name_id = "feature_names".id'
+      ).order('feature_names.name')
       # Should associations be set up to allow for this to be handled with :include instead?
-      :joins => 'INNER JOIN "cached_feature_names" ON "cached_feature_relation_categories".related_feature_id = "cached_feature_names".feature_id INNER JOIN "feature_names" ON "cached_feature_names".feature_name_id = "feature_names".id',
-      :order => 'feature_names.name'
-    )
     @total_relations_count = @relations.length
     @relations = @relations.paginate(:page => params[:page] || 1, :per_page => 8)
     @params = params
