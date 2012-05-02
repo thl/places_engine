@@ -32,7 +32,7 @@ module FeaturesTreeHelper
     else
       css_class = 'single'
     end
-    content_tag :li, value, :class=>css_class
+    content_tag(:li, value, :class=>css_class)
   end
   
   #

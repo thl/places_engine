@@ -39,7 +39,7 @@ class ContextualTreeBuilder
         end
         child_list += new_list_item(node, nil)
     	end
-    	return child_list
+    	return child_list.html_safe
     end
 
     # Save the target ID thru all iterations
@@ -62,7 +62,7 @@ class ContextualTreeBuilder
     end
 
     # wrap the child list in a ul if needed
-    child_list = new_list(child_list, node, context[:target])
+    child_list = new_list(child_list.html_safe, node, context[:target])
 
     # create the top-level list item, include the child list
     if send_to(node, :siblings).size > 0 && ! send_to(node, :parent)
@@ -128,11 +128,7 @@ class ContextualTreeBuilder
     # then calls the helper.node_li method to wrap
     #
     def new_list_item(node, target)
-      @helper.node_li(
-        @helper.node_li_value(node, target),
-        node,
-        target
-      )
+      @helper.node_li(@helper.node_li_value(node, target), node, target)
     end
     
     #
@@ -142,11 +138,7 @@ class ContextualTreeBuilder
     # child list in a new list
     #
     def new_list(child_list, node, target)
-      @helper.node_ul(
-        child_list,
-        node,
-        target
-      )
+      @helper.node_ul(child_list, node, target)
     end
     
     #########################
@@ -161,11 +153,10 @@ class ContextualTreeBuilder
     end
 
     def node_ul(child_list, node, target)
-      child_list.empty? ? '' : "<ul>#{child_list}</ul>"
+      (child_list.empty? ? '' : "<ul>#{child_list}</ul>")
     end
 
     def node_li(value, node, target)
       "<li>#{value}</li>"
     end
-    
 end

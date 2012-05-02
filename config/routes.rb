@@ -6,13 +6,13 @@ Rails.application.routes.draw do
       get :expand
       get :contract
     end
-    resources :children do
+    resources(:children, :controller => 'categories') do
       member do
         get :expand
         get :contract
       end
     end
-    resources :counts
+    resources :counts, :controller => 'cached_category_counts'
   end
   namespace :admin do
     resources :alt_spelling_systems, :association_notes, :blurbs, :feature_name_types, :feature_relation_types,
@@ -21,6 +21,24 @@ Rails.application.routes.draw do
     match 'openid_new' => 'users#openid_new'
     match 'openid_create' => 'users#create', :via => :post
     root :to => 'features#index'
+    resources :altitudes do
+      resources :citations
+      resources :notes do
+        get :add_author, :on => :collection
+      end
+      resources :time_units do
+        get :new_form, :on => :collection
+      end
+    end
+    resources :category_features do
+      resources :citations
+      resources :notes do
+        get :add_author, :on => :collection
+      end
+      resources :time_units do
+        get :new_form, :on => :collection
+      end
+    end
     resources :citations do
       resources :pages
     end
@@ -34,6 +52,31 @@ Rails.application.routes.draw do
       end
     end
     resources :feature_geo_codes do
+      resources :citations
+      resources :notes do
+        get :add_author, :on => :collection
+      end
+      resources :time_units do
+        get :new_form, :on => :collection
+      end
+    end
+    resources :feature_names do
+      resources :citations, :feature_name_relations
+      get :locate_for_relation, :on => :member
+      resources :notes do
+        get :add_author, :on => :collection
+      end
+      resources :time_units do
+        get :new_form, :on => :collection
+      end
+    end
+    resources :feature_name_relations do
+      resources :citations
+      resources :notes do
+        get :add_author, :on => :collection
+      end
+    end
+    resources :feature_object_types do
       resources :citations
       resources :notes do
         get :add_author, :on => :collection
@@ -57,55 +100,17 @@ Rails.application.routes.draw do
         get :locate_for_relation
         post :clone
       end
-      resources :citations, :feature_geo_codes, :feature_relations
-      resources :altitudes do
-        resources :citations
-        resources :notes do
-          get :add_author, :on => :collection
-        end
-        resources :category_features do
-          resources :citations
-          resources :notes do
-            get :add_author, :on => :collection
-          end
-          resources :time_units do
-            get :new_form, :on => :collection
-          end
-        end
-        resources :time_units do
-          get :new_form, :on => :collection
-        end
+      collection do
+        match 'prioritize_feature_names/:id' => 'feature_names#prioritize', :as => :prioritize_feature_names
+        match 'prioritize_feature_types/:id' => 'feature_object_types#prioritize', :as => :prioritize_feature_object_types
+        match 'prioritize_feature_shapes/:id' => 'shapes#prioritize', :as => :prioritize_feature_shapes
       end
+      resources :altitudes, :category_features, :citations, :feature_geo_codes, :feature_names, :feature_object_types, :feature_relations, :shapes
       resources :association_notes do
         get :add_author, :on => :collection
       end
       resources :descriptions do
         get :add_author, :on => :collection
-      end
-      resources :feature_names do
-        resources :citations
-        get :locate_for_relation, :on => :member
-        resources :notes do
-          get :add_author, :on => :collection
-        end
-        resources :feature_name_relations do
-          resources :citations
-          resources :notes do
-            get :add_author, :on => :collection
-          end
-        end
-        resources :time_units do
-          get :new_form, :on => :collection
-        end
-      end
-      resources :feature_object_types do
-        resources :citations
-        resources :notes do
-          get :add_author, :on => :collection
-        end
-        resources :time_units do
-          get :new_form, :on => :collection
-        end
       end
       resources :time_units do
         get :new_form, :on => :collection
@@ -130,9 +135,6 @@ Rails.application.routes.draw do
         get :add_author, :on => :collection
       end
     end
-    match 'prioritize_feature_names/:id' => 'feature_names#prioritize', :as => :prioritize_feature_names, :path_prefix => 'admin/features'
-    match 'prioritize_feature_types/:id' => 'feature_object_types#prioritize', :as => :prioritize_feature_object_types, :path_prefix => 'admin/features'
-    match 'prioritize_feature_shapes/:id' => 'shapes#prioritize', :as => :prioritize_feature_shapes, :path_prefix => 'admin/features'
   end
   resources :features do
     get :search, :on => :collection
@@ -189,6 +191,5 @@ Rails.application.routes.draw do
   match 'fids_by_name/:query.:format' => 'features#fids_by_name', :as => :fids_by_name, :query => /.*?/, :path_prefix => 'features'
   match 'gis_resources/:fids.:format' => 'features#gis_resources', :as => :gis_resources, :path_prefix => 'features'
   root :to => 'features#index'
-  
   match ':controller(/:action(/:id(.:format)))'
 end

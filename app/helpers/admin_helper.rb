@@ -32,7 +32,7 @@ module AdminHelper
   
   def resource_nav
     resources = {
-      'Admin Home'=>admin_admin_path,
+      'Admin Home'=>admin_root_path,
       'Alt Spelling Systems'=>admin_alt_spelling_systems_path,
       'Blurbs'=>admin_blurbs_path,
       'Citations'=>admin_citations_path,
@@ -185,7 +185,7 @@ module AdminHelper
   #
   def render_breadcrumbs
     #@breadcrumbs.unshift link_to_unless_current('features', admin_features_path)
-    @breadcrumbs.to_a.join(' > ')
+    @breadcrumbs.to_a.join(' > ').html_safe
   end
   
   def add_breadcrumb_item(item)
