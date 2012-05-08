@@ -17,6 +17,6 @@
 <% end %>
 <%= note_popup_link_for(@description) %>
   <div>
-<%= @description.content %>
+<%= @description.content.html_safe %>
   </div>
 </div>

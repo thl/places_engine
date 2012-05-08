@@ -3,8 +3,7 @@
   <div class="node-menu-content">
     <h2 class="menu-item-search"><%= ts 'search.this' %></h2>
     <div id="NodeSearch" class="default-item" <%= ' style="display:none"' unless active_item == 'search' %>>
-<%  form_for :feature, {:controller => :features, :action => :search }, :remote => true,
-      :condition => 'NodeMenu.checkForFidSearch()', :loading => 'NodeMenu.beginSearch()' do |form| %>
+<%  form_for :feature, :url => {:controller => :features, :action => :search }, :remote => true, :html => { :id => 'search_form' } do |form| %>
 <%=   text_field_tag :filter, h(@search_form_params[:filter]), :class=>:text %>
       <div style="float: right;">
 <%=     link_to_function ts('search.advanced'), "$('#advanced_search').show(); $(this).hide(); $('#hide_advanced_search_link').show()", :id => 'show_advanced_search_link', :style => ('display:none;' if current_show_advanced_search) %>
@@ -37,6 +36,10 @@
 <%=     text_field_tag :fid %>
       </div>
 <%=   globalized_submit_tag 'search.this', :style => "margin-top: 4px;" %>
+<%  end %>
+<%= javascript_tag do %>
+      $('#search_form').bind("ajax:before", function(){ if(!NodeMenu.checkForFidSearch()) return false; })
+      .bind("ajax:loading", function(){ NodeMenu.beginSearch(); });
 <%  end %>
     </div>
     <h2 class="menu-item-results"><%= ts 'search.results' %></h2>

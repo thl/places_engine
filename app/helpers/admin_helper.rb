@@ -203,7 +203,7 @@ module AdminHelper
   # "completed" is used only by this method
   #
   def feature_name_ul(feature, use_links=true, root_names=nil, completed=[])
-    root_names = feature.names.roots if feature
+    root_names = feature.names.roots.order('position') if feature
     html=''
     root_names.each do |name|
       next if completed.include? name
@@ -222,7 +222,7 @@ module AdminHelper
   # "completed" is used only by this method
   #
   def feature_name_tr(feature, root_names=nil, completed=[])
-    root_names = feature.names.roots if feature
+    root_names = feature.names.roots.order('position') if feature
     root_names = root_names.sort_by{ |i| i[:position] }
     html=''
     root_names.each do |name|
@@ -297,7 +297,7 @@ module AdminHelper
   
   def feature_names_sorted(feature_names)
     list = []
-    feature_names.roots.each do |r|
+    feature_names.roots.order('position').each do |r|
       list << r
       load_child_names(r, list)
     end

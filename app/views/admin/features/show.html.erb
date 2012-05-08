@@ -29,7 +29,7 @@
     <br class="clear"/>
 <%= render :partial => 'admin/feature_names/feature_names', :locals => { :list => @object.names } %>
     <dl class="no-style">
-<%  @object.names.roots.each do |name|
+<%  @object.names.roots.order('position').each do |name|
 	  path = admin_feature_feature_name_path(name.feature, name) %>
 <%=   "<dt><strong>Etymology of #{name.name} (" + list_actions_for_item(name, :delete_path => path, :manage_path => path,
         :edit_path => edit_admin_feature_feature_name_path(name.feature, name), :hide_view => true, :hide_delete => true

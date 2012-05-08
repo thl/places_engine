@@ -48,15 +48,9 @@ class Feature < ActiveRecord::Base
     #
     #
     #
-    def roots(options = {})
+    def roots
       # proxy_target, proxy_owner, proxy_reflection - See Rails "Association Extensions"
-      if options[:conditions].nil?
-        options[:conditions] = {'feature_names.feature_id'=>proxy_owner.id}
-      else
-        options[:conditions].merge!({'feature_names.feature_id'=>proxy_owner.id})
-      end
-      options[:order] ||= 'position'
-      proxy_reflection.class_name.constantize.roots(options) #.sort !!! See the FeatureName.<=> method
+      proxy_reflection.class_name.constantize.roots.where('feature_names.feature_id' => proxy_owner.id) #.sort !!! See the FeatureName.<=> method
     end
   end
   

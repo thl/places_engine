@@ -31,7 +31,7 @@ module ApplicationHelper
   #
   def f_breadcrumb(feature)
     # content_tag :div, acts_as_family_tree_breadcrumb(feature, breadcrumb_separator) {|r| f_link(r, feature_path(r.fid), {}, {:s => true})}, :class => "breadcrumbs"
-    content_tag :div, feature.closest_ancestors_by_perspective(current_perspective).collect{|r| f_link(r, feature_path(r.fid), {}, {:s => true})}.join(breadcrumb_separator), :class => "breadcrumbs"
+    content_tag :div, feature.closest_ancestors_by_perspective(current_perspective).collect{|r| f_link(r, feature_path(r.fid), {}, {:s => true})}.join(breadcrumb_separator).html_safe, :class => "breadcrumbs"
   end
   
   #

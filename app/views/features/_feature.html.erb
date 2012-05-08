@@ -11,8 +11,8 @@
 <%=  f_breadcrumb(feature) %>
 <%   if defined? feature.object_types %>
 <%=    content_tag :h3, Feature.human_attribute_name(:object_type, :count => feature.feature_object_types.size).s unless feature.object_types.empty? %>
-     <ul id="FeatureTypesList">
-<%       feature.feature_object_types.each do |fot|
+       <ul id="FeatureTypesList">
+<%     feature.feature_object_types.each do |fot|
          ot = fot.category
          if !ot.nil? %>
          <li>
@@ -23,150 +23,149 @@
          </li>
 <%       end %>
 <%=      javascript_tag "$(document).ready(function(){ ActivateDraggablePopups('#FeatureTypesList'); });" %>
+<%     end %>
        </ul>
+<%=    note_popup_link_list_for(feature, {:association_type => FeatureObjectType.model_name}) %>
+<%   end
+     if defined? feature.category_features
+       category_features = feature.category_features.all(:conditions => {:type => nil}) %>
+<%=    content_tag :h3, CategoryFeature.human_name(:count => category_features.size).titleize.s unless category_features.empty? %>
+       <ul id="CategoryFeaturesList">
+<%     category_features.each do |cf|
+         c = cf.category
+         if !c.nil?
+           values = []
+           values << cf.string_value if !cf.string_value.blank?
+           values << cf.numeric_value if !cf.numeric_value.nil?
+           stack = cf.category_stack
+           stack.push(link_to(stack.pop, c.get_url_with_parent))  %>
+           <li>
+<%=          stack.join(' > ') %><%= ": #{values.join(', ')}" if !values.empty? %>
+<%=          note_popup_link_for(cf) %>
+<%=          time_units_for(cf) %>
+           </li>
+<%       end
+       end %>
+       </ul>
+<%=    note_popup_link_list_for(feature, {:association_type => CategoryFeature.model_name}) %>
+<%   end
+     closest_fid_with_shapes = feature.closest_feature_with_shapes :logged_in? => logged_in?
+     if closest_fid_with_shapes.nil?
+       shapes = []
+       map_fid = nil
+     else
+       shapes = closest_fid_with_shapes.shapes
+       shapes = shapes.all(:conditions => {:is_public => true}) if !logged_in?
+       map_fid = closest_fid_with_shapes.fid
+     end
+     if !map_fid.nil? %>
+       <h3><%= ts 'map.this' %></h3>
+       <div id="inset_map" class="fid-<%= map_fid %> language-<%= current_view.code %>"></div>
+<%=    javascript_tag "$(document).ready(function(){ InsetMap.init({proxyUrl: '#{ActionController::Base.config.relative_url_root}/proxy_engine/utils/proxy/?proxy_url='}); });" %>
+<%=    link_to image_tag("#{ThlSite.get_url}/global/images/icon-map-simple.gif", :alt => "") + " #{ts 'view.record', :what => t('map.full')}", "#{ThlSite.get_url}/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}", :class => "view-on-map" %>
+<%=    link_to image_tag("#{ThlSite.get_url}/global/images/icon-google-maps.png", :alt => "") + " #{ts :in, :what => t('view.this'), :where => t('map.google')}", "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => map_fid, :format => "kmz"), :target => "_blank", :class => "view-on-map" %>
+<%=    link_to image_tag("#{ThlSite.get_url}/global/images/icon-google-earth.png", :alt => "") + " #{ts :in, :what => t('view.this'), :where => t('map.earth')}", {:action => :gis_resources, :fids => map_fid, :format => "kmz"}, :target => "_blank", :class => "view-on-map" %>
 <%   end %>
-<%=  note_popup_link_list_for(feature, {:association_type => FeatureObjectType.model_name}) %>
-<% end %>
-<% if defined? feature.category_features
-     category_features = feature.category_features.all(:conditions => {:type => nil}) %>
-<%=  content_tag :h3, CategoryFeature.human_name(:count => category_features.size).titleize.s unless category_features.empty? %>
-     <ul id="CategoryFeaturesList">
-<%   category_features.each do |cf|
-       c = cf.category
-       if !c.nil?
-         values = []
-         values << cf.string_value if !cf.string_value.blank?
-         values << cf.numeric_value if !cf.numeric_value.nil?
-         stack = cf.category_stack
-         stack.push(link_to(stack.pop, c.get_url_with_parent))  %>
-         <li>
-<%=        stack.join(' > ') %><%= ": #{values.join(', ')}" if !values.empty? %>
-<%=        note_popup_link_for(cf) %>
-<%=        time_units_for(cf) %>
-         </li>
-<%     end
-     end %>
-     </ul>
-<%=  note_popup_link_list_for(feature, {:association_type => CategoryFeature.model_name}) %>
-<% end
-   closest_fid_with_shapes = feature.closest_feature_with_shapes :logged_in? => logged_in?
-   if closest_fid_with_shapes.nil?
-     shapes = []
-     map_fid = nil
-   else
-     shapes = closest_fid_with_shapes.shapes
-     shapes = shapes.all(:conditions => {:is_public => true}) if !logged_in?
-     map_fid = closest_fid_with_shapes.fid
-   end
-   if !map_fid.nil? %>
-     <h3><%= ts 'map.this' %></h3>
-     <div id="inset_map" class="fid-<%= map_fid %> language-<%= current_view.code %>"></div>
-<%=  javascript_tag "$(document).ready(function(){ InsetMap.init({proxyUrl: '#{ActionController::Base.config.relative_url_root}/proxy_engine/utils/proxy/?proxy_url='}); });" %>
-<%=  link_to image_tag("#{ThlSite.get_url}/global/images/icon-map-simple.gif", :alt => "") + " #{ts 'view.record', :what => t('map.full')}", "#{ThlSite.get_url}/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}", :class => "view-on-map" %>
-<%=  link_to image_tag("#{ThlSite.get_url}/global/images/icon-google-maps.png", :alt => "") + " #{ts :in, :what => t('view.this'), :where => t('map.google')}", "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => map_fid, :format => "kmz"), :target => "_blank", :class => "view-on-map" %>
-<%=  link_to image_tag("#{ThlSite.get_url}/global/images/icon-google-earth.png", :alt => "") + " #{ts :in, :what => t('view.this'), :where => t('map.earth')}", {:action => :gis_resources, :fids => map_fid, :format => "kmz"}, :target => "_blank", :class => "view-on-map" %>
-<% end %>
-<%= content_tag :h3, Description.human_name(:count => feature.descriptions.size).titleize.s unless feature.descriptions.blank? %>
-<% if !feature.descriptions.empty? %>
-     <div id='descriptions_div'>
-<%=    render :partial => '/descriptions/index', :locals => {:feature => feature, :description => nil} %>
-     </div>
-<%=  note_popup_link_list_for(feature, {:association_type => Description.model_name}) %>
-<% end
-   associated_resources = [
-     [Topic.human_name(:count => :many).titleize.s, feature.category_count, feature.kmaps_url],
-     ['Pictures', feature.media_count(:type => 'Picture'), feature.pictures_url],
-     ['Video', feature.media_count(:type => 'Video'), feature.videos_url],
-     ['Texts', feature.media_count(:type => 'Document'), feature.documents_url]
-   ]
-   if associated_resources.collect{|ar| ar[1]}.sum > 0 %>
-     <h3><%= ts 'associate.d.record', :what => Medium.human_name(:count => :many).titleize %></h3>
-     <ul><%= associated_resources.reject{|ar| ar[1] == 0}.collect{|ar| "<li>" + link_to("#{ar[0]} (#{ar[1]})", ar[2]) + "</li>" }.join("") %></ul>
-<% end %>
-   <p>
-     <br />
-<%=  button_to_function ts('view.record', :what => t('more.record', :what => t('feature.detail'))), "$('#more_feature_detail').show(); $(this).hide(); $('#less_feature_detail_button').show(); if (typeof(frame_service) != \"undefined\") frame_service.set_iframe_height()", :id => "more_feature_detail_button", :style => ("display:none;" if current_show_feature_details) %>
-<%=  button_to_function ts(:hide, :what => t('feature.detail')), "$('#more_feature_detail').hide(); $(this).hide(); $('#more_feature_detail_button').show();", :id => "less_feature_detail_button", :style => ("display:none;" unless current_show_feature_details) %>
-   </p>
-<div id="more_feature_detail" style="<%= ("display: none;" unless current_show_feature_details) %>">
-    <h3><%= FeatureName.human_name(:count => feature.names.size).titleize.s %></h3>
-<%= feature_name_ul(feature,false) %>
-    <dl class="no-style">
-<%  feature.names.roots.each do |name| %>
-<%=   "<dt><strong>#{ts(:for, :what => FeatureName.human_attribute_name(:etymology), :whom => name.name.to_s)}:</dt></strong><dd>#{name.etymology.to_s.s}</dd>" unless name.etymology.blank? %>
-<%  end %>
-    </dl>
-<%= note_popup_link_list_for(feature, {:association_type => FeatureName.model_name}) %>
-    <h3><%= ts 'id.this', :count => :many %></h3>
-<%  if show_old_pid %>
-      <p><%= "#{ts :current, :what => Feature.human_attribute_name(:pid)}: #{feature.pid}" %></p>
-      <p><%= "#{Feature.human_attribute_name(:old_pid).s}: #{feature.old_pid}" %></p>
-<%  else %>
-      <p><%= "#{Feature.human_attribute_name(:pid).s}: #{feature.pid}" %></p>
-<%  end
-    feature.geo_codes.each do |geo_code| %>
-    <p>
-<%=   geo_code %>: <%= geo_code.geo_code_value %>
-<%=   note_popup_link_for(geo_code) %>
-<%=   time_units_for(geo_code) %>
-    </p>
-<%  end %>
-<%= note_popup_link_list_for(feature, {:association_type => FeatureGeoCode.model_name}) %>
-<%  simple_altitudes = feature.shapes.collect(&:altitude).select{|a| !a.nil? }
-    altitudes = feature.altitudes
-    altitude_size = simple_altitudes.size + altitudes.size
-    if altitude_size > 0 %>
-<%=   content_tag :h3, Altitude.human_name(:count => altitude_size).titleize.s %>
-<%=   altitude_size>1 ? '<ul>' : '<p>' %>
-<%    if simple_altitudes.size == 1 %>
-<%=     simple_altitudes.first %>
-<%    else
-        simple_altitudes.each do |altitude| %>
-          <li><%= altitude %></li>
-<%      end
-      end
-      altitudes.each do |altitude| %>
-<%=     '<li>' if altitude_size>1 %>
-<%=h    altitude_display_string(altitude) %>
-<%=     note_popup_link_for(altitude) %>
-<%=     time_units_for(altitude) %>
-<%=     '</li>' if altitude_size>1 %>
-<%    end %>
-<%=   altitude_size>1 ? '</ul>' : '</p>' %>
-<%  end
-    if !shapes.empty? %>
-<%=   content_tag :h3, Shape.human_name(:count => shapes.size).titleize.s %>
-<%=   shapes.size>1 ? '<ul>' : '<p>' %>
-<%    shapes.each do |shape| %>
-<%=     '<li>' if shapes.size>1 %>
-<%=h    shape_display_string(shape) %>
-<%=     note_popup_link_for(shape) %>
-<%=     time_units_for(shape) %>
-<%=     '</li>' if shapes.size>1 %>
-<%    end %>
-<%=   shapes.size>1 ? '</ul>' : '</p>' %>
-<%=   content_tag :h3, ts('resource.gis.feature_alone') %>
-      <ul>
-        <li><%= link_to "GML", :action => :gis_resources, :fids => feature.fid, :format => "gml" %></li>
-        <li><%= link_to "KML", :action => :gis_resources, :fids => feature.fid, :format => "kml" %></li>
-        <li><%= link_to "Shapefile", :action => :gis_resources, :fids => feature.fid, :format => "shp" %></li>
-      </ul>
-<%    if !feature.descendants.empty? %>
-<%=     content_tag :h3, ts('resource.gis.contained_features') %>
-<%      # For features with roughly > 300 descendants, we're getting a timeout, so we'll temporarily fix this by not allowing these to be downloaded.
-        if feature.descendants.length < 300 %>
-        <ul>
-          <li><%= link_to "GML", :action => :gis_resources, :fids => feature.fid, :format => "gml", :contained => "1" %></li>
-          <li><%= link_to "KML", :action => :gis_resources, :fids => feature.fid, :format => "kml", :contained => "1" %></li>
-          <li><%= link_to "Shapefile", :action => :gis_resources, :fids => feature.fid, :format => "shp", :contained => "1" %></li>
-        </ul>
-<%      else %>
-          <p><%= ts 'snippet.feature.too_many' %></p>
-<%      end
-      end %>
-<%=   note_popup_link_list_for(feature, {:association_type => Shape.model_name}) %>
-<%  end %>
-  </div>
-</div>
-<br class="clear"/>
+<%=  content_tag :h3, Description.human_name(:count => feature.descriptions.size).titleize.s unless feature.descriptions.blank? %>
+<%   if !feature.descriptions.empty? %>
+       <div id='descriptions_div'>
+<%=      render :partial => '/descriptions/index', :locals => {:feature => feature, :description => nil} %>
+       </div>
+<%=    note_popup_link_list_for(feature, {:association_type => Description.model_name}) %>
+<%   end
+     associated_resources = [
+       [Topic.human_name(:count => :many).titleize.s, feature.category_count, feature.kmaps_url],
+       ['Pictures', feature.media_count(:type => 'Picture'), feature.pictures_url],
+       ['Video', feature.media_count(:type => 'Video'), feature.videos_url],
+       ['Texts', feature.media_count(:type => 'Document'), feature.documents_url]
+     ]
+     if associated_resources.collect{|ar| ar[1]}.sum > 0 %>
+       <h3><%= ts 'associate.d.record', :what => Medium.human_name(:count => :many).titleize %></h3>
+       <ul><%= associated_resources.reject{|ar| ar[1] == 0}.collect{|ar| "<li>" + link_to("#{ar[0]} (#{ar[1]})", ar[2]) + "</li>" }.join("").html_safe %></ul>
+<%   end %>
+     <p>
+       <br />
+<%=    button_to_function ts('view.record', :what => t('more.record', :what => t('feature.detail'))), "$('#more_feature_detail').show(); $(this).hide(); $('#less_feature_detail_button').show(); if (typeof(frame_service) != \"undefined\") frame_service.set_iframe_height()", :id => "more_feature_detail_button", :style => ("display:none;" if current_show_feature_details) %>
+<%=    button_to_function ts(:hide, :what => t('feature.detail')), "$('#more_feature_detail').hide(); $(this).hide(); $('#more_feature_detail_button').show();", :id => "less_feature_detail_button", :style => ("display:none;" unless current_show_feature_details) %>
+     </p>
+     <div id="more_feature_detail" style="<%= "display: none;" unless current_show_feature_details %>">
+     <h3><%= FeatureName.human_name(:count => feature.names.size).titleize.s %></h3>
+<%=  feature_name_ul(feature,false) %>
+     <dl class="no-style">
+<%   feature.names.roots.order('position').each do |name| %>
+<%=    "<dt><strong>#{ts(:for, :what => FeatureName.human_attribute_name(:etymology), :whom => name.name.to_s)}:</dt></strong><dd>#{name.etymology.to_s.s}</dd>" unless name.etymology.blank? %>
+<%   end %>
+     </dl>
+<%=  note_popup_link_list_for(feature, {:association_type => FeatureName.model_name}) %>
+     <h3><%= ts 'id.this', :count => :many %></h3>
+<%   if show_old_pid %>
+       <p><%= "#{ts :current, :what => Feature.human_attribute_name(:pid)}: #{feature.pid}" %></p>
+       <p><%= "#{Feature.human_attribute_name(:old_pid).s}: #{feature.old_pid}" %></p>
+<%   else %>
+       <p><%= "#{Feature.human_attribute_name(:pid).s}: #{feature.pid}" %></p>
+<%   end %>
+<%   feature.geo_codes.each do |geo_code| %>
+     <p>
+<%=    geo_code %>: <%= geo_code.geo_code_value %>
+<%=    note_popup_link_for(geo_code) %>
+<%=    time_units_for(geo_code) %>
+     </p>
+<%   end %>
+<%=  note_popup_link_list_for(feature, {:association_type => FeatureGeoCode.model_name}) %>
+<%   simple_altitudes = feature.shapes.collect(&:altitude).select{|a| !a.nil? }
+     altitudes = feature.altitudes
+     altitude_size = simple_altitudes.size + altitudes.size
+     if altitude_size > 0 %>
+<%=    content_tag :h3, Altitude.human_name(:count => altitude_size).titleize.s %>
+<%=    altitude_size>1 ? '<ul>' : '<p>' %>
+<%     if simple_altitudes.size == 1 %>
+<%=      simple_altitudes.first %>
+<%     else %>
+<%       simple_altitudes.each do |altitude| %>
+           <li><%= altitude %></li>
+<%       end %>
+<%     end %>
+<%     altitudes.each do |altitude| %>
+<%=      '<li>' if altitude_size>1 %>
+<%=h     altitude_display_string(altitude) %>
+<%=      note_popup_link_for(altitude) %>
+<%=      time_units_for(altitude) %>
+<%=      '</li>' if altitude_size>1 %>
+<%     end %>
+<%=    altitude_size>1 ? '</ul>' : '</p>' %>
+<%   end
+     if !shapes.empty? %>
+<%=    content_tag :h3, Shape.human_name(:count => shapes.size).titleize.s %>
+<%=    shapes.size>1 ? '<ul>' : '<p>' %>
+<%     shapes.each do |shape| %>
+<%=      '<li>' if shapes.size>1 %>
+<%=h     shape_display_string(shape) %>
+<%=      note_popup_link_for(shape) %>
+<%=      time_units_for(shape) %>
+<%=      '</li>' if shapes.size>1 %>
+<%     end %>
+<%=    shapes.size>1 ? '</ul>' : '</p>' %>
+<%=    content_tag :h3, ts('resource.gis.feature_alone') %>
+       <ul>
+         <li><%= link_to "GML", :action => :gis_resources, :fids => feature.fid, :format => "gml" %></li>
+         <li><%= link_to "KML", :action => :gis_resources, :fids => feature.fid, :format => "kml" %></li>
+         <li><%= link_to "Shapefile", :action => :gis_resources, :fids => feature.fid, :format => "shp" %></li>
+       </ul>
+<%     if !feature.descendants.empty? %>
+<%=      content_tag :h3, ts('resource.gis.contained_features') %>
+<%       # For features with roughly > 300 descendants, we're getting a timeout, so we'll temporarily fix this by not allowing these to be downloaded.
+         if feature.descendants.length < 300 %>
+         <ul>
+           <li><%= link_to "GML", :action => :gis_resources, :fids => feature.fid, :format => "gml", :contained => "1" %></li>
+           <li><%= link_to "KML", :action => :gis_resources, :fids => feature.fid, :format => "kml", :contained => "1" %></li>
+           <li><%= link_to "Shapefile", :action => :gis_resources, :fids => feature.fid, :format => "shp", :contained => "1" %></li>
+         </ul>
+<%       else %>
+           <p><%= ts 'snippet.feature.too_many' %></p>
+<%       end
+       end %>
+<%=    note_popup_link_list_for(feature, {:association_type => Shape.model_name}) %>
+<%   end %>
+     </div></div>
+     <br class="clear"/>
 <% end %>
