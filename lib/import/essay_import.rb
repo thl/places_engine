@@ -61,7 +61,7 @@ class EssayImport < Importation
             source_url = "#{public_url}#{essay_prefix}#{essay_id}"
             attributes = {:content => content, :is_primary => false, :title => title}
             descriptions = feature.descriptions
-            description = descriptions.first(:conditions => {:source_url => source_url})
+            description = descriptions.where(:source_url => source_url).first
             if description.nil?
               description = descriptions.create(attributes.merge({:source_url => source_url}))
             else

@@ -113,7 +113,7 @@ class FeatureImportation < Importation
     if !info_source.nil?
       notes = self.fields.delete("#{field_prefix}.info_source.notes")
       citations = citable.citations
-      citation = citations.find(:first, :conditions => {:info_source_id => info_source.id})
+      citation = citations.where(:info_source_id => info_source.id).first
       if citation.nil?
         citation = citations.create(:info_source_id => info_source.id, :notes => notes)
       else
@@ -143,7 +143,7 @@ class FeatureImportation < Importation
               volume = volume_str.to_i if !volume_str.blank?
             end
             conditions = {:start_page => start_page, :end_page => end_page, :volume => volume}
-            page = pages.find(:first, :conditions => conditions)
+            page = pages.where(conditions).first
             page = pages.create(conditions) if page.nil?
           end
         end        
@@ -155,7 +155,7 @@ class FeatureImportation < Importation
     note_str = self.fields.delete("#{field_prefix}.note")
     if !note_str.blank?
       notes = notable.notes
-      note = notes.find(:first, :conditions => {:content => note_str})
+      note = notes.where(:content => note_str).first
       note = notes.create(:content => note_str) if note.nil?
       puts "Note #{note_str} could not be added to #{notable.class_name.titleize} #{notable.id}." if note.nil?
     end
@@ -216,7 +216,7 @@ class FeatureImportation < Importation
     association_notes = self.feature.association_notes
     if !delete_feature_names.blank? && delete_feature_names.downcase == 'yes'
       names.clear
-      association_notes.delete(association_notes.all(:conditions => {:association_type => "FeatureName"}))
+      association_notes.delete(association_notes.where(:association_type => 'FeatureName'))
     end
     name_added = false
     name_positions_with_changed_relations = Array.new
@@ -225,7 +225,7 @@ class FeatureImportation < Importation
     
     delete_is_primary = self.fields.delete('feature_names.is_primary.delete')
     if !delete_is_primary.blank? && delete_is_primary.downcase == 'yes'
-      names.all(:conditions => {:is_primary_for_romanization => true}).each do |name|
+      names.where(:is_primary_for_romanization => true).each do |name|
         name_changed = true if !name_changed
         name.update_attributes(:is_primary_for_romanization => false, :skip_update => true)
       end
@@ -234,7 +234,7 @@ class FeatureImportation < Importation
     0.upto(3) do |i|
       feature_names_note = self.fields.delete(i==0 ? 'feature_names.note' : "feature_names.#{i}.note")
       if !feature_names_note.blank?
-        note = association_notes.find(:first, :conditions => {:association_type => 'FeatureName', :content => feature_names_note })
+        note = association_notes.where(:association_type => 'FeatureName', :content => feature_names_note).first
         note = association_notes.create(:association_type => 'FeatureName', :content => feature_names_note) if note.nil?
         puts "Feature name note #{feature_names_note} could not be saved for feature #{self.feature.pid}" if note.nil?
       end
@@ -296,7 +296,7 @@ class FeatureImportation < Importation
         end
       end
       conditions[:language_id] = language.id if !language.nil?          
-      name[n] = names.find(:first, :conditions => conditions)
+      name[n] = names.where(conditions).first
       is_primary = self.fields.delete("#{i}.feature_names.is_primary")
       conditions[:is_primary_for_romanization] = is_primary.downcase=='yes' ? 1 : 0 if !is_primary.blank?
       relation_conditions = Hash.new
@@ -304,7 +304,7 @@ class FeatureImportation < Importation
       relation_conditions[:phonetic_system_id] = phonetic_system.id if !phonetic_system.nil?
       relation_conditions[:alt_spelling_system_id] = alt_spelling_system.id if !alt_spelling_system.nil?
       position = self.fields.delete("#{i}.feature_names.position")
-      if name[n].nil? || !relation_conditions.empty? && name[n].parent_relations.find(:first, :conditions => relation_conditions).nil?
+      if name[n].nil? || !relation_conditions.empty? && name[n].parent_relations.where(relation_conditions).first.nil?
         conditions[:position] = position if !position.blank?
         name[n] = names.create(conditions.merge({:skip_update => true}))
         name_added = true if !name_added && !name[n].id.nil?
@@ -335,7 +335,7 @@ class FeatureImportation < Importation
           if parent_name.nil?
             puts "No tibetan name was found to associate #{phonetic_system.code} to #{name_str} for feature #{self.feature.pid}."
           else
-            name_relation = name[n].parent_relations.find(:first, :conditions => {:parent_node_id => parent_name.id})
+            name_relation = name[n].parent_relations.where(:parent_node_id => parent_name.id).first
             if name_relation.nil?
               name_relation = name[n].parent_relations.create(:skip_update => true, :parent_node => parent_name, :phonetic_system => phonetic_system, :is_phonetic => 1, :is_translation => is_translation)
               if name_relation.nil?
@@ -368,7 +368,7 @@ class FeatureImportation < Importation
               name_relation.update_attributes(:phonetic_system => nil, :is_phonetic => 0, :orthographic_system => OrthographicSystem.get_by_code('trad.to.simp.ch.translit'), :is_orthographic => 1, :is_translation => is_translation, :parent_node => name[n])
             end
             # pinyin should be a child of the traditional and not the simplified chinese
-            name_relation = simp_chi_name.child_relations.find(:first, :conditions => {:phonetic_system_id => PhoneticSystem.get_by_code('pinyin.transcrip')})
+            name_relation = simp_chi_name.child_relations.where(:phonetic_system_id => PhoneticSystem.get_by_code('pinyin.transcrip')).first
             name_relation.update_attribute(:parent_node, name[n]) if !name_relation.nil?
           end
         end
@@ -416,7 +416,7 @@ class FeatureImportation < Importation
       if parent_node.nil?
         puts "Parent name #{item[:parent_position]} of #{pending_relation.child_node.id} for feature #{self.feature.pid} not found."
       else
-        relation = pending_relation.child_node.parent_relations.find(:first, :conditions => {:parent_node_id => parent_node.id})
+        relation = pending_relation.child_node.parent_relations.where(:parent_node_id => parent_node.id).first
         if relation.nil?
           pending_relation.parent_node = parent_node
           relation = pending_relation.save
@@ -453,7 +453,7 @@ class FeatureImportation < Importation
         puts "Feature type #{feature_type_id} not found."
         next
       end
-      feature_object_type = feature_object_types.find(:first, :conditions => {:category_id => category.id})
+      feature_object_type = feature_object_types.where(:category_id => category.id).first
       if feature_object_type.nil?
         feature_object_type = feature_object_types.create(:category => category, :skip_update => true)
         feature_ids_with_object_types_added << self.feature.id if !feature_ids_with_object_types_added.include? self.feature.id
@@ -577,7 +577,7 @@ class FeatureImportation < Importation
         end
       end
       conditions.merge!(:feature_relation_type_id => relation_type.id, :perspective_id => perspective.id) if !replace_relations
-      feature_relation = FeatureRelation.find(:first, :conditions => conditions)
+      feature_relation = FeatureRelation.where(conditions).first
       changed = false
       if feature_relation.nil?
         feature_relation = FeatureRelation.create(conditions.merge({:skip_update => true}))
@@ -626,7 +626,7 @@ class FeatureImportation < Importation
       if administrator_name.blank?
         administrator = nil
       else
-        administrator = Feature.find(:first, :include => [:names, :feature_object_types], :conditions => ['feature_names.name = ? AND feature_object_types.category_id = ?', administrator_name, country_type_id])
+        administrator = Feature.where(['feature_names.name = ? AND feature_object_types.category_id = ?', administrator_name, country_type_id]).includes([:names, :feature_object_types]).first
         if administrator.nil?
           puts "Administrator country #{administrator_name} not found."
         else
@@ -637,7 +637,7 @@ class FeatureImportation < Importation
       if claimant_name.blank?
         claimant = nil
       else
-        claimant = Feature.find(:first, :include => [:names, :feature_object_types], :conditions => ['feature_names.name = ? AND feature_object_types.category_id = ?', claimant_name, country_type_id])
+        claimant = Feature.includes([:names, :feature_object_types]).where(['feature_names.name = ? AND feature_object_types.category_id = ?', claimant_name, country_type_id]).first
         if claimant.nil?
           puts "Claimant country #{claimant_name} not found."
         else
@@ -645,7 +645,7 @@ class FeatureImportation < Importation
         end
       end
       contestations = self.feature.contestations
-      contestation = contestations.find(:first, :conditions => conditions)
+      contestation = contestations.where(conditions).first
       contestation = contestations.create(:administrator => administrator, :claimant => claimant, :contested => (contested.downcase == 'yes')) if contestation.nil?
       puts "Couldn't create contestation between #{claimant_name} and #{administrator_name} for #{self.feature.pid}." if contestation.nil?
     end
@@ -731,7 +731,7 @@ class FeatureImportation < Importation
           altitudes.clear
           altitude = altitudes.create(conditions)
         else
-          altitude = altitudes.find(:first, :conditions => conditions)
+          altitude = altitudes.where(conditions).first
           altitude = altitudes.create(conditions) if altitude.nil?
         end        
       end
@@ -753,7 +753,7 @@ class FeatureImportation < Importation
         next
       end      
       conditions = { :category_id => kmap.id }
-      category_feature = category_features.find(:first, :conditions => conditions)
+      category_feature = category_features.where(conditions).first
       values = {}
       show_parent = self.fields.delete("#{kmap_prefix}.show_parent")
       values[:show_parent] = show_parent.downcase=='yes' if !show_parent.blank?
@@ -797,7 +797,7 @@ class FeatureImportation < Importation
       values[:show_parent] = show_parent.downcase=='yes' if !show_parent.blank?
       show_root = self.fields.delete("#{key}.show_root")
       values[:show_root] = show_root.downcase=='yes' if !show_root.blank?
-      category_feature = category_features.find(:first, :conditions => conditions)
+      category_feature = category_features.where(conditions).first
       if category_feature.nil?
         category_feature = category_features.create(conditions.merge(values))
       else
@@ -822,7 +822,7 @@ class FeatureImportation < Importation
           next
         end
         conditions = { :category_id => kmap.id }
-        category_feature = category_features.find(:first, :conditions => conditions)
+        category_feature = category_features.where(conditions).first
         category_feature = category_features.create(conditions) if category_feature.nil?
         prefix = key[0...pos-1]
         posfix = key[pos...key.size]

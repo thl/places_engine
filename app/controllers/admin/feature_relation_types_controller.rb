@@ -11,8 +11,6 @@ class Admin::FeatureRelationTypesController < ResourceController::Base
   protected
   
   def collection
-    filter = params[:filter]
-    page = params[:page]
-    @collection = FeatureRelationType.search(filter, :page=>page)
+    @collection = FeatureRelationType.search(params[:filter]).page(params[:page])
   end
 end

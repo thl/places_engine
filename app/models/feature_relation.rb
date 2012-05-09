@@ -86,15 +86,10 @@ class FeatureRelation < ActiveRecord::Base
     node == self.parent_node
   end
   
-  def self.search(filter_value, options={})
-    options[:conditions] = build_like_conditions(
-      %W(role parents.fid children.fid),
-      filter_value
-    )
+  def self.search(filter_value)
     # need to do a join here (not :include) because we're searching parents and children feature.pids
-    options[:joins] = 'LEFT JOIN features parents ON parents.id=feature_relations.parent_node_id
-    LEFT JOIN features children ON children.id=feature_relations.child_node_id'
-    paginate(options)
+    self.where(build_like_conditions(%W(role parents.fid children.fid), filter_value)
+    ).joins('LEFT JOIN features parents ON parents.id=feature_relations.parent_node_id LEFT JOIN features children ON children.id=feature_relations.child_node_id')
   end
     
   def expire_cache

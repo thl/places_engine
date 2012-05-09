@@ -58,14 +58,9 @@ class FeatureNameRelation < ActiveRecord::Base
     child_node.feature
   end
   
-  def self.search(filter_value, options={})
-    options[:conditions] = build_like_conditions(
-      %W(children.name parents.name),
-      filter_value
-    )
-    options[:joins] = 'LEFT JOIN feature_names parents ON parents.id=feature_name_relations.parent_node_id
-    LEFT JOIN feature_names children ON children.id=feature_name_relations.child_node_id'
-    paginate(options)
+  def self.search(filter_value)
+    self.where(build_like_conditions(%W(children.name parents.name), filter_value)
+    ).joins('LEFT JOIN feature_names parents ON parents.id=feature_name_relations.parent_node_id LEFT JOIN feature_names children ON children.id=feature_name_relations.child_node_id')
   end
   
 end

@@ -163,7 +163,7 @@ class Feature < ActiveRecord::Base
     des = []
     while !pending.empty?
       e = pending.pop
-      FeatureRelation.all(:select => 'child_node_id', :conditions => {:parent_node_id => e}).each do |r|
+      FeatureRelation.select('child_node_id').where(:parent_node_id => e).each do |r|
         c = r.child_node_id
         if !des.include? c
           des << c
@@ -172,7 +172,7 @@ class Feature < ActiveRecord::Base
       end
     end
     topic_ids = topic_ids.first if topic_ids.size==1
-    des.select{ |f_id| !CumulativeCategoryFeatureAssociation.first(:conditions => {:category_id => topic_ids, :feature_id => f_id}).nil? }.collect{|f_id| Feature.find(f_id)}
+    des.select{ |f_id| !CumulativeCategoryFeatureAssociation.where(:category_id => topic_ids, :feature_id => f_id).first.nil? }.collect{|f_id| Feature.find(f_id)}
   end
     
   def descendants_by_perspective(perspective)
@@ -181,7 +181,7 @@ class Feature < ActiveRecord::Base
     des_ids = [self.id]
     while !pending.empty?
       e = pending.pop
-      FeatureRelation.all(:select => 'child_node_id', :conditions => {:parent_node_id => e.id, :perspective_id => perspective.id, :feature_relation_type_id => FeatureRelationType.hierarchy_ids}).each do |r|
+      FeatureRelation.select('child_node_id').where(:parent_node_id => e.id, :perspective_id => perspective.id, :feature_relation_type_id => FeatureRelationType.hierarchy_ids).each do |r|
         c = r.child_node
         if !des_ids.include? c.id
           des_ids << c.id
@@ -295,7 +295,7 @@ class Feature < ActiveRecord::Base
   # options - the standard arguments sent to ActiveRecord::Base.paginate (WillPaginate gem)
   # See http://api.rubyonrails.com/classes/ActiveRecord/Base.html#M001416
   # 
-  def self.search(filter_value, options={}, search_options={})
+  def self.search(filter_value, search_options={})
     # Setup the base rules
     if search_options[:scope] && search_options[:scope] == 'name'
       conditions = build_like_conditions(%W(feature_names.name), filter_value, {:match => search_options[:match]})
@@ -309,20 +309,9 @@ class Feature < ActiveRecord::Base
         conditions << fid.to_i
       end
     end
-    base_includes = [:names, :descriptions]
-    base_order = 'features.position'
-    # Now that we have the base scope setup, apply the custom options and paginate!
-    # For :has_descriptions == true, it appears that there isn't a way to use IS NOT NULL in a :conditions hash, so
-    # we'll use it in a :conditions string in an outer scope.  Is there a way to use IS NOT NULL in
-    # base_scope[:conditions] instead?
-    if !search_options[:has_descriptions].nil? && search_options[:has_descriptions]
-      with_scope(:find => where('descriptions.content IS NOT NULL')) do
-        with_scope(:find=>where(conditions).includes(base_includes).order(base_order)) { options.has_key?(:page) ? paginate(options) : self.all(options) }
-      end
-    # Otherwise, just use a single scope:
-    else
-      with_scope(:find=>where(conditions).includes(base_includes).order(base_order)) { options.has_key?(:page) ? paginate(options) : self.all(options) }
-    end
+    search_results = self.where(conditions).includes([:names, :descriptions]).order('features.position')
+    search_results = search_results.where('descriptions.content IS NOT NULL') if search_options[:has_descriptions]
+    return search_results
   end
   
   def self.name_search(filter_value)
@@ -337,7 +326,7 @@ class Feature < ActiveRecord::Base
   end
   
   def category_count
-    CategoryFeature.count(:conditions => {:feature_id => self.id})
+    CategoryFeature.where(:feature_id => self.id).count
   end
   
   def media_count(options = {})

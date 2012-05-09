@@ -8,12 +8,8 @@ class Description < ActiveRecord::Base
     extend IsNotable
     extend IsDateable
 
-    def self.search(filter_value, options={})
-      options[:conditions] = build_like_conditions(
-        %W(description.content),
-        filter_value
-      )
-      paginate(options)
+    def self.search(filter_value)
+      self.where(build_like_conditions(%W(description.content), filter_value))
     end
     
     def to_s

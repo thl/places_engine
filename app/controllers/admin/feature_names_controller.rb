@@ -72,12 +72,8 @@ class Admin::FeatureNamesController < ResourceController::Base
     elsif params[:id]
       feature_id = object.feature_id
     end
-    if feature_id
-      @collection = FeatureName.send(:with_scope, :find=>where(:feature_id => feature_id)) do
-        FeatureName.search(params[:filter], :page=>params[:page])
-      end
-    else
-      @collection = FeatureName.search(params[:filter], :page=>params[:page])
-    end
+    search_results = FeatureName.search(params[:filter])
+    search_results = search_results.where(:feature_id => feature_id) if feature_id
+    @collection = search_results.page(params[:page])
   end
 end

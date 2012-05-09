@@ -24,19 +24,15 @@ class SimpleProp < ActiveRecord::Base
   validates_uniqueness_of :code, :scope=>:type
   
   def self.name_and_id_list
-    find(:all).collect {|ft| [ft.name, ft.id] }
+    self.all.collect {|ft| [ft.name, ft.id] }
   end
   
   def to_s
     [name, code, 'n/a'].detect {|i| ! i.blank? }
   end
   
-  def self.search(filter_value, options={})
-    options[:conditions] = build_like_conditions(
-      %W(simple_props.name simple_props.code simple_props.description simple_props.notes),
-      filter_value
-    )
-    paginate(options)
+  def self.search(filter_value)
+    self.where(build_like_conditions(%W(simple_props.name simple_props.code simple_props.description simple_props.notes), filter_value))
   end  
 end
 

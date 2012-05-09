@@ -103,11 +103,7 @@ class FeaturesController < ApplicationController
   
   def by_name
     params[:filter] = params[:query]
-    options={
-      :page => params[:page] || 1,
-      :per_page => params[:per_page] || 15,
-      :conditions => {:is_public => 1}
-    }
+    conditions = {:is_public => 1}
     search_options = {
       :scope => params[:scope] || 'name',
       :match => params[:match]
@@ -116,21 +112,19 @@ class FeaturesController < ApplicationController
     joins = []
     if !params[:feature_type].blank?
       joins << "LEFT JOIN cumulative_category_feature_associations ccfa ON ccfa.feature_id = features.id"
-      options[:conditions]['ccfa.category_id'] = params[:feature_type].split(',')
-      options[:conditions]['features.is_public'] = 1
-      options[:conditions].delete(:is_public)
+      conditions['ccfa.category_id'] = params[:feature_type].split(',')
+      conditions['features.is_public'] = 1
+      conditions.delete(:is_public)
     end
     if !params[:characteristic_id].blank?
       joins << "LEFT JOIN category_features cf ON cf.feature_id = features.id"
-      options[:conditions]['cf.category_id'] = params[:characteristic_id].split(',')
-      options[:conditions]['cf.type'] = nil
-      options[:conditions]['features.is_public'] = 1
-      options[:conditions].delete(:is_public)
-    end  
-    options[:joins] = joins.join(' ') unless joins.empty?
-    options[:select] = "features.*, DISTINCT feature.id" unless joins.empty?
-    perform_global_search(options, search_options)
-
+      conditions['cf.category_id'] = params[:characteristic_id].split(',')
+      conditions['cf.type'] = nil
+      conditions['features.is_public'] = 1
+      conditions.delete(:is_public)
+    end
+    @features = perform_global_search(search_options).where(conditions).paginate(:page => params[:page] || 1, :per_page => params[:per_page] || 15)
+    @features = @features.joins(joins.join(' ')).select('features.*, DISTINCT feature.id') unless joins.empty?
     respond_to do |format|
       format.html { render :action => 'paginated_show' }
       format.xml  { render :action => 'paginated_show' }
@@ -140,7 +134,7 @@ class FeaturesController < ApplicationController
 
   def fids_by_name
     params[:filter] = params[:query]
-    options = { :conditions => { :is_public => 1 }, :include => :shapes }
+    conditions = { :is_public => 1 }
     search_options = {
       :scope => params[:scope] || 'name',
       :match => params[:match]
@@ -148,20 +142,19 @@ class FeaturesController < ApplicationController
     joins = []
     if !params[:feature_type].blank?
       joins << 'LEFT JOIN cumulative_category_feature_associations ccfa ON ccfa.feature_id = features.id'
-      options[:conditions]['ccfa.category_id'] = params[:feature_type].split(',')
-      options[:conditions]['features.is_public'] = 1
-      options[:conditions].delete(:is_public)
+      conditions['ccfa.category_id'] = params[:feature_type].split(',')
+      conditions['features.is_public'] = 1
+      conditions.delete(:is_public)
     end
     if !params[:characteristic_id].blank?
       joins << 'LEFT JOIN category_features cf ON cf.feature_id = features.id'
-      options[:conditions]['cf.category_id'] = params[:characteristic_id].split(',')
-      options[:conditions]['cf.type'] = nil
-      options[:conditions]['features.is_public'] = 1
-      options[:conditions].delete(:is_public)
+      conditions['cf.category_id'] = params[:characteristic_id].split(',')
+      conditions['cf.type'] = nil
+      conditions['features.is_public'] = 1
+      conditions.delete(:is_public)
     end
-    options[:joins] = joins.join(' ') unless joins.empty?
-    options[:select] = 'features.*, DISTINCT feature.id' unless joins.empty?
-    perform_global_search(options, search_options)
+    @features = perform_global_search(search_options).where(conditions).includes(:include => :shapes)
+    @features = @features.joins(joins.join(' ')).select('features.*, DISTINCT feature.id') unless joins.empty?
     respond_to do |format|
       format.json { render :json => { :features => @features.reject{|f| f.shapes.empty?}[0...100].collect(&:fid) }, :callback => params[:callback] }
     end
@@ -235,7 +228,7 @@ class FeaturesController < ApplicationController
   end
   
   def search
-    options = { :page => params[:page] || 1, :per_page => 10, :conditions => {:is_public => 1} }
+    conditions = {:is_public => 1}
     search_options = { :scope => params[:scope], :match => params[:match] }
     @features = nil
     @params = params
@@ -272,23 +265,23 @@ class FeaturesController < ApplicationController
         joins = []
         if !params[:object_type].blank?
           joins << "LEFT JOIN cumulative_category_feature_associations ccfa ON ccfa.feature_id = features.id"
-          options[:conditions]['ccfa.category_id'] = params[:object_type].split(',')
-          options[:conditions]['features.is_public'] = 1
-          options[:conditions].delete(:is_public)
+          conditions['ccfa.category_id'] = params[:object_type].split(',')
+          conditions['features.is_public'] = 1
+          conditions.delete(:is_public)
         end
         if !params[:characteristic_id].blank?
           joins << "LEFT JOIN category_features cf ON cf.feature_id = features.id"
-          options[:conditions]['cf.category_id'] = params[:characteristic_id].split(',')
-          options[:conditions]['cf.type'] = nil
-          options[:conditions]['features.is_public'] = 1
-          options[:conditions].delete(:is_public)
+          conditions['cf.category_id'] = params[:characteristic_id].split(',')
+          conditions['cf.type'] = nil
+          conditions['features.is_public'] = 1
+          conditions.delete(:is_public)
         end
         if !params[:has_descriptions].blank? && params[:has_descriptions] == '1'
           search_options[:has_descriptions] = true
         end
-        options[:joins] = joins.join(' ') unless joins.empty?
-        options[:select] = "features.*, DISTINCT feature.id" unless joins.empty?
-        perform_global_search(options, search_options)
+        @features = perform_global_search(search_options).where(conditions).paginate(:page => params[:page] || 1, :per_page => 10)
+        @features = @features.joins(joins.join(' ')).select('features.*, DISTINCT feature.id') unless joins.empty?
+        
       end
     #end
     # When using the session store features, we need to provide will_paginate with info about how to render
@@ -324,7 +317,7 @@ class FeaturesController < ApplicationController
   
   def related_list
     @feature = Feature.find(params[:id])
-    @feature_relation_type.find(params[:feature_relation_type_id])
+    @feature_relation_type= FeatureRelationType.find(params[:feature_relation_type_id])
     @feature_is_parent = params[:feature_is_parent]
     @category = Category.find(params[:category_id])
     @relations = CachedFeatureRelationCategory.where(
@@ -339,7 +332,7 @@ class FeaturesController < ApplicationController
     @total_relations_count = @relations.length
     @relations = @relations.paginate(:page => params[:page] || 1, :per_page => 8)
     @params = params
-    render :partial => 'related_list'
+    # render related_list.js.erb
   end
     
   # The following three methods are used with the Node Tree
@@ -410,8 +403,8 @@ class FeaturesController < ApplicationController
         )
     end
     
-    def perform_global_search(options, search_options={})
-      @features = Feature.search(params[:filter], options, search_options)
+    def perform_global_search(search_options={})
+      Feature.search(params[:filter], search_options)
     end
     
     def api_render(features, options={})

@@ -13,16 +13,10 @@ class Admin::FeatureNameRelationsController < ResourceController::Base
   
   def collection
     @parent_object=parent_object # The FeatureName if applicable
-    
     feature_name_id = params[:feature_name_id]
-    
-    if feature_name_id
-      @collection = FeatureNameRelation.send(:with_scope, :find=>where(['child_node_id = ?', feature_name_id])) do
-        FeatureNameRelation.search(params[:filter], :page=>params[:page])
-      end
-    else
-      @collection = FeatureNameRelation.search(params[:filter], :page=>params[:page])
-    end
+    search_results = FeatureNameRelation.search(params[:filter])
+    search_results = search_results.where(['child_node_id = ?', feature_name_id]) if feature_name_id
+    @collection = search_results.page(params[:page])
     
     #@parent_object=parent_object # The FeatureName if applicable
     ##@object = FeatureName.find(params[:feature_name_id]) rescue nil # if we're locating a relation

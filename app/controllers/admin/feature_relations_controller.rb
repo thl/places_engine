@@ -39,15 +39,9 @@ class Admin::FeatureRelationsController < ResourceController::Base
   def collection
     @parent_object = parent_object # ResourceController normally sets this
     feature_id = params[:feature_id]
-    filter = params[:filter]
-    page = params[:page]
-    if feature_id
-      @collection = FeatureRelation.send(:with_scope, :find=>where(['parent_node_id = ? OR child_node_id = ?', feature_id, feature_id])) do
-        FeatureRelation.search(filter, :page=>page)
-      end
-    else
-      @collection = FeatureRelation.search(filter, :page=>page)
-    end
+    search_results = FeatureRelation.search(params[:filter])
+    search_results = search_results.where(['parent_node_id = ? OR child_node_id = ?', feature_id, feature_id]) if feature_id
+    @collection = search_results.page(params[:page])
   end
   
   #

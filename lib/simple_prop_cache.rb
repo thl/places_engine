@@ -5,7 +5,7 @@ module SimplePropCache
   
   module ClassMethods
     def get_all
-      Rails.cache.fetch("#{self.model_name}/all", :expires_in => 1.day) { self.find(:all, :order => 'created_at') }
+      Rails.cache.fetch("#{self.model_name}/all", :expires_in => 1.day) { self.order('created_at').all }
     end
     
     def get_by_code(code)

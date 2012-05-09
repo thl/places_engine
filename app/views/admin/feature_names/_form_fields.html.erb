@@ -8,15 +8,15 @@
   </div>
   <div class="row">
 <%= f.label :feature_name_type_id, FeatureNameType.human_name.titleize.s %>
-<%= f.collection_select :feature_name_type_id, FeatureNameType.find(:all), :id, :to_s, :include_blank=>true %>
+<%= f.collection_select :feature_name_type_id, FeatureNameType.all, :id, :to_s, :include_blank=>true %>
   </div>
   <div class="row">
 <%= f.label :language_id, Language.human_name.titleize.s %>
-<%= f.collection_select :language_id, Language.find(:all).sort{|a,b| a.to_s <=> b.to_s}, :id, :to_s, :include_blank=>true %>
+<%= f.collection_select :language_id, Language.all.sort{|a,b| a.to_s <=> b.to_s}, :id, :to_s, :include_blank=>true %>
   </div>
   <div class="row">
 <%= f.label :writing_system_id, WritingSystem.human_name.titleize.s %>
-<%= f.collection_select :writing_system_id, WritingSystem.find(:all).sort{|a,b| a.to_s <=> b.to_s}, :id, :to_s, :include_blank=>true %>
+<%= f.collection_select :writing_system_id, WritingSystem.all.sort{|a,b| a.to_s <=> b.to_s}, :id, :to_s, :include_blank=>true %>
   </div>
   <div class="row">
 <%= f.label(:etymology).s %>

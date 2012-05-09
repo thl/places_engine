@@ -48,12 +48,9 @@ class Admin::DescriptionsController < ResourceController::Base
     elsif params[:id]
       feature_id = object.feature_id
     end
-    
-    if feature_id
-      @collection = Description.send(:with_scope, :find=>where(['feature_id = ?', feature_id])) { Description.search(params[:filter], :page=>params[:page]) }
-    else
-      @collection = Description.search(params[:filter], :page=>params[:page])
-    end
+    search_results = Description.search(params[:filter])
+    search_results = search_results.where(['feature_id = ?', feature_id]) if feature_id
+    @collection = search_results.page(params[:page])
   end
   
   def defaults_primary

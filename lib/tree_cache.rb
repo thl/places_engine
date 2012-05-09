@@ -1,6 +1,4 @@
-
 class TreeCache
-    
   CACHE_DIR = "#{ActionController::Base.cache_store.cache_path}/views/tree/"
   CACHE_FILE_PREFIX = 'node_id_'
   CACHE_FILE_SUFFIX = '.cache'
@@ -32,7 +30,7 @@ class TreeCache
   end
   
   def self.generate(features, perspectives = nil, views = nil)
-    perspectives = Perspective.all(:conditions => {:is_public => true}) if perspectives.blank?
+    perspectives = Perspective.where(:is_public => true) if perspectives.blank?
     views = View.get_all if views.blank?
     view_ids = views.collect(&:id)
     perspective_ids = perspectives.collect(&:id)
@@ -49,9 +47,9 @@ class TreeCache
       current_level.each do |f|
         next if f.nil? || done.include?(f.fid)
         done << f.fid
-        next_level += f.child_relations.all(:conditions => {:perspective_id => perspective_ids}).collect(&:child_node)
+        next_level += f.child_relations.where(:perspective_id => perspective_ids).collect(&:child_node)
         next if already_cached(f, perspective_ids, view_ids)
-        related_perspectives = f.parent_relations.all(:select => 'DISTINCT perspective_id', :conditions => {:perspective_id => perspective_ids}).collect(&:perspective_id)
+        related_perspectives = f.parent_relations.select('DISTINCT perspective_id').where(:perspective_id => perspective_ids).collect(&:perspective_id)
         next if related_perspectives.empty?
         view_ids.each do |v|
           related_perspectives.each do |p|

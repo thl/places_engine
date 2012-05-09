@@ -25,12 +25,8 @@ class Citation < ActiveRecord::Base
     citable.to_s
   end
   
-  def self.search(filter_value, options={})
-    options[:conditions] = build_like_conditions(
-      %W(citations.notes),
-      filter_value
-    )
-    paginate(options)
+  def self.search(filter_value)
+    self.where(build_like_conditions(%W(citations.notes), filter_value))
   end
   
 end

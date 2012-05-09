@@ -1,5 +1,4 @@
 class Admin::FeatureGeoCodesController < ResourceController::Base
-  
   belongs_to :feature
   
   protected
@@ -12,13 +11,8 @@ class Admin::FeatureGeoCodesController < ResourceController::Base
   def collection
     @parent_object ||= parent_object
     feature_id=params[:feature_id]
-    if feature_id
-      @collection = FeatureGeoCode.send(:with_scope, :find=>where(['feature_id = ?', feature_id])) do
-        FeatureGeoCode.search(params[:filter], :page=>params[:page])
-      end
-    else
-      @collection = FeatureGeoCode.search(params[:filter], :page=>params[:page])
-    end
-  end
-  
+    search_results = FeatureGeoCode.search(params[:filter])
+    search_results = search_results.where(['feature_id = ?', feature_id]) if feature_id
+    @collection = search_results.page(params[:page])
+  end  
 end

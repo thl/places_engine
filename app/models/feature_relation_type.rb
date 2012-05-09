@@ -12,7 +12,7 @@ class FeatureRelationType < ActiveRecord::Base
   # ids if the relation being selected requires it.
   def self.marked_options(mark_asymmetric=true)
     options = []
-    FeatureRelationType.find(:all, :order => :id).each do |type|
+    FeatureRelationType.order(:id).each do |type|
       if type.is_symmetric
         options.push([type.label, type.id])
       else
@@ -32,19 +32,15 @@ class FeatureRelationType < ActiveRecord::Base
   # This seems to be generally satisfactory for now, since a migration creates the initial
   # FeatureRelationTypes.
   def self.hierarchy_ids
-    Rails.cache.fetch('feature_relation_types/hierarchical_ids') { self.all(:conditions => {:is_hierarchical => true}, :order => :id).collect(&:id) }
+    Rails.cache.fetch('feature_relation_types/hierarchical_ids') { self.where(:is_hierarchical => true).order(:id).collect(&:id) }
   end
   
   def to_s
     is_symmetric ? label : "#{label}/#{asymmetric_label}"
   end
   
-  def self.search(filter_value, options={})
-    options[:conditions] = build_like_conditions(
-      %W(feature_relation_types.label feature_relation_types.asymmetric_label),
-      filter_value
-    )
-    paginate(options)
+  def self.search(filter_value)
+    self.where(build_like_conditions(%W(feature_relation_types.label feature_relation_types.asymmetric_label), filter_value))
   end
   
   def self.get_by_code(code)

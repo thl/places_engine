@@ -12,6 +12,6 @@
   </div>
   <div class="row">
 <%= f.label :perspective_id, Perspective.human_name.titleize.s %>
-<%= f.collection_select :perspective_id, Perspective.find(:all), :id, :name %>
+<%= f.collection_select :perspective_id, Perspective.all, :id, :name %>
   </div>
 </fieldset>

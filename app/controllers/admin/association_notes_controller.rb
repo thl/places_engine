@@ -28,13 +28,9 @@ class Admin::AssociationNotesController < ResourceController::Base
   
   def collection
     @parent_object ||= parent_object
-    if parent?
-      AssociationNote.send(:with_scope, :find=>where(['notable_id = ? AND notable_type = ?', @parent_object.id, @parent_object.class.to_s])) do
-        @collection = AssociationNote.search(params[:filter], :page=>params[:page])
-      end
-    else
-      @collection = AssociationNote.search(params[:filter], :page=>params[:page])
-    end
+    search_results = AssociationNote.search(params[:filter])
+    search_results = search_results.where(['notable_id = ? AND notable_type = ?', @parent_object.id, @parent_object.class.to_s]) if parent?
+    @collection = search_results.page(params[:page])
   end
   
   def validate_association_type

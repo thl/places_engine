@@ -383,7 +383,7 @@ class FeatureData
     # When a feature is saved, it caches all of its ancestor ids. 
     # You need to make sure this happens for all of the features every time
     # a new batch has been imported. 
-    features = Feature.find(:all)
+    features = Feature.all
     features.each do |f|
       f.save
     end

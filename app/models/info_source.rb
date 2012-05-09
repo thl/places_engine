@@ -6,12 +6,8 @@ class InfoSource < ActiveRecord::Base
   # Validation
   validates_presence_of :code
   
-  def self.search(filter_value, options={})
-    options[:conditions] = build_like_conditions(
-      %W(info_sources.code info_sources.title info_sources.agent),
-      filter_value
-    )
-    paginate(options)
+  def self.search(filter_value)
+    self.where(build_like_conditions(%W(info_sources.code info_sources.title info_sources.agent), filter_value))
   end
   
   def self.get_by_code(code)

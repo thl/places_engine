@@ -6,12 +6,8 @@ class NoteTitle < ActiveRecord::Base
     self.title
   end
 
-  def self.search(filter_value, options={})
-    options[:conditions] = build_like_conditions(
-      %W(title),
-      filter_value
-    )
-    paginate(options)
+  def self.search(filter_value)
+    self.where(build_like_conditions(%W(title), filter_value))
   end  
 end
 

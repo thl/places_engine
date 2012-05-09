@@ -2,7 +2,7 @@ module FeatureExtensionForNamePositioning
   def prioritized_name(current_view)
     view = current_view
     Rails.cache.fetch("#{self.cache_key}/#{view.cache_key}/prioritized_name", :expires_in => 10.minutes) do
-      cached_name = self.cached_feature_names.find(:first, :conditions => {:view_id => view.id})
+      cached_name = self.cached_feature_names.where(:view_id => view.id).first
       if cached_name.nil?
         calculated_name = self.calculate_prioritized_name(view)
         cached_name = self.cached_feature_names.create(:view => view, :feature_name => calculated_name) if !calculated_name.nil?
@@ -133,7 +133,7 @@ module FeatureExtensionForNamePositioning
   end
   
   def prioritized_names
-    Rails.cache.fetch("#{self.cache_key}/prioritized_names", :expires_in => 10.minutes) { self.names.find(:all, :order => 'position') }
+    Rails.cache.fetch("#{self.cache_key}/prioritized_names", :expires_in => 10.minutes) { self.names.order('position').all }
   end
   
   #
@@ -179,7 +179,7 @@ module FeatureExtensionForNamePositioning
         end
       end
     end
-    sorted_names.keys.sort.inject(sorted_names.dup) {|names, i| names.merge(calculate_name_positions(sorted_names[i].children.find(:all, :order => 'feature_names.created_at'), names.keys.max + 1)) }
+    sorted_names.keys.sort.inject(sorted_names.dup) {|names, i| names.merge(calculate_name_positions(sorted_names[i].children.order('feature_names.created_at'), names.keys.max + 1)) }
   end
   
   def update_is_name_position_overriden
@@ -194,12 +194,12 @@ module FeatureExtensionForNamePositioning
     if self.is_name_position_overriden?
       names = self.names
       updated = false
-      self.names.find(:all, :conditions => {:position => 0}, :order => 'created_at').inject(names.maximum(:position)+1) do |pos, name|
+      self.names.where(:position => 0).order('created_at').inject(names.maximum(:position)+1) do |pos, name|
         name.update_attributes(:position => pos, :skip_update => true)
         updated = true if !updated
         pos + 1
       end
-      self.names.find(:all, :order => 'position, created_at').inject(1) do |pos, name|
+      self.names.order('position, created_at').inject(1) do |pos, name|
         if name.position!=pos
           name.update_attributes(:position => pos, :skip_update => true)
           updated = true if !updated
@@ -218,7 +218,7 @@ module FeatureExtensionForNamePositioning
     Rails.cache.delete("#{self.cache_key}/prioritized_names")
     View.get_all.each do |view|
       calculated_name = self.calculate_prioritized_name(view)
-      cached_name = cached_names.find(:first, :conditions => {:view_id => view.id})
+      cached_name = cached_names.where(:view_id => view.id).first
       if cached_name.nil?
         cached_names.create(:view => view, :feature_name => calculated_name)
       else
@@ -262,11 +262,11 @@ module FeatureExtensionForNamePositioning
   
   module ClassMethods
     def reset_name_positions
-      self.find(:all).each { |f| f.reset_name_positions }
+      self.all.each { |f| f.reset_name_positions }
     end
 
     def restructure_chinese_names
-      self.find(:all).select { |f| f.restructure_chinese_names }
+      self.all.select { |f| f.restructure_chinese_names }
     end
         
     def reset_positions(view = View.get_by_code('roman.popular'))
@@ -280,11 +280,11 @@ module FeatureExtensionForNamePositioning
     end
     
     def update_cached_feature_names
-      self.find(:all, :order => 'fid').each { |f| f.update_cached_feature_names }
+      self.order('fid').each { |f| f.update_cached_feature_names }
     end
     
     def update_name_positions
-      self.find(:all, :order => 'fid').each { |f| f.update_name_positions }
+      self.order('fid').each { |f| f.update_name_positions }
     end
   end
   

@@ -6,15 +6,10 @@ class Timespan < ActiveRecord::Base
     id.to_s
   end
   
-  def self.search(filter_value, options={})
+  def self.search(filter_value)
     # Empty constraints here... ? what conditions for timespan search?
-    options[:conditions] = build_like_conditions(
-      %W(),
-      filter_value
-    )
-    paginate(options)
+    self.where(build_like_conditions(%W(), filter_value))
   end
-  
 end
 
 # == Schema Info

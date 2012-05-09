@@ -12,12 +12,8 @@ class Blurb < ActiveRecord::Base
     code.to_s
   end
   
-  def self.search(filter_value, options={})
-    options[:conditions] = build_like_conditions(
-      %W(blurbs.code blurbs.title blurbs.content),
-      filter_value
-    )
-    paginate(options)
+  def self.search(filter_value)
+    where(build_like_conditions(%W(blurbs.code blurbs.title blurbs.content), filter_value))
   end
 end
 

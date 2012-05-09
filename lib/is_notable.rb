@@ -11,7 +11,7 @@ module IsNotable
     base.class_eval do
       
       def public_notes
-        notes.find(:all, :conditions => {:is_public => true})
+        notes.where(:is_public => true)
       end
       
     end

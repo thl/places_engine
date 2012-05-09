@@ -10,7 +10,7 @@ module MediaManagementDeployer
   end
   
   def self.do_source_deployment
-    Local::InfoSource.find(:all, :order => 'date_published, created_at').each do |info_source|
+    Local::InfoSource.order('date_published, created_at').each do |info_source|
       info_source_title = info_source.title
       info_source_title = info_source.code if info_source_title.blank?
       document = Document.find_by_title(info_source_title)

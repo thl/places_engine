@@ -92,6 +92,6 @@ class Admin::NoteTitlesController < ResourceController::Base
   # Override ResourceController collection method
   #
   def collection
-    @collection = NoteTitle.search(params[:filter], :page=>params[:page])
+    @collection = NoteTitle.search(params[:filter]).page(params[:page])
   end
 end

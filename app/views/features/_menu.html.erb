@@ -88,6 +88,7 @@
    # If a search is made via GET params (e.g. /features?filter=china), we need to perform it.
    valid_search_params = [:filter, :context_id, :match, :object_type, :characteristic_id, :scope, :search_scope, :has_descriptions].collect{|p| p.to_s }
    unless (params.keys & valid_search_params).empty? %>
-<%=  link_to '', params.merge({ :action => 'search' }), :loading => "NodeMenu.beginSearch()", :remote => true, :id => 'ajax_search_results', :style => "display:none;" %>
+<%=  link_to '', params.merge({ :action => 'search' }), :remote => true, :id => 'ajax_search_results', :style => "display:none;" %>
+<%=  javascript_tag("$('#ajax_search_results').bind('ajax:loading', function(){ NodeMenu.beginSearch() })") %>
 <%=  javascript_on_load "jQuery('#ajax_search_results').click()" %>
 <% end %>

@@ -87,12 +87,8 @@ class FeatureName < ActiveRecord::Base
     return self.name <=> object.name
   end
   
-  def self.search(filter_value, options={})
-    options[:conditions] = build_like_conditions(
-      %W(feature_names.name feature_names.etymology),
-      filter_value
-    )
-    paginate(options)
+  def self.search(filter_value)
+    self.where(build_like_conditions(%W(feature_names.name feature_names.etymology), filter_value))
   end  
 end
 

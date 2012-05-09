@@ -27,13 +27,9 @@ class Admin::CategoryFeaturesController < ResourceController::Base
   
   def collection
     @parent_object ||= parent_object
-    page = params[:page]
     filter = params[:filter]
-    if parent?
-      @collection = CategoryFeature.contextual_search(filter, @parent_object.id, :page=>page)
-    else
-      @collection = CategoryFeature.search(filter, :page=>page)
-    end
+    search_results = parent? ? CategoryFeature.contextual_search(filter, @parent_object.id) : CategoryFeature.search(filter)
+    @collection = search_results.page(params[:page])
   end
   
   private

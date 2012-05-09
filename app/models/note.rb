@@ -11,7 +11,7 @@ class Note < ActiveRecord::Base
   
   # AssociationNote uses single-table inheritance from Note, so we need to make sure that no AssociationNotes are
   # returned by .find. 
-  default_scope :conditions => {:association_type => nil}
+  default_scope where(:association_type => nil)
   
   def title
     self.custom_note_title.blank? ? (self.note_title.nil? ? nil : self.note_title.title) : self.custom_note_title
@@ -25,13 +25,8 @@ class Note < ActiveRecord::Base
     return self.title.nil? ? "Note" : self.title.to_s
   end
   
-  def self.search(filter_value, options={})
-    options[:conditions] = build_like_conditions(
-      %W(notes.content notes.custom_note_title note_titles.title),
-      filter_value
-    )
-    options[:include] = :note_title
-    paginate(options)
+  def self.search(filter_value)
+    self.where(build_like_conditions(%W(notes.content notes.custom_note_title note_titles.title), filter_value)).includes(:note_title)
   end
   
   private
