@@ -331,7 +331,6 @@ class Feature < ActiveRecord::Base
       end
     # Otherwise, just use a single scope:
     else
-      debugger
       with_scope(:find=>base_scope) { options.has_key?(:page) ? paginate(options) : self.all(options) }
     end
   end
