@@ -9,7 +9,7 @@ class FeatureGeoCode < ActiveRecord::Base
   extend IsDateable
   extend HasTimespan
   
-  def self.search(filter_value, options={})
+  def self.search(filter_value)
     # because a GeoCodeType is actualy a SimpleProp, this LIKE query should be checking simple_props (not geo_code_types)
     self.where(build_like_conditions(%W(feature_geo_codes.notes simple_props.code simple_props.name simple_props.notes), filter_value)
     ).includes([:feature, :geo_code_type])

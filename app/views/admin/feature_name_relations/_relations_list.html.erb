@@ -6,8 +6,8 @@
 <%=    pagination_row :colspan=>7 unless @collection.nil? %>
        <tr>
          <th class="listActionsCol"> </th>
-<%=     "<th>#{ts :child}</th>" unless options[:hide_child] %>
-<%=     "<th>#{ts 'relat.ed.to'}</th>" unless options[:hide_related_to] %>
+<%=     "<th>#{ts :child}</th>".html_safe unless options[:hide_child] %>
+<%=     "<th>#{ts 'relat.ed.to'}</th>".html_safe unless options[:hide_related_to] %>
          <th><%= FeatureNameRelation.human_attribute_name(:is_translation).s %></th>
          <th><%= FeatureNameRelation.human_attribute_name(:is_phonetic).s %></th>
          <th><%= FeatureNameRelation.human_attribute_name(:is_orthographic).s %></th>
@@ -22,8 +22,8 @@
            :edit_path   => edit_admin_feature_name_feature_name_relation_path(item.child_node, item),
            :view_path   => admin_feature_name_feature_name_relation_path(item.child_node, item)) %>
          </td>
-<%=     '<td>'+(item.child_node.name rescue 'child_node Ka-Blam!')+'</td>' unless options[:hide_child] %>
-<%=     '<td>'+(item.parent_node.name rescue 'parent_node Ka-Blam!')+'</td>' unless options[:hide_related_to] %>
+<%=     "<td>#{item.child_node.name rescue 'child_node Ka-Blam!'}</td>".html_safe unless options[:hide_child] %>
+<%=     "<td>#{item.parent_node.name rescue 'parent_node Ka-Blam!'}</td>".html_safe unless options[:hide_related_to] %>
          <td>
 <%=        yes_no item.is_translation %>
          </td>

@@ -56,7 +56,7 @@ class FeatureNameMatch
   
   def self.find_feature_by_name(name)
     return nil if name.blank?
-    feature = Feature.search(name, {:limit => 1, :page =>1}, {:scope => "name", :match => "exactly"})
+    feature = Feature.search(name, :scope => 'name', :match => 'exactly').paginate(:limit => 1, :page =>1)
     feature = feature.first if feature.is_a?(Array)
     feature
   end

@@ -1,8 +1,8 @@
-<% add_breadcrumb_item features_link
-   add_breadcrumb_item feature_link(@object.feature)
-   add_breadcrumb_item link_to(collection_name, collection_path)
-   add_breadcrumb_item ts('edit.this')
-   form_for @object, :url=>admin_feature_shape_path(@object.feature, @object), :html=>{:method=>:put} do |f| %>
-<%=  render :partial=>'form_fields', :locals=>{:f=>f,:object=>@object} %>
-<%=  link_to ts('cancel.this'), collection_path %> | <%= globalized_submit_tag 'update.this' %>
-<% end %>
+<%  add_breadcrumb_item features_link
+    add_breadcrumb_item feature_link(@object.feature)
+    add_breadcrumb_item link_to(collection_name, collection_path)
+    add_breadcrumb_item ts('edit.this') %>
+<%= form_for @object, :url=>admin_feature_shape_path(@object.feature, @object), :html=>{:method=>:put} do |f| %>
+<%=   render :partial=>'form_fields', :locals=>{:f=>f,:object=>@object} %>
+<%=   link_to ts('cancel.this'), collection_path %> | <%= globalized_submit_tag 'update.this' %>
+<%  end %>

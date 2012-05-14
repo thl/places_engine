@@ -377,7 +377,7 @@ module AdminHelper
           items << "(" + other.object_types.collect{|type| type.title }.join(", ") + ")"
         end
       end
-      items.join(" ")
+      items.join(" ").html_safe
     end
   end
   

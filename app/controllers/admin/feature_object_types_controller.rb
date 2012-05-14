@@ -38,9 +38,9 @@ class Admin::FeatureObjectTypesController < ResourceController::Base
     page = params[:page]
     filter = params[:filter]
     if parent?
-      @collection = FeatureObjectType.contextual_search(filter, @parent_object.id, :page=>page)
+      @collection = FeatureObjectType.contextual_search(filter, @parent_object.id).page(page)
     else
-      @collection = FeatureObjectType.search(filter, :page=>page)
+      @collection = FeatureObjectType.search(filter).page(page)
     end
   end
   

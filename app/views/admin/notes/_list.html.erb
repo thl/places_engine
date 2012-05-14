@@ -6,8 +6,8 @@
    <table class="listGrid">
      <tr>
        <th class="listActionsCol"></th>
-<%=   "<th>#{ts 'type.adjective'}</th>" unless options[:hide_type] %>
-<%=   "<th>#{ts 'type.value'}</th>" unless options[:hide_type_value] %>
+<%=   "<th>#{ts 'type.adjective'}</th>".html_safe unless options[:hide_type] %>
+<%=   "<th>#{ts 'type.value'}</th>".html_safe unless options[:hide_type_value] %>
        <th><%= ts :title %></th>
        <th><%= ts :author, :count => :many %></th>
      </tr>
@@ -18,8 +18,8 @@
 <%=    list_actions_for_item(item, :delete_path => path, :view_path => path, 
          :edit_path => item.notable.nil? ? edit_polymorphic_path([:admin, item]) : edit_polymorphic_path([:admin, item.notable, item], :action => "edit")) %>
        </td>
-<%=   "<td>#{item.notable_type.titleize}</td>" unless options[:hide_type] %>
-<%=   "<td>#{item.notable}</td>" unless options[:hide_type_value] %>
+<%=   "<td>#{item.notable_type.titleize}</td>".html_safe unless options[:hide_type] %>
+<%=   "<td>#{item.notable}</td>".html_safe unless options[:hide_type_value] %>
 <%    # uncomment the following lines to link to the notable object
       # object_path_method = ['admin', item.notable_type.underscore, 'path'].join('_').to_sym
       #= link_to(item.notable, send(object_path_method, item.notable))

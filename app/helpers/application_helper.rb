@@ -45,7 +45,7 @@ module ApplicationHelper
 	  label = ""
 	  feature_name.all_parents.size.times { label << "> "}
 	  label << fname_label(feature_name)
-    label
+    label.html_safe
 	end
   
   #

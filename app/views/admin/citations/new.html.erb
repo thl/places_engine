@@ -1,6 +1,6 @@
 <%= render :partial => 'breadcrumbs' %>
-<%  add_breadcrumb_item ts('new.this')
-    form_for [:admin, @object] do |f| %>
+<%  add_breadcrumb_item ts('new.this') %>
+<%= form_for [:admin, @object] do |f| %>
 <%=   f.hidden_field :citable_id %>
 <%=   f.hidden_field :citable_type %>
 <%=   render :partial => 'form_fields', :locals => {:f => f, :object => @object} %>

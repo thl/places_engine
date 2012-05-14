@@ -266,22 +266,11 @@ class Feature < ActiveRecord::Base
   # filter - any string filter value
   # options - the standard find(:all) options
   #
-  def self.contextual_search(string_context_id, filter, options={}, search_options={})
+  def self.contextual_search(string_context_id, filter, search_options={})
     context_id = string_context_id.to_i # for some reason this parameter has been especially susceptible to SQL injection attack payload
-    if context_id.blank?
-      conditions = true
-    else
-      conditions = [
-        '(features.id = ? OR features.ancestor_ids LIKE ?)',
-        context_id,
-        "%.#{context_id}.%"
-      ]
-    end
-    
-    base_scope = conditions
-    results = with_scope(:find=>where(base_scope)) do
-      self.search(filter, options, search_options)
-    end
+    results = self.search(filter, search_options)
+    results = results.where(['(features.id = ? OR features.ancestor_ids LIKE ?)', context_id, "%.#{context_id}.%"]) if !context_id.blank?
+
     # the context feature might not be returned
     # use detect to find a feature.id match against the context_id
     # if it isn't found, just do a standard find:

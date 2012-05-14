@@ -1,7 +1,7 @@
 <h1><%= ts 'feature.unused_ids' %></h1>
 <p><%= 
   # @feature_count
-  @features.collect(&:fid).sort.join('<br/>')
+  @features.collect(&:fid).sort.join('<br/>').html_safe
 %></p>
 <p>&nbsp;<br/>
 <%= new_item_link new_admin_feature_pid_path, ts('new.record', :what => t('feature.range')) %> |

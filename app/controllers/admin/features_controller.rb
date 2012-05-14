@@ -42,9 +42,9 @@ class Admin::FeaturesController < ResourceController::Base
     context_id = params[:context_id]
     page = params[:page]
     unless context_id.blank?
-      @context_feature, @collection = Feature.contextual_search(context_id, filter, :page=>page)
+      @context_feature, @collection = Feature.contextual_search(context_id, filter).page(page)
     else
-      @collection = Feature.search(filter, :page=>page)
+      @collection = Feature.search(filter).page(page)
     end
   end
   

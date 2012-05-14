@@ -1,8 +1,8 @@
 <%= render :partial => "breadcrumbs" %>
-<% add_breadcrumb_item ts('new.this')
-   form_for [:admin, @object] do |f| %>
-<%=  f.hidden_field :notable_id %>
-<%=  f.hidden_field :notable_type %>
-<%=  render :partial=>'form_fields', :locals=>{:f=>f,:object=>@object} %>
-<%=  link_to ts('cancel.this'), collection_path %> | <%= globalized_submit_tag 'creat.e.this' %>
-<% end %>
+<%  add_breadcrumb_item ts('new.this') %>
+<%= form_for [:admin, @object] do |f| %>
+<%=   f.hidden_field :notable_id %>
+<%=   f.hidden_field :notable_type %>
+<%=   render :partial=>'form_fields', :locals=>{:f=>f,:object=>@object} %>
+<%=   link_to ts('cancel.this'), collection_path %> | <%= globalized_submit_tag 'creat.e.this' %>
+<%  end %>
