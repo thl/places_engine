@@ -84,11 +84,11 @@ class Feature < ActiveRecord::Base
   
   def closest_parent_by_perspective(perspective)
     Rails.cache.fetch("features/#{self.fid}/closest_parent_by_perspective/#{perspective.id}", :expires_in => 1.hour) do
-      parent_relation = FeatureRelation.where(:child_node_id => self.id, :perspective_id => perspective.id, :feature_relation_type_id => FeatureRelationType.hierarchy_ids).select('parent_node_id').first
+      parent_relation = FeatureRelation.where(:child_node_id => self.id, :perspective_id => perspective.id, :feature_relation_type_id => FeatureRelationType.hierarchy_ids).select('parent_node_id').order('created_at').first
       break parent_relation.parent_node if !parent_relation.nil?
-      parent_relation = FeatureRelation.where(:child_node_id => self.id, :perspective_id => perspective.id).select('parent_node_id').first
+      parent_relation = FeatureRelation.where(:child_node_id => self.id, :perspective_id => perspective.id).select('parent_node_id').order('created_at').first
       break parent_relation.parent_node if !parent_relation.nil?
-      parent_relation = FeatureRelation.where(:child_node_id => self.id).select('parent_node_id').first
+      parent_relation = FeatureRelation.where(:child_node_id => self.id).select('parent_node_id').order('created_at').first
       break parent_relation.parent_node if !parent_relation.nil?
       nil
     end
@@ -118,7 +118,7 @@ class Feature < ActiveRecord::Base
       begin
         stack.push(current)
         current = current.closest_parent_by_perspective(perspective)
-      end while !current.nil?
+      end while !current.nil? && !stack.include?(current)
       stack.reverse
     end
   end

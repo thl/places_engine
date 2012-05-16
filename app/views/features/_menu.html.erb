@@ -46,9 +46,17 @@
     <div id="NodeSearchResults" <%= ' style="display:none"' unless active_item == 'results' %>>
 <%  if session[:search].blank? %>
 <%=   ts 'snippet.search' %>
-<%  else %>
-<%=   render :partial => 'features/search_results', :locals => {:use_session => true, :features => Feature.find(session[:search][:feature_ids])} %>
-<%  end %>
+<%  else
+      begin
+        search_results = Feature.find(session[:search][:feature_ids])
+      rescue
+        search_results = nil
+        session[:search] = nil
+      end
+      if !search_results.blank? %>
+<%=     render :partial => 'features/search_results', :locals => {:use_session => true, :features => search_results} %>
+<%    end
+    end %>
     </div>
     <h2 class="menu-item-options"><%= ts :options %></h2>
     <div id="NodeOptions" <%= ' style="display:none"' unless active_item == 'options' %>>
