@@ -113,6 +113,7 @@ class FeaturesController < ApplicationController
       :match => params[:match]
     }
     @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
+    @view ||= View.get_by_code('roman.popular')
     joins = []
     if !params[:feature_type].blank?
       joins << "LEFT JOIN cumulative_category_feature_associations ccfa ON ccfa.feature_id = features.id"
