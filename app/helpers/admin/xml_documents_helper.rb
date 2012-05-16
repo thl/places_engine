@@ -1,2 +1,2 @@
-module Admin::XMLDocumentsHelper
+module Admin::XmlDocumentsHelper
 end
