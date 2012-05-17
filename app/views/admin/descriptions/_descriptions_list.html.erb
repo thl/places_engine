@@ -18,7 +18,7 @@
 <%=      list_actions_for_item(item, :delete_path => admin_feature_description_path(item.feature, item),
          :edit_path => edit_admin_feature_description_path(item.feature, item), :view_path => admin_feature_description_path(item.feature, item)) %>
          </td>
-         <td class="centerText vtopText"><%= '<b> * </b>' if item.is_primary? %></td>		
+         <td class="centerText vtopText"><%= '<b>*</b>'.html_safe if item.is_primary? %></td>
          <td>
 <%         if !item.title.blank?  
              if !item.authors.empty? %>

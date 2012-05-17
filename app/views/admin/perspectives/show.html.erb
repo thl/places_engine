@@ -15,7 +15,7 @@
   </div>
   <div class="row">
     <label><%= Perspective.human_attribute_name(:description).s %></label>
-    <span><%= def_if_blank @object, :description %></span>
+    <span><%= def_if_blank(@object, :description).html_safe %></span>
   </div>
   <div class="row">
     <label><%= Perspective.human_attribute_name(:is_public).s %></label>

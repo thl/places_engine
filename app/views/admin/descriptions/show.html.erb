@@ -7,7 +7,7 @@
 </div>
 <br class="clear"/>
 <fieldset>
-  <legend><%= "#{Description.human_name.titleize.s} #{edit_item_link @object}" %></legend>
+  <legend><%= "#{Description.human_name.titleize.s} #{edit_item_link @object}".html_safe %></legend>
 <% if !@object.title.blank?
      if !@object.authors.empty? %>
        <span class='title'><%= @object.title %></span>
@@ -24,7 +24,7 @@
 <%   end
    end %>
    <div class="row">
-     <label><%= Description.human_attribute_name(:content).s %>:</label><br/><span><%= def_if_blank @object, :content %></span>
+     <label><%= Description.human_attribute_name(:content).s %>:</label><br/><span><%= def_if_blank(@object, :content).html_safe %></span>
    </div>
    <div class="row">
      <label><%= Description.human_attribute_name(:is_primary).s %></label> <span><%= yes_no @object.is_primary %></span>
