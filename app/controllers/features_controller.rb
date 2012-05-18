@@ -412,7 +412,7 @@ class FeaturesController < ApplicationController
       collection = {}
       collection[:features] = features.collect{|f| api_format_feature(f)}
       collection[:page] = params[:page] || 1
-      collection[:total_pages] = WillPaginate::ViewHelpers.total_pages_for_collection(features)
+      collection[:total_pages] = features.total_pages
       respond_to do |format|
         format.xml { render :xml => collection.to_xml }
         format.json { render :json => collection.to_json, :callback => params[:callback] }

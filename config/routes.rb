@@ -143,6 +143,14 @@ Rails.application.routes.draw do
       get :descendants
       get :related
     end
+    collection do
+      match 'by_fid/:fids.:format' => 'features#by_fid'
+      match 'by_old_pid/:old_pids' => 'features#by_old_pid'
+      match 'by_geo_code/:geo_code.:format' => 'features#by_geo_code'
+      match 'by_name/:query.:format' => 'features#by_name', :query => /.*?/
+      match 'fids_by_name/:query.:format' => 'features#fids_by_name', :query => /.*?/
+      match 'gis_resources/:fids.:format' => 'features#gis_resources'
+    end
     resources :descriptions do
       member do
         get :expand
@@ -150,7 +158,7 @@ Rails.application.routes.draw do
         get :contract
       end
     end
-    match 'by_topic/:id.:format' => 'topics#feature_descendants', :as => :by_topic
+    match 'by_topic/:id.:format' => 'topics#feature_descendants'
   end
   resources :altitudes do
     resources :notes, :citations
@@ -176,20 +184,14 @@ Rails.application.routes.draw do
   resources :feature_relations do
     resources :notes, :citations
   end
-  resources :media, :only => "show", :path => 'media_objects'
+  resources :media, :only => 'show', :path => 'media_objects'
   resources :shapes do
     resources :notes, :citations
   end
   resources :time_units do
     resources :notes, :citations
   end
-  resources :topics, :only => "show"
-  match 'by_fid/:fids.:format' => 'features#by_fid', :as => :by_fid, :path_prefix => 'features'
-  match 'by_old_pid/:old_pids' => 'features#by_old_pid', :as => :by_old_pid, :path_prefix => 'features'
-  match 'by_geo_code/:geo_code.:format' => 'features#by_geo_code', :as => :by_geo_code, :path_prefix => 'features'
-  match 'by_name/:query.:format' => 'features#by_name', :as => :by_name, :query => /.*?/, :path_prefix => 'features'
-  match 'fids_by_name/:query.:format' => 'features#fids_by_name', :as => :fids_by_name, :query => /.*?/, :path_prefix => 'features'
-  match 'gis_resources/:fids.:format' => 'features#gis_resources', :as => :gis_resources, :path_prefix => 'features'
+  resources :topics, :only => 'show'
   root :to => 'features#index'
   match ':controller(/:action(/:id(.:format)))'
 end
