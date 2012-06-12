@@ -62,7 +62,7 @@
     <div id="NodeOptions" <%= ' style="display:none"' unless active_item == 'options' %>>
       <ul>
         <li>
-<%=     form_for :session, :url => session_path, :html => { :method => 'put' } do |f| %>
+<%=     form_for :session, :url => session_path, :method => :put do |f| %>
 <%=       Perspective.human_name.titleize.s %>:<br />
 <%=       f.collection_select :perspective_id, @perspectives, :id, :name, {}, { :onchange => 'jQuery(this).parents("form:first").submit();' } %>
           <br />

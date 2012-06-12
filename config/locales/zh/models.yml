@@ -5,85 +5,85 @@ zh:
         models:
             alt_spelling_system:
                 one: '其它拼写方式'
-                other: '其它拼写方式(复数)'
+                other: '其它拼写方式'
             altitude:
                 one: '海拔'
-                other: '海拔(复数)'
+                other: '海拔'
             association_note:
                 one: '一般注释'
-                other: '一般注释(复数)'
+                other: '一般注释'
             blurb:
                 one: '简介'
-                other: '简介(复数)'
+                other: '简介'
             category_feature:
-                one: '知识库的特点'
-                other: '知识库的特点'
+                one: '主题或特点'
+                other: '主题和特点'
             citation:
                 one: '引用'
-                other: '引用(复数)'
+                other: '引用'
             description:
                 one: '文章'
                 other: '文章'
             feature:
                 one: '特征'
-                other: '特诊(复数)'
+                other: '特征'
             feature_geo_code:
                 one: '地理编码'
-                other: '地理编码(复数)'
+                other: '地理编码'
             feature_name:
                 one: '名字'
                 other: '别名'
             feature_name_relation:
                 one: '特征名称关系'
-                other: '特征名称关系(复数)'
+                other: '特征名称关系'
             feature_name_type:
                 one: '名称类型'
-                other: '名称类型(复数)'
+                other: '名称类型'
             feature_relation:
                 one: '特征关系'
-                other: '特征关系(复数)'
+                other: '特征关系'
             feature_relation_type:
                 one: '特征关系类型'
-                other: '特征关系类型(复数)'
+                other: '特征关系类型'
             geo_code_type:
                 one: '地理编码类型'
-                other: '地理编码类型(复数)'
+                other: '地理编码类型'
             language:
                 one: '语言'
-                other: '语言(复数)'
+                other: '语言'
             note:
                 one: '注释'
-                other: '注释(复数)'
+                other: '注释'
             note_title:
                 one: '标准标题'
-                other: '标准标题(复数)'
+                other: '标准标题'
             perspective:
                 one: '视角'
-                other: '视角(复数)'
+                other: '视角'
             orthographic_system:
                 one: '正字法'
-                other: '正字法（复数）'
+                other: '正字法'
             page:
                 one: '页'
-                other: '页(复数)'
+                other: '页'
             perspective:
                 one: '视角'
-                other: '视角(复数)'
+                other: '视角'
             phonetic_system:
                 one: '语音系统'
                 other: '语音系统'
             shape:
                 one: '位置'
-                other: '位置(复数)'
+                other: '位置'
             user:
                 one: '用户'
-                other: '用户(复数)'
+                other: '用户'
             view:
                 one: '地方名称语言'
-                other: '地方名称语言(复数)'
+                other: '地方名称语言'
             writing_system:
                 one: '书写系统'
-                other: '书写系统(复数)'
+                other: '书写系统'
         # Attribute names will be titleized.
         attributes:
             altitude:
@@ -91,7 +91,7 @@ zh:
                 estimate: '预计'
                 maximum: '最大值'
                 minimum: '最小值'
-                unit:
+                unit: '单位'
             blurp:
                 code: '代码'
                 content: '内容'
@@ -103,7 +103,7 @@ zh:
                 show_root: '显示知识库最上层'
                 string_value: '文本值'
             citation:
-                info_source_id:
+                info_source_id: '信息来源'
                 notes: '注释'
             description:
                 content: '题目'
@@ -112,11 +112,11 @@ zh:
             feature:
                 descendant:
                     one: '包含的特征'
-                    other: '包含的特征(复数)'
+                    other: '包含的特征'
                 is_public: '是公共的'
                 object_type:
                     one: '特征类型'
-                    other: '特征类型(复数)'
+                    other: '特征类型'
                 old_pid: '旧的THL ID'
                 pid: 'THL ID'
             feature_geo_code:
@@ -158,8 +158,8 @@ zh:
                 gid: 'GID'
                 altitude: '海拔'
                 is_public: '公共？'
-                latitude:
-                longitude:
+                latitude: '纬度'
+                longitude: '经度'
             user:
                 login: '登录'
                 password: '密码'
@@ -168,4 +168,4 @@ zh:
         models:
             topic:
                 one: '特点'
-                other: '特点(复数)'
+                other: '特点'

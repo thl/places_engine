@@ -7,7 +7,7 @@
    end %>
 <h1><%= ts :what => t('select.record', :what => t('primary.record', :what => Description.human_name.titleize.s)), :whom => '"<em>#{h(@feature)}</em>"' %></h1>
 <%= error_messages_for :feature %>
-<%= form_for @feature, :url=>admin_feature_path(@feature), :html=>{:method=>:put} do |f| %>
+<%= form_for @feature, :url=>admin_feature_path(@feature), :method => :put do |f| %>
 <%=  f.hidden_field :id %>
 <%   @feature.descriptions.order('is_primary DESC, title').each do |d| %>
      <p><table class='descriptionlist'>

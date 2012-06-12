@@ -19,7 +19,7 @@ class CachedCategoryCount < ActiveRecord::Base
       cached_count.count_with_shapes = 0
     else
       cached_count.count = CumulativeCategoryFeatureAssociation.where(:category_id => category_id).count
-      cached_count.count_with_shapes = CumulativeCategoryFeatureAssociation.where(['category_id = ? AND geometry IS NOT NULL', category_id]).joins(:feature => :shapes).select('DISTINCT id').count
+      cached_count.count_with_shapes = CumulativeCategoryFeatureAssociation.where(['category_id = ? AND geometry IS NOT NULL', category_id]).joins(:feature => :shapes).select('DISTINCT cumulative_category_feature_associations.id').count
       cached_count.save
     end
     return cached_count

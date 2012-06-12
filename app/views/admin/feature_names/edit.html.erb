@@ -5,7 +5,7 @@
    add_breadcrumb_item ts('edit.this') %>
 <div><h1><%= ts 'edit.ing.record', :what => FeatureName.human_name.titleize.s %>: <%= @object %></h1></div>
 <br class="clear"/>
-<%= form_for @object, :url=>admin_feature_name_path(@object), :html=>{:method=>:put} do |f| %>
+<%= form_for @object, :url => admin_feature_name_path(@object), :method => :put do |f| %>
 <%=  render :partial=>'form_fields', :locals=>{:f=>f} %>
 <%=  link_to ts('cancel.this'), admin_feature_name_path(@object) %> | <%= globalized_submit_tag 'update.this' %>
 <% end %>

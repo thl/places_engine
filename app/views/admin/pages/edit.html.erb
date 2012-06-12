@@ -2,7 +2,7 @@
     add_breadcrumb_item Page.human_name(:count => :many).s
     add_breadcrumb_item link_to(@object.id, object_path(@object))
     add_breadcrumb_item ts('edit.this') %>
-<%= form_for :page, @object, :url=>object_path, :html=>{:method=>:put} do |f| %>
+<%= form_for :page, @object, :url=>object_path, :method => :put do |f| %>
 <%=  render :partial=>'form_fields', :locals=>{:f=>f,:object=>@object} %>
 <%=  link_to ts('cancel.this'), collection_path %> | <%= globalized_submit_tag 'update.this' %>
 <% end %>

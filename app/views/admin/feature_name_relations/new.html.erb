@@ -6,7 +6,7 @@
       add_breadcrumb_item link_to(ts('relation.this', :count => :many).s, admin_feature_name_feature_name_relations_path(@object.child_node))
       add_breadcrumb_item ts('new.this')
     end %>
-<%= form_for :feature_name_relation, @object, :url => admin_feature_name_feature_name_relations_path(@object.child_node), :html => {} do |f| %>
+<%= form_for :feature_name_relation, @object, :url => admin_feature_name_feature_name_relations_path(@object.child_node) do |f| %>
 <%=   f.hidden_field :child_node_id, :value => params[:feature_name_id] %>
 <%=   f.hidden_field :parent_node_id, :value => params[:target_id] %>
 <%=   render :partial => 'form_fields', :locals => {:f => f} %>
