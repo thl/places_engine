@@ -457,15 +457,6 @@ module ApplicationHelper
     end).html_safe
   end
   
-  def javascript_on_load(*args, &block)
-    if block_given?
-      content = with_output_buffer(&block)
-      javascript_tag "$(document).ready(function(){#{content}})"
-    else
-      javascript_tag "$(document).ready(function(){#{args.first}})"
-    end
-  end
-
    def google_maps_key
      hostname = Socket.gethostname.downcase
      if hostname== 'e-bhutan.bt'
