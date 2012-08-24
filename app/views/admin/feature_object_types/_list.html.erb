@@ -12,7 +12,7 @@
        <th><%= Note.human_name(:count => :many).titleize.s %></th>
        <th><%= ts 'add.record', :what => Note.human_name.titleize %></th>
        <th><%= t('date.this', :count => :many).titleize.s.s %></th>
-       <th><%= ts 'add.record', :what => t('date.this').titleize %></th>
+       <th><%= ts 'add.record', :what => t('date.this', :count => 1).titleize %></th>
      </tr>
 <%   list = list.sort_by{|a| a.position}
      list.each do |item| 
