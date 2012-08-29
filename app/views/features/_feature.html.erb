@@ -40,7 +40,7 @@
            stack = cf.category_stack
            stack.push(link_to(stack.pop, c.get_url_with_parent))  %>
            <li>
-<%=          stack.join(' > ') %><%= ": #{values.join(', ')}" if !values.empty? %>
+<%=          stack.join(' > ').html_safe %><%= ": #{values.join(', ')}" if !values.empty? %>
 <%=          note_popup_link_for(cf) %>
 <%=          time_units_for(cf) %>
            </li>
