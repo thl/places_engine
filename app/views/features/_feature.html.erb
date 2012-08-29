@@ -93,7 +93,7 @@
 <%=  feature_name_ul(feature,false) %>
      <dl class="no-style">
 <%   feature.names.roots.order('position').each do |name| %>
-<%=    "<dt><strong>#{ts(:for, :what => FeatureName.human_attribute_name(:etymology), :whom => name.name.to_s)}:</dt></strong><dd>#{name.etymology.to_s.s}</dd>" unless name.etymology.blank? %>
+<%=    "<dt><strong>#{ts(:for, :what => FeatureName.human_attribute_name(:etymology), :whom => name.name.to_s)}:</dt></strong><dd>#{name.etymology.to_s.s}</dd>".html_safe unless name.etymology.blank? %>
 <%   end %>
      </dl>
 <%=  note_popup_link_list_for(feature, {:association_type => FeatureName.model_name}) %>
@@ -136,15 +136,24 @@
 <%   end
      if !shapes.empty? %>
 <%=    content_tag :h3, Shape.human_name(:count => shapes.size).titleize.s %>
-<%=    shapes.size>1 ? '<ul>' : '<p>' %>
-<%     shapes.each do |shape| %>
-<%=      '<li>' if shapes.size>1 %>
-<%=h     shape_display_string(shape) %>
-<%=      note_popup_link_for(shape) %>
-<%=      time_units_for(shape) %>
-<%=      '</li>' if shapes.size>1 %>
+<%     if shapes.size>1 %>
+         <ul>
+<%       shapes.each do |shape| %>
+           <li>
+<%=h       shape_display_string(shape) %>
+<%=        note_popup_link_for(shape) %>
+<%=        time_units_for(shape) %>
+           </li>
+<%       end %>
+         </ul>
+<%     else
+         shape = shapes.first %>
+         <p>
+<%=h       shape_display_string(shape) %>
+<%=        note_popup_link_for(shape) %>
+<%=        time_units_for(shape) %>
+         </p>
 <%     end %>
-<%=    shapes.size>1 ? '</ul>' : '</p>' %>
 <%=    content_tag :h3, ts('resource.gis.feature_alone') %>
        <ul>
          <li><%= link_to "GML", :action => :gis_resources, :fids => feature.fid, :format => "gml" %></li>
