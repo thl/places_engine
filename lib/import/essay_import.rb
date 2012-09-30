@@ -119,7 +119,7 @@ class EssayImport < Importation
     # this is being run on sds[3-8], make the appropriate changes to headers and uri.host
     if requested_host =~ /thlib.org/
       server_host = Socket.gethostname.downcase
-      if server_host =~ /sds[3-8].itc.virginia.edu/
+      if server_host =~ /sds.+\.itc\.virginia\.edu/
         headers = { 'Host' => requested_host }
         uri.host = '127.0.0.1'
       end
