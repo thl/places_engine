@@ -33,19 +33,20 @@ class FeaturesController < ApplicationController
   #
   def show
     @feature = Feature.get_by_fid(params[:id])
-    if @feature.nil?
-      redirect_to features_url
-    else
-      set_common_variables(session)
-      session[:interface][:context_id] = @feature.id unless @feature.nil?
-      @tab_options = {:entity => @feature}
-      @current_tab_id = :place
-      respond_to do |format|
-        format.html
-        format.xml
-        format.csv
-        format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')), :callback => params[:callback] }
+    respond_to do |format|
+      format.html do
+        if @feature.nil?
+          redirect_to features_url
+        else
+          set_common_variables(session)
+          session[:interface][:context_id] = @feature.id unless @feature.nil?
+          @tab_options = {:entity => @feature}
+          @current_tab_id = :place
+        end
       end
+      format.xml
+      format.csv
+      format.json { render :json => Hash.from_xml(render_to_string(:action => 'show.xml.builder')), :callback => params[:callback] }
     end
   end 
 
