@@ -1,6 +1,6 @@
 <% options ||= {}
    if list.empty? %>
-<%=  empty_collection_message t('no.record', :what => t(:available, :what => Page.human_name)).capitalize.s %>
+<%=  empty_collection_message t('no.record', :what => t(:available, :what => Page.model_name.human)).capitalize.s %>
 <% else %>
    <table class="listGrid">
 <%=  pagination_row :colspan=>6 unless list.nil? %>

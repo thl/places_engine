@@ -1,13 +1,13 @@
 <%= render :partial => "breadcrumbs" %>
 <% add_breadcrumb_item @object.to_s %>
 <fieldset>
-  <legend><%= ts :for, :what => Note.human_name.titleize.s, :whom => "#{@object.notable}'s #{@object.association_type_name}" %> <%= edit_item_link @object %> <%= delete_item_link @object %></legend>
+  <legend><%= ts :for, :what => Note.model_name.human.titleize.s, :whom => "#{@object.notable}'s #{@object.association_type_name}" %> <%= edit_item_link @object %> <%= delete_item_link @object %></legend>
   <div class="row">
     <label><%= ts :title %></label>
     <span><%= def_if_blank @object, :title %></span>
   </div>
   <div class="row">
-    <label><%= Note.human_name.titleize.s %></label>
+    <label><%= Note.model_name.human.titleize.s %></label>
     <span><%= def_if_blank @object, :content %></span>
   </div>
   <div class="row">

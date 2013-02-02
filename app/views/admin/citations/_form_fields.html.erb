@@ -1,6 +1,6 @@
 <%= tagged_tinymce_script %>
 <fieldset>
-	<legend><%= ts(:for, :what => Citation.human_name.titleize, :whom => @object.citable) %></legend>
+	<legend><%= ts(:for, :what => Citation.model_name.human.titleize, :whom => @object.citable) %></legend>
 	<%= f.hidden_field :id %>
 	<div class="row">
 		<%= f.label(:info_source_id).s %> (Document ID from MMS application)
@@ -8,11 +8,11 @@
 	</div>
 <%  if !@object.id.nil? %>
 	  <div class="row">
-	    <label><%= Page.human_name(:count => :many).s %></label>
+	    <label><%= Page.model_name.human(:count => :many).s %></label>
 <%=     @object.pages.collect{|p| "#{p.to_s} #{edit_item_link edit_admin_citation_page_path(@object, p)} #{delete_item_link admin_citation_page_path(@object, p)}"}.join(', ') %>
 	  </div>
 	  <div class="row">
-<%=	    new_item_link(new_admin_citation_page_path(@object), ts('add.record', :what => t(:referenced, :what => Page.human_name(:count => :many)))) %>		
+<%=	    new_item_link(new_admin_citation_page_path(@object), ts('add.record', :what => t(:referenced, :what => Page.model_name.human(:count => :many)))) %>		
 	  </div>
 <%  end %>
 	<div class="row">

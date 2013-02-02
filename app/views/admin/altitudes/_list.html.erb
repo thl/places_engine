@@ -10,8 +10,8 @@
     <th><%= Altitude.human_attribute_name(:minimum).s %></th>
     <th><%= Altitude.human_attribute_name(:maximum).s %></th>
     <th><%= Altitude.human_attribute_name(:unit).s %></th>
-    <th><%= Note.human_name(:count => :many).titleize.s %></th>
-    <th><%= ts 'add.record', :what => Note.human_name.titleize %></th>
+    <th><%= Note.model_name.human(:count => :many).titleize.s %></th>
+    <th><%= ts 'add.record', :what => Note.model_name.human.titleize %></th>
     <th><%= t('date.this', :count => :many).titleize.s %></th>
     <th><%= ts 'add.record', :what => t('date.this', :count => 1).titleize %></th>
   </tr>

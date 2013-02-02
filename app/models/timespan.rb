@@ -1,5 +1,5 @@
 class Timespan < ActiveRecord::Base
-  
+  attr_accessible :is_current
   belongs_to :dateable, :polymorphic=>true
   
   def to_s

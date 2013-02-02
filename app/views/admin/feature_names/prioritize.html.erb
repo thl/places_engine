@@ -1,14 +1,11 @@
-<%= javascript_tag "var AUTH_TOKEN = #{form_authenticity_token.inspect};" if protect_against_forgery? %>
 <%= javascript_include_tag 'jquery.ajax.sortable' %>
-<script type="text/javascript">
-jQuery(document).ready(function(){
+<%= javascript_on_load do %>
 	jQuery('#featureNamesList').ajaxSortable({
 		action: '<%= "#{admin_feature_names_path}/set_priorities" %>',
 		object_id: <%= @feature.id.to_s %>
 	});
-});
-</script>
-<% add_breadcrumb_item features_link
+<% end
+   add_breadcrumb_item features_link
    add_breadcrumb_item feature_link(@feature)
    add_breadcrumb_item ts('change.record', :what => t('priorit.ization_of.names')) %>
 <div>
@@ -23,15 +20,15 @@ jQuery(document).ready(function(){
 <%=  pagination_row :colspan=>6 unless @collection.nil? %>
      <tr>
        <th class="listActionsCol"></th>
-       <th><%= FeatureName.human_name.titleize.s %></th>
-       <th><%= FeatureNameType.human_name.titleize.s %></th>
-       <th><%= Language.human_name.titleize.s %></th>
-       <th><%= WritingSystem.human_name.titleize.s %></th>
+       <th><%= FeatureName.model_name.human.titleize.s %></th>
+       <th><%= FeatureNameType.model_name.human.titleize.s %></th>
+       <th><%= Language.model_name.human.titleize.s %></th>
+       <th><%= WritingSystem.model_name.human.titleize.s %></th>
        <th><%= ts 'relat.ion.ship.this' %></th>
        <th><%= ts 'priorit.y' %></th>
      </tr>
-<%   list.sort!{ |a,b| a.position <=> b.position } %>
-<%   list.each do |item| %>
+<%   list.sort!{ |a,b| a.position <=> b.position }
+     list.each do |item| %>
        <tr id="feature_name_<%= item.id.to_s %>">
          <td class="centerText">
 <%       if @locating_relation %>
@@ -55,5 +52,5 @@ jQuery(document).ready(function(){
      </table>
 <% end %>
 <div class="returnLink">
-<%= link_to "&#8592; #{ts 'snippet.feature.return'}", admin_feature_path(@feature) %>
+<%= link_to "&#8592; #{ts 'snippet.feature.return'}".html_safe, admin_feature_path(@feature) %>
 </div>

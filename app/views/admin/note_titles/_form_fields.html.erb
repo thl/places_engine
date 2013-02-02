@@ -2,11 +2,11 @@
 <%= error_messages_for model_name %>
 <fieldset>
   <legend>
-<%= NoteTitle.human_name.titleize.s %>
+<%= NoteTitle.model_name.human.titleize.s %>
   </legend>
 <%= f.hidden_field :id %>
   <div class="row">
-<%= f.label :title, NoteTitle.human_name.titleize.s %>
+<%= f.label :title, NoteTitle.model_name.human.titleize.s %>
 <%= f.text_field :title, :class => :text %>
   </div>
 </fieldset>

@@ -12,8 +12,8 @@
          <th><%= FeatureNameRelation.human_attribute_name(:is_phonetic).s %></th>
          <th><%= FeatureNameRelation.human_attribute_name(:is_orthographic).s %></th>
          <th><%= FeatureNameRelation.human_attribute_name(:is_alt_spelling).s %></th>
-         <th><%= Note.human_name(:count => :many).titleize.s %></th>
-         <th><%= ts 'add.record', :what => Note.human_name.titleize %></th>
+         <th><%= Note.model_name.human(:count => :many).titleize.s %></th>
+         <th><%= ts 'add.record', :what => Note.model_name.human.titleize %></th>
        </tr>
 <%     list.each do |item| %>
        <tr>

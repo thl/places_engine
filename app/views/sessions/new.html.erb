@@ -1,11 +1,11 @@
-<h1><%= User.human_attribute_name(:login).s %></h1>
+<h1><%= AuthenticatedSystem::User.human_attribute_name(:login).s %></h1>
 <%= form_for(:session, :url => session_path, :method => :post) do |f| %>
-     <p><label for="login"><%= User.human_attribute_name(:login).s %></label><br/>
+     <p><label for="login"><%= AuthenticatedSystem::User.human_attribute_name(:login).s %></label><br/>
 <%=  f.text_field :login %></p>
-     <p><label for="password"><%= User.human_attribute_name(:password).s %></label><br/>
+     <p><label for="password"><%= AuthenticatedSystem::User.human_attribute_name(:password).s %></label><br/>
 <%=  f.password_field :password %></p>
 <!-- Uncomment this if you want this functionality -->
-     <p><label for="remember_me"><%= User.human_attribute_name(:remember_me).s %>:</label>
+     <p><label for="remember_me"><%= AuthenticatedSystem::User.human_attribute_name(:remember_me).s %>:</label>
 <%=  f.check_box :remember_me %></p>
      <p><%= globalized_submit_tag 'log.in' %></p>
 <% end -%>

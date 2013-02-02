@@ -1,4 +1,5 @@
 class FeatureGeoCode < ActiveRecord::Base
+  attr_accessible :geo_code_type_id, :geo_code_value
   
   belongs_to :feature
   belongs_to :geo_code_type

@@ -1,4 +1,6 @@
 class CumulativeCategoryFeatureAssociation < ActiveRecord::Base
+  attr_accessible :category_id, :feature_id, :skip_update
+  
   attr_accessor :skip_update
   
   belongs_to :feature

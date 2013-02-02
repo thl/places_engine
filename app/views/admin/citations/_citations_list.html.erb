@@ -9,8 +9,8 @@
 <%=   "<th>#{ts 'type.adjective'}</th>".html_safe unless options[:hide_type] %>
 <%=   "<th>#{ts 'type.value'}</th>".html_safe unless options[:hide_type_value] %>
        <th><%= Citation.human_attribute_name(:info_source_id).s %></th>
-       <th><%= Page.human_name(:count => :many).titleize.s %></th>
-       <th><%= Note.human_name(:count => :many).titleize.s %></th>
+       <th><%= Page.model_name.human(:count => :many).titleize.s %></th>
+       <th><%= Note.model_name.human(:count => :many).titleize.s %></th>
      </tr>
 <%   list.each do |item| %>
      <tr>

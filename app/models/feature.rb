@@ -1,4 +1,10 @@
 class Feature < ActiveRecord::Base
+  LANG_CODES_BY_FIDS = {5244 => 'urd', 427 => 'dzo', 426 => 'nep', 425 => 'hin', 2 => 'tib', 431 => 'tib', 432 => 'tib', 428 => 'tib', 430 => 'tib', 1 => 'chi'}
+  LANG_CODES_BY_FEATURE_IDS = {}
+  LANG_CODES_BY_FIDS.each_key{|fid| LANG_CODES_BY_FEATURE_IDS[Feature.find_by_fid(fid).id] = LANG_CODES_BY_FIDS[fid] }
+  
+  attr_accessible :is_public, :fid, :is_blank, :ancestor_ids, :skip_update
+  
   attr_accessor :skip_update
   
   include FeatureExtensionForNamePositioning
@@ -22,7 +28,7 @@ class Feature < ActiveRecord::Base
   
   # acts_as_solr :fields=>[:pid]
   
-  acts_as_family_tree :node, :tree_class => 'FeatureRelation', :conditions => {'feature_relations.feature_relation_type_id' => FeatureRelationType.hierarchy_ids}
+  acts_as_family_tree :node, :tree_class => 'FeatureRelation', :conditions => {:feature_relation_type_id => FeatureRelationType.hierarchy_ids}
   # These are distinct from acts_as_family_tree's parent/child_relations, which only include hierarchical parent/child relations.
   has_many :all_child_relations, :class_name => 'FeatureRelation', :foreign_key => 'parent_node_id', :dependent => :destroy
   has_many :all_parent_relations, :class_name => 'FeatureRelation', :foreign_key => 'child_node_id', :dependent => :destroy
@@ -50,7 +56,8 @@ class Feature < ActiveRecord::Base
     #
     def roots
       # proxy_target, proxy_owner, proxy_reflection - See Rails "Association Extensions"
-      proxy_reflection.class_name.constantize.roots.where('feature_names.feature_id' => proxy_owner.id) #.sort !!! See the FeatureName.<=> method
+      pa = proxy_association
+      pa.reflection.class_name.constantize.roots.where('feature_names.feature_id' => pa.owner.id) #.sort !!! See the FeatureName.<=> method
     end
   end
   

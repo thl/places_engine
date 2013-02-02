@@ -36,9 +36,9 @@ class Admin::UsersController < ApplicationController
     if using_open_id?
       authenticate_with_open_id(params['openid_url'], :required => [:nickname, :email]) do |result, identity_url, registration|
         if result.successful?
-          @user = User.find_by_identity_url(identity_url)
+          @user = AuthenticatedSystem::User.find_by_identity_url(identity_url)
           if @user.nil?
-            @user = User.new do |u|
+            @user = AuthenticatedSystem::User.new do |u|
               u.identity_url = identity_url
               u.login = registration['nickname']
               u.email = registration['email']
@@ -97,6 +97,6 @@ class Admin::UsersController < ApplicationController
   
   def find_person
     person_id = params[:person_id]
-    @person = person_id.blank? ? nil : Person.find(person_id)
+    @person = person_id.blank? ? nil : AuthenticatedSystem::Person.find(person_id)
   end
 end

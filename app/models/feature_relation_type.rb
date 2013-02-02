@@ -1,4 +1,6 @@
 class FeatureRelationType < ActiveRecord::Base
+  attr_accessible :is_hierarchical, :is_symmetric, :label, :asymmetric_label, :code, :asymmetric_code
+  
   has_many :feature_relations, :dependent => :destroy
   
   before_save :set_asymmetric_label

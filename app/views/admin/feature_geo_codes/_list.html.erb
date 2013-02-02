@@ -5,11 +5,11 @@
 <%=  pagination_row :colspan=>7 unless @collection.nil? %>
      <tr>
        <th class="listActionsCol"></th>
-       <th><%= Feature.human_name.titleize.s %></th>
+       <th><%= Feature.model_name.human.titleize.s %></th>
        <th><%= FeatureGeoCode.human_attribute_name(:geo_code_value).s %></th>
-       <th><%= GeoCodeType.human_name.titleize.s %></th>
-       <th><%= Note.human_name(:count => :many).titleize.s %></th>
-       <th><%= ts 'add.record', :what => Note.human_name.titleize %></th>
+       <th><%= GeoCodeType.model_name.human.titleize.s %></th>
+       <th><%= Note.model_name.human(:count => :many).titleize.s %></th>
+       <th><%= ts 'add.record', :what => Note.model_name.human.titleize %></th>
        <th><%= t('date.this', :count => :many).titleize.s %></th>
        <th><%= ts 'add.record', :what => t('date.this', :count => 1).titleize %></th>
      </tr>

@@ -12,7 +12,7 @@
       <div id="advanced_search" style="<%= 'display:none;' unless current_show_advanced_search  %>">
         <div>
 <%=       radio_button_tag :scope, :full_text, @search_form_params[:scope] == 'full_text' %> <%= ts 'search.full_text' %>
-<%=       radio_button_tag :scope, :name, @search_form_params[:scope] == 'name' %> <%= FeatureName.human_name.titleize.s %>
+<%=       radio_button_tag :scope, :name, @search_form_params[:scope] == 'name' %> <%= FeatureName.model_name.human.titleize.s %>
         </div>
         <div>
 <%=       radio_button_tag :match, :contains, @search_form_params[:match] == 'contains' %> <%= ts 'search.contains' %>
@@ -38,8 +38,7 @@
 <%=   globalized_submit_tag 'search.this', :style => "margin-top: 4px;" %>
 <%  end %>
 <%= javascript_tag do %>
-      $('#search_form').bind("ajax:before", function(){ if(!NodeMenu.checkForFidSearch()) return false; })
-      .bind("ajax:loading", function(){ NodeMenu.beginSearch(); });
+      $('#search_form').bind("ajax:beforeSend", function(){ if(!NodeMenu.checkForFidSearch()) return false; NodeMenu.beginSearch(); });
 <%  end %>
     </div>
     <h2 class="menu-item-results"><%= ts 'search.results' %></h2>
@@ -63,10 +62,10 @@
       <ul>
         <li>
 <%=     form_for :session, :url => session_path, :method => :put do |f| %>
-<%=       Perspective.human_name.titleize.s %>:<br />
+<%=       Perspective.model_name.human.titleize.s %>:<br />
 <%=       f.collection_select :perspective_id, @perspectives, :id, :name, {}, { :onchange => 'jQuery(this).parents("form:first").submit();' } %>
           <br />
-<%=       View.human_name.titleize.s %>:<br />
+<%=       View.model_name.human.titleize.s %>:<br />
 <%=       f.collection_select :view_id, @views, :id, :name, {}, { :onchange => 'jQuery(this).parents("form:first").submit();' } %>
           <br />
 <%=       ts 'show.record', :what => t('feature.detail', :count => :many) %>:<br />
@@ -97,6 +96,6 @@
    valid_search_params = [:filter, :context_id, :match, :object_type, :characteristic_id, :scope, :search_scope, :has_descriptions].collect{|p| p.to_s }
    unless (params.keys & valid_search_params).empty? %>
 <%=  link_to '', params.merge({ :action => 'search' }), :remote => true, :id => 'ajax_search_results', :style => "display:none;" %>
-<%=  javascript_tag("$('#ajax_search_results').bind('ajax:loading', function(){ NodeMenu.beginSearch() })") %>
+<%=  javascript_tag("$('#ajax_search_results').bind('ajax:beforeSend', function(){ NodeMenu.beginSearch() })") %>
 <%=  javascript_on_load "jQuery('#ajax_search_results').click()" %>
 <% end %>

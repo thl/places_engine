@@ -21,10 +21,10 @@
   </div>
 </fieldset>
 <fieldset>
-    <legend><%= FeatureName.human_name(:count => :many).titleize.s %> <%= link_to ts('change.record', :what => t('priorit.ization_of.names')), prioritize_feature_names_admin_features_path(@object) %></legend>
+    <legend><%= FeatureName.model_name.human(:count => :many).titleize.s %> <%= link_to ts('change.record', :what => t('priorit.ization_of.names')), prioritize_feature_names_admin_features_path(@object) %></legend>
     <div class="left highlight">
 <%= new_item_link [@object, :feature_name] %> |
-<%= link_to ts('clone.into', :what => FeatureName.human_name(:count => :many), :whom => t('new.record', :what => Feature.human_name)), clone_admin_feature_path(@object), :method => :post, :class => 'item-icon-new', :title => 'Clone feature names into new feature' %>
+<%= link_to ts('clone.into', :what => FeatureName.model_name.human(:count => :many), :whom => t('new.record', :what => Feature.model_name.human)), clone_admin_feature_path(@object), :method => :post, :class => 'item-icon-new', :title => 'Clone feature names into new feature' %>
     </div>
     <br class="clear"/>
 <%= render :partial => 'admin/feature_names/feature_names', :locals => { :list => @object.names } %>
@@ -46,42 +46,42 @@
 <%= association_note_list_fieldset(FeatureObjectType.model_name) %>
 </fieldset>
 <fieldset>
-    <legend><%= CategoryFeature.human_name(:count => :many).titleize.s %></legend>
+    <legend><%= CategoryFeature.model_name.human(:count => :many).titleize.s %></legend>
 <%= highlighted_new_item_link [@object, :category_feature] %>
     <br class="clear"/>
 <%= render :partial => 'admin/category_features/list', :locals => { :list => @object.category_features.where(:type => nil), :hide_feature_id => true } %>
 <%= association_note_list_fieldset(CategoryFeature.model_name) %>
 </fieldset>
 <fieldset>
-    <legend><%= FeatureGeoCode.human_name(:count => :many).titleize.s %></legend>
+    <legend><%= FeatureGeoCode.model_name.human(:count => :many).titleize.s %></legend>
 <%= highlighted_new_item_link [@object, :feature_geo_code] %>
     <br class="clear"/>
 <%= render :partial => 'admin/feature_geo_codes/list', :locals => { :list => @object.geo_codes } %>
 <%= association_note_list_fieldset(FeatureGeoCode.model_name) %>
 </fieldset>
 <fieldset>
-    <legend><%= Shape.human_name(:count => :many).titleize.s %> <%= link_to ts('change.record', :what => t('priorit.ization_of.locations')), prioritize_feature_shapes_admin_features_path(@object) %></legend>
+    <legend><%= Shape.model_name.human(:count => :many).titleize.s %> <%= link_to ts('change.record', :what => t('priorit.ization_of.locations')), prioritize_feature_shapes_admin_features_path(@object) %></legend>
 <%= highlighted_new_item_link [@object, :shape] %>
     <br class="clear"/>
 <%= render :partial => 'admin/shapes/list', :locals => { :list => @object.shapes } %>
 <%= association_note_list_fieldset(Shape.model_name) %>
 </fieldset>
 <fieldset>
-    <legend><%= Altitude.human_name(:count => :many).titleize.s %></legend>
+    <legend><%= Altitude.model_name.human(:count => :many).titleize.s %></legend>
 <%= highlighted_new_item_link [@object, :altitude] %>
     <br class="clear"/>
 <%= render :partial => 'admin/altitudes/list', :locals => { :list => @object.altitudes } %>
 <%= association_note_list_fieldset(Altitude.model_name) %>
 </fieldset>
 <fieldset>
-    <legend><%= FeatureRelation.human_name(:count => :many).titleize.s %></legend>
-<%= highlighted_new_item_link locate_for_relation_admin_feature_path(@object), ts('new.record', :what => FeatureRelation.human_name) %>
+    <legend><%= FeatureRelation.model_name.human(:count => :many).titleize.s %></legend>
+<%= highlighted_new_item_link locate_for_relation_admin_feature_path(@object), ts('new.record', :what => FeatureRelation.model_name.human) %>
     <br class="clear"/>
 <%= render :partial => 'admin/feature_relations/list', :locals => { :list => @object.all_relations, :parent => @object, :use_first => false, :use_names => true } %>
 <%= association_note_list_fieldset(FeatureRelation.model_name) %>
 </fieldset>
 <fieldset>
-    <legend><%= Description.human_name(:count => :many).titleize.s %></legend>
+    <legend><%= Description.model_name.human(:count => :many).titleize.s %></legend>
 <%= highlighted_new_item_link [@object, :description] %>
     <br class="clear"/>
 <%= render :partial => 'admin/descriptions/descriptions_list', :locals => { :list => @object.descriptions.order('is_primary DESC, title') } %>

@@ -1,4 +1,5 @@
-require 'config/environment'
+# require 'config/environment'
+
 namespace :places do
   namespace :mms do
     desc "Deploys sources to MMS documents (authenticating through MMS_USER argument) making the appropriate replacements."

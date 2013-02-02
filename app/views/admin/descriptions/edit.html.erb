@@ -4,7 +4,7 @@
    add_breadcrumb_item link_to(@object.id, admin_feature_description_path(parent_object,@object))
    add_breadcrumb_item ts('edit.this') %>
 <div>
-<h1><%= ts 'edit.ing.record', :what => "#{Description.human_name.titleize} #{@object.id}" %></h1>
+<h1><%= ts 'edit.ing.record', :what => "#{Description.model_name.human.titleize} #{@object.id}" %></h1>
 </div>
 <br class="clear"/>
 <%= form_for @object, :url => admin_feature_description_path(parent_object,@object), :method => :put do |f| %>

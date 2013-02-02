@@ -1,13 +1,9 @@
-<%= stylesheet_link_tag 'xml-books' %>
-<%= javascript_include_tag 'jquery-form', 'jquery.livequery', "sections/#{controller.controller_name}" %>
-<%= javascript_tag "var AUTH_TOKEN = #{form_authenticity_token.inspect};" if protect_against_forgery? %>
-<%= javascript_include_tag 'node-menu', 'node-tree' %>
+<%= stylesheet_link_tag 'places_engine/xml-books' %>
 <script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=<%= google_maps_key %>"></script>
 <%= javascript_include_tag "http://openlayers.org/api/OpenLayers.js" %>
-<%= javascript_tag "var current_view_code = '#{current_view.code}';" %>
-<%= javascript_include_tag "#{ThlSite.get_url}/places/maps/interactive/scripts/THLWMS.js", 'inset-map', 'characteristic-selector' %>
-<script type="text/javascript">
-jQuery(document).ready(function(){
+<%= javascript_include_tag "#{ThlSite.get_url}/places/maps/interactive/scripts/THLWMS.js" %>
+<%= javascript_include_tag 'places_engine/top' %>
+<%= javascript_on_load do %>
 	jQuery(window).unbind("scroll");
 	NodeTree.init("NodeTree", "NodeTreeList", "<%= features_path %>/");
 <%  node_menu_options = {}
@@ -19,26 +15,10 @@ jQuery(document).ready(function(){
 	var characteristic_data = <%= CategoryFeature.get_json_data %>;
 	var characteristic_selector = new CharacteristicSelector();
 	characteristic_selector.init('characteristic_selector', {
-		fieldLabel: "<%= Topic.human_name.titleize %>:",
+		fieldLabel: "<%= Topic.model_name.human.titleize %>:",
 		data: characteristic_data
 	});
-});
-function reset_advanced_search(){
-	// Select "Global" for search scope
-	$("input[name='search_scope']").removeAttr('checked');
-	$('#search_scope_global').attr('checked', 'checked');
-	// Select "Contains" for match
-	$("input[name='match']").removeAttr('checked');
-	$('#match_contains').attr('checked', 'checked');
-	// Select "Full Text" for text scope
-	$("input[name='scope']").removeAttr('checked');
-	$('#scope_full_text').attr('checked', 'checked');
-	// Uncheck has_descriptions
-	$("input[name='has_descriptions']").removeAttr('checked');
-	// Reset all of the fields in the ModelSearcher
-	category_searcher_object_type.resetFields();
-}
-</script>
+<% end %>
 <%= category_searcher(true, :category_id => 20, :field_name => 'object_type', :field_label => "#{Feature.human_attribute_name(:object_type).s}: ", :exclude_span => true, :options => {:hasTree => 'true'}) %>
 <!--<h2>THL Place Dictionary of Tibet &amp; the Himalayas</h2>-->
 <div style="clear:both;"></div>

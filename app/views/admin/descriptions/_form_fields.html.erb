@@ -19,11 +19,11 @@ input[type=text] {
 <%= f.text_field(:title, :class => :text) %>
   </div><br/>
 </p>
-<p><b><%= f.label(:content, Description.human_name.s) %></b><br/>
+<p><b><%= f.label(:content, Description.model_name.human.s) %></b><br/>
   <div class="row">
 <%= f.text_area :content, :rows => 16, :cols => 65, :class => 'mceEditor' %>
   </div>
-<p><%= link_to ts('add.record', :what => t('new.record', :what => t(:author))), add_author_admin_feature_descriptions_path(@object.feature), :remote => true %></p>
+<p><%= link_to ts('add.record', :what => t('new.record', :what => t(:author, :count => 1))), add_author_admin_feature_descriptions_path(@object.feature), :remote => true %></p>
 <div id="authors_div">
 <% for author in @object.authors %>
 <%=  render :partial => 'authors_selector', :locals => {:selected => author.id} %>

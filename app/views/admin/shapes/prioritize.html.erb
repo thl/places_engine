@@ -1,14 +1,11 @@
-<%= javascript_tag "var AUTH_TOKEN = #{form_authenticity_token.inspect};" if protect_against_forgery? %>
 <%= javascript_include_tag 'jquery.ajax.sortable' %>
-<script type="text/javascript">
-jQuery(document).ready(function(){
+<%= javascript_on_load do %>
   jQuery('#featureShapesList').ajaxSortable({
     action: '<%= "/admin/shapes/set_priorities" %>',
     object_id: <%= @feature.id.to_s %>
   });
-});
-</script>
-<% add_breadcrumb_item features_link
+<% end
+   add_breadcrumb_item features_link
    add_breadcrumb_item feature_link(@feature)
    add_breadcrumb_item ts('change.record', :what => t('priorit.ization_of.shapes')) %>
 <div>
@@ -23,11 +20,11 @@ jQuery(document).ready(function(){
 <%=  pagination_row :colspan=>6 unless @collection.nil? %>
      <tr>
        <th><%= Shape.human_attribute_name(:gid).s %></th>
-       <th><%= Shape.human_name(:count => :many).titleize.s %></th>
+       <th><%= Shape.model_name.human(:count => :many).titleize.s %></th>
        <th><%= ts 'priorit.y' %></th>
      </tr>
-<%   list.sort!{ |a,b| a.position <=> b.position } %>
-<%   list.each do |item| %>
+<%   list.sort!{ |a,b| a.position <=> b.position }
+     list.each do |item| %>
      <tr id="feature_shape_<%= item.id.to_s %>">
        <td><%= item.gid.to_s %></td>
        <td><%=h shape_display_string(item) %></td>
@@ -37,5 +34,5 @@ jQuery(document).ready(function(){
    </table>
 <% end %>
 <div class="returnLink">
-<%= link_to "&#8592; #{ts 'snippet.feature.return'}", admin_feature_path(@feature) %>
+<%= link_to "&#8592; #{ts 'snippet.feature.return'}".html_safe, admin_feature_path(@feature) %>
 </div>

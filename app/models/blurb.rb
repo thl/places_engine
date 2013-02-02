@@ -1,4 +1,5 @@
 class Blurb < ActiveRecord::Base
+  attr_accessible :title, :code, :content
   
   #
   #

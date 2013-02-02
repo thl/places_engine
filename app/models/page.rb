@@ -1,4 +1,5 @@
 class Page < ActiveRecord::Base
+  attr_accessible :volume, :start_page, :start_line, :end_page, :end_line
   belongs_to :citation
   
   def to_s

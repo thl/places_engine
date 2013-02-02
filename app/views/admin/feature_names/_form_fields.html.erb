@@ -3,19 +3,19 @@
 <fieldset>
   <legend><%= ts('information.general') %></legend>
   <div class="row">
-<%= f.label :name, Feature.human_name.titleize.s %>
+<%= f.label :name, Feature.model_name.human.titleize.s %>
 <%= f.text_field :name, :class => :text %>
   </div>
   <div class="row">
-<%= f.label :feature_name_type_id, FeatureNameType.human_name.titleize.s %>
+<%= f.label :feature_name_type_id, FeatureNameType.model_name.human.titleize.s %>
 <%= f.collection_select :feature_name_type_id, FeatureNameType.all, :id, :to_s, :include_blank=>true %>
   </div>
   <div class="row">
-<%= f.label :language_id, Language.human_name.titleize.s %>
+<%= f.label :language_id, Language.model_name.human.titleize.s %>
 <%= f.collection_select :language_id, Language.all.sort{|a,b| a.to_s <=> b.to_s}, :id, :to_s, :include_blank=>true %>
   </div>
   <div class="row">
-<%= f.label :writing_system_id, WritingSystem.human_name.titleize.s %>
+<%= f.label :writing_system_id, WritingSystem.model_name.human.titleize.s %>
 <%= f.collection_select :writing_system_id, WritingSystem.all.sort{|a,b| a.to_s <=> b.to_s}, :id, :to_s, :include_blank=>true %>
   </div>
   <div class="row">

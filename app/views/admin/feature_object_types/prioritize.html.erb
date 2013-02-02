@@ -1,14 +1,11 @@
-<%= javascript_tag "var AUTH_TOKEN = #{form_authenticity_token.inspect};" if protect_against_forgery? %>
 <%= javascript_include_tag 'jquery.ajax.sortable' %>
-<script type="text/javascript">
-  jQuery(document).ready(function(){
+<%= javascript_on_load do %>
     jQuery('#featureObjectTypesList').ajaxSortable({
       action: '<%= "#{admin_feature_object_types_path}/set_priorities" %>',
       object_id: <%= @feature.id.to_s %>
     });
-  });
-</script>
-<% add_breadcrumb_item features_link
+<% end
+   add_breadcrumb_item features_link
    add_breadcrumb_item feature_link(@feature)
    add_breadcrumb_item ts('change.record', :what => t('priorit.ization_of.feature_types')) %>
 <div>
@@ -23,7 +20,7 @@
 <%=  pagination_row :colspan=>6 unless @collection.nil? %>
      <tr>
        <th class="listActionsCol"></th>
-       <th><%= FeatureObjectType.human_name.titleize.s %></th>
+       <th><%= FeatureObjectType.model_name.human.titleize.s %></th>
        <th><%= ts 'priorit.y' %></th>
      </tr>
 <%   list.sort!{ |a,b| a.position <=> b.position }

@@ -2,7 +2,7 @@
    if @parent_object
      add_breadcrumb_item features_link
      add_breadcrumb_item feature_link(@parent_object)
-     add_breadcrumb_item Description.human_name(:count => :many).s
+     add_breadcrumb_item Description.model_name.human(:count => :many).s
    end %>
 <div>
   <div class="left"></div>

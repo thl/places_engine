@@ -26,7 +26,7 @@ function toggle_yes_radio(select_element, radio_prefix){
 <%= yes_no_radios(f, :is_phonetic, {:class => 'yesno-inline'}, {}, {:onclick => "$('#feature_name_relation_phonetic_system_id').val('')"}) %>
     <div class="elements">
 <%=   f.collection_select(:phonetic_system_id, PhoneticSystem.order('UPPER(name)'), :id, :to_s, {:include_blank => true}, {:onchange => "toggle_yes_radio(this, 'feature_name_relation_is_phonetic')"}) %>
-<%=   f.label :phonetic_system_id, PhoneticSystem.human_name.titleize.s %>
+<%=   f.label :phonetic_system_id, PhoneticSystem.model_name.human.titleize.s %>
     </div>
   </div>
   <div class="inlineRow">
@@ -34,7 +34,7 @@ function toggle_yes_radio(select_element, radio_prefix){
 <%= yes_no_radios(f, :is_orthographic, {:class => 'yesno-inline'}, {}, {:onclick => "$('#feature_name_relation_orthographic_system_id').val('')"}) %>
     <div class="elements">
 <%=   f.collection_select(:orthographic_system_id, OrthographicSystem.order('UPPER(name)'), :id, :to_s, {:include_blank => true}, {:onchange => "toggle_yes_radio(this, 'feature_name_relation_is_orthographic')"}) %>
-<%=   f.label :orthographic_system_id, OrthographicSystem.human_name.titleize.s %>
+<%=   f.label :orthographic_system_id, OrthographicSystem.model_name.human.titleize.s %>
     </div>
   </div>
   <div class="inlineRow">
@@ -42,7 +42,7 @@ function toggle_yes_radio(select_element, radio_prefix){
 <%= yes_no_radios(f, :is_alt_spelling, {:class => 'yesno-inline'}, {}, {:onclick => "$('#feature_name_relation_alt_spelling_system_id').val('')"}) %>
     <div class="elements">
 <%=   f.collection_select(:alt_spelling_system_id, AltSpellingSystem.order('UPPER(name)'), :id, :to_s, {:include_blank => true}, {:onchange => "toggle_yes_radio(this, 'feature_name_relation_is_alt_spelling')"}) %>
-<%=   f.label :alt_spelling_system_id, AltSpellingSystem.human_name.titleize.s %>
+<%=   f.label :alt_spelling_system_id, AltSpellingSystem.model_name.human.titleize.s %>
     </div>
   </div>
 </fieldset>

@@ -7,10 +7,10 @@
 <%=  pagination_row :colspan=>6 unless @collection.nil? %>
      <tr>
        <th class="listActionsCol"></th>
-       <th><%= FeatureRelation.human_name.titleize.s %></th>
-       <th><%= Perspective.human_name.titleize.s %></th>
-       <th><%= Note.human_name(:count => :many).titleize.s %></th>
-       <th><%= ts 'add.record', :what => Note.human_name.titleize %></th>
+       <th><%= FeatureRelation.model_name.human.titleize.s %></th>
+       <th><%= Perspective.model_name.human.titleize.s %></th>
+       <th><%= Note.model_name.human(:count => :many).titleize.s %></th>
+       <th><%= ts 'add.record', :what => Note.model_name.human.titleize %></th>
        <th><%= t('date.this', :count => :many).titleize.s %></th>
        <th><%= ts 'add.record', :what => t('date.this', :count => 1).titleize %></th>
      </tr>

@@ -1,4 +1,4 @@
-require 'config/environment'
+# require 'config/environment'
 require 'import/essay_import'
 require 'import/feature_name_match'
 namespace :db do

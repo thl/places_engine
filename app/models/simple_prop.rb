@@ -8,6 +8,8 @@
 class SimpleProp < ActiveRecord::Base
   include SimplePropCache
   
+  attr_accessible :name, :code, :description
+  
   #
   #
   # Associations

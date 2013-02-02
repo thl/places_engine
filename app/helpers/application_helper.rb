@@ -167,8 +167,7 @@ module ApplicationHelper
       ("<span class='has-draggable-popups note-popup-link'>(" +
         link_to("", link_url, :class => "note-popup-link-icon "+link_classes, :title => h(link_title)) +
         link_to("See Note", link_url, :class => "note-popup-link-text "+link_classes, :title => h(link_title)) +
-      ")</span>" +
-      "<script type='text/javascript'>jQuery(document).ready(function(){ActivateDraggablePopups('.has-draggable-popups');})</script>").html_safe
+      ")</span>" + javascript_on_load("ActivateDraggablePopups('.has-draggable-popups');")).html_safe
     else
       ""
     end
@@ -209,10 +208,9 @@ module ApplicationHelper
     link_title = "#{note_title}#{note_authors}#{note_date}"
     link_url = polymorphic_url([note.notable, note])
     link_classes = "draggable-pop no-view-alone overflow-y-auto height-350"
-    "<span class='has-draggable-popups'>
+    ("<span class='has-draggable-popups'>
       #{link_to(link_title, link_url, :class => link_classes, :title => h(note_title))}
-    </span>
-    <script type='text/javascript'>jQuery(document).ready(function(){ActivateDraggablePopups('.has-draggable-popups');})</script>".html_safe
+    </span>" + javascript_on_load("ActivateDraggablePopups('.has-draggable-popups');")).html_safe
   end
   
   #
@@ -240,7 +238,7 @@ module ApplicationHelper
       'feature_object_type' => 'feature_type',
       'shape' => 'location',
       'time_unit' => 'date',
-      'category_feature' => Topic.human_name #'kmap_characteristic'
+      'category_feature' => Topic.model_name.human #'kmap_characteristic'
     }
     names[str].nil? ? str : names[str]
   end
@@ -268,10 +266,6 @@ module ApplicationHelper
     str += "<li>#{link_to 'Feature Thesaurus', "#iframe=#{Category.get_url('20/children')}", {:hreflang => 'Feature Thesaurus'}}</li>"
     str += "</ul>"
     return str.html_safe
-  end
-
-  def stylesheet_files
-    super + ['public', 'jquery-ui-tabs']
   end
 
   def custom_secondary_tabs_list

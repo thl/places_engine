@@ -1,5 +1,5 @@
 <fieldset>	
-	<legend><%= ts :for, :what => Altitude.human_name.titleize, :whom => @parent_object.name %></legend>
+	<legend><%= ts :for, :what => Altitude.model_name.human.titleize, :whom => @parent_object.name %></legend>
 <%= f.hidden_field :id %>
 	<div class="row">
 <%= f.label(:average).s %>

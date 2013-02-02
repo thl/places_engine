@@ -2,25 +2,25 @@
    add_breadcrumb_item feature_link(@object.feature)
    add_breadcrumb_item @object.name %>
 <div>
-  <h1><%= FeatureName.human_name.titleize.s %>: <%= @object %></h1>
+  <h1><%= FeatureName.model_name.human.titleize.s %>: <%= @object %></h1>
 </div>
 <br class="clear"/>
 <fieldset>
   <legend><%= ts 'information.general' %> <%= edit_item_link @object %></legend>
   <div class="row">
-    <label><%= FeatureName.human_name.titleize.s %>:</label> <span><%= @object.name %></span>
+    <label><%= FeatureName.model_name.human.titleize.s %>:</label> <span><%= @object.name %></span>
   </div>
   <div class="row">
     <label><%= FeatureName.human_attribute_name(:etymology).s %>:</label> <span><%= def_if_blank @object, :etymology %></span>
   </div>
   <div class="row">
-    <label><%= FeatureNameType.human_name.titleize.s %>:</label> <span><%= def_if_blank @object, :class, :name %></span>
+    <label><%= FeatureNameType.model_name.human.titleize.s %>:</label> <span><%= def_if_blank @object, :class, :name %></span>
   </div>
   <div class="row">
-     <label><%= Language.human_name.titleize.s %>:</label> <span><%= def_if_blank @object, :language, :name %></span>
+     <label><%= Language.model_name.human.titleize.s %>:</label> <span><%= def_if_blank @object, :language, :name %></span>
   </div>
   <div class="row">
-     <label><%= WritingSystem.human_name.titleize.s %>:</label> <span><%= def_if_blank @object, :writing_system, :name %></span>
+     <label><%= WritingSystem.model_name.human.titleize.s %>:</label> <span><%= def_if_blank @object, :writing_system, :name %></span>
   </div>
   <div class="row">
     <label><%= FeatureName.human_attribute_name(:is_primary_for_romanization).s %></label> <span><%= yes_no @object.is_primary_for_romanization %></span>
@@ -33,9 +33,9 @@
   </div>
 </fieldset>
 <fieldset>
-  <legend><%= FeatureNameRelation.human_name(:count => :many).titleize.s %> <%#= link_to 'View', admin_feature_name_feature_name_relations_path(@object) %></legend>
+  <legend><%= FeatureNameRelation.model_name.human(:count => :many).titleize.s %> <%#= link_to 'View', admin_feature_name_feature_name_relations_path(@object) %></legend>
   <div class="left highlight">
-    <%= link_to ts('select.relation', :what => FeatureName.human_name, :whom => highlight(@object.name)), locate_for_relation_admin_feature_name_path(@object) %>.
+    <%= link_to ts('select.relation', :what => FeatureName.model_name.human, :whom => highlight(@object.name)), locate_for_relation_admin_feature_name_path(@object) %>.
   </div>
   <br class="clear"/>
 <% if object.parents.empty? && object.children.empty? %>

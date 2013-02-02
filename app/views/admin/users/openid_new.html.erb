@@ -1,4 +1,4 @@
-<h1><%= ts 'creat.e.this', :what => User.human_name.titleize %></h1>
+<h1><%= ts 'creat.e.this', :what => AuthenticatedSystem::User.model_name.human.titleize %></h1>
 <%= form_tag(admin_openid_create_path) do -%>
      <p>
        <label for="openid_url">OpenID URL</label><br/>

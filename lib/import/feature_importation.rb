@@ -664,7 +664,7 @@ class FeatureImportation < Importation
         description_content = "<p>#{description_content}</p>"
         author_name = self.fields.delete("#{prefix}.author.fullname")
         description_title = self.fields.delete("#{prefix}.title")
-        author = author_name.blank? ? nil : User.find_by_fullname(author_name)
+        author = author_name.blank? ? nil : AuthenticatedSystem::User.find_by_fullname(author_name)
         description = description_title.blank? ? descriptions.find_by_content(description_content) : descriptions.find_by_title(description_title) # : descriptions.find(:first, :conditions => ['LEFT(content, 200) = ?', description_content[0...200]])
         attributes = {:content => description_content, :title => description_title}
         if description.nil?

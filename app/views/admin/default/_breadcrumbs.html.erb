@@ -8,12 +8,12 @@ case parent_type
 when :altitude
   # @parent_object is FeatureObjectType
   add_breadcrumb_item feature_link(@parent_object.feature)
-  add_breadcrumb_item link_to(Altitude.human_name(:count => :many).s, admin_feature_altitudes_path(@parent_object.feature))
+  add_breadcrumb_item link_to(Altitude.model_name.human(:count => :many).s, admin_feature_altitudes_path(@parent_object.feature))
   add_breadcrumb_item link_to(@parent_object.id, admin_feature_altitude_path(@parent_object.feature, @parent_object))
 when :category_feature
   # @parent_object is FeatureObjectType
   add_breadcrumb_item feature_link(@parent_object.feature)
-  add_breadcrumb_item link_to(Topic.human_name(:count => :many).s, admin_feature_category_features_path(@parent_object.feature))
+  add_breadcrumb_item link_to(Topic.model_name.human(:count => :many).s, admin_feature_category_features_path(@parent_object.feature))
   add_breadcrumb_item link_to(@parent_object, admin_category_feature_path(@parent_object))
 when :description
 	add_breadcrumb_item features_link
@@ -35,7 +35,7 @@ when :feature_name_relation
 when :feature_geo_code
   # @parent_object is FeatureGeoCode
   add_breadcrumb_item feature_link(@parent_object.feature)
-  add_breadcrumb_item link_to(FeatureGeoCode.human_name(:count => :many).s, admin_feature_feature_geo_codes_path(@parent_object.feature))
+  add_breadcrumb_item link_to(FeatureGeoCode.model_name.human(:count => :many).s, admin_feature_feature_geo_codes_path(@parent_object.feature))
   add_breadcrumb_item link_to(@parent_object, admin_feature_geo_code_path(@parent_object))
 when :feature_object_type
   # @parent_object is FeatureObjectType
@@ -48,7 +48,7 @@ when :feature_relation
   add_breadcrumb_item feature_relation_role_label(@parent_object.child_node, @parent_object, :use_first=>false) 
 when :shape
   add_breadcrumb_item feature_link(@parent_object.feature)
-  add_breadcrumb_item link_to(Shape.human_name(:count => :many).s, admin_feature_shapes_path(@parent_object))
+  add_breadcrumb_item link_to(Shape.model_name.human(:count => :many).s, admin_feature_shapes_path(@parent_object))
   add_breadcrumb_item link_to(@parent_object.to_s, admin_feature_shape_path(@parent_object.feature, @parent_object))
 when :time_unit
   add_breadcrumb_item link_to(ts('date.this', :count => :many), admin_time_units_path)

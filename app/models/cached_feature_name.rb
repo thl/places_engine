@@ -1,4 +1,5 @@
 class CachedFeatureName < ActiveRecord::Base
+  attr_accessible :view_id, :feature_name_id
   validates_presence_of :feature_id, :view_id
   
   belongs_to :feature

@@ -1,6 +1,6 @@
 <% add_breadcrumb_item(features_link) if parent_type.to_s =~ /feature/
    add_breadcrumb_item(feature_link(@parent_object)) if parent_type==:feature
-   add_breadcrumb_item AssociationNote.human_name(:count => :many).titleize.s %>
+   add_breadcrumb_item AssociationNote.model_name.human(:count => :many).titleize.s %>
 <div>
   <div class="left">
 <%= resource_search_form %>

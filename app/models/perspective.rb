@@ -1,6 +1,8 @@
 class Perspective < ActiveRecord::Base
   include SimplePropCache
-    
+  
+  attr_accessible :is_public, :name, :code, :description
+  
   #
   #
   # Associations

@@ -1,6 +1,6 @@
 <% add_breadcrumb_item features_link
    add_breadcrumb_item feature_link(@object.feature)
-   add_breadcrumb_item link_to (collection_name, admin_feature_feature_geo_codes_path(@parent_object))
+   add_breadcrumb_item link_to (collection_name, admin_feature_feature_geo_codes_path(@object.feature, @parent_object))
    add_breadcrumb_item @object %>
 <fieldset>
   <legend>
@@ -8,11 +8,11 @@
 <%= edit_item_link @object %>
   </legend>
   <div class="row">
-    <label><%= Feature.human_name.titleize.s %></label>
+    <label><%= Feature.model_name.human.titleize.s %></label>
     <span><%= def_if_blank(@object, :feature, :name) %></span>
   </div>
   <div class="row">
-    <label><%= GeoCodeType.human_name.titleize.s %></label>
+    <label><%= GeoCodeType.model_name.human.titleize.s %></label>
     <span><%= def_if_blank @object, :geo_code_type %></span>
   </div>
   <div class="row">

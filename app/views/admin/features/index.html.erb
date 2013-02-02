@@ -22,7 +22,7 @@ end %>
 <%= pagination_row :colspan=>3 %>  
       <tr>
         <th class="listActionsCol"></th>
-        <th class="leftText"><%= FeatureName.human_name(:count => :many).titleize.s %></th>
+        <th class="leftText"><%= FeatureName.model_name.human(:count => :many).titleize.s %></th>
         <th><%= Feature.human_attribute_name(:object_type).s %></th>
       </tr>
 <%    @collection.each do |item| %>
@@ -52,7 +52,7 @@ end %>
     </table>
   </div>
   <div id="featureContextTree">
-    <h2><%= link_to(current_perspective, current_features_path) %> (<%= link_to ts(:switch, :what => Perspective.human_name.s), edit_session_path %>)</h2>
+    <h2><%= link_to(current_perspective, current_features_path) %> (<%= link_to ts(:switch, :what => Perspective.model_name.human.s), edit_session_path %>)</h2>
     <ul>
 <%=   new_tree_builder.build(@context_feature) { |node| !node.is_blank? } %>
     </ul>

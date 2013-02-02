@@ -1,4 +1,6 @@
 class CategoryFeature < ActiveRecord::Base
+  attr_accessible :prefix_label, :label, :string_value, :numeric_value, :show_parent, :category_id, :show_root, :skip_update
+  
   attr_accessor :skip_update
   
   belongs_to :feature
@@ -73,7 +75,7 @@ class CategoryFeature < ActiveRecord::Base
   end
   
   def self.get_json_data
-    Rails.cache.fetch('category_feature/get_json_data') { CategoryFeature.select('DISTINCT category_id').where(:type => nil).collect{|c| {:id => c.category_id, :name => c.to_s}}.sort_by{|a| a[:name].downcase.strip}.to_json.html_safe }
+    Rails.cache.fetch('category_feature/get_json_data') { CategoryFeature.select('DISTINCT category_id').where(:type => nil).collect{|c| {:value => c.category_id, :label => c.to_s}}.sort_by{|a| a[:label].downcase.strip}.to_json.html_safe }
   end
   
   private

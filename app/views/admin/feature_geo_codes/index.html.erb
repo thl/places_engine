@@ -3,7 +3,7 @@
      add_breadcrumb_item features_link
      add_breadcrumb_item feature_link(@parent_object)
    end
-   add_breadcrumb_item FeatureGeoCode.human_name(:count => :many).s %>
+   add_breadcrumb_item FeatureGeoCode.model_name.human(:count => :many).s %>
 <div>
   <div class="left"><%= resource_search_form %></div>
   <div class="right highlight">

@@ -18,11 +18,11 @@ input[type=text] {
 <%= model_name.titleize %>
   </legend>	
   <div class="row">
-<%= f.label :feature, Feature.human_name.s %>
+<%= f.label :feature, Feature.model_name.human.s %>
     <span><%= f_label(@object.feature) %></span>
   </div>
   <div class="row">
-<%= f.label :geo_code_type, GeoCodeType.human_name.s %>
+<%= f.label :geo_code_type, GeoCodeType.model_name.human.s %>
 <%= f.collection_select(:geo_code_type_id, GeoCodeType.all, :id, :to_s, :include_blank=>true) %>
   </div>
   <div class="row">

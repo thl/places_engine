@@ -1,4 +1,4 @@
-require 'config/environment'
+# require 'config/environment'
 
 namespace :cache do
   namespace :tree do

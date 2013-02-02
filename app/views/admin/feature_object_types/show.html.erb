@@ -8,11 +8,11 @@
 <%= edit_item_link @object %>
   </legend>
   <div class="row">
-    <label><%= Feature.human_name.titleize.s %></label>
+    <label><%= Feature.model_name.human.titleize.s %></label>
     <span><%= def_if_blank(@object, :feature, :name) %></span>
   </div>
   <div class="row">
-    <label><%= FeatureObjectType.human_name.titleize.s %></label>
+    <label><%= FeatureObjectType.model_name.human.titleize.s %></label>
     <span><%= def_if_blank @object, :category, :title %></span>
   </div>
 </fieldset>

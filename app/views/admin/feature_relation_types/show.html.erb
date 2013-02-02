@@ -1,8 +1,8 @@
-<% add_breadcrumb_item link_to(FeatureRelationType.human_name(:count => :many).s, admin_feature_relation_types_path)
+<% add_breadcrumb_item link_to(FeatureRelationType.model_name.human(:count => :many).s, admin_feature_relation_types_path)
    add_breadcrumb_item @object.to_s %>
 <fieldset>
   <legend>
-<%= FeatureRelationType.human_name.titleize.s %>
+<%= FeatureRelationType.model_name.human.titleize.s %>
 <%= edit_item_link @object %>
   </legend>
   <div class="row">

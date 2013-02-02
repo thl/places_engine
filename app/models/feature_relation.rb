@@ -1,4 +1,6 @@
 class FeatureRelation < ActiveRecord::Base
+  attr_accessible :perspective_id, :parent_node_id, :child_node_id, :feature_relation_type_id, :ancestor_ids, :skip_update
+  
   attr_accessor :skip_update
   
   extend HasTimespan
@@ -6,7 +8,7 @@ class FeatureRelation < ActiveRecord::Base
   extend IsDateable
   extend IsNotable
   
-  acts_as_family_tree :tree, :node_class => 'Feature', :conditions => {'feature_relations.feature_relation_type_id' => FeatureRelationType.hierarchy_ids}
+  acts_as_family_tree :tree, :node_class => 'Feature', :conditions => {:feature_relation_type_id => FeatureRelationType.hierarchy_ids}
   
   after_save do |record|
     if !record.skip_update

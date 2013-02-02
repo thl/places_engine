@@ -18,7 +18,7 @@ class Admin::FeaturesController < ResourceController::Base
     @locating_relation=true
     # Remove the Feature that is currently looking for a relation
     # (shouldn't be possible to relate to itself)
-    @collection.delete object
+    @collection = @collection.reject{|e| e.fid == object.fid}
     render :action=>:index
   end
   

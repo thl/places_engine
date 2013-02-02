@@ -474,17 +474,4 @@ module AdminHelper
   def fn_relationship(feature_name)
     feature_name.display_string
   end
-
-  def stylesheet_files
-    ['yui','admin', 'interface_utils'] + super
-  end
-  
-  def javascript_files
-    super + ['admin']
-  end
-  
-  def javascripts
-    super + include_tiny_mce_if_needed
-  end
-
 end

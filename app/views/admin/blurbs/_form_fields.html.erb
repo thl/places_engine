@@ -1,7 +1,7 @@
 <%= tagged_tinymce_script %>
 <%= error_messages_for 'blurb' %>
 <fieldset>
-	<legend><%= Blurb.human_name.titleize.s %></legend>
+	<legend><%= Blurb.model_name.human.titleize.s %></legend>
 <%= f.hidden_field :id %>
 	<div class="row">
 <%=   f.label(:title).s %>

@@ -120,13 +120,4 @@ module FeaturesHelper
     # slippery way of getting this link to be ajaxy and to 'know' its url; see views/features/_descendants.html.erb
     "<a href='#' class='ajax_get' name='#{url_for(params.merge(:page => page != 1 ? page : nil))}'>#{text}</a>".html_safe
   end
-  
-  
-  def javascript_files
-	  super + ['treescroll', 'jquery.draggable.popup']
-  end
-
-  def stylesheet_files
-    super + ['jquery.draggable.popup', 'interface_utils']
-  end
 end

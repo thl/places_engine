@@ -1,5 +1,5 @@
 <fieldset>
-  <legend><%= "#{Feature.human_name.titleize.s}: #{@object.name}" %></legend>
+  <legend><%= "#{Feature.model_name.human.titleize.s}: #{@object.name}" %></legend>
 <%= f.hidden_field :fid %>
 <%  unless @object.new_record? %>
     <div class="row">

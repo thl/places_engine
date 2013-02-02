@@ -5,7 +5,7 @@ module FeatureExtensionForNamePositioning
       cached_name = self.cached_feature_names.where(:view_id => view.id).first
       if cached_name.nil?
         calculated_name = self.calculate_prioritized_name(view)
-        cached_name = self.cached_feature_names.create(:view => view, :feature_name => calculated_name) if !calculated_name.nil?
+        cached_name = self.cached_feature_names.create(:view_id => view.id, :feature_name_id => calculated_name.id) if !calculated_name.nil?
       end
       cached_name.nil? ? nil : cached_name.feature_name
     end
@@ -238,9 +238,9 @@ module FeatureExtensionForNamePositioning
   def figure_out_name_by_country(names)
     # order matters, that is why I am using ancestor_ids instead of ancestors
     ordered_ancestors = self.ancestor_ids.blank? ? [] : self.ancestor_ids.split('.').delete_if{|id| id.blank?}.collect(&:to_i)
-    id = ([self.fid] + ordered_ancestors).detect{|id| HelperMethods::LANG_CODES_BY_FEATURE_IDS[id]}
+    id = ([self.fid] + ordered_ancestors).detect{|id| Feature::LANG_CODES_BY_FEATURE_IDS[id]}
     return nil if id.nil?
-    HelperMethods.figure_out_name_by_language_code(names, HelperMethods::LANG_CODES_BY_FEATURE_IDS[id])
+    HelperMethods.figure_out_name_by_language_code(names, Feature::LANG_CODES_BY_FEATURE_IDS[id])
   end
   
   def restructure_chinese_names
@@ -248,7 +248,7 @@ module FeatureExtensionForNamePositioning
     trad_chi_name = HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hant').id)
     simp_chi_name = HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hans').id)
     return false if trad_chi_name.nil? || simp_chi_name.nil? || !simp_chi_name.parent_relations.empty?
-    FeatureNameRelation.create :is_orthographic => 1, :orthographic_system => OrthographicSystem.get_by_code('trad.to.simp.ch.translit'), :parent_node => trad_chi_name, :child_node => simp_chi_name
+    FeatureNameRelation.create :is_orthographic => 1, :orthographic_system_id => OrthographicSystem.get_by_code('trad.to.simp.ch.translit').id, :parent_node => trad_chi_name, :child_node => simp_chi_name
     return true
     #|| parent_rel.parent_node_id != trad_chi_name.id
     #pinyin_trad_rel = trad_chi_name.child_relations.detect{|r| r.phonetic_system_id==pinyin_id}
@@ -288,11 +288,7 @@ module FeatureExtensionForNamePositioning
     end
   end
   
-  module HelperMethods
-    LANG_CODES_BY_FIDS = {5244 => 'urd', 427 => 'dzo', 426 => 'nep', 425 => 'hin', 2 => 'tib', 431 => 'tib', 432 => 'tib', 428 => 'tib', 430 => 'tib', 1 => 'chi'}
-    LANG_CODES_BY_FEATURE_IDS = {}
-    LANG_CODES_BY_FIDS.each_key{|fid| LANG_CODES_BY_FEATURE_IDS[Feature.find_by_fid(fid).id] = LANG_CODES_BY_FIDS[fid] }
-    
+  module HelperMethods    
     def self.find_name_for_writing_system(names, writing_system_id)
       names.detect{|n| n[:writing_system_id]==writing_system_id}
     end

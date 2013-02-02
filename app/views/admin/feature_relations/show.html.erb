@@ -1,13 +1,13 @@
 <% add_breadcrumb_items(features_link, feature_link(@parent_object), feature_relations_link(@parent_object),
      feature_relation_role_label(@parent_object, @object, :use_first=>false, :link_relation=>false, :link_second=>true)) %>
 <fieldset>
-  <legend><%= FeatureRelation.human_name.titleize.s %> <%= edit_item_link @object %></legend>
+  <legend><%= FeatureRelation.model_name.human.titleize.s %> <%= edit_item_link @object %></legend>
   <div class="row">
     <label><%= ts 'relat.ion.ship.this' %></label>:
     <span><%= feature_relation_role_label @parent_object, @object, :link_relation=>false %></span>
   </div>
   <div class="row">
-    <label><%= Perspective.human_name.titleize.s %></label>:
+    <label><%= Perspective.model_name.human.titleize.s %></label>:
     <span><%= @object.perspective.name %></span>
   </div>
 </fieldset>

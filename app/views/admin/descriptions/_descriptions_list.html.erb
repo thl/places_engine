@@ -6,9 +6,9 @@
        <tr>
          <th class="listActionsCol"></th>
          <th> </th>
-         <th><%= Description.human_name.titleize.s %></th>
-         <th><%= Note.human_name(:count => :many).titleize.s %></th>
-         <th><%= ts 'add.record', :what => Note.human_name.titleize %></th>
+         <th><%= Description.model_name.human.titleize.s %></th>
+         <th><%= Note.model_name.human(:count => :many).titleize.s %></th>
+         <th><%= ts 'add.record', :what => Note.model_name.human.titleize %></th>
          <th><%= t('date.this', :count => :many).titleize.s %></th>
          <th><%= ts 'add.record', :what => t('date.this', :count => 1).titleize %></th>
        </tr>
@@ -30,7 +30,7 @@
 <%           end
            else
              if !item.authors.empty? %>
-               <span class='title'><%= Description.human_name.titleize.s %></span>
+               <span class='title'><%= Description.model_name.human.titleize.s %></span>
                <span class='by'><%= ' by ' %></span>
                <span class='content_by'><%= join_with_and(item.authors.collect(&:fullname)) %></span>
 <%           end

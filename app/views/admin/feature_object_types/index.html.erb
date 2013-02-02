@@ -6,7 +6,7 @@
 <%  if parent? %>
 <%=   new_item_link [@parent_object, :feature_object_type] %>
 <%  else %>
-<%=   ts 'creat.e.requirement', :what => FeatureRelation.human_name, :whom => Feature.human_name %>
+<%=   ts 'creat.e.requirement', :what => FeatureRelation.model_name.human, :whom => Feature.model_name.human %>
 <%  end %>
   </div>
 </div>

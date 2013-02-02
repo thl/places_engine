@@ -1,8 +1,8 @@
-<% add_breadcrumb_item link_to(Citation.human_name.s, polymorphic_path([:admin, @parent_object.citable, @parent_object]))
-   add_breadcrumb_item Page.human_name(:count => :many).s
+<% add_breadcrumb_item link_to(Citation.model_name.human.s, polymorphic_path([:admin, @parent_object.citable, @parent_object]))
+   add_breadcrumb_item Page.model_name.human(:count => :many).s
    add_breadcrumb_item @object.id %>
 <fieldset>  
-  <legend><%= ts(:for, :what => Page.human_name(:count => :many).titleize.s, :whom => ts('citation.of', :what => @object.citation.citable_type.titleize)) %> <%= edit_item_link @object %> <%= delete_item_link @object %></legend>
+  <legend><%= ts(:for, :what => Page.model_name.human(:count => :many).titleize.s, :whom => ts('citation.of', :what => @object.citation.citable_type.titleize)) %> <%= edit_item_link @object %> <%= delete_item_link @object %></legend>
   <div class="row">
     <label><%= Page.human_attribute_name(:volume).s %></label>
     <span><%= def_if_blank @object, :volume %></span>

@@ -13,7 +13,7 @@
 <%=  pagination_row :colspan=>3 %>
      <tr>
        <th class="listActionCol"></th>
-       <th><%= NoteTitle.human_name.titleize.s %></th>
+       <th><%= NoteTitle.model_name.human.titleize.s %></th>
      </tr>
 <%   @collection.each do |item| %>
      <tr>

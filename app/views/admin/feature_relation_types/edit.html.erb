@@ -1,4 +1,4 @@
-<%  add_breadcrumb_item link_to(FeatureRelationType.human_name(:count => :many).s, admin_feature_relation_types_path)
+<%  add_breadcrumb_item link_to(FeatureRelationType.model_name.human(:count => :many).s, admin_feature_relation_types_path)
     add_breadcrumb_item link_to(@object.to_s, object_path)
     add_breadcrumb_items ts('edit.this') %>
 <%= form_for [:admin, @object] do |f| %>

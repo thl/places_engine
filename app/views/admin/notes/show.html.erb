@@ -7,7 +7,7 @@
     <span><%= def_if_blank @object, :title %></span>
   </div>
   <div class="row">
-    <label><%= Note.human_name.titleize.s %></label>
+    <label><%= Note.model_name.human.titleize.s %></label>
     <span><%= def_if_blank(@object, :content).html_safe %></span>
   </div>
   <div class="row">

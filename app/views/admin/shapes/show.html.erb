@@ -21,12 +21,12 @@
      <span><%= def_if_blank @object, :lng %></span>
    </div>
    <div class="row">
-     <label><%= Altitude.human_name.titleize.s %></label>
+     <label><%= Altitude.model_name.human.titleize.s %></label>
      <span><%= def_if_blank @object, :altitude %></span>
    </div>
 <% else %>
    <div class="row">
-     <label><%= Shape.human_name(:count => :many).titleize.s %></label>
+     <label><%= Shape.model_name.human(:count => :many).titleize.s %></label>
      <span><%= shape_display_string(@object) %></span>
    </div>
 <% end %>

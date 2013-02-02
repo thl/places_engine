@@ -1,4 +1,4 @@
-<%  add_breadcrumb_item link_to(FeatureRelationType.human_name(:count => :many).s, admin_feature_relation_types_path)
+<%  add_breadcrumb_item link_to(FeatureRelationType.model_name.human(:count => :many).s, admin_feature_relation_types_path)
     add_breadcrumb_item ts('new.this') %>
 <%= form_for [:admin, @object] do |f| %>
 <%=   render :partial=>'form_fields', :locals=>{:f=>f,:object=>@object} %>

@@ -1,0 +1,614 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require_self
+ *= require interface_utils/application
+ *= require interface_utils/jquery-ui-1.8.24.custom
+ *= require universal_navigation/jquery-ui-tabs
+ */
+
+h3{
+	color:darkred;
+	margin-top:1em;
+}
+
+input{
+	border:solid 1px gray;
+	padding:.1em;
+}
+
+/* Overwrite thdl-style.css to prevent decomposed Tibetan */
+h1, h1, h3, h4, h5, h6 {
+	letter-spacing: normal !important;
+}
+
+/* Overwrite thdl-style.css to allow for unstyled <dl/>s */
+dl.no-style {
+	margin:0;
+	padding:0;
+}
+dl.no-style dt, dl.no-style dd {
+	margin:0;
+	padding:0;
+	line-height:1em !important;
+	font-size:1em !important;
+	color:#404040 !important;
+	font-weight:normal !important;
+}
+dl.no-style dd {
+	margin-left:1em;
+}
+dl.no-style p {
+	font-size:1em !important;
+}
+
+.text {
+	border:solid 1px gray;
+	padding:.1em;
+	display: inline-block;
+	border:none; 
+	padding:5px; 
+	font:normal normal normal 18px/18px verdana, arial, sans-serif;
+}
+
+.left{
+	float:left;
+}
+
+.leftText{
+	text-align:left;
+}
+
+.bottomText {
+  vertical-align:text-bottom;
+}
+
+.centerText{
+	text-align:center;
+}
+
+.right{
+	float:right;
+}
+
+.clear{
+	clear:both;
+}
+
+.pagination{
+	text-align:center;
+}
+
+.pagination .current{
+	background-color:#ddd;
+	padding:0 2px;
+}
+
+.rowHighlight{
+	background-color:lightyellow;
+}
+
+.bar{
+	background-color:#eee;
+	padding:.5em 1em;
+	color:black;
+	font-weight:bold;
+}
+.bar p, .bar div{
+	color:black;
+}
+.bar a {
+	color:#dedede;
+	text-decoration:none;
+}
+.bar a:hover {
+	background-color:inherit;
+	color:white;
+}
+
+.expandable-link-contracted, .expandable-link-expanded{
+	padding-left:17px;
+	border-bottom:0 !important;
+}
+.expandable-link-contracted:hover, .expandable-link-expanded:hover{
+	border-bottom:0;
+}
+.expandable-link-contracted {
+	background:no-repeat url(http://thlib.org/global/images/btn-plus-lg.gif) 0 3px;
+}
+.expandable-link-expanded {
+	background:no-repeat url(http://thlib.org/global/images/btn-minus-lg.gif) 0 3px;
+}
+
+.note-popup-link {
+	font-size:0.8em;
+	margin-left:10px;
+}
+.note-popup-link-icon, .note-popup-link-icon:hover, .note-popup-link-icon:visited {
+	padding:2px 0 1px 19px;
+	border-bottom:0;
+	background:transparent no-repeat url(http://thlib.org/global/images/icon-page-text.gif);
+}
+.note-content {
+	font-size: 13px;
+	line-height: 18px;
+}
+.note-content p {
+	font-size: 13px;
+	line-height: 18px;
+}
+
+.time-units {
+	font-size:0.9em;
+	margin-left:5px;
+	color:#777;
+}
+
+.thl-popup-content > .thl-popup-padded-content {
+	padding:8px;
+}
+
+.related-features-categories p{
+	margin-bottom:5px;
+}
+
+#TB_ajaxContent{
+	padding:0;
+	margin:0 auto;
+}
+
+#TB_ajaxWindowTitle a, #TB_ajaxWindowTitle a:visited {
+	color:green;
+}
+#TB_ajaxWindowTitle a:hover {
+	color:darkgreen;
+}
+
+#TopBar .right{
+    margin-top:.3em;
+}
+
+#FeaturePanel{
+    background-color:#fff;
+}
+
+#FeaturePanel > div{
+	width:99%;
+	padding-top:15px;
+}
+
+#FeaturePanel .has-right-margin{
+	padding-right: 270px !important;
+}
+
+#FeatureContainer{
+}
+
+#FeaturePanelContainer {
+    min-height:580px;
+    position:relative;
+    overflow:hidden;
+}
+
+#FeatureTree{
+  background-color:#eee;
+  border:solid 1px gray;
+    width:40%;
+    padding:1em;
+}
+#FeatureTree h2 {
+    font-weight: bold;
+}
+#FeatureTree ul li:before {
+    content: " \0020";
+    color:black;
+}
+#FeatureTree ul li.closed:before {
+    content: "+ \0020";
+}
+#FeatureTree ul li.opened:before {
+    content: "- \0020";
+}
+#FeatureTree ul li.single:before {
+    content: "◊ \0020";
+}
+#FeatureTree ul li{
+    list-style:none;
+    margin-top:.3em;
+    margin-bottom:.3em;
+    padding:0;
+    text-indent:-1em;
+    font-size: 13px;
+}
+
+#NodeMenu{
+	position:absolute;
+	right:0;
+}
+
+#NodeMenu .node-menu-content{
+	background-color:#fff;
+	border-style:double;
+	border-width:3px;
+	border-color:#777;
+	float:right;
+	width:246px;
+}
+
+#NodeMenu .node-menu-content > h2{
+	margin:0;
+	padding:2px 0 2px 7px;
+	font-size:16px;
+	background-color:#f9f9f9;
+    border-bottom:1px solid #ddd;
+    cursor:pointer;
+}
+
+#NodeMenu .node-menu-content > div{
+	padding: 3px;
+}
+
+#NodeMenu .node-menu-resize {
+	display: block;
+	width: 6px;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 17px;
+	cursor: w-resize;
+	-moz-user-select: none;
+	-khtml-user-select: none
+}
+
+#NodeMenu .node-menu-toggle{
+	cursor:pointer;
+	float:left;
+	background-color:#fff;
+	width:18px;
+	height:18px;
+	margin:6px 0 0 0;
+	border:0;
+	padding:0;
+}
+
+#NodeMenu .toggle-show{
+	background:transparent no-repeat image-url('places_engine/node-menu-plus.png');
+}
+
+#NodeMenu .toggle-hide{
+	background:transparent no-repeat image-url('places_engine/node-menu-minus.png');
+}
+
+#NodeMenu .text{
+	width:225px;
+	height:33px;
+	border:1px solid #CCCCCC;
+}
+
+#session_view_id {
+	width: 200px;
+}
+
+#NodeTree{
+}
+
+#NodeTree ul{
+	margin:6px 0 0 12px;
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+}
+
+#NodeTree ul li{
+    list-style:none;
+    margin:0.3em 0;
+    padding:0;
+}
+
+#NodeTree .selected-node{
+	background-color:#faffa2;
+}
+
+#NodeTree .loading-node{
+	margin-left:3px;
+	padding-left:16px;
+	background:transparent url(http://thlib.org/global/images/ajax-loader.gif); 
+}
+
+#NodeTree .node-plus, #NodeTree .node-minus, #NodeTree .node-empty{
+	float:left;
+	width:11px;
+	height:11px;
+	margin:5px 6px 0 0;
+	border:0;
+}
+
+#NodeTree .node-plus{
+	background:transparent no-repeat url(http://thlib.org/global/images/btn-plus-lg.gif);
+}
+
+#NodeTree .node-minus{
+	background:transparent no-repeat url(http://thlib.org/global/images/btn-minus-lg.gif);
+}
+
+#NodeTree .node-empty{
+	background:transparent no-repeat url(http://thlib.org/global/images/btn-empty-lg.gif);
+}
+
+#NodeTreeList{
+    max-height:400px;
+    min-height:25px;
+    overflow:auto;
+	font-size:13px;
+}
+
+#NodeSearch{
+	line-height:1.8em;
+}
+
+#NodeSearchResults{
+	font-size: 12px;
+}
+
+#NodeSearchResults a{
+	color:#00f;
+}
+
+#NodeSearchResults table {
+    border-collapse: collapse;
+    width:100%;
+    line-height: 130%;
+}
+
+#NodeSearchResults table, #NodeSearchResults table tr, #NodeSearchResults table tr td, #NodeSearchResults table tr th {
+    margin:0;
+    padding:0;
+}
+
+#NodeSearchResults table tr td, #NodeSearchResults table tr th{
+    padding:0.2em;
+    border-bottom:solid 1px #ccc;
+}
+
+#NodeSearchResults table tr td.pagination-cell{
+	padding:0.5em 0.2em !important;
+    border-bottom:0;
+}
+
+#NodeSearchResults table tr td.pagination-info-cell{
+    border-bottom:0;
+}
+
+#FeatureDetails, #FeatureList{
+    background-color:#fff;
+}
+
+#FeatureList{
+    width:55%;
+    min-height:300px;
+}
+
+#FeatureDetail {
+	margin: 0 auto;
+	padding: 5px; 
+	width: 55%;
+	background-color: #fff;
+}
+
+#Home {
+	margin: 0 auto;
+	width: 99%;
+	background-color: #fff;
+}
+
+#Home p {
+}
+
+#Home ul {
+	font-size: 13px;
+	list-style-type: disc;
+    padding-left: 18px;
+    padding-bottom: 6px;
+}
+
+#FeatureList .FeatureListHeader {
+    font-weight: bold;
+    font-size: 13px; 
+    line-height: 140%;
+    margin-bottom: 1em; 
+    background-color: white; 
+    padding: .5em;
+}
+
+#FeatureList table {
+    border-collapse: collapse;
+    width:100%;
+    font-size: 13px;
+    line-height: 140%;
+}
+
+#FeatureList table, #FeatureList table tr, #FeatureList table tr td, #FeatureList table tr th {
+    margin:0;
+    padding:0;
+}
+
+#FeatureList table tr td, #FeatureList table tr th{
+    border:solid 1px black;
+    padding:.5em;
+}
+
+#FeatureList table th{
+    background-color:#cdcdcd;
+}
+
+.shell-1 #FeatureDetails {
+	font-size: 13px; 
+	line-height: 130%;
+}
+
+.shell-1 #FeatureDetails h1 {
+    padding-top: 6px;
+    font-size: 19px;
+}
+
+.shell-1 #FeatureDetails h2 {
+    line-height: 160%;
+    font-size: 17px;
+}
+
+.shell-1 #FeatureDetails h3 {
+    margin-top: 9px;
+    font-size: 15px;
+}
+
+.shell-1 #FeatureDetails h4 {
+    margin-top: 9px;
+    font-size: 13px;
+}
+
+#FeatureDetails .breadcrumb {
+  color: red;
+}
+
+#FeatureDetails h1, h2, h3, h4 {
+    padding-left: 0px;
+	letter-spacing: normal !important;
+}
+
+#FeatureDetails p {
+    margin-bottom: 0px;
+    font-size: 14px;
+}
+
+#FeatureDetails ul {
+    list-style-type: disc;
+}
+
+#FeatureDetails ul, #FeatureDetails ol {
+    padding-left: 18px;
+    padding-bottom: 6px;
+}
+
+#FeatureDetails li {
+    margin: 0px;
+    line-height: 180%;
+}
+
+#FeatureDetails .view-on-map {
+	display: block;
+    margin-top: 5px;
+}
+
+#FeatureDetails #inset_map {
+	width: 350px;
+	height: 200px;
+	margin-top: 5px !important;
+}
+
+#FeatureDetails .olControlMousePosition {
+	color: #fff;
+}
+
+#FeatureDetails .view-on-map img {
+    float: left;
+    margin-right: 5px;
+}
+
+#FeatureContains table {
+    border-collapse: collapse;
+    width:100%;
+    font-size: 13px;
+    line-height: 140%;
+}
+
+#FeatureContains table, #FeatureContains table tr, #FeatureContains table tr td, #FeatureContains table tr th {
+    margin:0;
+    padding:0;
+}
+
+#FeatureContains table tr td, #FeatureContains table tr th{
+    border:solid 1px black;
+    padding:.5em;
+}
+
+#FeatureContains table th{
+    background-color:#cdcdcd;
+}
+
+ul{
+	margin:1em;
+	margin-top:0;
+	margin-bottom:0;
+}
+
+span.selected.feature_name {
+  background-color: white;
+	font-weight: bold;
+}
+
+span.arrow {
+  font-weight: bold;
+  color: #000;
+}
+
+#FeatureTree .selected_branch {
+	color:black;
+}
+
+/* description styling */
+#descriptions_div a.descriptionplus_icon { background:transparent url(http://thlib.org/global/images/btn-plus-lg.gif) no-repeat scroll 2px center; padding:0 0 0 12px; border-bottom:0px; color: white;}
+#descriptions_div a.descriptionminus_icon  { background:transparent url(http://thlib.org/global/images/btn-minus-lg.gif) no-repeat scroll 2px center; padding:0 0 0 12px; border-bottom:0px; color: white;}
+#descriptions_div > h2.description-title { font-size: 25px; margin-bottom: 10px; }
+
+/* add a margin below each description to separate it from following content */ 
+#descriptions_div > div { margin-bottom: 1em; }
+
+/* styling for descriptions */
+.title { font-size: 15px; color:black;font-variant:small-caps;}
+.by { font-size: 14px;}
+.content_by { font-size: 14px; font-variant:small-caps;}
+.last_updated { font-size: 13px;}
+.expanded { padding: 2px; text-align: justify; margin-left: 10px; }
+
+#descriptions_div ul {list-style-type:square;margin-left:13px;}
+#descriptions_div ol, #descriptions_div ul{padding-left:2em; margin-left:15px;font-size: 15px;}
+#descriptions_div ol li, #descriptions_div ul li{margin-bottom:0px}
+#descriptions_div ul li {margin-left:2px;}
+
+#descriptions_div h1{ font-size: 19px; border-bottom: 0px; }
+#descriptions_div h2{ font-size: 18px; }
+#descriptions_div h3{ font-size: 17px; }
+#descriptions_div h4{ font-size: 16px; }
+#descriptions_div p{ text-align: justify; font-size: 15px; }
+#descriptions_div h2.description-title{ font-size: 19px; }
+#descriptions_div h2.description-title a{ text-decoration: underline; }
+#descriptions_div .description-author{ margin-left: 18px; font-size: 14px; }
+#descriptions_div .view-essay-in-publication{ font-size: 13px; margin-bottom: 15px; }
+
+hr {border-style: solid; border-color: color:#404040; border-width: 1px}
+
+#content .shell-1 {
+	margin-top: 0;
+}
+
+#content .shell-1 > .shell-1 {
+	margin: 0;
+	padding: 0;
+}
+
+/* THL-specific */
+
+/* Hide the THL sidebar menu immediately, without waiting from $(document).ready to be triggered */
+#fxSideMenu {
+	display:none;
+}
+#sideMenuLink {
+	background-position:0 0;
+}

@@ -26,7 +26,7 @@ module SimplePropCache
       end
       if prop.nil?
         identifier = code || name
-        raise "#{self.human_name.capitalize} #{identifier} not found." if !identifier.blank?
+        raise "#{self.model_name.human.capitalize} #{identifier} not found." if !identifier.blank?
       end
       prop
     end

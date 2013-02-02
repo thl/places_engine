@@ -4,6 +4,6 @@
 <%=  render :partial => 'admin/users/show', :locals => {:user => user} %>
 <% end %>
 <p>&nbsp;<br/>
-<%= link_to ts('edit.record', :what => Person.human_name), edit_admin_person_path(@person) %> |
+<%= link_to ts('edit.record', :what => AuthenticatedSystem::Person.model_name.human), edit_admin_person_path(@person) %> |
 <%= render :partial => 'persistent_links' %>
 </p>

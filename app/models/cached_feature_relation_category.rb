@@ -1,4 +1,6 @@
 class CachedFeatureRelationCategory < ActiveRecord::Base
+  attr_accessible :feature_id, :related_feature_id, :category_id, :feature_relation_type_id, :feature_is_parent,
+    :perspective_id
   belongs_to :feature
   belongs_to :related_feature, :class_name => "Feature"
   belongs_to :category

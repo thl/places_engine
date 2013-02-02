@@ -3,11 +3,11 @@
    add_breadcrumb_item feature_descriptions_link(@object.feature)
    add_breadcrumb_item @object.id %>
 <div>
-  <h1><%= Description.human_name.titleize.s %>: <%= @object.id %></h1>
+  <h1><%= Description.model_name.human.titleize.s %>: <%= @object.id %></h1>
 </div>
 <br class="clear"/>
 <fieldset>
-  <legend><%= "#{Description.human_name.titleize.s} #{edit_item_link @object}".html_safe %></legend>
+  <legend><%= "#{Description.model_name.human.titleize.s} #{edit_item_link @object}".html_safe %></legend>
 <% if !@object.title.blank?
      if !@object.authors.empty? %>
        <span class='title'><%= @object.title %></span>
@@ -18,7 +18,7 @@
 <%   end
    else
      if !@object.authors.empty? %>
-       <span class='title'><%= Description.human_name.titleize.s %></span>
+       <span class='title'><%= Description.model_name.human.titleize.s %></span>
        <span class='by'><%= ' by ' %></span>
        <span class='content_by'><%= join_with_and(@object.authors.collect(&:fullname)) %></span>
 <%   end

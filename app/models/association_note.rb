@@ -1,4 +1,5 @@
 class AssociationNote < Note
+  attr_accessible :association_type
   belongs_to :feature, :foreign_key => "notable_id"
   
   # AssociationNote uses single-table inheritance from Note, so we need to make sure that no Notes are
