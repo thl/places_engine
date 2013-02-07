@@ -1,5 +1,5 @@
 class DescriptionsController < ApplicationController
-  caches_page :show, :index, :if => :api_response?.to_proc
+  caches_page :show, :index, :if => Proc.new { |c| c.request.format.xml? }
   before_filter :find_feature
  
   def contract
@@ -41,9 +41,5 @@ class DescriptionsController < ApplicationController
   # This is tied to features
   def find_feature
     @feature = Feature.get_by_fid(params[:feature_id]) # Feature.find(params[:feature_id])
-  end
-    
-  def api_response?
-    request.format.xml? # JSON because JSONP depends on parameters || request.format.json?
   end
 end

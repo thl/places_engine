@@ -4,7 +4,6 @@ bo:
     app:
         short : 'THL Place Dictionary'
         this: 'THL Place Dictionary of Tibet & the Himalayas'
-    by: 'by %{whom}'
     child: 'Child'
     choose:
         from: 'choose from %{what}'

@@ -1,14 +1,15 @@
 module FeatureExtensionForNamePositioning
   def prioritized_name(current_view)
     view = current_view
-    Rails.cache.fetch("#{self.cache_key}/#{view.cache_key}/prioritized_name", :expires_in => 10.minutes) do
+    name_id = Rails.cache.fetch("#{self.cache_key}/#{view.cache_key}/prioritized_name", :expires_in => 10.minutes) do
       cached_name = self.cached_feature_names.where(:view_id => view.id).first
       if cached_name.nil?
         calculated_name = self.calculate_prioritized_name(view)
         cached_name = self.cached_feature_names.create(:view_id => view.id, :feature_name_id => calculated_name.id) if !calculated_name.nil?
       end
-      cached_name.nil? ? nil : cached_name.feature_name
+      cached_name.nil? ? nil : cached_name.feature_name.id
     end
+    name_id.nil? ? nil : FeatureName.find(name_id)
   end
   
   def calculate_prioritized_name(current_view)
@@ -133,7 +134,8 @@ module FeatureExtensionForNamePositioning
   end
   
   def prioritized_names
-    Rails.cache.fetch("#{self.cache_key}/prioritized_names", :expires_in => 10.minutes) { self.names.order('position').all }
+    name_ids = Rails.cache.fetch("#{self.cache_key}/prioritized_names", :expires_in => 10.minutes) { self.names.order('position').collect(&:id) }
+    FeatureName.find(name_ids)
   end
   
   #

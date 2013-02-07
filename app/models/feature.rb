@@ -69,36 +69,38 @@ class Feature < ActiveRecord::Base
   
   # Options take :logged_in?
   def closest_feature_with_shapes(options = {})
-    Rails.cache.fetch("features/#{self.fid}/closest_feature_with_shapes", :expires_in => 1.hour) do
-      break self if self.has_shapes?(options)
+    feature_id = Rails.cache.fetch("features/#{self.fid}/closest_feature_with_shapes", :expires_in => 1.hour) do
+      break self.id if self.has_shapes?(options)
       # check if geographical parent has shapes (township)
       geo_rel = Perspective.get_by_code('geo.rel')
       first_township_relation = self.all_parent_relations.where(:perspective_id => geo_rel.id).first
       if !first_township_relation.nil?
         node = first_township_relation.parent_node
-        break node if node.has_shapes?(options)
+        break node.id if node.has_shapes?(options)
       end
       # check if county parent has shapes (county)
       pol_admin = Perspective.get_by_code('pol.admin.hier')
       first_county_relation = self.all_parent_relations.where(:perspective_id => pol_admin.id).first
       if !first_county_relation.nil?
         node = first_county_relation.parent_node
-        break node if node.has_shapes?(options)
+        break node.id if node.has_shapes?(options)
       end
       nil
     end
+    feature_id.nil? ? nil : Feature.find(feature_id)
   end
   
   def closest_parent_by_perspective(perspective)
-    Rails.cache.fetch("features/#{self.fid}/closest_parent_by_perspective/#{perspective.id}", :expires_in => 1.hour) do
+    feature_id = Rails.cache.fetch("features/#{self.fid}/closest_parent_by_perspective/#{perspective.id}", :expires_in => 1.hour) do
       parent_relation = FeatureRelation.where(:child_node_id => self.id, :perspective_id => perspective.id, :feature_relation_type_id => FeatureRelationType.hierarchy_ids).select('parent_node_id').order('created_at').first
-      break parent_relation.parent_node if !parent_relation.nil?
+      break parent_relation.parent_node.id if !parent_relation.nil?
       parent_relation = FeatureRelation.where(:child_node_id => self.id, :perspective_id => perspective.id).select('parent_node_id').order('created_at').first
-      break parent_relation.parent_node if !parent_relation.nil?
+      break parent_relation.parent_node.id if !parent_relation.nil?
       parent_relation = FeatureRelation.where(:child_node_id => self.id).select('parent_node_id').order('created_at').first
-      break parent_relation.parent_node if !parent_relation.nil?
+      break parent_relation.parent_node.id if !parent_relation.nil?
       nil
     end
+    feature_id.nil? ? nil : Feature.find(feature_id)
   end
   
   def closest_hierarchical_feature_id_by_perspective(perspective)
@@ -119,41 +121,44 @@ class Feature < ActiveRecord::Base
   end
   
   def closest_ancestors_by_perspective(perspective)
-    Rails.cache.fetch("features/#{self.fid}/closest_ancestors_by_perspective/#{perspective.id}", :expires_in => 1.hour) do
+    feature_ids = Rails.cache.fetch("features/#{self.fid}/closest_ancestors_by_perspective/#{perspective.id}", :expires_in => 1.hour) do
       current = self
       stack = []
       begin
         stack.push(current)
         current = current.closest_parent_by_perspective(perspective)
       end while !current.nil? && !stack.include?(current)
-      stack.reverse
+      stack.reverse.collect(&:id)
     end
+    Feature.find(feature_ids)
   end
   
   #
   #
   #
   def self.current_roots(current_perspective, current_view)
-    Rails.cache.fetch("features/current_roots/#{current_perspective.id}/#{current_view.id}", :expires_in => 1.day) do
+    feature_ids = Rails.cache.fetch("features/current_roots/#{current_perspective.id}/#{current_view.id}", :expires_in => 1.day) do
       joins(:cached_feature_names => :feature_name).where(:is_blank => false, :cached_feature_names => {:view_id => current_view.id}).order('feature_names.name').roots.find_all do |r|
 #      with_scope(:find => includes(:cached_feature_names => :feature_name).where(:is_blank => false, :cached_feature_names => {:view_id => current_view.id}).order('feature_names.name')) do
  #       roots.find_all do |r|
           # if ANY of the child relations are current, return true to nab this Feature
-          r.child_relations.any? {|cr| cr.perspective==current_perspective }
-        end
+        r.child_relations.any? {|cr| cr.perspective==current_perspective }
+      end.collect(&:id)
     #  end
     end
+    Feature.find(feature_ids)
   end
 
   def self.current_roots_by_perspective(current_perspective)
-    Rails.cache.fetch("features/current_roots/#{current_perspective.id}", :expires_in => 1.day) do
+    feature_ids = Rails.cache.fetch("features/current_roots/#{current_perspective.id}", :expires_in => 1.day) do
       with_scope(:find => where('features.is_blank' => false)) do
         roots.select do |r|
           # if ANY of the child relations are current, return true to nab this Feature
           r.child_relations.any? {|cr| cr.perspective==current_perspective }
         end
-      end
+      end.collect(&:id)
     end
+    Feature.find(feature_ids)
   end
 
   #
@@ -397,13 +402,14 @@ class Feature < ActiveRecord::Base
   end
   
   def self.get_by_fid(fid)
-    Rails.cache.fetch("features-fid/#{fid}", :expires_in => 1.hour) do
+    feature_id = Rails.cache.fetch("features-fid/#{fid}", :expires_in => 1.hour) do
       begin
-        self.find_by_fid(fid)
+        self.find_by_fid(fid).id
       rescue ActiveRecord::ActiveRecordError
         nil
-      end      
+      end
     end
+    feature_id.nil? ? nil : Feature.find(feature_id)
   end
     
   def association_notes_for(association_type, options={})

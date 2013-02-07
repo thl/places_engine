@@ -1,11 +1,7 @@
 class FeaturesController < ApplicationController
-  caches_page :show, :if => :api_response?.to_proc
-  caches_action :node_tree_expanded, :cache_path => :tree_cache_path.to_proc #, :if => Proc.new { |c| c.request.xhr? }
-  #
-  def tree_cache_path
-    set_common_variables(session) if params[:view_id] || params[:perspective_id]
-    "tree/#{current_perspective.id}/#{current_view.id}/node_id_#{params[:id]}"
-  end
+  caches_page :show, :if => Proc.new { |c| c.request.format.xml? }
+  caches_action :node_tree_expanded, :cache_path => Proc.new {|c| cache_path}
+  
   #
   #
   def index
@@ -380,65 +376,66 @@ class FeaturesController < ApplicationController
   
   protected
   
-    def search_scope_defined?
-      !params[:search_scope].blank?
-    end
-    
-    def contextual_search_selected?
-      ('contextual' == params[:search_scope])
-    end
-    
-    def global_search_selected?
-      ('global' == params[:search_scope])
-    end
-    
-    def fid_search_selected?
-      ('fid' == params[:search_scope])
-    end
-    
-    def perform_contextual_search(options, search_options={})
-      @context_feature, @features = Feature.contextual_search(
-        params[:context_id],
-        params[:filter],
-        options,
-        search_options
-        )
-    end
-    
-    def perform_global_search(search_options={})
-      Feature.search(params[:filter], search_options)
-    end
-    
-    def api_render(features, options={})
-      collection = {}
-      collection[:features] = features.collect{|f| api_format_feature(f)}
-      collection[:page] = params[:page] || 1
-      collection[:total_pages] = features.total_pages
-      respond_to do |format|
-        format.xml { render :xml => collection.to_xml }
-        format.json { render :json => collection.to_json, :callback => params[:callback] }
-      end   
-    end
-    
-    def api_format_feature(feature)
-      f = {}
-      f[:id] = feature.id
-      f[:name] = feature.name
-      f[:types] = feature.object_types.collect{|t| {:id => t.id, :title => t.title} }
-      f[:descriptions] = feature.descriptions.collect{|d| {
-        :id => d.id,
-        :is_primary => d.is_primary,
-        :title => d.title,
-        :content => d.content,
-      }}
-      f[:has_shapes] = feature.shapes.empty? ? 0 : 1
-      #f[:parents] = feature.parents.collect{|p| api_format_feature(p) }
-      f
-    end
-    
-    private
-    
-    def api_response?
-      request.format.xml? # JSON because JSONP depends on parameters || request.format.json?
-    end
+  def search_scope_defined?
+    !params[:search_scope].blank?
+  end
+  
+  def contextual_search_selected?
+    ('contextual' == params[:search_scope])
+  end
+  
+  def global_search_selected?
+    ('global' == params[:search_scope])
+  end
+  
+  def fid_search_selected?
+    ('fid' == params[:search_scope])
+  end
+  
+  def perform_contextual_search(options, search_options={})
+    @context_feature, @features = Feature.contextual_search(
+      params[:context_id],
+      params[:filter],
+      options,
+      search_options
+      )
+  end
+  
+  def perform_global_search(search_options={})
+    Feature.search(params[:filter], search_options)
+  end
+  
+  def api_render(features, options={})
+    collection = {}
+    collection[:features] = features.collect{|f| api_format_feature(f)}
+    collection[:page] = params[:page] || 1
+    collection[:total_pages] = features.total_pages
+    respond_to do |format|
+      format.xml { render :xml => collection.to_xml }
+      format.json { render :json => collection.to_json, :callback => params[:callback] }
+    end   
+  end
+  
+  def api_format_feature(feature)
+    f = {}
+    f[:id] = feature.id
+    f[:name] = feature.name
+    f[:types] = feature.object_types.collect{|t| {:id => t.id, :title => t.title} }
+    f[:descriptions] = feature.descriptions.collect{|d| {
+      :id => d.id,
+      :is_primary => d.is_primary,
+      :title => d.title,
+      :content => d.content,
+    }}
+    f[:has_shapes] = feature.shapes.empty? ? 0 : 1
+    #f[:parents] = feature.parents.collect{|p| api_format_feature(p) }
+    f
+  end
+  
+  private
+  
+  def cache_path
+    set_common_variables(session) if params[:view_id] || params[:perspective_id]
+    "tree/#{current_perspective.id}/#{current_view.id}/node_id_#{params[:id]}"
+  end
 end

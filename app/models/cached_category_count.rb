@@ -1,6 +1,6 @@
 class CachedCategoryCount < ActiveRecord::Base
   attr_accessible :category_id, :medium_type, :cache_updated_at
-  belongs_to :category
+  #belongs_to :category
   
   def self.updated_count(category_id, force_update = false)
     cached_count = CachedCategoryCount.where(:category_id => category_id).first

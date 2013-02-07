@@ -9,9 +9,11 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
+ *= require universal_navigation/jquery-ui-tabs
  *= require interface_utils/application
  *= require interface_utils/jquery-ui-1.8.24.custom
- *= require universal_navigation/jquery-ui-tabs
+ *= require authenticated_system/application
+ *= require complex_scripts/application
  */
 
 h3{

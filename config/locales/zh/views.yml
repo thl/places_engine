@@ -4,7 +4,6 @@ zh:
     app:
         short: 'THL地名词典'
         this: '西藏和喜马拉雅地区THL地名词典'
-    by: '由{{whom}}'
     child: '儿童'
     choose:
         from: '从{{what}}中选择'
