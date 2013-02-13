@@ -403,11 +403,8 @@ class Feature < ActiveRecord::Base
   
   def self.get_by_fid(fid)
     feature_id = Rails.cache.fetch("features-fid/#{fid}", :expires_in => 1.hour) do
-      begin
-        self.find_by_fid(fid).id
-      rescue ActiveRecord::ActiveRecordError
-        nil
-      end
+      feature = self.find_by_fid(fid)
+      feature.nil? ? nil : feature.id
     end
     feature_id.nil? ? nil : Feature.find(feature_id)
   end
