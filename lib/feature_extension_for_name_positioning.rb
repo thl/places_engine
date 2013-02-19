@@ -7,7 +7,12 @@ module FeatureExtensionForNamePositioning
         calculated_name = self.calculate_prioritized_name(view)
         cached_name = self.cached_feature_names.create(:view_id => view.id, :feature_name_id => calculated_name.id) if !calculated_name.nil?
       end
-      cached_name.nil? ? nil : cached_name.feature_name.id
+      if cached_name.nil?
+        break nil
+      else
+        name = cached_name.feature_name
+        break name.nil? ? nil : name.id
+      end
     end
     name_id.nil? ? nil : FeatureName.find(name_id)
   end
