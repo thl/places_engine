@@ -2,8 +2,8 @@ module PlacesEngine
   class Engine < ::Rails::Engine
     initializer :assets do |config|
       Rails.application.config.assets.precompile.concat(['places_engine/admin.js', 'places_engine/public.js',
-        'places_engine/public.css', 'places_engine/xml-books.css', 'places_engine/top.js', 'places_engine/iframe.js',
-        'places_engine/jquery.ajax.sortable.js'])
+        'places_engine/top.js', 'places_engine/iframe.js', 'places_engine/jquery.ajax.sortable.js',
+        'places_engine/admin.css', 'places_engine/public.css', 'places_engine/xml-books.css'])
     end
     
     initializer :sweepers do |config|
