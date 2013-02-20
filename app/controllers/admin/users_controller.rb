@@ -54,7 +54,7 @@ class Admin::UsersController < ApplicationController
         end
       end
     else
-      @user = @person.build_user(params[:user])
+      @user = @person.build_user(params[:authenticated_system_user])
       @user.save!
       flash[:notice] = "User succesfully created!"
       redirect_to admin_person_url(@person)
@@ -68,7 +68,7 @@ class Admin::UsersController < ApplicationController
   def update
     @user = @person.user
     respond_to do |format|
-      if @user.update_attributes(params[:user])
+      if @user.update_attributes(params[:authenticated_system_user])
         flash[:notice] = 'User was successfully updated.'
         format.html { redirect_to admin_people_url }
         format.xml  { head :ok }

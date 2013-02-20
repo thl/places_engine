@@ -52,7 +52,6 @@ class Admin::PeopleController < ApplicationController
   # PUT /people/1.xml
   def update
     @person = AuthenticatedSystem::Person.find(params[:id])
-
     respond_to do |format|
       if @person.update_attributes(params[:person])
         flash[:notice] = ts('edit.successful', :what => AuthenticatedSystem::Person.model_name.human.capitalize)
