@@ -1,0 +1,26 @@
+<%  tib_script_id = WritingSystem.get_by_code('tibt').id
+    chi_sim_script_id = WritingSystem.get_by_code('hans').id 
+    chi_trad_script_id = WritingSystem.get_by_code('hant').id
+    view = View.get_by_code('pri.tib.sec.chi') %>
+<%= CSV.generate_line(['fid', 'tibetan', 'chinese', 'types', 'relation', 'parent', 'shape'], "\t") %>
+<%  @features_with_parents.collect do |pair|
+      feature = pair[0]
+      parent = pair[1]
+      relation = pair[2]
+      names = feature.prioritized_names
+      row = [feature.fid]
+      # Add tibetan name
+      row << names.select{|n| n.writing_system_id == tib_script_id}.collect(&:name).join(', ')
+      # Add chinese name
+      chi_names = names.select{|n| n.writing_system_id == chi_sim_script_id}
+      chi_names = names.select{|n| n.writing_system_id == chi_trad_script_id} if chi_names.empty?
+      row << chi_names.collect(&:name).join(', ')
+	  # Add feature type
+      row << feature.feature_object_types.collect{|fot| fot.category.title }.join(', ') 
+      row << ((relation.nil? || relation.feature_relation_type.nil?) ? '' : relation.feature_relation_type.code)
+      # Add parent
+      row << (parent.nil? ? '' : "#{parent.prioritized_name(view)} (#{parent.fid})")
+      # Add shape
+      row << feature.shapes.collect{|s| shape_display_string(s) }.join(', ') %>
+<%=   CSV.generate_line(row, "\t").html_safe %>
+<% end %>

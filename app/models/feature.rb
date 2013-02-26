@@ -170,13 +170,13 @@ class Feature < ActiveRecord::Base
     end
   end
   
-  def self.descendants_by_perspective_and_topics(fids, perspective, topic_ids)
+  def self.descendants_by_perspective_and_topics_with_parent(fids, perspective, topic_ids)
     topic_ids = topic_ids.first if topic_ids.size==1
-    self.descendants_by_perspective(fids, perspective).select{|d| !CumulativeCategoryFeatureAssociation.where(:category_id => topic_ids, :feature_id => d[0].id).first.nil?}
+    self.descendants_by_perspective_with_parent(fids, perspective).select{|d| !CumulativeCategoryFeatureAssociation.where(:category_id => topic_ids, :feature_id => d[0].id).first.nil?}
   end
   
-  def all_descendants_by_topic(topic_ids)
-    pending = [self.id]
+  def self.descendants_by_topic(fids, topic_ids)
+    pending = fids.collect{|fid| Feature.get_by_fid(fid)}
     des = []
     while !pending.empty?
       e = pending.pop
@@ -192,8 +192,35 @@ class Feature < ActiveRecord::Base
     des.select{ |f_id| !CumulativeCategoryFeatureAssociation.where(:category_id => topic_ids, :feature_id => f_id).first.nil? }.collect{|f_id| Feature.find(f_id)}
   end
   
+  def descendants_by_topic(fids, topic_ids)
+    self.descendants_by_topic([self.fid], topic_ids)
+  end
+
+  def self.descendants_by_topic_with_parent(fids, topic_ids)
+    pending = fids.collect{|fid| Feature.get_by_fid(fid)}
+    des = pending.collect{|f| [f, nil]}
+    des_ids = pending.collect(&:id)
+    while !pending.empty?
+      e = pending.pop
+      FeatureRelation.where(:parent_node_id => e.id).each do |r|
+        c = r.child_node
+        if !des_ids.include? c.id
+          des_ids << c.id
+          des << [c, e, r]
+          pending.push(c)
+        end
+      end
+    end
+    topic_ids = topic_ids.first if topic_ids.size==1
+    des.select{ |d| !CumulativeCategoryFeatureAssociation.where(:category_id => topic_ids, :feature_id => d[0].id).first.nil? }
+  end
+  
+  def descendants_by_topic_with_parent(topic_ids)
+    Feature.descendants_by_topic_with_parent([self.fid], topic_ids)
+  end
+  
   # currently only option accepted is 'only_hierarchical'
-  def self.descendants_by_perspective(fids, perspective, options ={})
+  def self.descendants_by_perspective_with_parent(fids, perspective, options ={})
     pending = fids.collect{|fid| Feature.get_by_fid(fid)}
     des = pending.collect{|f| [f, nil]}
     des_ids = pending.collect(&:id)
@@ -202,11 +229,11 @@ class Feature < ActiveRecord::Base
     while !pending.empty?
       e = pending.pop
       conditions[:parent_node_id] = e.id
-      FeatureRelation.select('child_node_id').where(conditions).each do |r|
+      FeatureRelation.where(conditions).each do |r|
         c = r.child_node
         if !des_ids.include? c.id
           des_ids << c.id
-          des << [c, e]
+          des << [c, e, r]
           pending.push(c)
         end
       end
@@ -214,8 +241,8 @@ class Feature < ActiveRecord::Base
     des
   end
   
-  def descendants_by_perspective(perspective)
-    Feature.descendants_by_perspective([self.fid], perspective)
+  def descendants_by_perspective_with_parent(perspective)
+    Feature.descendants_by_perspective_with_parent([self.fid], perspective)
   end
   
   #
