@@ -279,7 +279,6 @@ class FeaturesController < ApplicationController
         end
         @features = perform_global_search(search_options).where(conditions).paginate(:page => params[:page] || 1, :per_page => 10)
         @features = @features.joins(joins.join(' ')).select('features.*, DISTINCT feature.id') unless joins.empty?
-        
       end
     #end
     # When using the session store features, we need to provide will_paginate with info about how to render
@@ -291,7 +290,10 @@ class FeaturesController < ApplicationController
     # to a new page
     session[:interface] = {} if session[:interface].nil?
     session[:interface][:menu_item] = 'results'
-    # renders search.js.erb
+    respond_to do |format|
+      format.js # search.js.erb
+      format.html { render :partial => 'search_results', :locals => {:features => @features} }
+    end
   end
   
   def descendants
@@ -336,11 +338,9 @@ class FeaturesController < ApplicationController
   # The following three methods are used with the Node Tree
   def expanded
     @node = Feature.find(params[:id])
-    if request.xhr?
-      @ancestors = (@node.current_ancestors(current_perspective).collect(&:id) + [@node.id.to_s]).join(',')
-      # response would be handled by expanded.js.erb
-    else
-      redirect_to @node
+    respond_to do |format|
+      format.html { redirect_to @node }
+      format.js   { @ancestors = (@node.current_ancestors(current_perspective).collect(&:id) + [@node.id.to_s]).join(',') } # response would be handled by expanded.js.erb
     end
   end
 

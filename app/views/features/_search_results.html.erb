@@ -21,6 +21,13 @@
        </tr>
        <tr>
          <td colspan="2" class="pagination-cell">
+<%=      javascript_tag do %>
+           jQuery(document).ready(function() {
+	         links = jQuery('#NodeSearchResults .pagination a')
+             links.attr('data-remote', true);
+             links.bind('ajax:beforeSend', function(){ NodeMenu.onPaginationClick(); });
+           });
+<%       end %>
 <%=      will_paginate pagination_collection, :params => @params.merge({:action => :search}) %>
          </td>
        </tr>

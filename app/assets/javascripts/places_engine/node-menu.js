@@ -145,25 +145,6 @@ var NodeMenu = {
 		this.page_offset_y = this.page_offset_y_correction + this.div.parent().position().top;
 		this.container_height = this.div.parent().height();
 		
-		// Make the will_paginate links AJAX-driven 
-		jQuery('#NodeSearchResults .pagination a').on('click', function() {
-			NodeMenu.onPaginationClick();
-			NodeMenu.scrollToMenuTop();
-			// Unfortunately, there isn't a clean way to POST with .post() using a query string
-			jQuery.ajax({
-				type: 'POST',
-				url: this.href,
-				success: function(html){
-					jQuery('#NodeSearchResults').html(html);
-					NodeMenu.onPaginationLoad();
-				},
-				error: function(error){
-					NodeMenu.onPaginationLoad();
-				}
-			});
-			return false;
-		});
-		
 		// Hide the search results item by default, unless it's the default_item (meaning that it's open by default)
 		// or this.show_results is true
 		if(!(this.default_item == 'results' || this.show_results)){
