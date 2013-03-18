@@ -107,7 +107,7 @@
     altitude_size = simple_altitudes.size + altitudes.size
     if altitude_size > 0 %>
 <%=   content_tag :h3, Altitude.model_name.human(:count => altitude_size).titleize.s %>
-<%=   altitude_size>1 ? '<ul>' : '<p>' %>
+<%=   altitude_size>1 ? '<ul>'.html_safe : '<p>'.html_safe %>
 <%    if simple_altitudes.size == 1 %>
 <%=     simple_altitudes.first %>
 <%    else %>
@@ -122,7 +122,7 @@
 <%=     time_units_for(altitude) %>
 <%=     '</li>' if altitude_size>1 %>
 <%    end %>
-<%=   altitude_size>1 ? '</ul>' : '</p>' %>
+<%=   altitude_size>1 ? '</ul>'.html_safe : '</p>'.html_safe %>
 <%  end
     if !shapes.empty? %>
 <%=   content_tag :h3, Shape.model_name.human(:count => shapes.size).titleize.s %>

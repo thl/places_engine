@@ -1,3 +1,6 @@
+<%= javascript_tag do %>
+      jQuery(document).ready(function() { jQuery('.pagination a').attr('data-remote', true); });
+<%  end %>
 <p>
   <ul class="normal">
 <%  @relations.each do |relation| %>

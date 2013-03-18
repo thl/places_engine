@@ -239,7 +239,7 @@ module FeatureExtensionForNamePositioning
   end
   
   def reset_name_positions(names = self.names.roots.order('feature_names.created_at'), position = 1)
-    calculate_name_positions(names, position).each { |pos, name| name.update_attribute(:position, pos) }
+    calculate_name_positions(names, position).each { |pos, name| FeatureName.find(name.id).update_attribute(:position, pos) }
   end
   
   def figure_out_name_by_country(names)

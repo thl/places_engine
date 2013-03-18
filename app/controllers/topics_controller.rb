@@ -41,7 +41,6 @@ class TopicsController < ApplicationController
       end
       format.csv do
         perspective_code = params[:perspective_code]
-        debugger
         @features_with_parents = perspective_code.blank? ? Feature.descendants_by_topic_with_parent(fids, topic_ids) : Feature.descendants_by_perspective_and_topics_with_parent(fids, Perspective.get_by_code(perspective_code), topic_ids)
       end
     end
