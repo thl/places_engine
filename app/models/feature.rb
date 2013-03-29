@@ -130,7 +130,7 @@ class Feature < ActiveRecord::Base
       end while !current.nil? && !stack.include?(current)
       stack.reverse.collect(&:id)
     end
-    Feature.find(feature_ids)
+    feature_ids.collect{|fid| Feature.find(fid)}
   end
   
   #
@@ -146,7 +146,7 @@ class Feature < ActiveRecord::Base
       end.collect(&:id)
     #  end
     end
-    Feature.find(feature_ids)
+    feature_ids.collect{ |fid| Feature.find(fid) }
   end
 
   def self.current_roots_by_perspective(current_perspective)
@@ -158,7 +158,7 @@ class Feature < ActiveRecord::Base
         end
       end.collect(&:id)
     end
-    Feature.find(feature_ids)
+    feature_ids.collect{ |fid| Feature.find(fid) }
   end
 
   #
@@ -180,7 +180,7 @@ class Feature < ActiveRecord::Base
     des = []
     while !pending.empty?
       e = pending.pop
-      FeatureRelation.select('child_node_id').where(:parent_node_id => e).each do |r|
+      FeatureRelation.select('child_node_id').where(:parent_node_id => e, :feature_relation_type_id => FeatureRelationType.hierarchy_ids + [FeatureRelationType.get_by_code('is.contained.by').id]).each do |r|
         c = r.child_node_id
         if !des.include? c
           des << c

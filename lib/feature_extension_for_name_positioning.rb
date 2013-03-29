@@ -140,7 +140,7 @@ module FeatureExtensionForNamePositioning
   
   def prioritized_names
     name_ids = Rails.cache.fetch("#{self.cache_key}/prioritized_names", :expires_in => 10.minutes) { self.names.order('position').collect(&:id) }
-    FeatureName.find(name_ids)
+    name_ids.collect{ |id| FeatureName.find(id) }
   end
   
   #
