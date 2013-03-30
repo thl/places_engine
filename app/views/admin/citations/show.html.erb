@@ -8,7 +8,7 @@
   </div>	
   <div class="row">
     <label><%= Page.model_name.human(:count => :many).titleize.s %></label>
-    <span><%= @object.pages.collect{|p| "#{p.to_s} #{edit_item_link edit_admin_citation_page_path(@object, p)} #{delete_item_link admin_citation_page_path(@object, p)}"}.join(', ') %></span>
+    <span><%= @object.pages.collect{|p| "#{p.to_s} #{edit_item_link edit_admin_citation_page_path(@object, p)} #{delete_item_link admin_citation_page_path(@object, p)}"}.join(', ').html_safe %></span>
   </div>
   <div class="row">
     <label><%= Note.model_name.human(:count => :many).titleize.s %></label>
