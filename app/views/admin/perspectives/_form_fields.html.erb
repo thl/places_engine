@@ -2,7 +2,6 @@
 <%= error_messages_for model_name %>
 <fieldset>
   <legend><%= Perspective.model_name.human.titleize.s %></legend>
-<%= f.hidden_field :id %>
   <div class="row">
 <%= f.label(:name).s %>
 <%= f.text_field :name, :class => :text %>

@@ -12,7 +12,7 @@
   </div>
   <div class="row">
     <label><%= Note.model_name.human(:count => :many).titleize.s %></label>
-    <span><%= def_if_blank @object, :notes %></span>
+    <span><%= def_if_blank(@object, :notes).html_safe %></span>
   </div>
   <div class="row">
 <%=	new_item_link(new_admin_citation_page_path(@object), ts('add.record', :what => t(:referenced, :what => Page.model_name.human(:count => :many)))) %>

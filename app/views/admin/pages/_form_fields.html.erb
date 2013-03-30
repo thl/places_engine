@@ -1,6 +1,5 @@
 <fieldset>	
   <legend><%= ts(:for, :what => Page.model_name.human(:count => :many), :whom => t('citation.of', :what => @object.citation.citable.id)) %></legend>
-<%= f.hidden_field :id %>
   <div class="row">
 <%= f.label(:volume).s %>
 <%= f.text_field :volume, :class => :text %>

@@ -1,5 +1,5 @@
 class Citation < ActiveRecord::Base
-  attr_accessible :info_source_id, :notes
+  attr_accessible :info_source_id, :notes, :citable_id, :citable_type
   
   attr_accessor :marked_for_deletion
   

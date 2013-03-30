@@ -1,7 +1,6 @@
 <%= tagged_tinymce_script %>
 <fieldset>
 	<legend><%= ts(:for, :what => Citation.model_name.human.titleize, :whom => @object.citable) %></legend>
-	<%= f.hidden_field :id %>
 	<div class="row">
 		<%= f.label(:info_source_id).s %> (Document ID from MMS application)
 		<%= f.text_field :info_source_id, :class => :text %>
