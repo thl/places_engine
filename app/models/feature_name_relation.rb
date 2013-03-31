@@ -1,6 +1,6 @@
 class FeatureNameRelation < ActiveRecord::Base
   attr_accessible :is_translation, :is_phonetic, :phonetic_system_id, :is_orthographic, :orthographic_system_id,
-    :is_alt_spelling, :alt_spelling_system_id, :parent_node, :child_node, :ancestor_ids, :skip_update
+    :is_alt_spelling, :alt_spelling_system_id, :parent_node_id, :child_node_id, :ancestor_ids, :skip_update
   attr_accessor :skip_update
 
   acts_as_family_tree :tree, :node_class=>'FeatureName'

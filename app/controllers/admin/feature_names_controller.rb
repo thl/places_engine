@@ -11,7 +11,7 @@ class Admin::FeatureNamesController < ResourceController::Base
     @parent_object = parent_object
     # Remove the Feature that is currently looking for a relation
     # (shouldn't relate to itself)
-    @collection.delete object
+    @collection = @collection.where(['id <> ?', object.id])
     render :action => 'index'
   end
   

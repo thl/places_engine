@@ -433,7 +433,7 @@ module AdminHelper
         note_title = n.title.blank? ? "Note" : n.title
         note_authors = " by #{n.authors.collect(&:fullname).join(", ").s}" if n.authors.length > 0
         link_to "Note #{i+1}", polymorphic_path([:admin, object, n]), :title => h("#{note_title}#{note_authors}")
-      }.join(", ").to_s
+      }.join(', ').html_safe
     else
       ""
     end
@@ -446,7 +446,7 @@ module AdminHelper
         time_units.enum_with_index.collect{|tu, i|
           time_unit_title = tu.to_s.blank? ? "Date" : tu.to_s
           link_to "Date #{i+1}", polymorphic_path([:admin, object, tu]), :title => h("#{time_unit_title}")
-        }.join(", ").to_s
+        }.join(', ').html_safe
       else
         ""
       end
