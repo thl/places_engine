@@ -6,6 +6,7 @@
        <th class="listActionCol"></th>
        <th><%= Shape.human_attribute_name(:gid).s %></th>
        <th><%= Shape.model_name.human(:count => :many).titleize.s %></th>
+       <th><%= Shape.human_attribute_name(:altitude).s %>
        <th><%= ts 'priorit.y' %></th>
        <th><%= Note.model_name.human(:count => :many).titleize.s %></th>
        <th><%= ts 'add.record', :what => Note.model_name.human.titleize %></th>
@@ -24,7 +25,8 @@
        end %>
        </td>
        <td><%= item.gid.to_s %></td>
-       <td><%=h shape_display_string(item) %></td>
+       <td><%= shape_display_string(item) %></td>
+       <td><%= item.altitude %></td>
        <td><%= item.position.to_s %></td>
        <td><%= note_link_list_for item %></td>
        <td><%= new_note_link_for item %></td>
