@@ -32,7 +32,7 @@ en:
                 other: 'geocodes'
             feature_name:
                 one: 'name'
-                other: 'name variations'
+                other: 'names'
             feature_name_relation:
                 one: 'feature name relation'
                 other: 'feature name relations'
