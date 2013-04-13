@@ -262,9 +262,10 @@ module FeatureExtensionForNamePositioning
     #pinyin_simp_rel = simp_chi_name.child_relations.detect{|r| r.phonetic_system_id==pinyin_id}
     #!pinyin_simp_rel.nil? && pinyin_trad_rel.nil?
   end
-    
-  def self.included(base)
-    base.extend ClassMethods
+  
+  extend ActiveSupport::Concern
+
+  included do
   end
   
   module ClassMethods

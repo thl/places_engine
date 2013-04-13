@@ -1,6 +1,7 @@
 module SimplePropCache
-  def self.included(base)
-    base.extend ClassMethods
+  extend ActiveSupport::Concern
+
+  included do
   end
   
   module ClassMethods
