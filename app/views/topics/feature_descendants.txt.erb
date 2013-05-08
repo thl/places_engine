@@ -1,3 +1,0 @@
-<% @features_with_parents.collect do |f| %>
-<%=  f[0].prioritized_name(@view).name %> (<%= "#{f[1].prioritized_name(@view).name} - " if !f[1].nil? %><%= f[0].feature_object_types.first.category.title %>) {<%= f[0].fid %>}
-<% end %>

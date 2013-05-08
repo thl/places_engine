@@ -1,7 +1,0 @@
-<h1><%= ts 'edit.ing.record', :what => AuthenticatedSystem::User.model_name.human.titleize %></h1>
-<%= error_messages_for :user %>
-<%= form_for([:person, @user], :url => admin_person_user_path(@person), :method => :put) do |f| %>
-<%=   render :partial => 'form', :locals => {:f => f} %>
-      <p><%= globalized_submit_tag 'update.this' %></p>
-<%  end %>
-<p><%= render :partial => 'persistent_links' %></p>

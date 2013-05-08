@@ -1,2 +1,0 @@
-module CitationHelper
-end

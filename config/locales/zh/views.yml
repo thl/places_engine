@@ -1,21 +1,8 @@
-# Places dictionary view localization file for Chinese.
+# Places engine view localization file for Chinese.
 zh:
-    about: '关于'
     app:
         short: 'THL地名词典'
         this: '西藏和喜马拉雅地区THL地名词典'
-    child: '儿童'
-    choose:
-        from: '从{{what}}中选择'
-        record: '选择{{what}}'
-    citation:
-        of: '{{what}}的注释'
-        unavailable: '无可用的引用'
-    clone:
-        into: '克隆{{what}}为'
-        record: '克隆{{what}}'
-    current: '当前{{what}}'
-    default: '默认{{what}}'
     entry: 'THL地名词典词条'
     feature:
         detail:
@@ -28,77 +15,30 @@ zh:
             one: '{{what}}特征'
             other: '{{what}}特征'
         unused_ids: '未使用的特征ID'
-    hide: '隐藏{{what}}'
-    information:
-        general: '基本信息'
-        user: '用户信息'
-    is:
-        translation: '{{this}}是{{that}}的翻译吗？'
-        phonetic: '{{this}}是{{that}}的音译吗？'
-        orthographic: '{{this}}是{{that}}的转写吗？'
-        alt_spelling: '{{this}}是{{that}}的另一种拼写形式吗？'
-    its_original_publication: '原始在线出版'
-    loading: '正在载入'
     location:
         latitude: '经度'
         longitude: '纬度'
-    log:
-        in: '登录'
     map:
         earth: '谷歌地球'
         full: '完整地图'
         google: '谷歌地图'
         this: '地图'
-    no:
-        record: '无 {{what}}'
-    other: '其它{{what}}'
-    perspective: '{{what}}的观点'
-    prefix:
-        with: '以{{what}}为前缀'
     priorit:
-        y: '优先权'
         ization_of:
             feature_types: '按特征类型优先化'
             locations: '按地理位置优先化'
-            names: '按名称优先化'
             shapes: '按形状优先化'
-    read_more: '阅读更多'
-    referenced: '{{what}} 参考'
-    relat:
-        ed:
-            record: '相关{{what}}'
-            to: '相关的'
-        ion:
-            location: '确定关系'
-            ship:
-                between: '{{this}}和{{that}}的关系'
-                this: '关系'
-                to: '和{{what}}的关系'
-            this:
-                one: '关系'
-                other: '关系'
-    remove: '移除'
     resource:
         gis:
             contained_features: 'GIS资源（包含复合特征）'
             feature_alone: 'GIS资源（仅含特征）'
-    session:
-        preferences: '期间偏好'
-    set_primary_essay: '设置主要短文'
     snippet:
         characteristic_needs_feature: '知识地图的特点只能与某项特征相联系'
-        essay:
-            needs_parent: '短文只能从使用某项特征的资源中创建'
-            primary: "'*'标识主要短文"
-            with: '仅显示含有短文的词条'
         feature:
             geo_code_needs_resource: '地理特征代码'
             name:
-                drag_priority: '"点击名称并拖动至新的位置将显示不同名称间的主次关系。 名称的主次关系序列将决定名称如何在地图、导航树和其它内容中显示。
-因此如果某名称具有两种常用的罗马字拼写，优先者将被选择，如果有两个名字，优先者将被显示，余者亦复如是。"'
-                has_transliteration: '{{what}} 的转写为{{whom}}'
+                drag_priority: '点击名称并拖动至新的位置将显示不同名称间的主次关系。 名称的主次关系序列将决定名称如何在地图、导航树和其它内容中显示。因此如果某名称具有两种常用的罗马字拼写，优先者将被选择，如果有两个名字，优先者将被显示，余者亦复如是'
                 not_related: '抱歉，本特征目前没有任何相关的特征联系'
-                resource: '使用特征的资源'
             not:
                 contains: '此特征不包含其它任何特征'
                 found: '抱歉，未能找到本特征。 请使用右侧的菜单功能来搜索或浏览特征。'
@@ -111,19 +51,3 @@ zh:
             drag_priority: '点击一个位置并拖动至新的位置将显示不同位置间的主次关系。 位置的主次关系序列将决定特征类型如何在地图，导航树和其它内容中显示。'
             input: '请输入十进制度数（格式如35.1974）。如果数值包含度、分、秒，请转换为十进制度数。转换程序试用: <a href="http://www.fcc.gov/mb/audio/bickel/DDDMMSS-decimal.html" target="_blank">http://www.fcc.gov/mb/audio/bickel/DDDMMSS-decimal.html</a>.'
         search: '使用搜索栏搜索特征'
-        title: '使用首字母大写 (例： An Exciting...)'
-    suffix:
-        record: '{{what}}后缀'
-    switch: '转换{{what}}'
-    title: '标题'
-    tree:
-        collapse: '折叠{{what}}'
-        expand: '展开{{what}}'
-    type:
-        adjective: '类型'
-        in: '输入 {{what}}'
-        value: '输入值'
-    value: '数值'
-    view:
-        record: '查看{{what}}'
-        this: '查看'

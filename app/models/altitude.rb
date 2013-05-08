@@ -1,7 +1,7 @@
 class Altitude < ActiveRecord::Base
-  extend IsCitable
+  include CulturalNetwork::IsCitable
   extend IsDateable
-  extend IsNotable
+  include CulturalNetwork::IsNotable
   
   attr_accessible :average, :estimate, :minimum, :maximum, :unit_id  
   belongs_to :feature

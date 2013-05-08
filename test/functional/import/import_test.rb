@@ -5,6 +5,7 @@
 # ENV["RAILS_ENV"] = "test"
 # require File.expand_path(File.dirname(__FILE__) + "/../../../config/environment")
 # require 'test_help'
+# require 'cultural_network/import/data_import'
 # 
 # class ImportTest < Test::Unit::TestCase
 #   
@@ -13,7 +14,7 @@
 #     #url = "https://eos8d:password@subversion.lib.virginia.edu/repos/thdl/trunk/collections/cultgeo/gazetteer2/"
 #     url = File.expand_path(File.dirname(__FILE__) + "/../../xml/")
 #     
-#     DataImport.minimum(url)
+#     CulturalNetwork::DataImport.minimum(url)
 #     
 #     @f0 = Feature.find_by_pid("f0")
 #     @f1 = Feature.find_by_pid("f1")

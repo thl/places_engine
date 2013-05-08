@@ -1,7 +1,0 @@
-# This is done through RJS instead of JS because we need to grab the ancestors of the node for NodeTree.hideOtherBranches().
-id = params[:id]
-node = Feature.find(id)
-ancestors = node.current_ancestors(current_perspective).collect(&:id)
-page.call "$('#node_#{id}_div').html", render(:partial => "expanded", :locals => { :expanded => node })
-page.call "NodeTree.showNode", id
-page.call "NodeTree.hideOtherBranches", ancestors.join(",")+","+id

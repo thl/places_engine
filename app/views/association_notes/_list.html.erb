@@ -1,9 +1,0 @@
-<div class="thl-popup-padded-content">
-<% @notes.each do |note| %>
-     <h2><%= note.title %></h2>
-     <p>
-<%=    ts(:by, :whom => note.authors.collect(&:fullname).join(', ')) if note.authors.length > 0 %> (<%= note.updated_at.to_date.to_formatted_s(:long) %>)
-     </p>
-     <div><%= note.content %></div>
-<% end %>
-</div>

@@ -1,7 +1,7 @@
 class Shape < ActiveRecord::Base
   extend IsDateable
-  extend IsNotable
-  extend IsCitable
+  include CulturalNetwork::IsNotable
+  include CulturalNetwork::IsCitable
   
   attr_accessible :altitude, :geometry, :fid
   belongs_to :feature, :foreign_key => 'fid', :primary_key => 'fid'

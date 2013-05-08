@@ -1,5 +1,0 @@
-<%  add_breadcrumb_items features_link, feature_link(@object), ts('edit.this') %>
-<%= form_for @object, :url => admin_feature_path(@object), :method => :put do |f| %>
-<%=   render :partial=>'form_fields', :locals=>{:f=>f} %>
-<%=   link_to ts('cancel.this'), admin_feature_path(@object) %> | <%= globalized_submit_tag 'update.this' %>
-<%  end %>

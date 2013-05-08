@@ -1,4 +1,0 @@
-<div class="dropdown">
-<%= select_tag 'note[author_ids][]', options_for_select(@authors.collect{|a| [ a.fullname , a.id] }, selected.nil? ? nil : selected) %>
-<%= link_to_function ts('remove'), "$(this).parents('.dropdown:first').remove()" %>
-</div>

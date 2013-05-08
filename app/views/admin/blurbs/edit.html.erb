@@ -1,7 +1,0 @@
-<%  add_breadcrumb_item link_to(collection_name, collection_path)
-    add_breadcrumb_item link_to(@blurb.code, object_path(@blurb))
-    add_breadcrumb_item ts('edit.this') %>
-<%= form_for [:admin, @blurb] do |f| %>
-<%=   render :partial=>'admin/blurbs/form_fields', :locals=>{:f=>f,:object=>@blurb} %>
-<%=   link_to ts('cancel.this'), collection_path %> | <%= globalized_submit_tag 'update.this' %>
-<%  end %>

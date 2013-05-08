@@ -1,5 +1,0 @@
-<div><%= Feature.count %>/<%= FeatureName.count %></div>
-<% context = Feature.find(params[:context_id].to_i) rescue nil %>
-<ul>
-<%= build_contextual_tree(context) %>
-</ul>

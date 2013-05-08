@@ -1,6 +1,0 @@
-<h2><%= ts 'information.user' %></h2>
-<%= display_if_not_blank AuthenticatedSystem::User.human_attribute_name(:identity_url).s, h(user.identity_url) %>
-<%= display_if_not_blank AuthenticatedSystem::User.human_attribute_name(:login).s, h(user.login) %>
-<%= display_if_not_blank AuthenticatedSystem::User.human_attribute_name(:email).s, h(user.email) %>
-<%= display_if_not_blank AuthenticatedSystem::User.human_attribute_name(:created_at).s, user.created_at %>
-<%= display_if_not_blank AuthenticatedSystem::User.human_attribute_name(:updated_at).s, user.updated_at %>

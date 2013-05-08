@@ -1,3 +1,0 @@
-<%= "#{link_to(ts('edit.record', :what => AuthenticatedSystem::User.model_name.human), edit_admin_person_user_path(@person))} |".html_safe if !@person.user.nil? %>
-<%= link_to ts('delete.this'), admin_person_path(@person), :confirm => te('delete.confirmation'), :method => :delete %> |
-<%= link_to ts('back.to', :what => t('all.records', :what => AuthenticatedSystem::Person.model_name.human(:count => :many))), admin_people_path %>

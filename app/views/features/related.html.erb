@@ -1,8 +1,0 @@
-<%= render :partial => "top" %>
-<div id="RelatedFeatures">
-  <div class="has-right-margin">
-<%= render :partial => "related" %>
-  </div>
-</div>
-<%= javascript_on_load "document.title = '#{ts 'app.short'} - #{feature_name_header(@feature)} - #{ts 'relat.ed.record', :what => Feature.model_name.human.titleize}'" %>		
-<%= render :partial => "bottom" %>

@@ -1,7 +1,0 @@
-<%  has_no_children = contracted.current_children(current_perspective, current_view).empty? 
-    if has_no_children %>
-      <span class="node-empty"></span>
-<%  else %>
-<%=   link_to '', {:action => 'expanded', :id => contracted.id}, :remote => true, :class => 'node-plus' %>
-<%  end %>
-<%= render :partial => 'features/selectable_node', :locals => { :node => contracted } %>
