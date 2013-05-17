@@ -52,9 +52,9 @@
       <h3><%= ts 'map.this' %></h3>
       <div id="inset_map" class="fid-<%= map_fid %> language-<%= current_view.code %>"></div>
 <%=   javascript_on_load "InsetMap.init({proxyUrl: '#{ActionController::Base.config.relative_url_root}/proxy_engine/utils/proxy/?proxy_url='});" %>
-<%=   link_to image_tag("#{ThlSite.get_url}/global/images/icon-map-simple.gif", :alt => "") + " #{ts 'view.record', :what => t('map.full')}", "#{ThlSite.get_url}/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}", :class => "view-on-map" %>
-<%=   link_to image_tag("#{ThlSite.get_url}/global/images/icon-google-maps.png", :alt => "") + " #{ts :in, :what => t('view.this'), :where => t('map.google')}", "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => map_fid, :format => "kmz"), :target => "_blank", :class => "view-on-map" %>
-<%=   link_to image_tag("#{ThlSite.get_url}/global/images/icon-google-earth.png", :alt => "") + " #{ts :in, :what => t('view.this'), :where => t('map.earth')}", {:action => :gis_resources, :fids => map_fid, :format => "kmz"}, :target => "_blank", :class => "view-on-map" %>
+<%=   link_to image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-map-simple.gif", :alt => "") + " #{ts 'view.record', :what => t('map.full')}", "#{InterfaceUtils::Server.get_url}/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}", :class => "view-on-map" %>
+<%=   link_to image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-google-maps.png", :alt => "") + " #{ts :in, :what => t('view.this'), :where => t('map.google')}", "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => map_fid, :format => "kmz"), :target => "_blank", :class => "view-on-map" %>
+<%=   link_to image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-google-earth.png", :alt => "") + " #{ts :in, :what => t('view.this'), :where => t('map.earth')}", {:action => :gis_resources, :fids => map_fid, :format => "kmz"}, :target => "_blank", :class => "view-on-map" %>
 <%  end %>
 <%= content_tag :h3, Description.model_name.human(:count => feature.descriptions.size).titleize.s unless feature.descriptions.blank? %>
 <%  if !feature.descriptions.empty? %>

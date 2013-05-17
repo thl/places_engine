@@ -77,7 +77,7 @@ xml.feature(:id => feature.id, :pid => feature.pid, :fid => feature.fid, :header
   closest = feature.closest_feature_with_shapes
   closest_fid = closest.nil? ? nil : closest.fid
   xml.closest_fid_with_shapes(closest_fid, :type => 'integer')
-  url = closest_fid.nil? ? nil : "#{ThlSite.get_url}/places/maps/interactive/#fid:#{closest_fid}"
+  url = closest_fid.nil? ? nil : "#{InterfaceUtils::Server.get_url}/places/maps/interactive/#fid:#{closest_fid}"
   xml.interactive_map_url(url, :type => 'string')
   xml.created_at(feature.created_at, :type => 'datetime')
   xml.updated_at(feature.updated_at, :type => 'datetime')

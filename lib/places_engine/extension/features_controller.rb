@@ -45,13 +45,10 @@ module PlacesEngine
         end
 
         # Find the proper instance of GeoServer, based on the current environment
-        hostname = Socket.gethostname.downcase
-        if hostname == 'dev.thlib.org'
-         geoserver_base = 'http://localhost:8080/thlib-geoserver/'
-        elsif hostname =~ /sds.+\.itc\.virginia\.edu/
-         geoserver_base = 'http://localhost:8080/thdl-geoserver/'
-        else
-         geoserver_base = 'http://www.thlib.org:8080/thdl-geoserver/'
+        geoserver_base = case InterfaceUtils::Server.environment
+        when InterfaceUtils::Server::DEVELOPMENT then 'http://localhost:8080/thlib-geoserver/'
+        when InterfaceUtils::Server::PRODUCTION  then 'http://localhost:8080/thdl-geoserver/'
+        else                                          'http://www.thlib.org:8080/thdl-geoserver/'
         end
         if service.nil?
           render :nothing => true
