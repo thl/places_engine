@@ -7,8 +7,4 @@ module Admin::ShapesHelper
     return shape.geo_type unless shape.is_point?
     return "Latitude: #{shape.lat}; Longitude: #{shape.lng}"
   end
-  
-  def google_maps_key
-    InterfaceUtils::Server.environment == InterfaceUtils::Server::EBHUTAN ? 'ABQIAAAA-y3Dt_UxbO4KSyjAYViOChQYlycRhKSCRlUWwdm5YkcOv9JZvxQ7K1N-weCz0Vvcplc8v8TOVZ4lEQ' : 'ABQIAAAAmlH3GDvD6dTOdZjfrfvLFxTkTKGJ2QQt6wuPk9SnktO8U_sCzxTyz_WwKoSJx63MPLV9q8gn8KCNtg'
-  end
 end
