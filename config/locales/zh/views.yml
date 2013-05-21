@@ -12,8 +12,8 @@ zh:
         numbers_to_generate: '需要生成的特征数'
         range: '特征域'
         record:
-            one: '{{what}}特征'
-            other: '{{what}}特征'
+            one: '%{what}特征'
+            other: '%{what}特征'
         unused_ids: '未使用的特征ID'
     location:
         latitude: '经度'

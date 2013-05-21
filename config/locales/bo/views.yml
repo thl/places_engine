@@ -12,8 +12,8 @@ bo:
         numbers_to_generate: 'འགྲུབ་བྱེད་དགོས་པའི་ཁྱད་ཆོས་ཀྱི་གྲངས།'
         range: 'ཁྱད་ཆོས་'
         record:
-            one: '{{what}}ཁྱད་ཆོས།'
-            other: '{{what}}ཁྱད་ཆོས་ཁག།'
+            one: '%{what}ཁྱད་ཆོས།'
+            other: '%{what}ཁྱད་ཆོས་ཁག།'
         unused_ids: 'བེད་སྤྱོད་བྱ་རྒྱུའི་ཁྱད་ཆོས་ID'
     location:
         latitude: 'གཞུང་ཐིག།'

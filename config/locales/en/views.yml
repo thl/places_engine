@@ -12,8 +12,8 @@ en:
         numbers_to_generate: 'Number of features to generate'
         range: 'Feature Range'
         record:
-            one: '{{what}} feature'
-            other: '{{what}} features'
+            one: '%{what} feature'
+            other: '%{what} features'
         unused_ids: 'Unused Feature IDs'
     location:
         latitude: 'Latitude'

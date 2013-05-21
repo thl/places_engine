@@ -15,7 +15,7 @@
 	var characteristic_data = <%= CategoryFeature.get_json_data %>;
 	var characteristic_selector = new CharacteristicSelector();
 	characteristic_selector.init('characteristic_selector', {
-		fieldLabel: "<%= Topic.model_name.human.titleize %>:",
+		fieldLabel: "<%= Topic.human_name.titleize %>:",
 		data: characteristic_data
 	});
 <% end %>
