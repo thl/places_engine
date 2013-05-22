@@ -1,14 +1,8 @@
 module PlacesEngine
   module Extension
     module CachedCategoryCountExtension
-      extend ActiveSupport::Concern
-
-      included do
-      end
-
-      module ClassMethods
-        # this takes into account count_with_shapes
-        def updated_count(category_id, force_update = false)
+      def self.extended(base)
+        def base.updated_count(category_id, force_update = false)
           cached_count = CachedCategoryCount.where(:category_id => category_id).first
           latest_update = CategoryFeature.latest_update
           non_existent = false

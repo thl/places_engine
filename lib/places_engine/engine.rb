@@ -12,8 +12,10 @@ module PlacesEngine
       
       Feature.send :include, PlacesEngine::Extension::ForNamePositioning
       Feature.send :include, PlacesEngine::Extension::FeatureModel
+      CachedCategoryCount.send :extend, PlacesEngine::Extension::CachedCategoryCountExtension
       CitationController.send :include, PlacesEngine::Extension::CitationController
       FeaturesController.send :include, PlacesEngine::Extension::FeaturesController
+      NotesController.send :include, PlacesEngine::Extension::NotesController
       Admin::CitationsController.send :include, PlacesEngine::Extension::AdminCitationController
       Admin::NotesController.send :include, PlacesEngine::Extension::AdminNotesController
     end
