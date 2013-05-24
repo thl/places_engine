@@ -12,12 +12,12 @@ class ConvertFeatureIds < ActiveRecord::Migration
     add_column :features, :old_pid, :string
     Feature.reset_column_information
     
-    CulturalNetwork::FeaturePidGenerator.current = 0
+    KmapsEngine::FeaturePidGenerator.current = 0
     feature_hash = Hash.new
     Feature.find(:all, :order => "created_at").each do |f|
       # get the next pid...
       f.old_pid = f.fid
-      f.pid = CulturalNetwork::FeaturePidGenerator.next
+      f.pid = KmapsEngine::FeaturePidGenerator.next
       unless f.save
         puts "** Failed to update Feature: #{f.id}"
       else
