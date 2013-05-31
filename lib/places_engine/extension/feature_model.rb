@@ -45,7 +45,7 @@ module PlacesEngine
         end
       end
 
-      def place_path(type = nil)
+      def kmap_path(type = nil)
         a = ['places', self.fid]
         a << type if !type.nil?
         a.join('/')

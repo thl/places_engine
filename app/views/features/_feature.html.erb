@@ -64,7 +64,7 @@
 <%=   note_popup_link_list_for(feature, {:association_type => Description.model_name}) %>
 <%  end
     associated_resources = [
-      [Topic.human_name(:count => :many).titleize.s, feature.category_count, feature.kmaps_url],
+      [Topic.human_name(:count => :many).titleize.s, feature.category_count, feature.topical_map_url],
       ['Pictures', feature.media_count(:type => 'Picture'), feature.pictures_url],
       ['Video', feature.media_count(:type => 'Video'), feature.videos_url],
       ['Texts', feature.media_count(:type => 'Document'), feature.documents_url]

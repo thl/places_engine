@@ -1,384 +1,222 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file, 
-# please use the migrations feature of Active Record to incrementally modify your database, and
-# then regenerate this schema definition.
+# This file is auto-generated from the current state of the database. Instead
+# of editing this file, please use the migrations feature of Active Record to
+# incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your database schema. If you need
-# to create the application database on another system, you should be using db:schema:load, not running
-# all the migrations from scratch. The latter is a flawed and unsustainable approach (the more migrations
+# Note that this schema.rb definition is the authoritative source for your
+# database schema. If you need to create the application database on another
+# system, you should be using db:schema:load, not running all the migrations
+# from scratch. The latter is a flawed and unsustainable approach (the more migrations
 # you'll amass, the slower it'll run and the greater likelihood for issues).
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110628205752) do
-
-  create_table "Birth_rate", :id => false, :force => true do |t|
-    t.column "gid", :integer, :null => false
-    t.column "name", :string, :limit => 27
-    t.column "pop_total", :float
-    t.column "births_199", :float
-    t.column "rate", :float
-    t.column "the_geom", :polygon, :srid => 4326
-  end
-
-  create_table "Births_and_deaths", :id => false, :force => true do |t|
-    t.column "gid", :integer, :null => false
-    t.column "name", :string, :limit => 27
-    t.column "births_1990", :float
-    t.column "deaths_1990", :float
-    t.column "the_geom", :polygon, :srid => 4326
-  end
-
-  create_table "Death_rate", :id => false, :force => true do |t|
-    t.column "gid", :integer, :null => false
-    t.column "name", :string, :limit => 27
-    t.column "pop_total", :float
-    t.column "death_1990", :float
-    t.column "rate", :float
-    t.column "the_geom", :polygon, :srid => 4326
-  end
-
-  create_table "Economical_activity", :id => false, :force => true do |t|
-    t.column "gid", :integer, :null => false
-    t.column "name", :string, :limit => 27
-    t.column "agriculture", :float
-    t.column "industry", :float
-    t.column "mining", :float
-    t.column "constructio", :float
-    t.column "government_", :float
-    t.column "other", :integer
-    t.column "the_geom", :polygon, :srid => 4326
-  end
-
-  create_table "Ethnic_distribution", :id => false, :force => true do |t|
-    t.column "gid", :integer, :null => false
-    t.column "name", :string, :limit => 27
-    t.column "population_", :float
-    t.column "Han", :float
-    t.column "Tibetans", :float
-    t.column "Mongols", :float
-    t.column "Hui", :float
-    t.column "other", :integer
-    t.column "the_geom", :polygon, :srid => 4326
-  end
-
-  create_table "Han_rate", :id => false, :force => true do |t|
-    t.column "gid", :integer, :null => false
-    t.column "name", :string, :limit => 27
-    t.column "pop_total", :float
-    t.column "pop_han", :float
-    t.column "rate", :float
-    t.column "the_geom", :polygon, :srid => 4326
-  end
-
-  create_table "Illiteracy_per_gender", :id => false, :force => true do |t|
-    t.column "gid", :integer, :null => false
-    t.column "name", :string, :limit => 27
-    t.column "pop_total", :float
-    t.column "illit_male", :float
-    t.column "illit_fem", :float
-    t.column "the_geom", :polygon, :srid => 4326
-  end
-
-  create_table "Illiteracy_rate", :id => false, :force => true do |t|
-    t.column "gid", :integer, :null => false
-    t.column "name", :string, :limit => 27
-    t.column "pop_total", :float
-    t.column "pop_illet", :float
-    t.column "rate", :float
-    t.column "the_geom", :polygon, :srid => 4326
-  end
-
-  create_table "Immigration_rate", :id => false, :force => true do |t|
-    t.column "gid", :integer, :null => false
-    t.column "name", :string, :limit => 27
-    t.column "pop_total", :integer
-    t.column "immig", :float
-    t.column "rate", :float
-    t.column "the_geom", :polygon, :srid => 4326
-  end
-
-  create_table "Population_density", :id => false, :force => true do |t|
-    t.column "gid", :integer, :null => false
-    t.column "name", :string, :limit => 27
-    t.column "pop_total", :float
-    t.column "sq_km", :float
-    t.column "density", :float
-    t.column "the_geom", :polygon, :srid => 4326
-  end
-
-  create_table "Population_per_gender", :id => false, :force => true do |t|
-    t.column "gid", :integer, :null => false
-    t.column "name", :string, :limit => 27
-    t.column "males_1990", :float
-    t.column "females_199", :float
-    t.column "the_geom", :polygon, :srid => 4326
-  end
-
-  create_table "Tibetan_rate", :id => false, :force => true do |t|
-    t.column "gid", :integer, :null => false
-    t.column "name", :string, :limit => 27
-    t.column "pop_total", :float
-    t.column "pop_tib", :float
-    t.column "rate", :float
-    t.column "the_geom", :polygon, :srid => 4326
-  end
-
+ActiveRecord::Schema.define(:version => 20130213214759) do
+  
   create_table "altitudes", :force => true do |t|
-    t.column "feature_id", :integer, :null => false
-    t.column "maximum", :integer
-    t.column "minimum", :integer
-    t.column "average", :integer
-    t.column "unit_id", :integer, :null => false
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
-    t.column "estimate", :string
+    t.integer  "feature_id", :null => false
+    t.integer  "maximum"
+    t.integer  "minimum"
+    t.integer  "average"
+    t.integer  "unit_id",    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "estimate"
   end
 
   create_table "authors_descriptions", :id => false, :force => true do |t|
-    t.column "author_id", :integer, :null => false
-    t.column "description_id", :integer, :null => false
+    t.integer "description_id", :null => false
+    t.integer "author_id",      :null => false
   end
-
-  add_index "authors_descriptions", ["author_id", "description_id"], :name => "index_authors_descriptions_on_author_id_and_description_id", :unique => true
 
   create_table "authors_notes", :id => false, :force => true do |t|
-    t.column "author_id", :integer, :null => false
-    t.column "note_id", :integer, :null => false
+    t.integer "note_id",   :null => false
+    t.integer "author_id", :null => false
   end
-
-  add_index "authors_notes", ["author_id", "note_id"], :name => "index_authors_notes_on_author_id_and_note_id", :unique => true
-
-  create_table "bbox", :id => false, :force => true do |t|
-    t.column "gid", :integer
-    t.column "fid", :integer
-    t.column "object_type", :integer
-    t.column "language", :string
-    t.column "name", :string
-    t.column "writing", :string
-    t.column "geotype", :text
-    t.column "geometry", :geometry, :srid => nil
-  end
-
-  create_table "bbox_test", :id => false, :force => true do |t|
-    t.column "gid", :integer
-    t.column "fid", :integer
-    t.column "object_type", :integer
-    t.column "language", :string
-    t.column "name", :string
-    t.column "writing", :string
-    t.column "geotype", :text
-    t.column "geometry", :geometry, :srid => nil
-  end
-
-  create_table "bellezza", :primary_key => "gid", :force => true do |t|
-    t.column "objectid", :integer
-    t.column "sort_no", :decimal
-    t.column "type", :string, :limit => 254
-    t.column "site_no", :string, :limit => 254
-    t.column "name_wylie", :string, :limit => 254
-    t.column "name_eng", :string, :limit => 254
-    t.column "county", :string, :limit => 254
-    t.column "the_geom", :point, :srid => 4326
-  end
-
-  add_index "bellezza", ["the_geom"], :name => "bellezza_geom", :spatial=> true 
 
   create_table "blurbs", :force => true do |t|
-    t.column "code", :string
-    t.column "title", :string
-    t.column "content", :text
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
+    t.string   "code"
+    t.string   "title"
+    t.text     "content"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "cached_category_counts", :force => true do |t|
-    t.column "category_id", :integer, :null => false
-    t.column "count", :integer, :null => false
-    t.column "cache_updated_at", :timestamp, :null => false
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
-    t.column "count_with_shapes", :integer, :null => false
+    t.integer  "category_id",       :null => false
+    t.integer  "count",             :null => false
+    t.datetime "cache_updated_at",  :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "count_with_shapes", :null => false
   end
 
   add_index "cached_category_counts", ["category_id"], :name => "index_cached_category_counts_on_category_id", :unique => true
 
   create_table "cached_feature_names", :force => true do |t|
-    t.column "feature_id", :integer, :null => false
-    t.column "view_id", :integer, :null => false
-    t.column "feature_name_id", :integer
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
+    t.integer  "feature_id",      :null => false
+    t.integer  "view_id",         :null => false
+    t.integer  "feature_name_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "cached_feature_names", ["feature_id", "view_id"], :name => "index_cached_feature_names_on_feature_id_and_view_id", :unique => true
 
   create_table "cached_feature_relation_categories", :force => true do |t|
-    t.column "feature_id", :integer
-    t.column "related_feature_id", :integer
-    t.column "category_id", :integer
-    t.column "perspective_id", :integer
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
-    t.column "feature_relation_type_id", :integer
-    t.column "feature_is_parent", :boolean
+    t.integer  "feature_id"
+    t.integer  "related_feature_id"
+    t.integer  "category_id"
+    t.integer  "perspective_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "feature_relation_type_id"
+    t.boolean  "feature_is_parent"
   end
 
   create_table "category_features", :force => true do |t|
-    t.column "feature_id", :integer, :null => false
-    t.column "category_id", :integer, :null => false
-    t.column "perspective_id", :integer
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
-    t.column "position", :integer, :default => 0, :null => false
-    t.column "type", :string
-    t.column "string_value", :string
-    t.column "numeric_value", :integer
+    t.integer  "feature_id",                        :null => false
+    t.integer  "category_id",                       :null => false
+    t.integer  "perspective_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "position",       :default => 0,     :null => false
+    t.string   "type"
+    t.string   "string_value"
+    t.integer  "numeric_value"
+    t.boolean  "show_parent",    :default => false, :null => false
+    t.boolean  "show_root",      :default => true,  :null => false
+    t.string   "label"
+    t.boolean  "prefix_label",   :default => true,  :null => false
   end
 
-  add_index "category_features", ["feature_id"], :name => "feature_object_types_feature_id_idx"
   add_index "category_features", ["category_id"], :name => "feature_object_types_object_type_id_idx"
+  add_index "category_features", ["feature_id"], :name => "feature_object_types_feature_id_idx"
   add_index "category_features", ["perspective_id"], :name => "feature_object_types_perspective_id_idx"
 
   create_table "citations", :force => true do |t|
-    t.column "info_source_id", :integer
-    t.column "citable_type", :string
-    t.column "citable_id", :integer
-    t.column "notes", :text
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
+    t.integer  "info_source_id"
+    t.string   "citable_type"
+    t.integer  "citable_id"
+    t.text     "notes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "citations", ["citable_type", "citable_id"], :name => "citations_1_idx"
+  add_index "citations", ["citable_id", "citable_type"], :name => "citations_1_idx"
   add_index "citations", ["info_source_id"], :name => "citations_info_source_id_idx"
 
   create_table "complex_dates", :force => true do |t|
-    t.column "year", :integer
-    t.column "year_certainty_id", :integer
-    t.column "season_id", :integer
-    t.column "season_certainty_id", :integer
-    t.column "month", :integer
-    t.column "month_certainty_id", :integer
-    t.column "day", :integer
-    t.column "day_certainty_id", :integer
-    t.column "day_of_week_id", :integer
-    t.column "day_of_week_certainty_id", :integer
-    t.column "time_of_day_id", :integer
-    t.column "time_of_day_certainty_id", :integer
-    t.column "hour", :integer
-    t.column "hour_certainty_id", :integer
-    t.column "minute", :integer
-    t.column "minute_certainty_id", :integer
-    t.column "animal_id", :integer
-    t.column "animal_certainty_id", :integer
-    t.column "calendrical_id", :integer
-    t.column "calendrical_certainty_id", :integer
-    t.column "element_certainty_id", :integer
-    t.column "element_id", :integer
-    t.column "gender_id", :integer
-    t.column "gender_certainty_id", :integer
-    t.column "intercalary_month_id", :integer
-    t.column "intercalary_day_id", :integer
-    t.column "rabjung_id", :integer
-    t.column "rabjung_certainty_id", :integer
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
-    t.column "year_end", :integer
-    t.column "season_end_id", :integer
-    t.column "month_end", :integer
-    t.column "day_end", :integer
-    t.column "day_of_week_end_id", :integer
-    t.column "time_of_day_end_id", :integer
-    t.column "hour_end", :integer
-    t.column "minute_end", :integer
-    t.column "rabjung_end_id", :integer
-    t.column "intercalary_month_end_id", :integer
-    t.column "intercalary_day_end_id", :integer
+    t.integer  "year"
+    t.integer  "year_certainty_id"
+    t.integer  "season_id"
+    t.integer  "season_certainty_id"
+    t.integer  "month"
+    t.integer  "month_certainty_id"
+    t.integer  "day"
+    t.integer  "day_certainty_id"
+    t.integer  "day_of_week_id"
+    t.integer  "day_of_week_certainty_id"
+    t.integer  "time_of_day_id"
+    t.integer  "time_of_day_certainty_id"
+    t.integer  "hour"
+    t.integer  "hour_certainty_id"
+    t.integer  "minute"
+    t.integer  "minute_certainty_id"
+    t.integer  "animal_id"
+    t.integer  "animal_certainty_id"
+    t.integer  "calendrical_id"
+    t.integer  "calendrical_certainty_id"
+    t.integer  "element_certainty_id"
+    t.integer  "element_id"
+    t.integer  "gender_id"
+    t.integer  "gender_certainty_id"
+    t.integer  "intercalary_month_id"
+    t.integer  "intercalary_day_id"
+    t.integer  "rabjung_id"
+    t.integer  "rabjung_certainty_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "year_end"
+    t.integer  "season_end_id"
+    t.integer  "month_end"
+    t.integer  "day_end"
+    t.integer  "day_of_week_end_id"
+    t.integer  "time_of_day_end_id"
+    t.integer  "hour_end"
+    t.integer  "minute_end"
+    t.integer  "rabjung_end_id"
+    t.integer  "intercalary_month_end_id"
+    t.integer  "intercalary_day_end_id"
   end
 
   create_table "contestations", :force => true do |t|
-    t.column "feature_id", :integer, :null => false
-    t.column "contested", :boolean, :default => true, :null => false
-    t.column "administrator_id", :integer
-    t.column "claimant_id", :integer
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
+    t.integer  "feature_id",                         :null => false
+    t.boolean  "contested",        :default => true, :null => false
+    t.integer  "administrator_id"
+    t.integer  "claimant_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "cumulative_category_feature_associations", :force => true do |t|
-    t.column "feature_id", :integer, :null => false
-    t.column "category_id", :integer, :null => false
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
+    t.integer  "feature_id",  :null => false
+    t.integer  "category_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  add_index "cumulative_category_feature_associations", ["feature_id", "category_id"], :name => "by_category_feature", :unique => true
+  add_index "cumulative_category_feature_associations", ["category_id", "feature_id"], :name => "by_category_feature", :unique => true
 
   create_table "descriptions", :force => true do |t|
-    t.column "feature_id", :integer, :null => false
-    t.column "content", :text, :null => false
-    t.column "is_primary", :boolean, :default => false, :null => false
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
-    t.column "title", :string
-    t.column "source_url", :string
-  end
-
-# Could not dump table "devanagari_line" because of following StandardError
-#   Unknown type 'real' for column 'area' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-# Could not dump table "devanagari_poly" because of following StandardError
-#   Unknown type 'real' for column 'area' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-# Could not dump table "devanagari_pt" because of following StandardError
-#   Unknown type 'real' for column 'area' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-  create_table "electricity_use_10_million_watt_hours", :id => false, :force => true do |t|
-    t.column "gid", :integer, :null => false
-    t.column "name", :string, :limit => 27
-    t.column "elect_use", :float
-    t.column "the_geom", :polygon, :srid => 4326
+    t.integer  "feature_id",                    :null => false
+    t.text     "content",                       :null => false
+    t.boolean  "is_primary", :default => false, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "title"
+    t.string   "source_url"
   end
 
   create_table "feature_geo_codes", :force => true do |t|
-    t.column "feature_id", :integer
-    t.column "geo_code_type_id", :integer
-    t.column "timespan_id", :integer
-    t.column "geo_code_value", :string
-    t.column "notes", :text
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
+    t.integer  "feature_id"
+    t.integer  "geo_code_type_id"
+    t.integer  "timespan_id"
+    t.string   "geo_code_value"
+    t.text     "notes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "feature_name_relations", :force => true do |t|
-    t.column "child_node_id", :integer, :null => false
-    t.column "parent_node_id", :integer, :null => false
-    t.column "ancestor_ids", :string
-    t.column "is_phonetic", :integer
-    t.column "is_orthographic", :integer
-    t.column "is_translation", :integer
-    t.column "is_alt_spelling", :integer
-    t.column "phonetic_system_id", :integer
-    t.column "orthographic_system_id", :integer
-    t.column "alt_spelling_system_id", :integer
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
+    t.integer  "child_node_id",                       :null => false
+    t.integer  "parent_node_id",                      :null => false
+    t.string   "ancestor_ids"
+    t.integer  "is_phonetic",            :limit => 2
+    t.integer  "is_orthographic",        :limit => 2
+    t.integer  "is_translation",         :limit => 2
+    t.integer  "is_alt_spelling",        :limit => 2
+    t.integer  "phonetic_system_id"
+    t.integer  "orthographic_system_id"
+    t.integer  "alt_spelling_system_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "feature_name_relations", ["child_node_id"], :name => "feature_name_relations_child_node_id_idx"
   add_index "feature_name_relations", ["parent_node_id"], :name => "feature_name_relations_parent_node_id_idx"
 
   create_table "feature_names", :force => true do |t|
-    t.column "feature_id", :integer, :null => false
-    t.column "name", :string, :null => false
-    t.column "feature_name_type_id", :integer
-    t.column "ancestor_ids", :string
-    t.column "position", :integer, :default => 0
-    t.column "etymology", :text
-    t.column "writing_system_id", :integer
-    t.column "language_id", :integer, :null => false
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
-    t.column "is_primary_for_romanization", :boolean, :default => false
+    t.integer  "feature_id",                                     :null => false
+    t.string   "name",                                           :null => false
+    t.integer  "feature_name_type_id"
+    t.string   "ancestor_ids"
+    t.integer  "position",                    :default => 0
+    t.text     "etymology"
+    t.integer  "writing_system_id"
+    t.integer  "language_id",                                    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "is_primary_for_romanization", :default => false
   end
 
   add_index "feature_names", ["ancestor_ids"], :name => "feature_names_ancestor_ids_idx"
@@ -386,26 +224,26 @@ ActiveRecord::Schema.define(:version => 20110628205752) do
   add_index "feature_names", ["name"], :name => "feature_names_name_idx"
 
   create_table "feature_relation_types", :force => true do |t|
-    t.column "is_symmetric", :boolean
-    t.column "label", :string, :null => false
-    t.column "asymmetric_label", :string
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
-    t.column "code", :string, :null => false
-    t.column "is_hierarchical", :boolean, :default => false, :null => false
-    t.column "asymmetric_code", :string
+    t.boolean  "is_symmetric"
+    t.string   "label",                               :null => false
+    t.string   "asymmetric_label"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "code",                                :null => false
+    t.boolean  "is_hierarchical",  :default => false, :null => false
+    t.string   "asymmetric_code"
   end
 
   create_table "feature_relations", :force => true do |t|
-    t.column "child_node_id", :integer, :null => false
-    t.column "parent_node_id", :integer, :null => false
-    t.column "ancestor_ids", :string
-    t.column "notes", :text
-    t.column "role", :string, :limit => 20
-    t.column "perspective_id", :integer, :null => false
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
-    t.column "feature_relation_type_id", :integer, :null => false
+    t.integer  "child_node_id",                          :null => false
+    t.integer  "parent_node_id",                         :null => false
+    t.string   "ancestor_ids"
+    t.text     "notes"
+    t.string   "role",                     :limit => 20
+    t.integer  "perspective_id",                         :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "feature_relation_type_id",               :null => false
   end
 
   add_index "feature_relations", ["ancestor_ids"], :name => "feature_relations_ancestor_ids_idx"
@@ -415,454 +253,183 @@ ActiveRecord::Schema.define(:version => 20110628205752) do
   add_index "feature_relations", ["role"], :name => "feature_relations_role_idx"
 
   create_table "features", :force => true do |t|
-    t.column "is_public", :integer
-    t.column "position", :integer, :default => 0
-    t.column "ancestor_ids", :string
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
-    t.column "old_pid", :string
-    t.column "is_blank", :boolean, :default => false, :null => false
-    t.column "fid", :integer, :null => false
-    t.column "is_name_position_overriden", :boolean, :default => false, :null => false
+    t.integer  "is_public",                  :limit => 2
+    t.integer  "position",                                :default => 0
+    t.string   "ancestor_ids"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "old_pid"
+    t.boolean  "is_blank",                                :default => false, :null => false
+    t.integer  "fid",                                                        :null => false
+    t.boolean  "is_name_position_overriden",              :default => false, :null => false
   end
 
   add_index "features", ["ancestor_ids"], :name => "features_ancestor_ids_idx"
   add_index "features", ["fid"], :name => "features_fid", :unique => true
   add_index "features", ["is_public"], :name => "features_is_public_idx"
 
-  create_table "fontdemo", :primary_key => "gid", :force => true do |t|
-    t.column "font", :string, :limit => 50
-    t.column "text", :string, :limit => 100
-    t.column "x", :float
-    t.column "y", :float
-    t.column "geometry", :point, :srid => 4326
-  end
-
-  create_table "gis_id_xref", :id => false, :force => true do |t|
-    t.column "gis_id", :integer
-    t.column "fid", :integer
-  end
-
-  create_table "grain_output_tons", :id => false, :force => true do |t|
-    t.column "gid", :integer, :null => false
-    t.column "name", :string, :limit => 27
-    t.column "output_tons", :float
-    t.column "the_geom", :polygon, :srid => 4326
-  end
-
-  create_table "illiteracy_per_gender", :id => false, :force => true do |t|
-    t.column "name", :text
-    t.column "pop_total", :float
-    t.column "illit_male", :float
-    t.column "illit_fem", :float
-    t.column "geometry", :geometry, :srid => 4326
-  end
-
   create_table "info_sources", :force => true do |t|
-    t.column "code", :string, :null => false
-    t.column "title", :string
-    t.column "agent", :string
-    t.column "date_published", :date
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
+    t.string   "code",           :null => false
+    t.string   "title"
+    t.string   "agent"
+    t.date     "date_published"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "info_sources", ["code"], :name => "info_sources_code_key", :unique => true
 
-  create_table "khrom_empire_garrisons", :id => false, :force => true do |t|
-    t.column "gid", :integer, :null => false
-    t.column "AREA", :float
-    t.column "PERIMETER", :float
-    t.column "VKHROM_", :integer
-    t.column "VKHROM_ID", :integer
-    t.column "GIS_ID", :float
-    t.column "khrom__gar", :string, :limit => 254
-    t.column "Region_s_", :string, :limit => 254
-    t.column "Location_n", :string, :limit => 254
-    t.column "source", :string, :limit => 254
-    t.column "X_Deg", :float
-    t.column "X_Min", :float
-    t.column "Y_Deg", :float
-    t.column "Y_Min", :float
-    t.column "F10", :string, :limit => 254
-    t.column "X_dd", :float
-    t.column "Y_dd", :float
-    t.column "the_geom", :point, :srid => 4326
-  end
-
-  create_table "landcover", :primary_key => "gid", :force => true do |t|
-    t.column "type", :string, :limit => 40
-    t.column "the_geom", :geometry, :srid => nil
-  end
-
-  add_index "landcover", ["the_geom"], :name => "landcover_geom", :spatial=> true 
-
-  create_table "lhasa_temples", :primary_key => "gid", :force => true do |t|
-    t.column "id", :integer
-    t.column "gis_id", :integer
-    t.column "the_geom", :multi_polygon, :srid => 4326
-  end
-
-  create_table "maketest2", :id => false, :force => true do |t|
-    t.column "gid", :integer
-    t.column "fid", :integer
-    t.column "object_type", :integer
-    t.column "language", :string, :limit => nil
-    t.column "name", :string
-    t.column "geotype", :text
-    t.column "geometry", :geometry, :srid => nil
-  end
-
   create_table "note_titles", :force => true do |t|
-    t.column "title", :string
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
+    t.string   "title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "notes", :force => true do |t|
-    t.column "notable_type", :string
-    t.column "notable_id", :integer
-    t.column "note_title_id", :integer
-    t.column "custom_note_title", :string
-    t.column "content", :text
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
-    t.column "association_type", :string
-    t.column "is_public", :boolean, :default => true
-  end
-
-# Could not dump table "open_id_authentication_associations" because of following StandardError
-#   Unknown type 'bytea' for column 'server_url' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-  create_table "open_id_authentication_nonces", :force => true do |t|
-    t.column "timestamp", :integer, :null => false
-    t.column "server_url", :string, :null => false
-    t.column "salt", :string, :null => false
+    t.string   "notable_type"
+    t.integer  "notable_id"
+    t.integer  "note_title_id"
+    t.string   "custom_note_title"
+    t.text     "content"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "association_type"
+    t.boolean  "is_public",         :default => true
   end
 
   create_table "pages", :force => true do |t|
-    t.column "citation_id", :integer
-    t.column "volume", :integer
-    t.column "start_page", :integer
-    t.column "start_line", :integer
-    t.column "end_page", :integer
-    t.column "end_line", :integer
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
+    t.integer  "citation_id"
+    t.integer  "volume"
+    t.integer  "start_page"
+    t.integer  "start_line"
+    t.integer  "end_page"
+    t.integer  "end_line"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
+  create_table "people", :force => true do |t|
+    t.string "fullname", :null => false
+  end
+
+  add_index "people", ["fullname"], :name => "index_people_on_fullname", :unique => true
+
+  create_table "permissions", :force => true do |t|
+    t.string "title",       :limit => 60, :null => false
+    t.text   "description"
+  end
+
+  add_index "permissions", ["title"], :name => "index_permissions_on_title", :unique => true
+
+  create_table "permissions_roles", :id => false, :force => true do |t|
+    t.integer "permission_id", :null => false
+    t.integer "role_id",       :null => false
+  end
+
+  add_index "permissions_roles", ["permission_id", "role_id"], :name => "index_permissions_roles_on_permission_id_and_role_id", :unique => true
+
   create_table "perspectives", :force => true do |t|
-    t.column "name", :string
-    t.column "code", :string
-    t.column "description", :text
-    t.column "notes", :text
-    t.column "is_public", :boolean, :default => false
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
+    t.string   "name"
+    t.string   "code"
+    t.text     "description"
+    t.text     "notes"
+    t.boolean  "is_public",   :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "perspectives", ["code"], :name => "index_perspectives_on_code"
 
-  create_table "points_only", :id => false, :force => true do |t|
-    t.column "fid", :integer
-    t.column "object_type", :integer
-    t.column "language", :string
-    t.column "name", :string, :limit => nil
-    t.column "geotype", :text
-    t.column "geometry", :geometry, :srid => nil
-    t.column "gid", :integer
+  create_table "roles", :force => true do |t|
+    t.string "title",       :limit => 20, :null => false
+    t.text   "description"
   end
 
-  create_table "roman_popular", :primary_key => "gid", :force => true do |t|
-    t.column "fid", :integer
-    t.column "object_type", :integer
-    t.column "language", :string
-    t.column "name", :string
-    t.column "geotype", :text
-    t.column "geometry", :geometry, :srid => nil
+  add_index "roles", ["title"], :name => "index_roles_on_title", :unique => true
+
+  create_table "roles_users", :id => false, :force => true do |t|
+    t.integer "role_id", :null => false
+    t.integer "user_id", :null => false
   end
 
-  add_index "roman_popular", ["fid"], :name => "roman_popular_fid"
-  add_index "roman_popular", ["geometry"], :name => "roman_popular_gist", :spatial=> true 
-  add_index "roman_popular", ["language"], :name => "roman_popular_language"
-  add_index "roman_popular", ["object_type"], :name => "roman_popular_object_type"
+  add_index "roles_users", ["role_id", "user_id"], :name => "index_roles_users_on_role_id_and_user_id", :unique => true
 
-  create_table "roman_popular_bbox", :id => false, :force => true do |t|
-    t.column "gid", :integer
-    t.column "fid", :integer
-    t.column "object_type", :integer
-    t.column "language", :string
-    t.column "name", :string
-    t.column "geotype", :text
-    t.column "geometry", :geometry, :srid => nil
+  create_table "shapes", :primary_key => "gid", :force => true do |t|
+    t.geometry "geometry",   :limit => nil,                                   :srid => 4326
+    t.integer  "fid"
+    t.integer  "position",                  :default => 0,    :null => false
+    t.float    "area"
+    t.integer  "altitude"
+    t.boolean  "is_public",                 :default => true, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-# Could not dump table "roman_popular_line" because of following StandardError
-#   Unknown type 'real' for column 'area' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-# Could not dump table "roman_popular_poly" because of following StandardError
-#   Unknown type 'real' for column 'area' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-# Could not dump table "roman_popular_poly_low_res" because of following StandardError
-#   Unknown type 'real' for column 'area' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-# Could not dump table "roman_popular_poly_med_res" because of following StandardError
-#   Unknown type 'real' for column 'area' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-# Could not dump table "roman_popular_pt" because of following StandardError
-#   Unknown type 'real' for column 'area' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-  create_table "roman_scholarly", :primary_key => "gid", :force => true do |t|
-    t.column "fid", :integer
-    t.column "object_type", :integer
-    t.column "language", :string
-    t.column "name", :string
-    t.column "geotype", :text
-    t.column "geometry", :geometry, :srid => nil
-  end
-
-  add_index "roman_scholarly", ["fid"], :name => "roman_scholarly_fid"
-  add_index "roman_scholarly", ["geometry"], :name => "roman_scholarly_gist", :spatial=> true 
-  add_index "roman_scholarly", ["language"], :name => "roman_scholarly_language"
-  add_index "roman_scholarly", ["object_type"], :name => "roman_scholarly_object_type"
-
-# Could not dump table "roman_scholarly_line" because of following StandardError
-#   Unknown type 'real' for column 'area' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-# Could not dump table "roman_scholarly_poly" because of following StandardError
-#   Unknown type 'real' for column 'area' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-# Could not dump table "roman_scholarly_pt" because of following StandardError
-#   Unknown type 'real' for column 'area' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-# Could not dump table "shapes" because of following StandardError
-#   Unknown type 'real' for column 'area' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-  create_table "simple_chinese", :primary_key => "gid", :force => true do |t|
-    t.column "fid", :integer
-    t.column "object_type", :integer
-    t.column "language", :string
-    t.column "name", :string
-    t.column "geotype", :text
-    t.column "geometry", :geometry, :srid => nil
-  end
-
-  add_index "simple_chinese", ["fid"], :name => "simple_chinese_fid"
-  add_index "simple_chinese", ["geometry"], :name => "simple_chinese_gist", :spatial=> true 
-  add_index "simple_chinese", ["language"], :name => "simple_chinese_language"
-  add_index "simple_chinese", ["object_type"], :name => "simple_chinese_object_type"
-
-# Could not dump table "simple_chinese_line" because of following StandardError
-#   Unknown type 'real' for column 'area' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-# Could not dump table "simple_chinese_poly" because of following StandardError
-#   Unknown type 'real' for column 'area' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-# Could not dump table "simple_chinese_pt" because of following StandardError
-#   Unknown type 'real' for column 'area' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-  create_table "simple_names", :id => false, :force => true do |t|
-    t.column "fid", :integer
-    t.column "name", :string
-  end
+  add_index "shapes", ["fid"], :name => "shapes_fid"
+  add_index "shapes", ["geometry"], :name => "features_geometry_gist", :spatial => true
+  add_index "shapes", [], :name => "shapes_geotype"
 
   create_table "simple_props", :force => true do |t|
-    t.column "name", :string
-    t.column "code", :string
-    t.column "description", :text
-    t.column "notes", :text
-    t.column "type", :string
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
+    t.string   "name"
+    t.string   "code"
+    t.text     "description"
+    t.text     "notes"
+    t.string   "type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "simple_props", ["code"], :name => "simple_props_code_idx"
   add_index "simple_props", ["type"], :name => "simple_props_type_idx"
 
-  create_table "symbol_type", :id => false, :force => true do |t|
-    t.column "object_type", :integer
-    t.column "symbol", :string, :limit => nil
-  end
-
-  create_table "test2", :id => false, :force => true do |t|
-    t.column "gid", :integer, :null => false
-    t.column "fid", :integer
-    t.column "object_type", :integer
-    t.column "language", :string
-    t.column "name", :string
-    t.column "geotype", :text
-    t.column "geometry", :geometry, :srid => 4326
-  end
-
-  add_index "test2", ["fid"], :name => "test2_fid"
-  add_index "test2", ["geometry"], :name => "test2_gist", :spatial=> true 
-  add_index "test2", ["language"], :name => "test2_language"
-  add_index "test2", ["object_type"], :name => "test2_object_type"
-
-  create_table "tibetan_chinese", :id => false, :force => true do |t|
-    t.column "gid", :integer
-    t.column "fid", :integer
-    t.column "object_type", :integer
-    t.column "language", :string
-    t.column "name", :string
-    t.column "writing", :string
-    t.column "geotype", :text
-    t.column "geometry", :geometry, :srid => nil
-  end
-
-# Could not dump table "tibetan_chinese_line" because of following StandardError
-#   Unknown type 'real' for column 'area' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-# Could not dump table "tibetan_chinese_poly" because of following StandardError
-#   Unknown type 'real' for column 'area' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-# Could not dump table "tibetan_chinese_pt" because of following StandardError
-#   Unknown type 'real' for column 'area' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-  create_table "tibetan_roman", :primary_key => "gid", :force => true do |t|
-    t.column "fid", :integer
-    t.column "object_type", :integer
-    t.column "language", :string
-    t.column "name", :string
-    t.column "geotype", :text
-    t.column "geometry", :geometry, :srid => nil
-  end
-
-  add_index "tibetan_roman", ["language"], :name => "tibetan_roman_language"
-  add_index "tibetan_roman", ["object_type"], :name => "tibetan_roman_object_type"
-
-# Could not dump table "tibetan_roman_line" because of following StandardError
-#   Unknown type 'real' for column 'area' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-# Could not dump table "tibetan_roman_poly" because of following StandardError
-#   Unknown type 'real' for column 'area' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-# Could not dump table "tibetan_roman_pt" because of following StandardError
-#   Unknown type 'real' for column 'area' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-  create_table "tibetan_test_poly", :id => false, :force => true do |t|
-    t.column "gid", :integer
-    t.column "fid", :integer
-    t.column "object_type", :integer
-    t.column "language", :string
-    t.column "name", :string, :limit => nil
-    t.column "writing", :string
-    t.column "geotype", :text
-    t.column "geometry", :geometry, :srid => nil
-  end
-
-  create_table "tibetan_test_pt", :id => false, :force => true do |t|
-    t.column "gid", :integer
-    t.column "fid", :integer
-    t.column "object_type", :integer
-    t.column "language", :string
-    t.column "name", :string, :limit => nil
-    t.column "writing", :string
-    t.column "geotype", :text
-    t.column "geometry", :geometry, :srid => nil
-  end
-
   create_table "time_units", :force => true do |t|
-    t.column "date_id", :integer
-    t.column "start_date_id", :integer
-    t.column "end_date_id", :integer
-    t.column "calendar_id", :integer
-    t.column "is_range", :boolean
-    t.column "dateable_id", :integer
-    t.column "dateable_type", :string
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
-    t.column "frequency_id", :integer
+    t.integer  "date_id"
+    t.integer  "start_date_id"
+    t.integer  "end_date_id"
+    t.integer  "calendar_id"
+    t.boolean  "is_range"
+    t.integer  "dateable_id"
+    t.string   "dateable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "frequency_id"
   end
 
   create_table "timespans", :force => true do |t|
-    t.column "start_date", :date
-    t.column "end_date", :date
-    t.column "start_date_fuzz", :integer
-    t.column "end_date_fuzz", :integer
-    t.column "is_current", :integer
-    t.column "dateable_id", :integer
-    t.column "dateable_type", :string
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
+    t.date     "start_date"
+    t.date     "end_date"
+    t.integer  "start_date_fuzz"
+    t.integer  "end_date_fuzz"
+    t.integer  "is_current",      :limit => 2
+    t.integer  "dateable_id"
+    t.string   "dateable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "timespans", ["dateable_id", "dateable_type"], :name => "timespans_1_idx"
   add_index "timespans", ["end_date"], :name => "timespans_end_date_idx"
   add_index "timespans", ["start_date"], :name => "timespans_start_date_idx"
 
-  create_table "tlatlong", :primary_key => "gid", :force => true do |t|
-    t.column "valueid", :integer
-    t.column "polyid", :integer
-    t.column "area", :float
-    t.column "perimeter", :float
-    t.column "tlatlong#", :integer
-    t.column "tlatlong-i", :integer
-    t.column "the_geom", :point, :srid => 4326
-  end
-
-  create_table "traditional_chinese", :primary_key => "gid", :force => true do |t|
-    t.column "fid", :integer
-    t.column "object_type", :integer
-    t.column "language", :string
-    t.column "name", :string
-    t.column "geotype", :text
-    t.column "geometry", :geometry, :srid => nil
-  end
-
-  add_index "traditional_chinese", ["fid"], :name => "traditional_chinese_fid"
-  add_index "traditional_chinese", ["geometry"], :name => "traditional_chinese_gist", :spatial=> true 
-  add_index "traditional_chinese", ["language"], :name => "traditional_chinese_language"
-  add_index "traditional_chinese", ["object_type"], :name => "traditional_chinese_object_type"
-
-# Could not dump table "traditional_chinese_line" because of following StandardError
-#   Unknown type 'real' for column 'area' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-# Could not dump table "traditional_chinese_poly" because of following StandardError
-#   Unknown type 'real' for column 'area' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-# Could not dump table "traditional_chinese_pt" because of following StandardError
-#   Unknown type 'real' for column 'area' /Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:44:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/plugins/spatial_adapter/lib/common_spatial_adapter.rb:42:in `table'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:72:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `each'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:63:in `tables'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:25:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/activerecord/lib/active_record/schema_dumper.rb:19:in `dump'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:260/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259:in `open'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:259/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/Users/amontano/Workspaces/rails/master/places/vendor/rails/railties/lib/tasks/databases.rake:117/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `call'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:636:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:631:in `execute'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:597:in `invoke_with_call_chain'/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:590:in `invoke_with_call_chain'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:583:in `invoke'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2051:in `invoke_task'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `each'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2029:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2023:in `top_level'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2001:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:2068:in `standard_exception_handling'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/lib/rake.rb:1998:in `run'/opt/local/lib/ruby/gems/1.8/gems/rake-0.8.7/bin/rake:31/opt/local/bin/rake:19:in `load'/opt/local/bin/rake:19
-
-  create_table "trtibet", :id => false, :force => true do |t|
-    t.column "pc", :string, :limit => 1
-    t.column "std", :string, :limit => 7
-  end
-
-  create_table "ulatlong", :primary_key => "gid", :force => true do |t|
-    t.column "valueid", :integer
-    t.column "polyid", :integer
-    t.column "area", :float
-    t.column "perimeter", :float
-    t.column "ulatlong#", :integer
-    t.column "ulatlong-i", :integer
-    t.column "vugompa_", :integer
-    t.column "vugompa_id", :integer
-    t.column "h465utm_", :integer, :limit => 20
-    t.column "h465utm_id", :integer, :limit => 20
-    t.column "gis_id", :integer, :limit => 20
-    t.column "the_geom", :point, :srid => 4326
-  end
-
   create_table "users", :force => true do |t|
-    t.column "login", :string, :null => false
-    t.column "email", :string, :null => false
-    t.column "person_id", :integer
-    t.column "crypted_password", :string, :limit => 40, :null => false
-    t.column "salt", :string, :limit => 40
-    t.column "remember_token", :string
-    t.column "remember_token_expires_at", :timestamp
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
-    t.column "identity_url", :string
-    t.column "fullname", :string
+    t.string   "login",                                   :null => false
+    t.string   "email",                                   :null => false
+    t.integer  "person_id",                               :null => false
+    t.string   "crypted_password",          :limit => 40
+    t.string   "salt",                      :limit => 40
+    t.string   "remember_token"
+    t.datetime "remember_token_expires_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "identity_url"
+    t.string   "shibboleth_id"
   end
 
   create_table "xml_documents", :force => true do |t|
-    t.column "feature_id", :integer, :null => false
-    t.column "document", :text, :null => false
-    t.column "created_at", :timestamp
-    t.column "updated_at", :timestamp
+    t.integer  "feature_id", :null => false
+    t.text     "document",   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "xml_documents", ["feature_id"], :name => "xml_documents_feature_id_idx"
