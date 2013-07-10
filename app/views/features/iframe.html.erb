@@ -1,4 +1,6 @@
 <%= javascript_include_tag 'kmaps_engine/iframe' %>
+<%= javascript_include_tag 'places_engine/inset-map' %>
+
 <script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=<%= google_maps_key %>"></script>
 <%= javascript_include_tag 'http://openlayers.org/api/OpenLayers.js' %>
 <%= javascript_include_tag "#{InterfaceUtils::Server.get_url}/places/maps/interactive/scripts/THLWMS.js" %>

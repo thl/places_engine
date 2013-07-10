@@ -1,0 +1,26 @@
+<% add_breadcrumb_item features_link
+   add_breadcrumb_item feature_link(@object.feature)
+   add_breadcrumb_item link_to(Topic.human_name(:count => :many).s, admin_feature_category_feature_path(@object.feature))
+   add_breadcrumb_item @object %>
+<fieldset>
+  <legend><%= "#{CategoryFeature.model_name.human.titleize.s} #{edit_item_link @object}".html_safe %></legend>
+  <div class="row">
+    <label><%= Feature.model_name.human.titleize.s %></label>
+    <span><%= def_if_blank(@object, :feature, :name) %></span>
+  </div>
+  <div class="row">
+    <label><%= Topic.human_name.titleize.s %></label>
+    <span><%= @object.stacked_category %></span>
+  </div>
+  <div class="row">
+    <label><%= CategoryFeature.human_attribute_name(:string_value).s %></label>
+    <span><%= def_if_blank @object, :string_value %></span>
+  </div>
+  <div class="row">
+    <label><%= CategoryFeature.human_attribute_name(:numeric_value).s %></label>
+    <span><%= def_if_blank @object, :numeric_value %></span>
+  </div>
+</fieldset>
+<%= citation_list_fieldset %>
+<%= note_list_fieldset %>
+<%= time_unit_list_fieldset %>

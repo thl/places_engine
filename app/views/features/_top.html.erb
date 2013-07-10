@@ -3,6 +3,7 @@
 <%= javascript_include_tag "http://openlayers.org/api/OpenLayers.js" %>
 <%= javascript_include_tag "#{InterfaceUtils::Server.get_url}/places/maps/interactive/scripts/THLWMS.js" %>
 <%= javascript_include_tag 'kmaps_engine/top' %>
+<%= javascript_include_tag 'places_engine/inset-map' %>
 <%= javascript_on_load do %>
 	jQuery(window).unbind("scroll");
 	NodeTree.init("NodeTree", "NodeTreeList", "<%= features_path %>/");

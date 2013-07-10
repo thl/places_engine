@@ -1,0 +1,16 @@
+<%= error_messages_for model_name %>
+<%= category_fields({
+		:subject => {:display => f_label(@object.feature), :label => f.label(:feature, Feature.model_name.human.titleize.s) },
+		:root => nil,
+		:var_name => :category_feature,
+		:include_js => false,
+		:include_styles => true,
+		:selectable => true,
+		:single_selection => single_selection,
+		:extra_fields => [
+			{:field => f.text_field(:string_value, :style => 'padding:3px; width: 300px'), :label => f.label(:string_value).s},
+			{:field => f.text_field(:numeric_value, :style => 'padding:3px; width: 300px'), :label => f.label(:numeric_value).s},
+			{:field => f.check_box(:show_parent), :label => f.label(:show_parent).s },
+			{:field => f.check_box(:show_root), :label => f.label(:show_root).s },
+			{:field => "#{f.text_field(:label)} #{f.radio_button(:prefix_label, true)} #{ts('prefix.with', :what => '&gt;')} &nbsp;&nbsp;&nbsp;&nbsp;#{f.radio_button(:prefix_label, false)} #{ts('suffix.record', :what => 'SPACE')}", :label => f.label(:label).s }]
+}) %>

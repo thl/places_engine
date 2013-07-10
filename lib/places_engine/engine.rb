@@ -1,5 +1,9 @@
 module PlacesEngine
   class Engine < ::Rails::Engine
+    initializer :assets do |config|
+      Rails.application.config.assets.precompile.concat(['places_engine/inset-map.js'])
+    end
+        
     initializer :loader do |config|
       require 'places_engine/extension/feature_model'
       require 'places_engine/extension/for_name_positioning'
@@ -18,6 +22,12 @@ module PlacesEngine
       NotesController.send :include, PlacesEngine::Extension::NotesController
       Admin::CitationsController.send :include, PlacesEngine::Extension::AdminCitationController
       Admin::NotesController.send :include, PlacesEngine::Extension::AdminNotesController
+    end
+    
+    initializer :places_sweepers do |config|
+      sweeper_folder = File.join(File.dirname(__FILE__), '..', '..', 'app', 'sweepers')
+      require File.join(sweeper_folder, 'cached_category_count_sweeper')
+      Rails.application.config.active_record.observers = :cached_category_count_sweeper
     end
   end
 end

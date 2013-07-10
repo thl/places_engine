@@ -5,8 +5,12 @@ module PlacesEngine
 
       included do
         has_many :altitudes, :dependent => :destroy
+        has_many :category_features, :dependent => :destroy
         has_many :contestations, :dependent => :destroy
+        has_many :cumulative_category_feature_associations, :dependent => :destroy
+        has_many :feature_object_types, :order => :position, :dependent => :destroy
         has_many :shapes, :foreign_key => 'fid', :primary_key => 'fid'
+        self.associated_models << FeatureObjectType
       end
 
       def has_shapes?(options = {})
@@ -37,12 +41,35 @@ module PlacesEngine
         end
         feature_id.nil? ? nil : Feature.find(feature_id)
       end
+      
+      def descendants_by_topic(fids, topic_ids)
+        self.descendants_by_topic([self.fid], topic_ids)
+      end
+      
+      def descendants_by_topic_with_parent(topic_ids)
+        Feature.descendants_by_topic_with_parent([self.fid], topic_ids)
+      end
+      
+      #
+      # Shortcut for getting all feature_object_types.object_types
+      #
+      def object_types
+        feature_object_types.collect(&:category).select{|c| c}
+      end
 
+      def category_count
+        CategoryFeature.where(:feature_id => self.id).count
+      end
+      
       def update_shape_positions
         shapes.reject{|shape| shape.position != 0}.inject(shapes.max{|a,b|a.position <=> b.position}.position+1) do |pos, shape|
           shape.update_attribute(:position, pos)
           pos + 1
         end
+      end
+      
+      def topical_map_url
+        "#{ActionController::Base.relative_url_root}/features/#{self.fid}/topics"
       end
 
       def kmap_path(type = nil)
@@ -54,6 +81,47 @@ module PlacesEngine
       module ClassMethods
         def find_by_shape(shape)
           Feature.get_by_fid(shape.fid)
+        end
+        
+        def descendants_by_topic_with_parent(fids, topic_ids)
+          pending = fids.collect{|fid| Feature.get_by_fid(fid)}
+          des = pending.collect{|f| [f, nil]}
+          des_ids = pending.collect(&:id)
+          while !pending.empty?
+            e = pending.pop
+            FeatureRelation.where(:parent_node_id => e.id).each do |r|
+              c = r.child_node
+              if !des_ids.include? c.id
+                des_ids << c.id
+                des << [c, e, r]
+                pending.push(c)
+              end
+            end
+          end
+          topic_ids = topic_ids.first if topic_ids.size==1
+          des.select{ |d| !CumulativeCategoryFeatureAssociation.where(:category_id => topic_ids, :feature_id => d[0].id).first.nil? }
+        end
+        
+        def descendants_by_perspective_and_topics_with_parent(fids, perspective, topic_ids)
+          topic_ids = topic_ids.first if topic_ids.size==1
+          self.descendants_by_perspective_with_parent(fids, perspective).select{|d| !CumulativeCategoryFeatureAssociation.where(:category_id => topic_ids, :feature_id => d[0].id).first.nil?}
+        end
+        
+        def descendants_by_topic(fids, topic_ids)
+          pending = fids.collect{|fid| Feature.get_by_fid(fid)}
+          des = []
+          while !pending.empty?
+            e = pending.pop
+            FeatureRelation.select('child_node_id').where(:parent_node_id => e, :feature_relation_type_id => FeatureRelationType.hierarchy_ids + [FeatureRelationType.get_by_code('is.contained.by').id]).each do |r|
+              c = r.child_node_id
+              if !des.include? c
+                des << c
+                pending.push(c)
+              end
+            end
+          end
+          topic_ids = topic_ids.first if topic_ids.size==1
+          des.select{ |f_id| !CumulativeCategoryFeatureAssociation.where(:category_id => topic_ids, :feature_id => f_id).first.nil? }.collect{|f_id| Feature.find(f_id)}
         end
       end
     end

@@ -1,0 +1,21 @@
+<% add_breadcrumb_item features_link
+   add_breadcrumb_item feature_link(@object.feature)
+   add_breadcrumb_item link_to(collection_name, admin_feature_feature_object_types_path(@object.feature))
+   add_breadcrumb_item @object %>
+<fieldset>
+  <legend>
+<%= model_name.titleize %>
+<%= edit_item_link @object %>
+  </legend>
+  <div class="row">
+    <label><%= Feature.model_name.human.titleize.s %></label>
+    <span><%= def_if_blank(@object, :feature, :name) %></span>
+  </div>
+  <div class="row">
+    <label><%= FeatureObjectType.model_name.human.titleize.s %></label>
+    <span><%= def_if_blank @object, :category, :title %></span>
+  </div>
+</fieldset>
+<%= citation_list_fieldset %>
+<%= note_list_fieldset %>
+<%= time_unit_list_fieldset %>

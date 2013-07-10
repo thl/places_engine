@@ -8,7 +8,7 @@ module PlacesEngine
           non_existent = false
           if cached_count.nil?
             # make sure category actually exists!
-            category = Category.find(category_id)
+            category = SubjectsIntegration::Feature.find(category_id)
             non_existent = true if category.nil?
             cached_count = CachedCategoryCount.new(:category_id => category_id)
           else
