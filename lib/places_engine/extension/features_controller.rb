@@ -6,6 +6,97 @@ module PlacesEngine
       included do
       end
       
+      def search
+        conditions = {:is_public => 1}
+        search_options = { :scope => params[:scope], :match => params[:match] }
+        @features = nil
+        @params = params
+        # The search params that should be observed when creating the session store of search params
+        valid_search_keys = [:filter, :scope, :match, :search_scope, :object_type, :characteristic_id, :has_descriptions, :page ]
+        fid = params[:fid]
+        #search_scope = params[:search_scope].blank? ? 'global' : params[:search_scope]
+        #if !search_scope.blank?
+        #  case search_scope
+        #  when 'fid'
+        #    feature = Feature.find(:first, :conditions => {:is_public => 1, :fid => params[:filter].gsub(/[^\d]/, '').to_i})
+        #    if !feature.id.nil?
+        #      render :url => {:action => 'expand_and_show',  :id => '59' }, :layout => false
+        #    else
+        #    end
+        #  when 'contextual'
+        #    if !params[:object_type].blank?
+        #      options[:joins] = "LEFT JOIN cumulative_category_feature_associations ccfa ON ccfa.feature_id = features.id"
+        #      options[:conditions]['ccfa.category_id'] = params[:object_type].split(',')
+        #      options[:conditions]['features.is_public'] = 1
+        #      options[:conditions].delete(:is_public)
+        #    end
+        #    if params[:context_id].blank?
+        #      perform_global_search(options, search_options)
+        #    else
+        #      perform_contextual_search(options, search_options)
+        #    end
+        #  when 'name'
+        #    @features = Feature.name_search(params[:filter])
+        #  else
+          if !fid.blank?
+            @features = Feature.where(:is_public => 1, :fid => fid.gsub(/[^\d]/, '').to_i).page(1)
+          else
+            joins = []
+            if !params[:object_type].blank?
+              joins << "LEFT JOIN cumulative_category_feature_associations ccfa ON ccfa.feature_id = features.id"
+              conditions['ccfa.category_id'] = params[:object_type].split(',')
+              conditions['features.is_public'] = 1
+              conditions.delete(:is_public)
+            end
+            if !params[:characteristic_id].blank?
+              joins << "LEFT JOIN category_features cf ON cf.feature_id = features.id"
+              conditions['cf.category_id'] = params[:characteristic_id].split(',')
+              conditions['cf.type'] = nil
+              conditions['features.is_public'] = 1
+              conditions.delete(:is_public)
+            end
+            if !params[:has_descriptions].blank? && params[:has_descriptions] == '1'
+              search_options[:has_descriptions] = true
+            end
+            @features = perform_global_search(search_options).where(conditions).paginate(:page => params[:page] || 1, :per_page => 10)
+            @features = @features.joins(joins.join(' ')).select('features.*, DISTINCT feature.id') unless joins.empty?
+          end
+        #end
+        # When using the session store features, we need to provide will_paginate with info about how to render
+        # the pagination, so we'll store it in session[:search], along with the feature ids 
+        session[:search] = { :params => @params.reject{|key, val| !valid_search_keys.include?(key.to_sym)},
+          :page => @params[:page] ||= 1, :per_page => @features.per_page, :total_entries => @features.total_entries,
+          :total_pages => @features.total_pages, :feature_ids => @features.collect(&:id) }
+        # Set the current menu_item to 'results', so that the Results will stay open when the user browses
+        # to a new page
+        session[:interface] = {} if session[:interface].nil?
+        session[:interface][:menu_item] = 'results'
+        respond_to do |format|
+          format.js # search.js.erb
+          format.html { render :partial => 'search_results', :locals => {:features => @features} }
+        end
+      end
+      
+      def related_list
+        @feature = Feature.find(params[:id])
+        @feature_relation_type= FeatureRelationType.find(params[:feature_relation_type_id])
+        @feature_is_parent = params[:feature_is_parent]
+        @category = SubjectsIntegration::Feature.find(params[:category_id])
+        @relations = CachedFeatureRelationCategory.where(
+              'cached_feature_relation_categories.feature_id' => params[:id],
+              'cached_feature_relation_categories.category_id' => params[:category_id],
+              'cached_feature_relation_categories.feature_relation_type_id' => @feature_relation_type,
+              'cached_feature_relation_categories.feature_is_parent' => @feature_is_parent,
+              'cached_feature_names.view_id' => current_view.id
+          ).joins('INNER JOIN "cached_feature_names" ON "cached_feature_relation_categories".related_feature_id = "cached_feature_names".feature_id INNER JOIN "feature_names" ON "cached_feature_names".feature_name_id = "feature_names".id'
+          ).order('feature_names.name')
+          # Should associations be set up to allow for this to be handled with :include instead?
+        @total_relations_count = @relations.length
+        @relations = @relations.paginate(:page => params[:page] || 1, :per_page => 8)
+        @params = params
+        # render related_list.js.erb
+      end
+      
       def gis_resources
         fids = params[:fids].split(/\D+/)
         fids.shift if fids.size>0 && fids.first.blank?
@@ -64,6 +155,22 @@ module PlacesEngine
             render :nothing => true
           end
         end
+      end
+      
+      def api_format_feature(feature)
+        f = {}
+        f[:id] = feature.id
+        f[:name] = feature.name
+        f[:types] = feature.object_types.collect{|t| {:id => t.id, :title => t.title} }
+        f[:descriptions] = feature.descriptions.collect{|d| {
+          :id => d.id,
+          :is_primary => d.is_primary,
+          :title => d.title,
+          :content => d.content,
+        }}
+        f[:has_shapes] = feature.shapes.empty? ? 0 : 1
+        #f[:parents] = feature.parents.collect{|p| api_format_feature(p) }
+        f
       end
     end
   end

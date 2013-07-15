@@ -3,42 +3,7 @@
 <%= time_units_for(feature) %>
     <h3><%= ts :for, :what => Shape.model_name.human.titleize.s, :whom => current_perspective %></h3>
 <%= f_breadcrumb(feature) %>
-<%= content_tag :h3, Feature.human_attribute_name(:object_type, :count => feature.feature_object_types.size).s unless feature.object_types.empty? %>
-    <ul id="FeatureTypesList">
-<%  feature.feature_object_types.each do |fot|
-      ot = fot.category
-      if !ot.nil? %>
-      <li>
-<%      # Is there a way to prevent from hard-coding the Geographical Features category id (20) here? %>
-<%=     link_to ot.header, ot.get_url %>
-<%=     note_popup_link_for(fot) %>
-<%=     time_units_for(fot) %>
-      </li>
-<%    end %>
-<%=   javascript_on_load "ActivateDraggablePopups('#FeatureTypesList');" %>
-<%  end %>
-    </ul>
-<%= note_popup_link_list_for(feature, {:association_type => FeatureObjectType.model_name}) %>
-<%  category_features = feature.category_features.where(:type => nil) %>
-<%= content_tag :h3, CategoryFeature.model_name.human(:count => category_features.size).titleize.s unless category_features.empty? %>
-    <ul id="CategoryFeaturesList">
-<%  category_features.each do |cf|
-      c = cf.category
-      if !c.nil?
-        values = []
-        values << cf.string_value if !cf.string_value.blank?
-        values << cf.numeric_value if !cf.numeric_value.nil?
-        stack = cf.category_stack
-        stack.push(link_to(stack.pop, c.get_url))  %>
-        <li>
-<%=       stack.join(' > ').html_safe %><%= ": #{values.join(', ')}" if !values.empty? %>
-<%=       note_popup_link_for(cf) %>
-<%=       time_units_for(cf) %>
-        </li>
-<%    end
-    end %>
-    </ul>
-<%= note_popup_link_list_for(feature, {:association_type => CategoryFeature.model_name}) %>
+<% render :partial => 'topics', :locals => {:feature => feature} %>
 <%  closest_fid_with_shapes = feature.closest_feature_with_shapes :logged_in? => logged_in?
     if closest_fid_with_shapes.nil?
       shapes = []

@@ -4,7 +4,7 @@ module PlacesEngine
       extend ActiveSupport::Concern
 
       included do
-        belongs_to :altitude
+        belongs_to :altitude, :category_feature, :feature_object_type
       end
     end
   end

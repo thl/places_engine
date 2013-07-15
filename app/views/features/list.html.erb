@@ -1,0 +1,28 @@
+<%= render :partial => "features/top" %>  
+<div class="left" id="RelatedPlaces">
+  <div class="has-right-margin has-ajax-pagination">
+    <h2><%= ts 'associate.d.with', :what => Feature.model_name.human(:count => :many).titleize, :whom => @object_title %></h2>
+    <div class="pagination-click-results">
+<%=   render :partial => "features/list" %>
+    </div>
+    <p>
+<%=   link_to ts(:in, :what => @object_title, :where => @object_type), @object_url %>
+    </p>
+  </div>
+</div>
+<%= javascript_on_load do %>
+      document.title = '<%= t 'app.this' %>'
+      // Ajaxify the pagination for lists of features
+	  jQuery('.has-ajax-pagination .pagination a').on('click', function() {
+	    var this_link = this;
+	    jQuery.ajax({
+	      type: 'GET',
+	      url: this.href,
+	      success: function(html){
+	        jQuery(this_link).parents('.pagination-click-results:first').html(html);
+	      }
+	    });
+	    return false;
+	  });
+<% end %>
+<%= render :partial => "features/bottom" %>
