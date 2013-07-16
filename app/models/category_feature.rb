@@ -38,9 +38,9 @@ class CategoryFeature < ActiveRecord::Base
   def category_stack
     stack = []
     stack << self.label if !label.blank? && self.prefix_label
-    stack << self.category.root.title if self.show_root?
-    stack << self.category.parent.title if self.show_parent?
-    stack << self.category.title
+    stack << self.category.root.header if self.show_root?
+    stack << self.category.parent.header if self.show_parent?
+    stack << self.category.header
     stack[stack.size-1] = stack[stack.size-1] + " #{self.label}" if !label.blank? && !self.prefix_label
     stack
   end
