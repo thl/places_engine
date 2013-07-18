@@ -28,7 +28,7 @@
              links.bind('ajax:beforeSend', function(){ NodeMenu.onPaginationClick(); });
            });
 <%       end %>
-<%=      will_paginate pagination_collection, :params => @params.merge({:action => :search}) %>
+<%=      will_paginate pagination_collection, :params => @params.merge({:action => 'search', :controller => 'features'}) %>
          </td>
        </tr>
        <tr>
@@ -45,7 +45,7 @@
 <%     end %>
        <tr>
          <td colspan="2" style="padding:0.5em;" class="pagination-cell">
-<%=      will_paginate pagination_collection, :params => @params.merge({:action => :search}) %>
+<%=      will_paginate pagination_collection, :params => @params.merge({:action => 'search', :controller => 'features'}) %>
          </td>
        </tr>
      </table>  

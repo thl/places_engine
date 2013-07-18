@@ -172,6 +172,18 @@ module PlacesEngine
         #f[:parents] = feature.parents.collect{|p| api_format_feature(p) }
         f
       end
+      
+      def topics
+        @feature = Feature.get_by_fid(params[:id])
+        if @feature.nil?
+          redirect_to features_url
+        else
+          set_common_variables(session)
+          session[:interface][:context_id] = @feature.id unless @feature.nil?
+          @tab_options = {:entity => @feature}
+          @current_tab_id = :topics
+        end
+      end
     end
   end
 end

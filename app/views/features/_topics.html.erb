@@ -5,7 +5,7 @@
       if !ot.nil? %>
       <li>
 <%      # Is there a way to prevent from hard-coding the Geographical Features category id (20) here? %>
-<%=     link_to ot.header, ot.get_url %>
+<%=     link_to ot.header, ot.get_url(nil, :format => '') %>
 <%=     note_popup_link_for(fot) %>
 <%=     time_units_for(fot) %>
       </li>
@@ -24,7 +24,7 @@
         values << cf.string_value if !cf.string_value.blank?
         values << cf.numeric_value if !cf.numeric_value.nil?
         stack = cf.category_stack
-        stack.push(link_to(stack.pop, c.get_url))  %>
+        stack.push(link_to(stack.pop, c.get_url(nil, :format => '')))  %>
         <li>
 <%=       stack.join(' > ').html_safe %><%= ": #{values.join(', ')}" if !values.empty? %>
 <%=       note_popup_link_for(cf) %>

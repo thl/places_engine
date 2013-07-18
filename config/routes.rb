@@ -60,4 +60,6 @@ Rails.application.routes.draw do
   resources :shapes do
     resources :notes, :citations
   end
+  
+  match 'features/:id/topics' => 'features#topics', :as => :topics_feature
 end
