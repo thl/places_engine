@@ -4,7 +4,7 @@ name = feature.prioritized_name(@view)
 header = name.nil? ? feature.pid : name.name
 xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
   xml.feature_types(:type => 'array') do
-    feature.object_types.each { |type| xml.feature_type(:title => type.title, :id => type.id) }
+    feature.object_types.each { |type| xml.feature_type(:title => type.header, :id => type.id) }
   end
   xml.category_feature(:type => 'array') do
     feature.category_features.each do |association| 
