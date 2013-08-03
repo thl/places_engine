@@ -16,7 +16,7 @@
     if !map_fid.nil? %>
       <h3><%= ts 'map.this' %></h3>
       <div id="inset_map" class="fid-<%= map_fid %> language-<%= current_view.code %>"></div>
-<%=   javascript_on_load "InsetMap.init({proxyUrl: '#{ActionController::Base.config.relative_url_root}/proxy_engine/utils/proxy/?proxy_url='});" %>
+<%=   javascript_on_load "InsetMap.init({proxyUrl: '#{proxy_engine_proxy_path}?proxy_url='});" %>
 <%=   link_to image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-map-simple.gif", :alt => "") + " #{ts 'view.record', :what => t('map.full')}", "#{InterfaceUtils::Server.get_url}/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}", :class => "view-on-map" %>
 <%=   link_to image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-google-maps.png", :alt => "") + " #{ts :in, :what => t('view.this'), :where => t('map.google')}", "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => map_fid, :format => "kmz"), :target => "_blank", :class => "view-on-map" %>
 <%=   link_to image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-google-earth.png", :alt => "") + " #{ts :in, :what => t('view.this'), :where => t('map.earth')}", {:action => :gis_resources, :fids => map_fid, :format => "kmz"}, :target => "_blank", :class => "view-on-map" %>
