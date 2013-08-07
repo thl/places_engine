@@ -6,7 +6,7 @@ module PlacesEngine
         ordered_ancestors = self.ancestor_ids.blank? ? [] : self.ancestor_ids.split('.').delete_if{|id| id.blank?}.collect(&:to_i)
         id = ([self.fid] + ordered_ancestors).detect{|id| Feature::LANG_CODES_BY_FEATURE_IDS[id]}
         return nil if id.nil?
-        HelperMethods.figure_out_name_by_language_code(names, Feature::LANG_CODES_BY_FEATURE_IDS[id])
+        Feature::HelperMethods.figure_out_name_by_language_code(names, Feature::LANG_CODES_BY_FEATURE_IDS[id])
       end
       
       def calculate_name_positions(names = self.names.roots.order('feature_names.created_at'), position = 1)
@@ -31,7 +31,7 @@ module PlacesEngine
 
             # Priority 2 for a name tree would be assigned by default to the name tree with the top level name that has
             # the language corresponding to English (if there is one)
-            name = HelperMethods.figure_out_name_by_language_code(names, 'eng')
+            name = Feature::HelperMethods.figure_out_name_by_language_code(names, 'eng')
             if !name.nil?
               sorted_names[position] = name
               position += 1
