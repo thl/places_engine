@@ -3,6 +3,7 @@ class Contestation < ActiveRecord::Base
   belongs_to :administrator, :class_name => 'Feature'
   belongs_to :claimant, :class_name => 'Feature'
   belongs_to :feature
+  has_many :imports, :as => 'item', :dependent => :destroy
 end
 
 # == Schema Info

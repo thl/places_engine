@@ -6,6 +6,7 @@ class FeatureObjectType < CategoryFeature
   #
   #
   belongs_to :perspective
+  has_many :imports, :as => 'item', :dependent => :destroy
   
   after_save do |record|
     record.feature.update_object_type_positions if !record.skip_update

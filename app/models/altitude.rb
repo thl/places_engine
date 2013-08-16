@@ -6,6 +6,7 @@ class Altitude < ActiveRecord::Base
   attr_accessible :average, :estimate, :minimum, :maximum, :unit_id  
   belongs_to :feature
   belongs_to :unit
+  has_many :imports, :as => 'item', :dependent => :destroy
   
   def to_s
     s = !average.nil? ? average.to_s : ''

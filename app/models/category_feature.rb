@@ -4,6 +4,7 @@ class CategoryFeature < ActiveRecord::Base
   attr_accessor :skip_update
   
   belongs_to :feature
+  has_many :imports, :as => 'item', :dependent => :destroy
   # belongs_to :category
 
   extend KmapsEngine::HasTimespan
