@@ -1,0 +1,40 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require_self
+ */
+
+#FeatureDetails .view-on-map {
+	display: block;
+    margin-top: 5px;
+}
+
+#FeatureDetails .view-on-map img {
+    float: left;
+    margin-right: 5px;
+}
+
+#FeatureDetails #inset_map {
+	width: 300px;
+	height: 200px;
+	margin-top: 5px !important;
+}
+
+#FeatureDetails #map-column {
+	width: 320px;
+	float: left;
+}
+
+#FeatureDetails #illustration {
+	width: 220px;
+	height: 200px;
+	margin-top: 5px !important;
+	float: left;
+}

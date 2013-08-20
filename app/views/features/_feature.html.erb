@@ -3,7 +3,7 @@
 <%= time_units_for(feature) %>
     <h3><%= ts :for, :what => Shape.model_name.human.titleize.s, :whom => current_perspective %></h3>
 <%= f_breadcrumb(feature) %>
-<% render :partial => 'topics', :locals => {:feature => feature} %>
+<%= render :partial => 'topics', :locals => {:feature => feature} %>
 <%  closest_fid_with_shapes = feature.closest_feature_with_shapes :logged_in? => logged_in?
     if closest_fid_with_shapes.nil?
       shapes = []
@@ -12,15 +12,29 @@
       shapes = closest_fid_with_shapes.shapes
       shapes = shapes.where(:is_public => true) if !logged_in?
       map_fid = closest_fid_with_shapes.fid
-    end
-    if !map_fid.nil? %>
+    end %>
+    <div id="gallery">
+<%  if !map_fid.nil? %>
       <h3><%= ts 'map.this' %></h3>
-      <div id="inset_map" class="fid-<%= map_fid %> language-<%= current_view.code %>"></div>
-<%=   javascript_on_load "InsetMap.init({proxyUrl: '#{proxy_engine_proxy_path}?proxy_url='});" %>
-<%=   link_to image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-map-simple.gif", :alt => "") + " #{ts 'view.record', :what => t('map.full')}", "#{InterfaceUtils::Server.get_url}/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}", :class => "view-on-map" %>
-<%=   link_to image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-google-maps.png", :alt => "") + " #{ts :in, :what => t('view.this'), :where => t('map.google')}", "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => map_fid, :format => "kmz"), :target => "_blank", :class => "view-on-map" %>
-<%=   link_to image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-google-earth.png", :alt => "") + " #{ts :in, :what => t('view.this'), :where => t('map.earth')}", {:action => :gis_resources, :fids => map_fid, :format => "kmz"}, :target => "_blank", :class => "view-on-map" %>
+      <div id="map-column">
+        <div id="inset_map" class="fid-<%= map_fid %> language-<%= current_view.code %>"></div>
+<%=     javascript_on_load "InsetMap.init({proxyUrl: '#{proxy_engine_proxy_path}?proxy_url='});" %>
+<%=     link_to image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-map-simple.gif", :alt => "") + " #{ts 'view.record', :what => t('map.full')}", "#{InterfaceUtils::Server.get_url}/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}", :class => "view-on-map" %>
+<%=     link_to image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-google-maps.png", :alt => "") + " #{ts :in, :what => t('view.this'), :where => t('map.google')}", "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => map_fid, :format => "kmz"), :target => "_blank", :class => "view-on-map" %>
+<%=     link_to image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-google-earth.png", :alt => "") + " #{ts :in, :what => t('view.this'), :where => t('map.earth')}", {:action => :gis_resources, :fids => map_fid, :format => "kmz"}, :target => "_blank", :class => "view-on-map" %>
+      </div>
 <%  end %>
+<%  if !feature.illustration.nil?
+	  picture = feature.illustration.picture %>
+      <div id="illustration">
+<%=   image_tag(picture.url, :height => 200) %>
+<%    if !picture.caption.nil? %>
+        <p><%= picture.caption %></p>
+<%    end %>
+      </div>
+<%  end %>
+    </div>
+    <div style="clear: both;"></div>
 <%= content_tag :h3, Description.model_name.human(:count => feature.descriptions.size).titleize.s unless feature.descriptions.blank? %>
 <%  if !feature.descriptions.empty? %>
       <div id='descriptions_div'>
@@ -35,7 +49,7 @@
       ['Texts', feature.media_count(:type => 'Document'), feature.documents_url]
     ]
     if associated_resources.collect{|ar| ar[1]}.sum > 0 %>
-      <h3><%= ts 'associate.d.record', :what => Medium.human_name(:count => :many).titleize %></h3>
+      <h3><%= ts 'associate.d.record', :what => MmsIntegration::Medium.human_name(:count => :many).titleize %></h3>
       <ul><%= associated_resources.reject{|ar| ar[1] == 0}.collect{|ar| "<li>" + link_to("#{ar[0]} (#{ar[1]})", ar[2]) + "</li>" }.join("").html_safe %></ul>
 <%  end %>
     <p>

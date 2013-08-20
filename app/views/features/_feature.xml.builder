@@ -6,16 +6,16 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
   xml.feature_types(:type => 'array') do
     feature.object_types.each { |type| xml.feature_type(:title => type.header, :id => type.id) }
   end
-  xml.category_feature(:type => 'array') do
+  xml.category_features(:type => 'array') do
     feature.category_features.each do |association| 
       if !association.instance_of? FeatureObjectType
         xml.category_feature do
           c = association.category
-          xml.category(:title => c.title, :id => c.id)
+          xml.category(:title => c.header, :id => c.id)
           parent = c.parent
-          xml.parent(:title => parent.title, :id => parent.id)
+          xml.parent(:title => parent.header, :id => parent.id)
           root = c.root
-          xml.root(:title => root.title, :id => root.id)
+          xml.root(:title => root.header, :id => root.id)
           xml.numeric_value(association.numeric_value, :type => 'integer')
           xml.string_value(association.string_value, :type => 'string')
         end
