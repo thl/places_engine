@@ -28,13 +28,6 @@
 }
 
 #FeatureDetails #map-column {
-	width: 320px;
-	float: left;
-}
-
-#FeatureDetails #illustration {
-	width: 220px;
-	height: 200px;
-	margin-top: 5px !important;
+	width: 340px;
 	float: left;
 }
