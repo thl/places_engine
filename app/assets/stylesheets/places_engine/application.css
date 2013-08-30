@@ -22,12 +22,12 @@
 }
 
 #FeatureDetails #inset_map {
-	width: 300px;
+	width: 280px;
 	height: 200px;
 	margin-top: 5px !important;
 }
 
 #FeatureDetails #map-column {
-	width: 340px;
+	width: 320px;
 	float: left;
 }
