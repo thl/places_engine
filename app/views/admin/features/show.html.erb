@@ -37,6 +37,12 @@
 <%= association_note_list_fieldset(FeatureName.model_name) %>
 </fieldset>
 <fieldset>
+    <legend><%= Illustration.model_name.human(:count => :many).titleize.s %></legend>
+<%= highlighted_new_item_link [@object, :illustration] %>
+    <br class="clear"/>
+<%= render :partial => 'admin/illustrations/list', :locals => { :list => @object.illustrations } %>
+</fieldset>
+<fieldset>
     <legend><%= Feature.human_attribute_name(:object_type, :count => :many).s %> <%= link_to ts('change.record', :what => t('priorit.ization_of.feature_types')), prioritize_feature_object_types_admin_features_path(@object) %></legend>
 <%= highlighted_new_item_link [@object, :feature_object_type] %>
     <br class="clear"/>
