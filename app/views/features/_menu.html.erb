@@ -1,4 +1,4 @@
-<% active_item = @active_menu_item ||= !session[:interface].blank? && !session[:interface][:menu_item].blank? ? session[:interface][:menu_item] : false %>
+<% active_item = active_menu_item %>
 <div id="NodeMenu">
   <div class="node-menu-content">
     <h2 class="menu-item-search"><%= ts 'search.this' %></h2>

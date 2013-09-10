@@ -16,6 +16,7 @@ class TopicsController < ApplicationController
       @feature = Feature.find(session[:interface][:context_id]) unless session[:interface][:context_id].blank?
       respond_to do |format|
         format.html { render :template => 'features/list' }
+        format.js   { render :template => 'features/paginated_list' }
       end
     end
   end

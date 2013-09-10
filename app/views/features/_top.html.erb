@@ -7,9 +7,8 @@
 <%= javascript_on_load do %>
 	  jQuery(window).unbind("scroll");
 	  NodeTree.init("NodeTree", "NodeTreeList", "<%= features_path %>/");
-<%    node_menu_options = {}
-      # Set the menu item that should be open when the NodeMenu loads
-      node_menu_options[:default_item] = @active_menu_item ||= session[:interface][:menu_item] unless session[:interface][:menu_item].blank?
+<%    # Set the menu item that should be open when the NodeMenu loads
+      node_menu_options = {:default_item => active_menu_item}
       # Make the Results menu item be shown if a search exists in the session
       node_menu_options[:show_results] = true unless session[:search].blank? %>
 	  NodeMenu.init("NodeMenu", "<%= features_path %>/", <%= node_menu_options.to_json.html_safe %>);
