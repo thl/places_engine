@@ -44,7 +44,7 @@ bo:
                     one: 'ཁྱད་རྟགས་ཀྱི་རིགས།'
                     other: 'ཁྱད་རྟགས་ཀྱི་རིགས་ཁག'
                 old_pid: 'THL Idརྙིང་པ།'
-                pid: 'THL ID'
+                pid: 'Place ID'
             shape:
                 gid: 'GID'
                 altitude: 'རྒྱ་མཚོའི་ངོས་ལས་མཐོ་ཚད།'

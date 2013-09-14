@@ -44,7 +44,7 @@ zh:
                     one: '特征类型'
                     other: '特征类型'
                 old_pid: '旧的THL ID'
-                pid: 'THL ID'
+                pid: 'Place ID'
             shape:
                 gid: 'GID'
                 altitude: '海拔'

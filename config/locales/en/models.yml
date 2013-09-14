@@ -44,7 +44,7 @@ en:
                     one: 'Feature Type'
                     other: 'Feature Types'
                 old_pid: 'OLD THL PID'
-                pid: 'THL ID'
+                pid: 'Place ID'
             shape:
                 gid: 'GID'
                 altitude: 'Altitude'
