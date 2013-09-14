@@ -12,6 +12,10 @@ module PlacesEngine
         has_many :shapes, :foreign_key => 'fid', :primary_key => 'fid'
         self.associated_models << FeatureObjectType
       end
+      
+      def pid
+        "F#{self.fid}"
+      end
 
       def has_shapes?(options = {})
         use_log_in_status = options.has_key? :logged_in?
