@@ -35,12 +35,13 @@ module ExtendedAdminHelper
   #
   def model_display_name(str)
     names = {
-      'association_note' => 'note',
-      'description' => 'essay',
-      'feature_geo_code' => 'geo_code',
-      'feature_name' => 'name',
+      'association_note' => Note.model_name.human,
+      'description' => Description.model_name.human,
+      'feature' => Feature.model_name.human,
+      'feature_geo_code' => FeatureGeoCode.model_name.human,
+      'feature_name' => FeatureName.model_name.human,
       'feature_object_type' => 'feature_type',
-      'shape' => 'location',
+      'shape' => Shape.model_name.human,
       'time_unit' => 'date',
       'category_feature' => Topic.human_name #'kmap_characteristic'
     }

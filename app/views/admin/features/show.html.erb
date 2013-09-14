@@ -81,7 +81,7 @@
     <legend><%= FeatureRelation.model_name.human(:count => :many).titleize.s %></legend>
 <%= highlighted_new_item_link locate_for_relation_admin_feature_path(@object), ts('new.record', :what => FeatureRelation.model_name.human) %>
     <br class="clear"/>
-<%= render :partial => 'admin/feature_relations/list', :locals => { :list => @object.all_relations, :parent => @object, :use_first => false, :use_names => true } %>
+<%= render :partial => 'admin/feature_relations/list', :locals => { :list => @object.all_relations, :object => @object, :use_first => false, :use_names => true } %>
 <%= association_note_list_fieldset(FeatureRelation.model_name) %>
 </fieldset>
 <fieldset>
