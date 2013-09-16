@@ -6,6 +6,7 @@ module PlacesEngine
         
     initializer :loader do |config|
       require 'places_engine/extension/feature_model'
+      require 'places_engine/extension/feature_relation_model'
       require 'places_engine/extension/for_name_positioning'
       require 'places_engine/extension/cached_category_count'
       require 'places_engine/extension/citation_controller'
@@ -16,6 +17,7 @@ module PlacesEngine
       
       Feature.send :include, PlacesEngine::Extension::ForNamePositioning
       Feature.send :include, PlacesEngine::Extension::FeatureModel
+      FeatureRelation.send :include, PlacesEngine::Extension::FeatureRelationModel
       CachedCategoryCount.send :extend, PlacesEngine::Extension::CachedCategoryCountExtension
       CitationController.send :include, PlacesEngine::Extension::CitationController
       FeaturesController.send :include, PlacesEngine::Extension::FeaturesController
