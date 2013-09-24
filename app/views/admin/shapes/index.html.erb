@@ -2,7 +2,7 @@
    if @parent_object
      add_breadcrumb_item features_link
      add_breadcrumb_item feature_link(@parent_object)
-     add_breadcrumb_item collection_name
+     add_breadcrumb_item Shape.model_name.human(:count => :many).s
    end %>
 <br class="clear"/>
 <%= render :partial => 'list', :locals => { :list => @collection } %>

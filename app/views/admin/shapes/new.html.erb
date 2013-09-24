@@ -1,6 +1,6 @@
 <%  add_breadcrumb_item features_link
     add_breadcrumb_item feature_link(@object.feature)
-    add_breadcrumb_item link_to(collection_name, collection_path)
+    add_breadcrumb_item link_to(Shape.model_name.human(:count => :many).s, collection_path)
     add_breadcrumb_item ts('new.this') %>
 <%= form_for @object, :url => admin_feature_shapes_path(@object.feature) do |f| %>
 <%=   f.hidden_field :fid, :value => @object.fid %>
