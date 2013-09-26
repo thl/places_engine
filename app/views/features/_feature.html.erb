@@ -3,6 +3,11 @@
 <%= time_units_for(feature) %>
     <h3><%= ts :for, :what => Shape.model_name.human.titleize.s, :whom => current_perspective %></h3>
 <%= f_breadcrumb(feature) %>
+<%  summary = feature.summary
+    if !summary.nil? %>
+      <p>&nbsp;</p>
+<%=   summary.content.html_safe %>
+<%  end %>
 <%= render :partial => 'topics', :locals => {:feature => feature} %>
 <%  closest_fid_with_shapes = feature.closest_feature_with_shapes :logged_in? => logged_in?
     if closest_fid_with_shapes.nil?

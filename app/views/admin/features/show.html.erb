@@ -37,6 +37,18 @@
 <%= association_note_list_fieldset(FeatureName.model_name) %>
 </fieldset>
 <fieldset>
+    <legend><%= Caption.model_name.human(:count => :many).titleize.s %></legend>
+<%= highlighted_new_item_link [@object, :caption] %>
+    <br class="clear"/>
+<%= render :partial => 'admin/captions/list', :locals => { :list => @object.captions } %>
+</fieldset>
+<fieldset>
+    <legend><%= Summary.model_name.human(:count => :many).titleize.s %></legend>
+<%= highlighted_new_item_link [@object, :summary] %>
+    <br class="clear"/>
+<%= render :partial => 'admin/summaries/list', :locals => { :list => @object.summaries } %>
+</fieldset>
+<fieldset>
     <legend><%= Illustration.model_name.human(:count => :many).titleize.s %></legend>
 <%= highlighted_new_item_link [@object, :illustration] %>
     <br class="clear"/>
