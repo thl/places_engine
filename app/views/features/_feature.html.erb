@@ -30,9 +30,11 @@
       </div>
 <%  end %>
 <%  if !feature.illustration.nil?
-	  picture = feature.illustration.picture %>
-      <div id="illustration">
-<%=   image_tag(picture.url, :height => 200) %>
+	  picture = feature.illustration.picture
+	  rendered_height = 200
+	  rendered_width = picture.width.nil? || picture.height.nil? ? nil : picture.width * rendered_height / picture.height %>
+      <div id="illustration"<%= " style=\"width:#{rendered_width}px;\"".html_safe if !rendered_width.nil? %>>
+<%=   image_tag(picture.url, :height => rendered_height) %>
 <%    if !picture.caption.nil? %>
         <p><%= picture.caption %></p>
 <%    end %>
