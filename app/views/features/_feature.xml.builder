@@ -39,21 +39,27 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
   end
   parents = feature.all_parent_relations.collect(&:parent_node)
   xml.parents(:type => 'array') { xml << render(:partial => 'stripped_feature.xml.builder', :collection => parents, :as => :feature) if !parents.empty? }
-  per = Perspective.get_by_code(default_perspective_code)
-  hierarchy = feature.closest_ancestors_by_perspective(per)
-  xml.ancestors(:type => 'array') { xml << render(:partial => 'stripped_feature.xml.builder', :collection => hierarchy, :as => :feature) if !hierarchy.empty? }
-  per = Perspective.get_by_code('cult.reg')
-  if !per.nil?
+  xml.perspectives(:type => 'array') do
+    per = Perspective.get_by_code(default_perspective_code)
     hierarchy = feature.closest_ancestors_by_perspective(per)
-    xml.ancestors(:type => 'array') { xml << render(:partial => 'stripped_feature.xml.builder', :collection => hierarchy, :as => :feature) if !hierarchy.empty? }
+    xml.perspective(:id => per.id, :code => per.code) do
+      xml.ancestors(:type => 'array') { xml << render(:partial => 'stripped_feature.xml.builder', :collection => hierarchy, :as => :feature) if !hierarchy.empty? }
+    end
+    per = Perspective.get_by_code('cult.reg')
+    if !per.nil?
+      hierarchy = feature.closest_ancestors_by_perspective(per)
+      xml.perspective(:id => per.id, :code => per.code) do
+        xml.ancestors(:type => 'array') { xml << render(:partial => 'stripped_feature.xml.builder', :collection => hierarchy, :as => :feature) if !hierarchy.empty? }
+      end
+    end
   end
   descriptions = feature.descriptions
-  if !descriptions.empty?
+  xml.descriptions(:type => 'array') do
     descriptions.each do |d|
       options = {:id => d.id, :is_primary => d.is_primary}
       options[:source_url] = d.source_url if !d.source_url.blank?
       options[:title] = d.title if !d.title.blank?
-      xml.desc(options)
+      xml.description(options)
     end
   end
   xml.has_shapes(feature.has_shapes? ? 1 : 0, :type => 'integer')
