@@ -123,6 +123,13 @@ module PlacesEngine
         a << type if !type.nil?
         a.join('/')
       end
+      
+      def context_feature
+        ancestors = self.current_ancestors(Perspective.get_by_code('pol.admin.hier'))
+        parent = ancestors.detect{|a| a.fid != self.fid && a.feature_object_types.detect{|ft| ft.category_id==29}}
+        parent = self.parents.first if parent.nil?
+        return parent
+      end
 
       module ClassMethods
         def find_by_shape(shape)

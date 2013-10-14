@@ -8,6 +8,7 @@ module PlacesEngine
       require 'places_engine/extension/feature_model'
       require 'places_engine/extension/feature_relation_model'
       require 'places_engine/extension/for_name_positioning'
+      require 'places_engine/extension/illustration_model'
       require 'places_engine/extension/citation_controller'
       require 'places_engine/extension/features_controller'
       require 'places_engine/extension/notes_controller'
@@ -17,6 +18,7 @@ module PlacesEngine
       Feature.send :include, PlacesEngine::Extension::ForNamePositioning
       Feature.send :include, PlacesEngine::Extension::FeatureModel
       FeatureRelation.send :include, PlacesEngine::Extension::FeatureRelationModel
+      Illustration.send :include, PlacesEngine::Extension::IllustrationModel
       CitationController.send :include, PlacesEngine::Extension::CitationController
       FeaturesController.send :include, PlacesEngine::Extension::FeaturesController
       NotesController.send :include, PlacesEngine::Extension::NotesController

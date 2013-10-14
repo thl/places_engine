@@ -28,15 +28,37 @@
 <%=     link_to image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-google-maps.png", :alt => "") + " #{ts :in, :what => t('view.this'), :where => t('map.google')}", "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => map_fid, :format => "kmz"), :target => "_blank", :class => "view-on-map" %>
 <%=     link_to image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-google-earth.png", :alt => "") + " #{ts :in, :what => t('view.this'), :where => t('map.earth')}", {:action => :gis_resources, :fids => map_fid, :format => "kmz"}, :target => "_blank", :class => "view-on-map" %>
       </div>
-<%  end %>
-<%  if !feature.illustration.nil?
+<%  end
+    illustration = feature.illustration
+    if !illustration.nil?
 	  picture = feature.illustration.picture
 	  rendered_height = 200
 	  rendered_width = picture.width.nil? || picture.height.nil? ? nil : picture.width * rendered_height / picture.height %>
       <div id="illustration"<%= " style=\"width:#{rendered_width}px;\"".html_safe if !rendered_width.nil? %>>
-<%=   image_tag(picture.url, :height => rendered_height) %>
-<%    if !picture.caption.nil? %>
-        <p><%= picture.caption %></p>
+<%    if picture.instance_of?(MmsIntegration::Picture) %>
+<%=     link_to image_tag(picture.url, :height => rendered_height), MmsIntegration::Medium.element_url(picture.id, :format => 'html') %>
+<%    else %>
+<%=     link_to image_tag(picture.url, :height => rendered_height), picture.url %>
+<%    end
+      place = illustration.place
+      if place.nil?
+	    location = nil
+	  else
+	    location = link_to place.prioritized_name(current_view).name, feature_path(place.fid)
+	    parent_place = place.context_feature
+	    location << ", #{link_to parent_place.prioritized_name(current_view).name, feature_path(parent_place.fid)}".html_safe if !parent_place.nil?
+	  end
+      if picture.caption.nil?
+        if !location.nil? %>
+          <p><%= location %></p>
+<%      end
+      else %>
+        <p>
+<%=       picture.caption %>
+<%        if !location.nil? %>
+            (<%= location %>)
+<%        end %>
+        </p>
 <%    end %>
       </div>
 <%  end %>
