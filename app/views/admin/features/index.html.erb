@@ -42,7 +42,7 @@ end %>
         </td>
         <td class="leftText">
 <%      if @context_feature==item %>
-          <strong style="color:black;"><%= item.object_types.first.title rescue '' %></strong>
+          <strong style="color:black;"><%= item.object_types.first.header rescue '' %></strong>
 <%      else %>
 <%=       link_to item.object_types.first.header, current_features_path(:context_id=>item.id, :filter=>params[:filter]) unless item.object_types.empty? %>
 <%      end %>  

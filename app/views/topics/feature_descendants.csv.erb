@@ -16,7 +16,7 @@
       chi_names = names.select{|n| n.writing_system_id == chi_trad_script_id} if chi_names.empty?
       row << chi_names.collect(&:name).join(', ')
 	  # Add feature type
-      row << feature.feature_object_types.collect{|fot| fot.category.title }.join(', ') 
+      row << feature.feature_object_types.collect{|fot| fot.category.header }.join(', ') 
       row << ((relation.nil? || relation.feature_relation_type.nil?) ? '' : relation.feature_relation_type.code)
       # Add parent
       row << (parent.nil? ? '' : "#{parent.prioritized_name(view)} (#{parent.fid})")

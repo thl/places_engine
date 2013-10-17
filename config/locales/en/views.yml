@@ -20,7 +20,7 @@ en:
         longitude: 'Longitude'
     map:
         earth: 'Google Earth'
-        full: 'the full map'
+        full: 'full map'
         google: 'Google Maps'
         this: 'Map'
     priorit:

@@ -103,6 +103,17 @@ module PlacesEngine
         CategoryFeature.where(:feature_id => self.id).count
       end
       
+      def media_count(options = {})
+        media_count_hash = Rails.cache.fetch("#{self.cache_key}/media_count", :expires_in => 1.day) do
+          media_place_count = MmsIntegration::MediaPlaceCount.find(:all, :params => {:place_id => self.fid}).dup
+          media_count_hash = { 'Medium' => media_place_count.shift.count.to_i }
+          media_place_count.each{|count| media_count_hash[count.medium_type] = count.count.to_i }
+          media_count_hash
+        end
+        type = options[:type]
+        return type.nil? ? media_count_hash['Medium'] : media_count_hash[type]
+      end
+      
       def update_shape_positions
         shapes.reject{|shape| shape.position != 0}.inject(shapes.max{|a,b|a.position <=> b.position}.position+1) do |pos, shape|
           shape.update_attribute(:position, pos)

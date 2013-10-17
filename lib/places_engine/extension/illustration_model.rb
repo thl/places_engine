@@ -1,9 +1,6 @@
 module PlacesEngine
   module Extension
     module IllustrationModel
-      include ActionView::Helpers
-      include ActionDispatch::Routing
-      include Rails.application.routes.url_helpers
       extend ActiveSupport::Concern
       
       included do

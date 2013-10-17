@@ -1,14 +1,12 @@
 <div id="FeatureDetails">
 <%= content_tag :h2, "#{feature_name_header(feature)} #{edit_item_link(admin_feature_path(feature)) if logged_in?}".html_safe %>
 <%= time_units_for(feature) %>
-    <h3><%= ts :for, :what => Shape.model_name.human.titleize.s, :whom => current_perspective %></h3>
 <%= f_breadcrumb(feature) %>
 <%  summary = feature.summary
     if !summary.nil? %>
       <p>&nbsp;</p>
 <%=   summary.content.html_safe %>
 <%  end %>
-<%= render :partial => 'topics', :locals => {:feature => feature} %>
 <%  closest_fid_with_shapes = feature.closest_feature_with_shapes :logged_in? => logged_in?
     if closest_fid_with_shapes.nil?
       shapes = []
@@ -20,13 +18,9 @@
     end %>
     <div id="gallery">
 <%  if !map_fid.nil? %>
-      <h3><%= ts 'map.this' %></h3>
       <div id="map-column">
         <div id="inset_map" class="fid-<%= map_fid %> language-<%= current_view.code %>"></div>
 <%=     javascript_on_load "InsetMap.init({proxyUrl: '#{proxy_engine_proxy_path}?proxy_url='});" %>
-<%=     link_to image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-map-simple.gif", :alt => "") + " #{ts 'view.record', :what => t('map.full')}", "#{InterfaceUtils::Server.get_url}/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}", :class => "view-on-map" %>
-<%=     link_to image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-google-maps.png", :alt => "") + " #{ts :in, :what => t('view.this'), :where => t('map.google')}", "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => map_fid, :format => "kmz"), :target => "_blank", :class => "view-on-map" %>
-<%=     link_to image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-google-earth.png", :alt => "") + " #{ts :in, :what => t('view.this'), :where => t('map.earth')}", {:action => :gis_resources, :fids => map_fid, :format => "kmz"}, :target => "_blank", :class => "view-on-map" %>
       </div>
 <%  end
     illustration = feature.illustration
@@ -64,6 +58,12 @@
 <%  end %>
     </div>
     <div style="clear: both;"></div>
+<p class = "view-on-map">
+<%= ts 'view.this' %>
+<%=     link_to image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-map-simple.gif", :alt => "") + " #{ts 'map.full'}", "#{InterfaceUtils::Server.get_url}/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}" %>&nbsp;&nbsp;
+<%=     link_to image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-google-maps.png", :alt => "") + " #{ts :in, :what => '', :where => t('map.google')}", "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => map_fid, :format => "kmz"), :target => "_blank" %>&nbsp;&nbsp;
+<%=     link_to image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-google-earth.png", :alt => "") + " #{ts :in, :what => '', :where => t('map.earth')}", {:action => :gis_resources, :fids => map_fid, :format => "kmz"}, :target => "_blank" %>
+</p>
 <%= content_tag :h3, Description.model_name.human(:count => feature.descriptions.size).titleize.s unless feature.descriptions.blank? %>
 <%  if !feature.descriptions.empty? %>
       <div id='descriptions_div'>
@@ -87,6 +87,7 @@
 <%=   button_to_function ts(:hide, :what => t('feature.detail', :count => :many)), "$('#more_feature_detail').hide(); $(this).hide(); $('#more_feature_detail_button').show();", :id => "less_feature_detail_button", :style => ("display:none;" unless current_show_feature_details) %>
     </p>
     <div id="more_feature_detail" style="<%= "display: none;" unless current_show_feature_details %>">
+<%= render :partial => 'topics', :locals => {:feature => feature} %>
     <h3><%= FeatureName.model_name.human(:count => feature.names.size).titleize.s %></h3>
 <%= feature_name_ul(feature,false) %>
     <dl class="no-style">

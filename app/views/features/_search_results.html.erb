@@ -40,7 +40,7 @@
          <td class="leftText">
 <%=      link_to h(feature_name_header(f)).s, feature_path(f.fid) %>
          </td>
-         <td class="leftText"><%=h f.object_types.first.title rescue '' %></td>
+         <td class="leftText"><%=h f.object_types.first.header rescue '' %></td>
        </tr>
 <%     end %>
        <tr>

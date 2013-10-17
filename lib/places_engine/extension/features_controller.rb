@@ -161,7 +161,7 @@ module PlacesEngine
         f = {}
         f[:id] = feature.id
         f[:name] = feature.name
-        f[:types] = feature.object_types.collect{|t| {:id => t.id, :title => t.title} }
+        f[:types] = feature.object_types.collect{|t| {:id => t.id, :title => t.header} }
         f[:descriptions] = feature.descriptions.collect{|d| {
           :id => d.id,
           :is_primary => d.is_primary,
