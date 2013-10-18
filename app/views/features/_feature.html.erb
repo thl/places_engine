@@ -1,7 +1,7 @@
 <div id="FeatureDetails">
 <%= content_tag :h2, "#{feature_name_header(feature)} #{edit_item_link(admin_feature_path(feature)) if logged_in?}".html_safe %>
 <%= time_units_for(feature) %>
-<%= f_breadcrumb(feature) %>
+<%= f_breadcrumb(feature) %><br/>
 <%  summary = feature.summary
     if !summary.nil? %>
       <p>&nbsp;</p>
@@ -21,6 +21,11 @@
       <div id="map-column">
         <div id="inset_map" class="fid-<%= map_fid %> language-<%= current_view.code %>"></div>
 <%=     javascript_on_load "InsetMap.init({proxyUrl: '#{proxy_engine_proxy_path}?proxy_url='});" %>
+        <p class = "view-on-map">
+<%=       link_to "#{image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-map-simple.gif", :alt => "")} #{ts 'map.full'}".html_safe, "#{InterfaceUtils::Server.get_url}/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}" %>
+<%=       link_to "#{image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-google-maps.png", :alt => "")}#{ts 'map.google'}".html_safe, "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => map_fid, :format => "kmz"), :target => "_blank" %>&nbsp;
+<%=       link_to "#{image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-google-earth.png", :alt => "")} #{ts 'map.earth'}".html_safe, {:action => :gis_resources, :fids => map_fid, :format => "kmz"}, :target => "_blank" %>
+        </p>
       </div>
 <%  end
     illustration = feature.illustration
@@ -44,10 +49,10 @@
 	  end
       if picture.caption.nil?
         if !location.nil? %>
-          <p><%= location %></p>
+          <p class = "view-on-map"><%= location %></p>
 <%      end
       else %>
-        <p>
+        <p class = "view-on-map">
 <%=       picture.caption %>
 <%        if !location.nil? %>
             (<%= location %>)
@@ -58,12 +63,6 @@
 <%  end %>
     </div>
     <div style="clear: both;"></div>
-<p class = "view-on-map">
-<%= ts 'view.this' %>
-<%=     link_to image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-map-simple.gif", :alt => "") + " #{ts 'map.full'}", "#{InterfaceUtils::Server.get_url}/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}" %>&nbsp;&nbsp;
-<%=     link_to image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-google-maps.png", :alt => "") + " #{ts :in, :what => '', :where => t('map.google')}", "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => map_fid, :format => "kmz"), :target => "_blank" %>&nbsp;&nbsp;
-<%=     link_to image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-google-earth.png", :alt => "") + " #{ts :in, :what => '', :where => t('map.earth')}", {:action => :gis_resources, :fids => map_fid, :format => "kmz"}, :target => "_blank" %>
-</p>
 <%= content_tag :h3, Description.model_name.human(:count => feature.descriptions.size).titleize.s unless feature.descriptions.blank? %>
 <%  if !feature.descriptions.empty? %>
       <div id='descriptions_div'>
