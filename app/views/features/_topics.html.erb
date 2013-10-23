@@ -1,9 +1,3 @@
-<p>
-    <br/>
-<%= content_tag :strong, "#{Feature.human_attribute_name(:object_type, :count => feature.feature_object_types.size).s}:" unless feature.object_types.empty? %>
-<%= feature.feature_object_types.collect{|fot| [fot, fot.category] }.reject{|a| a[1].nil? }.collect{|a| "#{link_to a[1].header, a[1].get_url(nil, :format => '')}#{note_popup_link_for(a[0])}#{time_units_for(a[0])}"}.join('; ').html_safe %>
-<%= note_popup_link_list_for(feature, {:association_type => FeatureObjectType.model_name}) %>
-</p>
 <%  category_features = feature.category_features.where(:type => nil) %>
 <%= content_tag :h3, CategoryFeature.model_name.human(:count => category_features.size).titleize.s unless category_features.empty? %>
     <ul id="CategoryFeaturesList">

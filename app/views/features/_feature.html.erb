@@ -2,6 +2,7 @@
 <%= content_tag :h2, "#{feature_name_header(feature)} #{edit_item_link(admin_feature_path(feature)) if logged_in?}".html_safe %>
 <%= time_units_for(feature) %>
 <%= f_breadcrumb(feature) %><br/>
+<%= render :partial => 'feature_types', :locals => {:feature => feature} %>
 <%  summary = feature.summary
     if !summary.nil? %>
       <p>&nbsp;</p>
@@ -63,19 +64,13 @@
 <%  end %>
     </div>
     <div style="clear: both;"></div>
-<%= content_tag :h3, Description.model_name.human(:count => feature.descriptions.size).titleize.s unless feature.descriptions.blank? %>
-<%  if !feature.descriptions.empty? %>
-      <div id='descriptions_div'>
-<%=     render :partial => '/descriptions/index', :locals => {:feature => feature, :description => nil} %>
-      </div>
-<%=   note_popup_link_list_for(feature, {:association_type => Description.model_name}) %>
-<%  end
-    associated_resources = [
+<%  associated_resources = [
       [Topic.human_name(:count => :many).titleize.s, feature.category_count, topics_feature_path(feature.fid)],
       ['Pictures', feature.media_count(:type => 'Picture'), feature.pictures_url],
       ['Video', feature.media_count(:type => 'Video'), feature.videos_url],
       ['Texts', feature.media_count(:type => 'Document'), feature.documents_url]
     ]
+    associated_resources.unshift([Description.model_name.human.titleize, feature.descriptions.size, feature_description_path(feature.fid, feature.descriptions.first)]) if !feature.descriptions.empty?
     if associated_resources.collect{|ar| ar[1]}.sum > 0 %>
       <h3><%= ts 'associate.d.record', :what => MmsIntegration::Medium.human_name(:count => :many).titleize %></h3>
       <ul><%= associated_resources.reject{|ar| ar[1] == 0}.collect{|ar| "<li>" + link_to("#{ar[0]} (#{ar[1]})", ar[2]) + "</li>" }.join("").html_safe %></ul>
