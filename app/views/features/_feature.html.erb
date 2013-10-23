@@ -64,16 +64,20 @@
 <%  end %>
     </div>
     <div style="clear: both;"></div>
-<%  associated_resources = [
-      [Topic.human_name(:count => :many).titleize.s, feature.category_count, topics_feature_path(feature.fid)],
-      ['Pictures', feature.media_count(:type => 'Picture'), feature.pictures_url],
-      ['Video', feature.media_count(:type => 'Video'), feature.videos_url],
-      ['Texts', feature.media_count(:type => 'Document'), feature.documents_url]
-    ]
-    associated_resources.unshift([Description.model_name.human.titleize, feature.descriptions.size, feature_description_path(feature.fid, feature.descriptions.first)]) if !feature.descriptions.empty?
-    if associated_resources.collect{|ar| ar[1]}.sum > 0 %>
+<%  associated_resources = []
+    count = feature.descriptions.size
+    associated_resources << [Description.model_name.human(:count => count).titleize.s, count, feature_description_path(feature.fid, feature.descriptions.first)] if count > 0
+    count = feature.category_count
+    associated_resources << [Topic.human_name(:count => count).titleize.s, count, topics_feature_path(feature.fid)] if count > 0
+    count = feature.media_count(:type => 'Picture')
+    associated_resources << [MmsIntegration::Picture.human_name(:count => count).titleize.s, count, feature.pictures_url] if count > 0
+    count = feature.media_count(:type => 'Video')
+    associated_resources << [ts(:video, :count => count), count, feature.videos_url] if count > 0
+    count = feature.media_count(:type => 'Document')
+    associated_resources << [MmsIntegration::Document.human_name(:count => count).titleize.s, count, feature.documents_url] if count > 0
+    if associated_resources.size > 0 %>
       <h3><%= ts 'associate.d.record', :what => MmsIntegration::Medium.human_name(:count => :many).titleize %></h3>
-      <ul><%= associated_resources.reject{|ar| ar[1] == 0}.collect{|ar| "<li>" + link_to("#{ar[0]} (#{ar[1]})", ar[2]) + "</li>" }.join("").html_safe %></ul>
+      <ul><%= associated_resources.collect{|ar| "<li>" + link_to("#{ar[0]} (#{ar[1]})", ar[2]) + "</li>" }.join('').html_safe %></ul>
 <%  end %>
     <p>
       <br />
