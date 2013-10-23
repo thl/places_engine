@@ -1,4 +1,4 @@
-<%= header(:class => 'single-col places', :javascript_files => ['kmaps_engine/treescroll', 'subjects_integration/jquery.draggable.popup']) %>
+<%= header(:class => 'single-col places', :javascript_files => ['kmaps_engine/treescroll', 'subjects_integration/jquery.draggable.popup'], :stylesheet_files => ["kmaps_engine/#{current_view.code=='roman.scholar' ? 'scholar' : 'popular'}"]) %>
 <div class="shell-1">
 <%= universal_navigation :places, @current_tab_id, custom_secondary_tabs(@current_tab_id) do %>
 <%=   yield %>
