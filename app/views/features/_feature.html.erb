@@ -2,11 +2,11 @@
 <%= content_tag :h2, "#{feature_name_header(feature)} #{edit_item_link(admin_feature_path(feature)) if logged_in?}".html_safe %>
 <%= time_units_for(feature) %>
 <%= f_breadcrumb(feature) %><br/>
-<%= render :partial => 'feature_types', :locals => {:feature => feature} %>
+<%= render :partial => 'feature_types', :locals => {:feature => feature} %><br/>
 <%  summary = feature.summary
     if !summary.nil? %>
-      <p>&nbsp;</p>
 <%=   summary.content.html_safe %>
+      <br/>
 <%  end %>
 <%  closest_fid_with_shapes = feature.closest_feature_with_shapes :logged_in? => logged_in?
     if closest_fid_with_shapes.nil?
