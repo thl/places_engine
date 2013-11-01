@@ -21,7 +21,10 @@
 <%  if !map_fid.nil? %>
       <div id="map-column">
         <div id="inset_map" class="fid-<%= map_fid %> language-<%= current_view.code %>"></div>
-<%=     javascript_on_load "InsetMap.init({proxyUrl: '#{proxy_engine_proxy_path}?proxy_url='});" %>
+<%=     javascript_on_load do %>
+          InsetMap.init({proxyUrl: '<%= proxy_engine_proxy_path %>?proxy_url='});
+          jQuery('.olLayerGooglePoweredBy').css('z-index', '700')
+<%      end %>
         <p class = "view-on-map">
 <%=       link_to "#{image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-map-simple.gif", :alt => "")} #{ts 'map.full'}".html_safe, "#{InterfaceUtils::Server.get_url}/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}" %>
 <%=       link_to "#{image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-google-maps.png", :alt => "")}#{ts 'map.google'}".html_safe, "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => map_fid, :format => "kmz"), :target => "_blank" %>&nbsp;
