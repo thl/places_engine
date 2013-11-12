@@ -23,7 +23,6 @@
         <div id="inset_map" class="fid-<%= map_fid %> language-<%= current_view.code %>"></div>
 <%=     javascript_on_load do %>
           InsetMap.init({proxyUrl: '<%= proxy_engine_proxy_path %>?proxy_url='});
-          jQuery('.olLayerGooglePoweredBy').css('z-index', '700')
 <%      end %>
         <p class = "view-on-map">
 <%=       link_to "#{image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-map-simple.gif", :alt => "")} #{ts 'map.full'}".html_safe, "#{InterfaceUtils::Server.get_url}/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}" %>

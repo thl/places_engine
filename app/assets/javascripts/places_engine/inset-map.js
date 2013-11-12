@@ -116,7 +116,7 @@ var InsetMap = {
 		var gsat = new OpenLayers.Layer.Google(
 			"Google Satellite",
 			{
-				type: G_SATELLITE_MAP,
+				type: google.maps.MapTypeId.SATELLITE,
 				sphericalMercator: true,
 				isBaseLayer: true
 			}
