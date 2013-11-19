@@ -99,7 +99,8 @@ var InsetMap = {
 			maxResolution: 156543.0339,
 			maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34),
 			restrictedExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34),
-			minZoomLevel: 1
+			minZoomLevel: 1,
+			zoomDuration: 1
 		};
 	
 		InsetMap.map = new OpenLayers.Map('inset_map', mapOptions);
