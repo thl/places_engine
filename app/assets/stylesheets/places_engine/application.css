@@ -23,6 +23,11 @@
     margin-top: 5px;
 }
 
+#FeatureDetails .view-on-map img {
+	display: inline;
+}
+
+
 #FeatureDetails #inset_map {
 	width: 280px;
 	height: 200px;
