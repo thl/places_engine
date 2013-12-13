@@ -125,6 +125,10 @@ module PlacesEngine
         # render related_list.js.erb
       end
       
+      def characteristics_list
+        render :json => CategoryFeature.get_json_data
+      end
+      
       def gis_resources
         fids = params[:fids].split(/\D+/)
         fids.shift if fids.size>0 && fids.first.blank?
