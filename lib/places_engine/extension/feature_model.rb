@@ -46,7 +46,7 @@ module PlacesEngine
         feature_id.nil? ? nil : Feature.find(feature_id)
       end
       
-      def descendants_by_topic(fids, topic_ids)
+      def descendants_by_topic(topic_ids)
         self.descendants_by_topic([self.fid], topic_ids)
       end
       
