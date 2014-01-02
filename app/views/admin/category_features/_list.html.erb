@@ -6,7 +6,7 @@
 <%=  pagination_row :colspan=>7 unless @collection.nil? %>
        <tr>
          <th class="listActionCol"></th>
-<%=     '<th>THL Feature ID</th>' unless hide_feature_id %>
+<%=     '<th>THL Feature ID</th>'.html_safe unless hide_feature_id %>
          <th><%= Topic.human_name.titleize.s %></th>
          <th><%= ts :value %></th>
          <th><%= Note.model_name.human(:count => :many).titleize.s %></th>
@@ -23,7 +23,7 @@
            :edit_path   => edit_admin_feature_category_feature_path(item.feature, item),
            :view_path   => admin_feature_category_feature_path(item.feature, item)) %>
          </td>
-<%=     "<td>#{item.feature.pid}</td>" unless hide_feature_id %>
+<%=     "<td>#{item.feature.pid}</td>".html_safe unless hide_feature_id %>
          <td><%= item.stacked_category if !category.nil? %></td>
 <%         values = [] 
            values << item.string_value if !item.string_value.blank?  
