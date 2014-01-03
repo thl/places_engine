@@ -9,7 +9,8 @@ module PlacesEngine
         Feature::HelperMethods.figure_out_name_by_language_code(names, Feature::LANG_CODES_BY_FEATURE_IDS[id])
       end
       
-      def calculate_name_positions(names = self.names.roots.order('feature_names.created_at'), position = 1)
+      def calculate_name_positions(names_param = self.names.roots.order('feature_names.created_at'), position = 1)
+        names = names_param.to_a
         sorted_names = Hash.new
         if names.size == 1
           # If there is only one name tree, it will be automatically assigned priority=1 value without need from editor.
