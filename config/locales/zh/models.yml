@@ -18,6 +18,9 @@ zh:
             feature_relation:
                 one: '特征关系'
                 other: '特征关系'
+            feature_relation_type:
+                one: '特征关系类型'
+                other: '特征关系类型'
             geo_code_type:
                 one: '地理编码类型'
                 other: '地理编码类型'

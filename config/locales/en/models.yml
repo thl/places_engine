@@ -18,6 +18,9 @@ en:
             feature_relation:
                 one: 'feature relation'
                 other: 'feature relations'
+            feature_relation_type:
+                one: 'feature relation type'
+                other: 'feature relation types'
             geo_code_type:
                 one: 'geocode type'
                 other: 'geocode types'
