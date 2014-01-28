@@ -8,6 +8,15 @@ class Altitude < ActiveRecord::Base
   belongs_to :unit
   has_many :imports, :as => 'item', :dependent => :destroy
   
+  def unit
+    self.unit_id.nil? ? nil : Unit.find(self.unit_id)
+  end
+
+  def unit=(obj)
+    self.unit_id = obj.id
+  end
+  
+  
   def to_s
     s = !average.nil? ? average.to_s : ''
     if !minimum.nil? || !maximum.nil?
