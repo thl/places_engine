@@ -79,12 +79,12 @@
     associated_resources << [MmsIntegration::Document.human_name(:count => count).titleize.s, count, feature.documents_url] if count > 0
     if associated_resources.size > 0 %>
       <h3><%= ts 'associate.d.record', :what => MmsIntegration::Medium.human_name(:count => :many).titleize %></h3>
-      <ul><%= associated_resources.collect{|ar| "<li>" + link_to("#{ar[0]} (#{ar[1]})", ar[2]) + "</li>" }.join('').html_safe %></ul>
+      <ul><%= associated_resources.collect{|ar| "<li>" + link_to("#{ar[0]} (#{ar[1]})".html_safe, ar[2]) + "</li>" }.join('').html_safe %></ul>
 <%  end %>
     <p>
       <br />
-<%=   button_to_function ts('view.record', :what => t('more.record', :what => t('feature.detail', :count => :many))), "$('#more_feature_detail').show(); $(this).hide(); $('#less_feature_detail_button').show(); if (typeof(frame_service) != \"undefined\") frame_service.set_iframe_height()", :id => "more_feature_detail_button", :style => ("display:none;" if current_show_feature_details) %>
-<%=   button_to_function ts(:hide, :what => t('feature.detail', :count => :many)), "$('#more_feature_detail').hide(); $(this).hide(); $('#more_feature_detail_button').show();", :id => "less_feature_detail_button", :style => ("display:none;" unless current_show_feature_details) %>
+<%=   button_to_function t('view.record', :what => t('more.record', :what => t('feature.detail', :count => :many))), "$('#more_feature_detail').show(); $(this).hide(); $('#less_feature_detail_button').show(); if (typeof(frame_service) != \"undefined\") frame_service.set_iframe_height()", :id => "more_feature_detail_button", :style => ("display:none;" if current_show_feature_details) %>
+<%=   button_to_function t(:hide, :what => t('feature.detail', :count => :many)), "$('#more_feature_detail').hide(); $(this).hide(); $('#more_feature_detail_button').show();", :id => "less_feature_detail_button", :style => ("display:none;" unless current_show_feature_details) %>
     </p>
     <div id="more_feature_detail" style="<%= "display: none;" unless current_show_feature_details %>">
 <%= render :partial => 'topics', :locals => {:feature => feature} %>

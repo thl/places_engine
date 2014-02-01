@@ -21,7 +21,7 @@ class FeatureNameTest < Test::Unit::TestCase
   end
   
   def test_language
-    assert_equal 'chi', @two.language.code
+    assert_equal 'zho', @two.language.code
   end
   
   def test_type
