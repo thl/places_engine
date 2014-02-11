@@ -1,6 +1,6 @@
 <% add_breadcrumb_item features_link
    if @locating_relation
-     add_breadcrumb_items(feature_link(@object), feature_relations_link(@object), ts('select.record', :what => t('relat.ion.this')))
+     add_breadcrumb_items(feature_link(@object), feature_relations_link(@object), ts('select.record', :what => t('relat.ion.this', :count => 1)))
 end %>
 <div id="featureContextTreeAndList">
   <div id="featureContextList">
