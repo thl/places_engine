@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require_relative '../test_helper'
 
 class FeaturesTest < ActionController::IntegrationTest
   fixtures :citations, :feature_geo_codes, :feature_name_relations, :feature_names, :feature_object_types, :feature_relations, :features, :info_sources, :simple_props, :timespans, :xml_documents
