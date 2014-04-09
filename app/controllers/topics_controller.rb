@@ -13,10 +13,25 @@ class TopicsController < ApplicationController
       @object_title = @category.header
       @object_url = SubjectsIntegration::SubjectsResource.get_url + "features/#{@category.id}"
       @features = Feature.where('cumulative_category_feature_associations.category_id' => @category.id, 'cached_feature_names.view_id' => current_view.id).joins(:cumulative_category_feature_associations).includes(:cached_feature_names => :feature_name).paginate(:page => params[:page] || 1, :per_page => 15).order('feature_names.name')
-      @feature = Feature.find(session[:interface][:context_id]) unless session[:interface][:context_id].blank?
       respond_to do |format|
-        format.html { render :template => 'features/list' }
-        format.js   { render :template => 'features/paginated_list' }
+        format.html do
+          @feature = Feature.find(session[:interface][:context_id]) unless session[:interface][:context_id].blank?
+          render :template => 'features/list'
+        end
+        format.js  { render :template => 'features/paginated_list' }
+        format.xml do
+          @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
+          @view ||= View.get_by_code('roman.popular')
+          render :template => 'features/paginated_show.xml.builder'
+        end
+        format.json do
+          @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
+          @view ||= View.get_by_code('roman.popular')
+          h = Hash.from_xml(render_to_string(:template => 'features/paginated_show.xml.builder'))
+          h[:page] = params[:page] || 1
+          h[:total_pages] = @features.total_pages
+          render :json => h
+        end
       end
     end
   end

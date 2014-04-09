@@ -39,6 +39,8 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
   end
   parents = feature.all_parent_relations.collect(&:parent_node)
   xml.parents(:type => 'array') { xml << render(:partial => 'stripped_feature.xml.builder', :collection => parents, :as => :feature) if !parents.empty? }
+  children = feature.all_child_relations.collect(&:child_node)
+  xml.children(:type => 'array') { xml << render(:partial => 'stripped_feature.xml.builder', :collection => children, :as => :feature) if !children.empty? }
   xml.perspectives(:type => 'array') do
     per = Perspective.get_by_code(default_perspective_code)
     hierarchy = feature.closest_ancestors_by_perspective(per)
@@ -53,6 +55,23 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
       end
     end
   end
+  captions = feature.captions
+  xml.captions(:type => 'array') do
+    captions.each do |c|
+      options = {:id => c.id, :language => c.language.code, :content => c.content }
+      xml.caption(options)
+    end
+  end
+  summaries = feature.summaries
+  xml.summaries(:type => 'array') do
+    summaries.each do |c|
+      xml.summary do
+        xml.id(c.id, :type => 'integer')
+        xml.language(c.language.code)
+        xml.content(c.content)
+      end
+    end
+  end
   descriptions = feature.descriptions
   xml.descriptions(:type => 'array') do
     descriptions.each do |d|
@@ -62,14 +81,36 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
       xml.description(options)
     end
   end
+  xml.illustrations(:type => 'array') do
+    feature.illustrations.each do |illustration|
+      picture = illustration.picture
+      options = {:id => picture.id}
+      if picture.instance_of?(MmsIntegration::Picture)
+        options[:url] = MmsIntegration::Medium.element_url(picture.id)
+        options[:type] = 'mms'
+      else
+        options[:width] = picture.width
+        options[:height] = picture.height
+        options[:url] = picture.url
+        options[:type] = 'external'
+      end
+      xml.picture(options)
+    end
+  end
   xml.has_shapes(feature.has_shapes? ? 1 : 0, :type => 'integer')
   closest = feature.closest_feature_with_shapes
   closest_fid = closest.nil? ? nil : closest.fid
   xml.closest_fid_with_shapes(closest_fid, :type => 'integer')
   url = closest_fid.nil? ? nil : "#{InterfaceUtils::Server.get_url}/places/maps/interactive/#fid:#{closest_fid}"
   xml.interactive_map_url(url, :type => 'string')
+  xml.associated_resources do
+    xml.related_feature_count(feature.relations.size.to_s, :type => 'integer')
+    xml.description_count(feature.descriptions.size.to_s, :type => 'integer')
+    xml.place_count(feature.feature_count.to_s, :type => 'integer')
+    xml.picture_count(feature.media_count(:type => 'Picture').to_s, :type => 'integer')
+    xml.video_count(feature.media_count(:type => 'Video').to_s, :type => 'integer')
+    xml.document_count(feature.media_count(:type => 'Document').to_s, :type => 'integer')
+  end
   xml.created_at(feature.created_at, :type => 'datetime')
   xml.updated_at(feature.updated_at, :type => 'datetime')
-  xml.related_feature_count(feature.relations.size.to_s, :type => 'integer')
-  xml.description_count(feature.descriptions.size.to_s, :type => 'integer')
 end
