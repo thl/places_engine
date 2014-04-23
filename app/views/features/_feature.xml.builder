@@ -106,7 +106,7 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
   xml.associated_resources do
     xml.related_feature_count(feature.relations.size.to_s, :type => 'integer')
     xml.description_count(feature.descriptions.size.to_s, :type => 'integer')
-    xml.place_count(feature.feature_count.to_s, :type => 'integer')
+    xml.subject_count(feature.category_count.to_s, :type => 'integer')
     xml.picture_count(feature.media_count(:type => 'Picture').to_s, :type => 'integer')
     xml.video_count(feature.media_count(:type => 'Video').to_s, :type => 'integer')
     xml.document_count(feature.media_count(:type => 'Document').to_s, :type => 'integer')
