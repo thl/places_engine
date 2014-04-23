@@ -1,3 +1,4 @@
+<%= javascript_on_load("ActivateDraggablePopups('.has-draggable-popups');") %>
 <div id="FeatureDetails">
 <%= content_tag :h2, "#{feature_name_header(feature)} #{edit_item_link(admin_feature_path(feature)) if logged_in?}".html_safe %>
 <%= time_units_for(feature) %>

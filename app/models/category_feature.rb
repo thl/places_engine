@@ -72,11 +72,11 @@ class CategoryFeature < ActiveRecord::Base
   end
   
   def self.latest_update
-    Rails.cache.fetch('CategoryFeature-max_updated_at') { CategoryFeature.maximum(:updated_at) }
+    Rails.cache.fetch('CategoryFeature-max_updated_at', :expires_in => 1.day) { CategoryFeature.maximum(:updated_at) }
   end
   
   def self.get_json_data
-    Rails.cache.fetch('category_feature/get_json_data') { CategoryFeature.select('DISTINCT category_id').where(:type => nil).collect{|c| {:value => c.category_id, :label => c.to_s}}.sort_by{|a| a[:label].downcase.strip}.to_json.html_safe }
+    Rails.cache.fetch('category_feature/get_json_data', :expires_in => 1.day) { CategoryFeature.select('DISTINCT category_id').where(:type => nil).collect{|c| {:value => c.category_id, :label => c.to_s}}.sort_by{|a| a[:label].downcase.strip}.to_json.html_safe }
   end
   
   private

@@ -1,3 +1,3 @@
 module PlacesEngine
-  VERSION = '3.7.2'
+  VERSION = '3.7.3'
 end
