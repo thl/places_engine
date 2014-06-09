@@ -1,4 +1,6 @@
 class Admin::AltitudesController < ResourceController::Base
+  cache_sweeper :location_sweeper, :only => [:update, :destroy]
+  
   belongs_to :feature
   
   # create.wants.html { redirect_to polymorphic_url([:admin, object.feature]) }

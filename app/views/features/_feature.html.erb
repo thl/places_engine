@@ -156,18 +156,18 @@
 <%    end %>
 <%=   content_tag :h3, ts('resource.gis.feature_alone') %>
       <ul>
-        <li><%= link_to "GML", :action => :gis_resources, :fids => feature.fid, :format => "gml" %></li>
-        <li><%= link_to "KML", :action => :gis_resources, :fids => feature.fid, :format => "kml" %></li>
-        <li><%= link_to "Shapefile", :action => :gis_resources, :fids => feature.fid, :format => "shp" %></li>
+        <li><%= link_to 'GML', gis_resources_url(:fids => feature.fid, :format => 'gml') %></li>
+        <li><%= link_to 'KML', gis_resources_url(:fids => feature.fid, :format => 'kml') %></li>
+        <li><%= link_to 'Shapefile', gis_resources_url(:fids => feature.fid, :format => 'shp') %></li>
       </ul>
 <%    if !feature.descendants.empty? %>
 <%=     content_tag :h3, ts('resource.gis.contained_features') %>
 <%      # For features with roughly > 300 descendants, we're getting a timeout, so we'll temporarily fix this by not allowing these to be downloaded.
         if feature.descendants.length < 300 %>
         <ul>
-          <li><%= link_to "GML", :action => :gis_resources, :fids => feature.fid, :format => "gml", :contained => "1" %></li>
-          <li><%= link_to "KML", :action => :gis_resources, :fids => feature.fid, :format => "kml", :contained => "1" %></li>
-          <li><%= link_to "Shapefile", :action => :gis_resources, :fids => feature.fid, :format => "shp", :contained => "1" %></li>
+          <li><%= link_to 'GML', gis_resources_url(:fids => feature.fid, :format => 'gml', :contained => '1') %></li>
+          <li><%= link_to 'KML', gis_resources_url(:fids => feature.fid, :format => 'kml', :contained => '1') %></li>
+          <li><%= link_to 'Shapefile', gis_resources_url(:fids => feature.fid, :format => 'shp', :contained => '1') %></li>
         </ul>
 <%      else %>
           <p><%= ts 'snippet.feature.too_many' %></p>

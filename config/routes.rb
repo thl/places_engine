@@ -28,7 +28,6 @@ Rails.application.routes.draw do
         match 'prioritize_feature_shapes/:id' => 'shapes#prioritize', :as => :prioritize_feature_shapes
         match 'prioritize_feature_types/:id' => 'feature_object_types#prioritize', :as => :prioritize_feature_object_types
       end
-      
     end
     resources :feature_object_types do
       resources :citations
@@ -60,6 +59,9 @@ Rails.application.routes.draw do
   resources :shapes do
     resources :notes, :citations
   end
-  
-  match 'features/:id/topics' => 'features#topics', :as => :topics_feature
+  scope 'features' do
+    match ':id/topics' => 'features#topics', :as => :topics_feature
+    match ':feature_id/locations' => 'locations#index', :as => :feature_locations
+    match 'gis_resources/:fids.:format' => 'features#gis_resources', :as => :gis_resources
+  end
 end

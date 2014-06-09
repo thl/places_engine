@@ -86,7 +86,7 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
       picture = illustration.picture
       options = {:id => picture.id}
       if picture.instance_of?(MmsIntegration::Picture)
-        options[:url] = MmsIntegration::Medium.element_url(picture.id)
+        options[:url] = MmsIntegration::Medium.element_url(picture.id, :format => params['format'])
         options[:type] = 'mms'
       else
         options[:width] = picture.width
@@ -103,6 +103,8 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
   xml.closest_fid_with_shapes(closest_fid, :type => 'integer')
   url = closest_fid.nil? ? nil : "#{InterfaceUtils::Server.get_url}/places/maps/interactive/#fid:#{closest_fid}"
   xml.interactive_map_url(url, :type => 'string')
+  url = closest_fid.nil? ? nil : gis_resources_url(:fids => closest_fid, :format => 'kmz')
+  xml.kmz_url(url, :type => 'string')
   xml.associated_resources do
     xml.related_feature_count(feature.relations.size.to_s, :type => 'integer')
     xml.description_count(feature.descriptions.size.to_s, :type => 'integer')

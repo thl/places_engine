@@ -29,6 +29,7 @@ module PlacesEngine
     initializer :places_sweepers do |config|
       sweeper_folder = File.join('..', '..', 'app', 'sweepers')
       require_relative File.join(sweeper_folder, 'cached_category_count_sweeper')
+      require_relative File.join(sweeper_folder, 'location_sweeper')
       Rails.application.config.active_record.observers = :cached_category_count_sweeper
     end
   end
