@@ -3,25 +3,7 @@
 name = feature.prioritized_name(@view)
 header = name.nil? ? feature.pid : name.name
 xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
-  xml.feature_types(:type => 'array') do
-    feature.object_types.each { |type| xml.feature_type(:title => type.header, :id => type.id) }
-  end
-  xml.category_features(:type => 'array') do
-    feature.category_features.each do |association| 
-      if !association.instance_of? FeatureObjectType
-        xml.category_feature do
-          c = association.category
-          xml.category(:title => c.header, :id => c.id)
-          parent = c.parent
-          xml.parent(:title => parent.header, :id => parent.id)
-          root = c.root
-          xml.root(:title => root.header, :id => root.id)
-          xml.numeric_value(association.numeric_value, :type => 'integer')
-          xml.string_value(association.string_value, :type => 'string')
-        end
-      end
-    end
-  end
+  xml << render(:partial => 'feature_types.xml.builder', :object => feature.object_types)
   xml.names(:type => 'array') do
     View.all.each do |v|
       name = feature.prioritized_name(v)
@@ -98,6 +80,7 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
     end
   end
   xml.has_shapes(feature.has_shapes? ? 1 : 0, :type => 'integer')
+  xml.has_altitudes(feature.altitudes.count>0 ? 1 : 0, :type => 'integer')
   closest = feature.closest_feature_with_shapes
   closest_fid = closest.nil? ? nil : closest.fid
   xml.closest_fid_with_shapes(closest_fid, :type => 'integer')
@@ -106,6 +89,7 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
   url = closest_fid.nil? ? nil : gis_resources_url(:fids => closest_fid, :format => 'kmz')
   xml.kmz_url(url, :type => 'string')
   xml.associated_resources do
+    xml.etymology_count(feature.names.where(['etymology <> ?', '']).count.to_s, :type => 'integer')
     xml.related_feature_count(feature.relations.size.to_s, :type => 'integer')
     xml.description_count(feature.descriptions.size.to_s, :type => 'integer')
     xml.subject_count(feature.category_count.to_s, :type => 'integer')

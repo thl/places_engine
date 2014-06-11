@@ -64,4 +64,5 @@ Rails.application.routes.draw do
     match ':feature_id/locations' => 'locations#index', :as => :feature_locations
     match 'gis_resources/:fids.:format' => 'features#gis_resources', :as => :gis_resources
   end
+  resources :topics, :only => 'show'
 end

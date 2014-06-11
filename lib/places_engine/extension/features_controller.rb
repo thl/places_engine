@@ -214,6 +214,11 @@ module PlacesEngine
           session[:interface][:context_id] = @feature.id unless @feature.nil?
           @tab_options = {:entity => @feature}
           @current_tab_id = :topics
+          respond_to do |format|
+            format.html
+            format.xml
+            format.json { render :json => Hash.from_xml(render_to_string(:action => 'topics.xml.builder')) }
+          end
         end
       end
     end

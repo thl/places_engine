@@ -4,6 +4,7 @@ class CategoryFeature < ActiveRecord::Base
   attr_accessor :skip_update
   
   belongs_to :feature
+  belongs_to :perspective
   has_many :imports, :as => 'item', :dependent => :destroy
   # belongs_to :category
 
@@ -39,7 +40,7 @@ class CategoryFeature < ActiveRecord::Base
   def category_stack
     stack = []
     stack << self.label if !label.blank? && self.prefix_label
-    stack << self.category.root.header if self.show_root?
+    stack << self.category.sub_root.header if self.show_root?
     stack << self.category.parent.header if self.show_parent?
     stack << self.category.header
     stack[stack.size-1] = stack[stack.size-1] + " #{self.label}" if !label.blank? && !self.prefix_label
