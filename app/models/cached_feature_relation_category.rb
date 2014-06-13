@@ -21,4 +21,8 @@ class CachedFeatureRelationCategory < ActiveRecord::Base
   # belongs_to :category
   belongs_to :feature_relation_type
   belongs_to :perspective
+  
+  def category
+    SubjectsIntegration::Feature.find(self.category_id)
+  end
 end

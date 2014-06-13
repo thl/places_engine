@@ -10,6 +10,7 @@ module PlacesEngine
         has_many :cumulative_category_feature_associations, :dependent => :destroy
         has_many :feature_object_types, :order => :position, :dependent => :destroy
         has_many :shapes, :foreign_key => 'fid', :primary_key => 'fid'
+        has_many :cached_feature_relation_categories, :dependent => :destroy
         self.associated_models << FeatureObjectType
       end
       

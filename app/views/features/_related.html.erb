@@ -86,9 +86,9 @@ function collapse_all_categories(){
    </p>
    <div class="related-features-categories has-ajax-pagination has-hash-feature-links">
 <%   relation_counts.each do |rc|
-       feature_relation_type = FeatureRelationType.find(rc[:feature_relation_type_id])
-       feature_is_parent = rc[:feature_is_parent]
-       count = rc[:count] %>
+       feature_relation_type = rc.feature_relation_type
+       feature_is_parent = rc.feature_is_parent
+       count = rc.count %>
        <h3><%= feature_label %> <%= "#{feature_is_parent ? feature_relation_type.label : feature_relation_type.asymmetric_label}" %> (<%= count %>):</h3>
 <%     # Is there a way to :include => categories and use an :order instead of this .sort{}?
        CachedFeatureRelationCategory.group('category_id').where(:feature_id => @feature.id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent).count.sort do |a,b|
