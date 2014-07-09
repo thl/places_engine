@@ -1,6 +1,6 @@
 module PlacesEngine
   module Extension
-    module AdminCitationController
+    module AdminCitationsController
       extend ActiveSupport::Concern
 
       included do
