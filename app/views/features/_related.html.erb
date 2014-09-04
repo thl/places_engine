@@ -81,8 +81,8 @@ function collapse_all_categories(){
    relation_counts = CachedFeatureRelationCategory.select('feature_relation_type_id, feature_is_parent, COUNT(DISTINCT related_feature_id) AS count').group('feature_relation_type_id, feature_is_parent').where(:feature_id => @feature.id).order(:feature_relation_type_id)
    if relation_counts.length > 0 %>
    <p>
-<%=  link_to_function ts('tree.expand', :what => t('all.these')), "expand_all_categories()", :class => "expand-all-categories expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
-<%=  link_to_function ts('tree.collapse', :what => t('all.these')), "collapse_all_categories()", :class => "collapse-all-categories expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
+<%=  link_to ts('tree.expand', :what => t('all.these')), '#', onclick: "expand_all_categories()", :class => "expand-all-categories expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
+<%=  link_to ts('tree.collapse', :what => t('all.these')), '#', onclick: "collapse_all_categories()", :class => "collapse-all-categories expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
    </p>
    <div class="related-features-categories has-ajax-pagination has-hash-feature-links">
 <%   relation_counts.each do |rc|
@@ -113,8 +113,8 @@ function collapse_all_categories(){
    </div>
 <br />
 <p>
-<%= link_to_function ts('tree.expand', :what => t('all.these')), "expand_all_categories()", :class => "expand-all-categories expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
-<%= link_to_function ts('tree.collapse', :what => t('all.these')), "collapse_all_categories()", :class => "collapse-all-categories expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
+<%= link_to ts('tree.expand', :what => t('all.these')), '#', onclick: "expand_all_categories()", :class => "expand-all-categories expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
+<%= link_to ts('tree.collapse', :what => t('all.these')), '#', onclick: "collapse_all_categories()", :class => "collapse-all-categories expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
 </p>
 <% else %>
      <p><%= ts 'snippet.feature.not.related' %></p>

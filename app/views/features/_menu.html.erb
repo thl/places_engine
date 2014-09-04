@@ -6,8 +6,8 @@
 <%= form_for :feature, :url => {:controller => :features, :action => :search }, :remote => true, :html => { :id => 'search_form' } do |form| %>
 <%=   text_field_tag :filter, h(@search_form_params[:filter]), :class=>:text %>
       <div style="float: right;">
-<%=     link_to_function ts('search.advanced'), "$('#advanced_search').show(); $(this).hide(); $('#hide_advanced_search_link').show()", :id => 'show_advanced_search_link', :style => ('display:none;' if current_show_advanced_search) %>
-<%=     link_to_function ts(:hide, :what => t('search.advanced')), "$('#advanced_search').hide(); $(this).hide(); $('#show_advanced_search_link').show(); reset_advanced_search();", :id => 'hide_advanced_search_link', :style => ('display:none;' unless current_show_advanced_search) %>
+<%=     link_to ts('search.advanced'), '#', onclick: "$('#advanced_search').show(); $(this).hide(); $('#hide_advanced_search_link').show()", :id => 'show_advanced_search_link', :style => ('display:none;' if current_show_advanced_search) %>
+<%=     link_to ts(:hide, :what => t('search.advanced')), '#', onclick: "$('#advanced_search').hide(); $(this).hide(); $('#show_advanced_search_link').show(); reset_advanced_search();", :id => 'hide_advanced_search_link', :style => ('display:none;' unless current_show_advanced_search) %>
       </div>
       <div id="advanced_search" style="<%= 'display:none;' unless current_show_advanced_search  %>">
         <div>

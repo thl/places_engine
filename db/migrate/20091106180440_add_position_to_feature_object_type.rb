@@ -6,7 +6,7 @@ class AddPositionToFeatureObjectType < ActiveRecord::Migration
     # The following code should set the proper position values for all feature object types, but it threw an error
     # ("Failed with 404 Not Found") after a long time running, and I wasn't about to debug it.
     # Find distinct features that have object types 
-    feature_ids = FeatureObjectType.find(:all, :select => 'DISTINCT feature_id').collect{|fot| fot.feature_id}
+    feature_ids = FeatureObjectType.select('DISTINCT feature_id').collect{|fot| fot.feature_id}
     # Processing all of these features at once is tough on memory, so we'll process them in blocks of 100
     total = feature_ids.length
     limit = [ 100, total ].min

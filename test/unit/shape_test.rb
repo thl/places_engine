@@ -24,9 +24,9 @@ class ShapeTest < ActiveSupport::TestCase
   end
   
   def test_geometry_access
-    assert_equal "SRID=4326;POINT(91.1589999999938 29.695999999506)", @shape1.geometry.as_ewkt
-    assert_equal "POINT(91.1589999999938 29.695999999506)", @shape1.geometry.as_wkt
-    assert_equal "POINT", @shape1.geometry.text_geometry_type
+    assert_equal "SRID=4326;POINT(91.1589999999938 29.695999999506)", @shape1.as_ewkt
+    assert_equal "POINT(91.1589999999938 29.695999999506)", @shape1.as_text
+    assert_equal "POINT", @shape1.geo_type.to_s
   end
   
   def test_edit_geometry
@@ -42,15 +42,15 @@ class ShapeTest < ActiveSupport::TestCase
     shape2.geometry = geom2
     shape2.save
     shape2.reload
-    assert (shape2.geometry.lat == geom2.lat)
-    assert (shape2.geometry.lat == @shape1.geometry.lat)
+    assert (shape2.lat == geom2.lat)
+    assert (shape2.lat == @shape1.lat)
     
-    assert_equal @shape1.geometry.as_ewkt, shape2.geometry.as_ewkt
+    assert_equal @shape1.as_ewkt, shape2.as_ewkt
   end
   
   def test_to_s
-    assert_equal @shape1.geometry.as_wkt, @shape1.to_s
-    assert_equal shapes(:line_one).geometry.text_geometry_type, shapes(:line_one).to_s
+    assert_equal @shape1.as_text, @shape1.to_s
+    assert_equal shapes(:line_one).geo_type.to_s, shapes(:line_one).to_s
   end
   
   def test_is_point?

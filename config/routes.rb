@@ -1,49 +1,49 @@
 Rails.application.routes.draw do
   resources :categories do
-    resources :counts, :controller => 'cached_category_counts'
+    resources :counts, controller: 'cached_category_counts'
   end
   resources :contestations
   namespace :admin do
     resources :altitudes do 
       resources :citations
       resources :notes do
-        get :add_author, :on => :collection
+        get :add_author, on: :collection
       end
       resources :time_units do
-        get :new_form, :on => :collection
+        get :new_form, on: :collection
       end
     end
     resources :category_features do
       resources :citations
       resources :notes do
-        get :add_author, :on => :collection
+        get :add_author, on: :collection
       end
       resources :time_units do
-        get :new_form, :on => :collection
+        get :new_form, on: :collection
       end
     end
     resources :features do
       resources :altitudes, :category_features, :feature_object_types, :shapes
       collection do
-        match 'prioritize_feature_shapes/:id' => 'shapes#prioritize', :as => :prioritize_feature_shapes
-        match 'prioritize_feature_types/:id' => 'feature_object_types#prioritize', :as => :prioritize_feature_object_types
+        get 'prioritize_feature_shapes/:id', to: 'shapes#prioritize', as: :prioritize_feature_shapes
+        get 'prioritize_feature_types/:id', to: 'feature_object_types#prioritize', as: :prioritize_feature_object_types
       end
     end
     resources :feature_object_types do
       resources :citations
       resources :notes do
-        get :add_author, :on => :collection
+        get :add_author, on: :collection
       end
       resources :time_units do
-        get :new_form, :on => :collection
+        get :new_form, on: :collection
       end
     end
     resources :shapes do
       resources :notes do
-        get :add_author, :on => :collection
+        get :add_author, on: :collection
       end
       resources :time_units do
-        get :new_form, :on => :collection
+        get :new_form, on: :collection
       end
     end
   end
@@ -60,9 +60,9 @@ Rails.application.routes.draw do
     resources :notes, :citations
   end
   scope 'features' do
-    match ':id/topics' => 'features#topics', :as => :topics_feature
-    match ':feature_id/locations' => 'locations#index', :as => :feature_locations
-    match 'gis_resources/:fids.:format' => 'features#gis_resources', :as => :gis_resources
+    get ':id/topics', to: 'features#topics', as: :topics_feature
+    get ':feature_id/locations', to: 'locations#index', as: :feature_locations
+    get 'gis_resources/:fids.:format', to: 'features#gis_resources', as: :gis_resources
   end
-  resources :topics, :only => 'show'
+  resources :topics, only: 'show'
 end

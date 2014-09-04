@@ -19,7 +19,7 @@ class AddFidToFeature < ActiveRecord::Migration
     end    
     model.reset_column_information
     no_nil = true
-    model.find(:all).each do |r|
+    model.all.each do |r|
       pid = r.pid
       if pid.nil?
         no_nil = false
@@ -44,7 +44,7 @@ class AddFidToFeature < ActiveRecord::Migration
     add_column table, :pid, :string
     model.reset_column_information
     no_nil = true
-    model.find(:all).each do |r|
+    model.all.each do |r|
       fid = r.fid
       if fid.nil?
         no_nil = false

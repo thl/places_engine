@@ -9,7 +9,7 @@
 <%=   summary.content.html_safe %>
       <br/>
 <%  end %>
-<%  closest_fid_with_shapes = feature.closest_feature_with_shapes :logged_in? => logged_in?
+<%  closest_fid_with_shapes = feature.closest_feature_with_shapes(:logged_in? => logged_in?)
     if closest_fid_with_shapes.nil?
       shapes = []
       map_fid = nil
@@ -84,8 +84,8 @@
 <%  end %>
     <p>
       <br />
-<%=   button_to_function t('view.record', :what => t('more.record', :what => t('feature.detail', :count => :many))), "$('#more_feature_detail').show(); $(this).hide(); $('#less_feature_detail_button').show(); if (typeof(frame_service) != \"undefined\") frame_service.set_iframe_height()", :id => "more_feature_detail_button", :style => ("display:none;" if current_show_feature_details) %>
-<%=   button_to_function t(:hide, :what => t('feature.detail', :count => :many)), "$('#more_feature_detail').hide(); $(this).hide(); $('#more_feature_detail_button').show();", :id => "less_feature_detail_button", :style => ("display:none;" unless current_show_feature_details) %>
+<%=   button_to t('view.record', :what => t('more.record', :what => t('feature.detail', :count => :many))), {}, onclick: "$('#more_feature_detail').show(); $(this).hide(); $('#less_feature_detail_button').show(); if (typeof(frame_service) != 'undefined') frame_service.set_iframe_height(); return false;".html_safe, :id => "more_feature_detail_button", :style => ("display:none;" if current_show_feature_details) %>
+<%=   button_to t(:hide, :what => t('feature.detail', :count => :many)), {}, onclick: "$('#more_feature_detail').hide(); $(this).hide(); $('#more_feature_detail_button').show(); return false;".html_safe, :id => "less_feature_detail_button", :style => ("display:none;" unless current_show_feature_details) %>
     </p>
     <div id="more_feature_detail" style="<%= "display: none;" unless current_show_feature_details %>">
 <%= render :partial => 'topics', :locals => {:feature => feature} %>
@@ -96,7 +96,7 @@
 <%=   "<dt><strong>#{ts(:for, :what => FeatureName.human_attribute_name(:etymology), :whom => name.name.to_s)}:</dt></strong><dd>#{name.etymology.to_s.s}</dd>".html_safe unless name.etymology.blank? %>
 <%  end %>
     </dl>
-<%= note_popup_link_list_for(feature, {:association_type => FeatureName.model_name}) %>
+<%= note_popup_link_list_for(feature, {:association_type => FeatureName.name}) %>
     <h3><%= ts 'id.this', :count => :many %></h3>
 <%  if show_old_pid %>
       <p><%= "#{ts :current, :what => Feature.human_attribute_name(:pid)}: #{feature.pid}" %></p>
@@ -111,7 +111,7 @@
 <%=   time_units_for(geo_code) %>
     </p>
 <%  end %>
-<%= note_popup_link_list_for(feature, {:association_type => FeatureGeoCode.model_name}) %>
+<%= note_popup_link_list_for(feature, {:association_type => FeatureGeoCode.name}) %>
 <%  simple_altitudes = feature.shapes.collect(&:altitude).select{|a| !a.nil? }
     altitudes = feature.altitudes
     altitude_size = simple_altitudes.size + altitudes.size
@@ -173,7 +173,7 @@
           <p><%= ts 'snippet.feature.too_many' %></p>
 <%      end
       end %>
-<%=   note_popup_link_list_for(feature, {:association_type => Shape.model_name}) %>
+<%=   note_popup_link_list_for(feature, {:association_type => Shape.name}) %>
 <%  end %>
     </div>
 </div>

@@ -4,7 +4,7 @@ class AddPositionToShape < ActiveRecord::Migration
     
     # Unlike the similar code for FeatureObjectType.position, this code did work locally for me.
     # Find distinct features that have shapes 
-    feature_fids = Shape.find(:all, :select => 'DISTINCT fid').collect{|shape| shape.fid}
+    feature_fids = Shape.select('DISTINCT fid').collect{|shape| shape.fid}
     # Processing all of these features at once is tough on memory, so we'll process them in blocks of 100
     total = feature_fids.length
     limit = [ 100, total ].min

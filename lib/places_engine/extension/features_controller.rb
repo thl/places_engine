@@ -18,7 +18,7 @@ module PlacesEngine
         #if !search_scope.blank?
         #  case search_scope
         #  when 'fid'
-        #    feature = Feature.find(:first, :conditions => {:is_public => 1, :fid => params[:filter].gsub(/[^\d]/, '').to_i})
+        #    feature = Feature.where(:is_public => 1, :fid => params[:filter].gsub(/[^\d]/, '').to_i).first
         #    if !feature.id.nil?
         #      render :url => {:action => 'expand_and_show',  :id => '59' }, :layout => false
         #    else
@@ -98,7 +98,7 @@ module PlacesEngine
           conditions['features.is_public'] = 1
           conditions.delete(:is_public)
         end
-        @features = perform_global_search(search_options).where(conditions).includes(:shapes)
+        @features = perform_global_search(search_options).where(conditions).includes(:shapes).references(:shapes)
         @features = @features.joins(joins.join(' ')).select('features.*, DISTINCT feature.id') unless joins.empty?
         respond_to do |format|
           format.json { render :json => { :features => @features.reject{|f| f.shapes.empty?}[0...100].collect(&:fid) }, :callback => params[:callback] }

@@ -7,7 +7,7 @@ class CreateDescriptions < ActiveRecord::Migration
   
       t.timestamps
     end
-    Feature.find(:all, :conditions => 'description IS NOT NULL').each {|f| f.descriptions.create(:content => f.description, :is_primary => true) if !f.description.blank?}
+    Feature.where('description IS NOT NULL').each {|f| f.descriptions.create(:content => f.description, :is_primary => true) if !f.description.blank?}
     #remove_column :features, :description
     
   end
@@ -15,7 +15,7 @@ class CreateDescriptions < ActiveRecord::Migration
   def self.down
     #add_column :features, :description, :text
     #Feature.reset_column_information
-    #Feature.find(:all).each do |f| 
+    #Feature.all.each do |f| 
     #  if !f.descriptions.empty?
     #    content = f.descriptions.first.content
     #    f.description = content if !content.blank?

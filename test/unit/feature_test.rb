@@ -6,20 +6,20 @@ class FeatureTest < Test::Unit::TestCase
   fixtures :features, :feature_names, :citations, :info_sources, :feature_relations
   
   def setup
-    @f0 = Feature.find_by_fid(0)
-    @f1 = Feature.find_by_fid(1)
-    @f2 = Feature.find_by_fid(2)
+    @f0 = Feature.where(fid: 0).first
+    @f1 = Feature.where(fid: 1).first
+    @f2 = Feature.where(fid: 2).first
   end
   
   def test_f2_feature_names_and_their_through_features
     assert_equal 2, @f2.names.size
     # puts "f2 name size: #{@f2.names.map(&:name)}"
-    assert_equal 'lha sa', @f2.names.find_by_name('ལྷ་ས།').children.first.name
+    assert_equal 'lha sa', @f2.names.where(name: 'ལྷ་ས།').first.children.first.name
   end
   
   def test_f0_feature_name
     assert_equal Array, @f0.names.class
-    assert @f0.names.include?( FeatureName.find_by_name('ཀྲུང་གོ') )
+    assert @f0.names.include?( FeatureName.where(name: 'ཀྲུང་གོ').first )
   end
   
   def test_f0_feature_citations

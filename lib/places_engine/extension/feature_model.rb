@@ -8,7 +8,7 @@ module PlacesEngine
         has_many :category_features, :dependent => :destroy
         has_many :contestations, :dependent => :destroy
         has_many :cumulative_category_feature_associations, :dependent => :destroy
-        has_many :feature_object_types, :order => :position, :dependent => :destroy
+        has_many :feature_object_types, -> { order :position }, :dependent => :destroy
         has_many :shapes, :foreign_key => 'fid', :primary_key => 'fid'
         has_many :cached_feature_relation_categories, :dependent => :destroy
         self.associated_models << FeatureObjectType
@@ -106,7 +106,7 @@ module PlacesEngine
       
       def media_count(options = {})
         media_count_hash = Rails.cache.fetch("#{self.cache_key}/media_count", :expires_in => 1.day) do
-          media_place_count = MmsIntegration::MediaPlaceCount.find(:all, :params => {:place_id => self.fid}).dup
+          media_place_count = MmsIntegration::MediaPlaceCount.find(:all, :params => {:place_id => self.fid}).to_a
           media_count_hash = { 'Medium' => media_place_count.shift.count.to_i }
           media_place_count.each{|count| media_count_hash[count.medium_type] = count.count.to_i }
           media_count_hash
@@ -145,7 +145,7 @@ module PlacesEngine
 
       module ClassMethods
         def find_by_shape(shape)
-          Feature.get_by_fid(shape.fid)
+          Feature.where(fid: shape.fid).first
         end
         
         def descendants_by_topic_with_parent(fids, topic_ids)

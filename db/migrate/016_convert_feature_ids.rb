@@ -14,7 +14,7 @@ class ConvertFeatureIds < ActiveRecord::Migration
     
     KmapsEngine::FeaturePidGenerator.current = 0
     feature_hash = Hash.new
-    Feature.find(:all, :order => "created_at").each do |f|
+    Feature.order('created_at').each do |f|
       # get the next pid...
       f.old_pid = f.fid
       f.pid = KmapsEngine::FeaturePidGenerator.next
@@ -28,7 +28,7 @@ class ConvertFeatureIds < ActiveRecord::Migration
     
     add_index :features, :pid, :name => "features_pid", :unique => true
     
-    Shape.find(:all, :order => 'gid').each do |s| 
+    Shape.order('gid').each do |s| 
       new_pid = feature_hash[s.fid]
       if !new_pid.blank?
         s.fid = new_pid
@@ -40,14 +40,14 @@ class ConvertFeatureIds < ActiveRecord::Migration
   def self.down
     remove_index :features, :name => "features_pid" rescue nil
     feature_hash = Hash.new
-    Feature.find(:all, :order => "created_at").each do |f|
+    Feature.order('created_at').each do |f|
       feature_hash[f.pid] = f.old_pid
       f.pid = f.old_pid
       f.save
     end
     remove_column :features, :old_pid
     add_index :features, :pid, :name => "features_pid", :unique => true
-    Shape.find(:all, :order => 'gid').each do |s| 
+    Shape.order('gid').each do |s| 
       new_pid = feature_hash[s.fid]
       if !new_pid.blank?
         s.fid = new_pid

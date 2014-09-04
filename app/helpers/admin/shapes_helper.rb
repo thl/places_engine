@@ -4,7 +4,7 @@ module Admin::ShapesHelper
   end
   
   def shape_display_string(shape)
-    return shape.geo_type unless shape.is_point?
+    return shape.geo_type.to_s unless shape.is_point?
     return "Latitude: #{shape.lat}; Longitude: #{shape.lng}"
   end
 end

@@ -13,10 +13,10 @@ class AltSpellingSystemTest < Test::Unit::TestCase
   end
   
   def test_duplicate_codes_will_not_save
-    count = AltSpellingSystem.find(:all).size
+    count = AltSpellingSystem.count
     AltSpellingSystem.create(:code=>'B660')
     # this next one should not save
     AltSpellingSystem.create(:code=>'B660')
-    assert_equal count + 1, AltSpellingSystem.find(:all).size
+    assert_equal count + 1, AltSpellingSystem.count
   end
 end

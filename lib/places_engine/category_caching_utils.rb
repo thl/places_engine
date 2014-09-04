@@ -6,7 +6,7 @@ module PlacesEngine
     end
 
     def self.create_cumulative_feature_associations
-      CategoryFeature.find(:all, :select =>'DISTINCT(category_id)', :order => 'category_id').collect(&:category).each do |category|
+      CategoryFeature.select('DISTINCT(category_id)').order('category_id').collect(&:category).each do |category|
         if !category.nil?
           feature_ids = CategoryFeature.where(:category_id => category.id).order('feature_id').collect(&:feature_id)
           ([category] + category.ancestors).each do |c|
@@ -22,7 +22,7 @@ module PlacesEngine
     end
 
     def self.create_feature_relation_categories
-      Feature.find(:all).each{|f| f.update_cached_feature_relation_categories}
+      Feature.all.each{|f| f.update_cached_feature_relation_categories}
     end
   end
 end

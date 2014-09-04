@@ -9,30 +9,53 @@ class Shape < ActiveRecord::Base
   # after_save { |record| record.feature.touch if !record.feature.nil? }
   # after_destroy { |record| record.feature.touch if !record.feature.nil? }
   
-  set_primary_key "gid"
+  self.primary_key = 'gid'
   
   def lat
-    geometry.nil? ? nil : geometry.lat
+    # if done with rgeo:
+    # self.geometry.nil? ? nil : self.geometry.y
+    # If done directly from db:
+    self.geometry.nil? ? nil : Shape.select('ST_Y(geometry) as st_y').find(self.id).st_y
   end
   
   def lng
-    geometry.nil? ? nil : geometry.lng
+    # if done with rgeo:
+    # self.geometry.nil? ? nil : self.geometry.x
+    # If done directly from db:
+    self.geometry.nil? ? nil : Shape.select('ST_X(geometry) as st_x').find(self.id).st_x
   end
   
   def to_s
-    if is_point?
-      geometry.as_wkt
+    if self.is_point?
+      self.as_text
     else
-      geometry.text_geometry_type
+      self.geo_type
     end
   end
   
   def is_point?
-    geometry.text_geometry_type.eql? 'POINT'
+    # if done with rgeo:
+    # self.geo_type == RGeo::Feature::Point # if done through db: 'ST_Point'
+    # if done through db: 'ST_Point'
+    self.geo_type == 'ST_Point'
   end
   
   def geo_type
-    geometry.text_geometry_type
+    # if done with rgeo:
+    # self.geometry.geometry_type
+    # If done directly from db:
+    Shape.select('ST_GeometryType(geometry) as geometry_type').find(self.id).geometry_type
+  end
+  
+  def as_text
+    # if done with rgeo:
+    # self.geometry.as_text
+    # If done directly from db:
+    Shape.select('ST_AsText(geometry) as astext').find(self.id).astext
+  end
+  
+  def as_ewkt
+    Shape.select('ST_AsEWKT(geometry) as astext').find(self.id).astext
   end
   
   #= Feature ==============================
@@ -40,11 +63,11 @@ class Shape < ActiveRecord::Base
   # A Feature has_many Shapes
   
   def self.find_all_by_feature(feature)
-    Shape.find_all_by_fid(feature.fid, :order => "position, gid")
+    Shape.where(fid: feature.fid).order('position, gid')
   end
   
   def self.find_all_by_feature_id(feature_id)
-    self.find_all_by_feature(Feature.find(feature_id))
+    self.where(feature_id: Feature.find(feature_id).id)
   end
   
   def after_save

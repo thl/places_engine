@@ -11,7 +11,7 @@ class CreatePerspectives < ActiveRecord::Migration
     
     add_index :perspectives, :code
     
-    old_perspectives = SimpleProp.find(:all, :conditions => {:type => "Perspective"})
+    old_perspectives = SimpleProp.where(:type => "Perspective")
     
     # Move Perspective records from simple_props into perspectives 
     # The Perspective model should be changed to inherit from ActiveRecord::Base, so that
