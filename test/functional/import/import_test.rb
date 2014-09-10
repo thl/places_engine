@@ -116,7 +116,7 @@
 #     assert_not_nil f6007_fname1.timespan
 #     
 #     f6007_fname2 = FeatureName.find_by_name('阿壩藏族羌族自治州')    
-#     altspell = FeatureNameRelation.where([ "is_alt_spelling = 1"]).first
+#     altspell = FeatureNameRelation.find_by([ "is_alt_spelling = 1"])
 #     assert_equal altspell.child_node_id, f6007_fname2.id
 #     assert_equal altspell.alt_spelling_system_id, AltSpellingSystem.find_by_code('chi.traditional').id
 #     assert_not_nil altspell.timespan

@@ -3,7 +3,7 @@ class CachedCategoryCount < ActiveRecord::Base
   #belongs_to :category
   
   def self.updated_count(category_id, force_update = false)
-    cached_count = CachedCategoryCount.where(:category_id => category_id).first
+    cached_count = CachedCategoryCount.find_by(category_id: category_id)
     latest_update = CategoryFeature.latest_update
     non_existent = false
     if cached_count.nil?

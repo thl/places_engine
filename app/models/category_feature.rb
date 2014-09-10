@@ -27,7 +27,7 @@ class CategoryFeature < ActiveRecord::Base
     cat = record.category
     feature = record.feature
     ([cat] + cat.ancestors).each do |c|
-      if (c.id==cat.id || c.cumulative?) && CumulativeCategoryFeatureAssociation.where(:category_id => c.id, :feature_id => feature.id).first.nil?
+      if (c.id==cat.id || c.cumulative?) && CumulativeCategoryFeatureAssociation.find_by(category_id: c.id, feature_id: feature.id).nil?
         CumulativeCategoryFeatureAssociation.create(:category_id => c.id, :feature_id => feature.id)
       end
     end

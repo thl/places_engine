@@ -30,14 +30,14 @@ module PlacesEngine
           break self.id if self.has_shapes?(options)
           # check if geographical parent has shapes (township)
           geo_rel = Perspective.get_by_code('geo.rel')
-          first_township_relation = self.all_parent_relations.where(:perspective_id => geo_rel.id).first
+          first_township_relation = self.all_parent_relations.find_by(perspective_id: geo_rel.id)
           if !first_township_relation.nil?
             node = first_township_relation.parent_node
             break node.id if node.has_shapes?(options)
           end
           # check if county parent has shapes (county)
           pol_admin = Perspective.get_by_code('pol.admin.hier')
-          first_county_relation = self.all_parent_relations.where(:perspective_id => pol_admin.id).first
+          first_county_relation = self.all_parent_relations.find_by(perspective_id: pol_admin.id)
           if !first_county_relation.nil?
             node = first_county_relation.parent_node
             break node.id if node.has_shapes?(options)
@@ -145,7 +145,7 @@ module PlacesEngine
 
       module ClassMethods
         def find_by_shape(shape)
-          Feature.where(fid: shape.fid).first
+          Feature.find_by(fid: shape.fid)
         end
         
         def descendants_by_topic_with_parent(fids, topic_ids)
@@ -169,7 +169,7 @@ module PlacesEngine
         
         def descendants_by_perspective_and_topics_with_parent(fids, perspective, topic_ids)
           topic_ids = topic_ids.first if topic_ids.size==1
-          self.descendants_by_perspective_with_parent(fids, perspective).select{|d| !CumulativeCategoryFeatureAssociation.where(:category_id => topic_ids, :feature_id => d[0].id).first.nil?}
+          self.descendants_by_perspective_with_parent(fids, perspective).select{|d| !CumulativeCategoryFeatureAssociation.find_by(category_id: topic_ids, feature_id: d[0].id).nil?}
         end
         
         def descendants_by_topic(fids, topic_ids)
@@ -186,7 +186,7 @@ module PlacesEngine
             end
           end
           topic_ids = topic_ids.first if topic_ids.size==1
-          des.select{ |f_id| !CumulativeCategoryFeatureAssociation.where(:category_id => topic_ids, :feature_id => f_id).first.nil? }.collect{|f_id| Feature.find(f_id)}
+          des.select{ |f_id| !CumulativeCategoryFeatureAssociation.find_by(category_id: topic_ids, feature_id: f_id).nil? }.collect{|f_id| Feature.find(f_id)}
         end
       end
     end

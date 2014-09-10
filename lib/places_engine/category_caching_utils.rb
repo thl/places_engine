@@ -10,7 +10,7 @@ module PlacesEngine
         if !category.nil?
           feature_ids = CategoryFeature.where(:category_id => category.id).order('feature_id').collect(&:feature_id)
           ([category] + category.ancestors).each do |c|
-            feature_ids.each { |feature_id| CumulativeCategoryFeatureAssociation.create(:category_id => c.id, :feature_id => feature_id, :skip_update => true) if (c.id==category.id || c.cumulative?) && CumulativeCategoryFeatureAssociation.where(:category_id => c.id, :feature_id => feature_id).first.nil? }
+            feature_ids.each { |feature_id| CumulativeCategoryFeatureAssociation.create(:category_id => c.id, :feature_id => feature_id, :skip_update => true) if (c.id==category.id || c.cumulative?) && CumulativeCategoryFeatureAssociation.find_by(category_id: c.id, feature_id: feature_id).nil? }
             CachedCategoryCount.updated_count(c.id, true)
           end
         end
