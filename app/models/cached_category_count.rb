@@ -7,22 +7,22 @@ class CachedCategoryCount < ActiveRecord::Base
     latest_update = CategoryFeature.latest_update
     non_existent = false
     if cached_count.nil?
-      # make sure category actually exists!
-      category = SubjectsIntegration::Feature.find(category_id)
-      non_existent = true if category.nil?
+      # Disabled verification if category exists because it includes the count and calls this back and deadlocks.
+      # category = SubjectsIntegration::Feature.find(category_id)
+      # non_existent = true if category.nil?
       cached_count = CachedCategoryCount.new(:category_id => category_id)
     else
       return cached_count if !force_update && cached_count.cache_updated_at >= latest_update
     end
     cached_count.cache_updated_at = latest_update
-    if non_existent
-      cached_count.count = 0
-      cached_count.count_with_shapes = 0
-    else
+    #if non_existent
+    #  cached_count.count = 0
+    #  cached_count.count_with_shapes = 0
+    #else
       cached_count.count = CumulativeCategoryFeatureAssociation.where(:category_id => category_id).count
       cached_count.count_with_shapes = CumulativeCategoryFeatureAssociation.where(['category_id = ? AND geometry IS NOT NULL', category_id]).joins(:feature => :shapes).select('DISTINCT cumulative_category_feature_associations.id').count
       cached_count.save
-    end
+      #end
     return cached_count
   end
 end
