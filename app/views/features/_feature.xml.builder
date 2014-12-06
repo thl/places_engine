@@ -38,10 +38,10 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
     end
   end
   captions = feature.captions
-  xml.captions(:type => 'array') do
+  xml.nested_captions(:type => 'array') do
     captions.each do |c|
       options = {:id => c.id, :language => c.language.code, :content => c.content }
-      xml.caption(options)
+      xml.nested_caption(options)
     end
   end
   summaries = feature.summaries
@@ -55,12 +55,12 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
     end
   end
   descriptions = feature.descriptions
-  xml.descriptions(:type => 'array') do
+  xml.nested_descriptions(:type => 'array') do
     descriptions.each do |d|
       options = {:id => d.id, :is_primary => d.is_primary}
       options[:source_url] = d.source_url if !d.source_url.blank?
       options[:title] = d.title if !d.title.blank?
-      xml.description(options)
+      xml.nested_description(options)
     end
   end
   xml.illustrations(:type => 'array') do
