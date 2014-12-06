@@ -13,16 +13,16 @@ class Shape < ActiveRecord::Base
   
   def lat
     # if done with rgeo:
-    self.geometry.nil? ? nil : self.geometry.y
+    # self.geometry.nil? ? nil : self.geometry.y
     # If done directly from db:
-    # self.geometry.nil? ? nil : Shape.select('ST_Y(geometry) as st_y').find(self.id).st_y
+    self.geometry.nil? ? nil : Shape.select('ST_Y(geometry) as st_y').find(self.id).st_y
   end
   
   def lng
     # if done with rgeo:
-    self.geometry.nil? ? nil : self.geometry.x
+    # self.geometry.nil? ? nil : self.geometry.x
     # If done directly from db:
-    # self.geometry.nil? ? nil : Shape.select('ST_X(geometry) as st_x').find(self.id).st_x
+    self.geometry.nil? ? nil : Shape.select('ST_X(geometry) as st_x').find(self.id).st_x
   end
   
   def to_s
@@ -35,23 +35,23 @@ class Shape < ActiveRecord::Base
   
   def is_point?
     # if done with rgeo:
-    self.geo_type == RGeo::Feature::Point # if done through db: 'ST_Point'
+    # self.geo_type == RGeo::Feature::Point # if done through db: 'ST_Point'
     # if done through db: 'ST_Point'
-    # self.geo_type == 'ST_Point'
+    self.geo_type == 'ST_Point'
   end
   
   def geo_type
     # if done with rgeo:
-    self.geometry.geometry_type
+    # self.geometry.geometry_type
     # If done directly from db:
-    # Shape.select('ST_GeometryType(geometry) as geometry_type').find(self.id).geometry_type
+    Shape.select('ST_GeometryType(geometry) as geometry_type').find(self.id).geometry_type
   end
   
   def as_text
     # if done with rgeo:
-    self.geometry.as_text
+    # self.geometry.as_text
     # If done directly from db:
-    # Shape.select('ST_AsText(geometry) as astext').find(self.id).astext
+    Shape.select('ST_AsText(geometry) as astext').find(self.id).astext
   end
   
   def as_ewkt
