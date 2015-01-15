@@ -1,18 +1,13 @@
 <%= stylesheet_link_tag 'kmaps_engine/xml-books' %>
 <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?key=<%= google_maps_key %>&sensor=false"></script>
 <!-- script type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=<%= google_maps_key %>"></script> -->
-<%= javascript_include_tag "http://openlayers.org/api/OpenLayers.js" %>
-<%= javascript_include_tag "#{InterfaceUtils::Server.get_url}/places/maps/interactive/scripts/THLWMS.js" %>
-<%= javascript_include_tag 'places_engine/top' %>
+<%= javascript_include_tag 'http://openlayers.org/api/OpenLayers.js' %>
+<%= javascript_include_tag 'http://www.thlib.org/places/maps/interactive/scripts/THLWMS.js' %>
+<%= javascript_include_tag 'kmaps_engine/top' %>
 <%= javascript_include_tag 'places_engine/inset-map' %>
 <%= javascript_on_load do %>
 	  jQuery(window).unbind("scroll");
 	  NodeTree.init("NodeTree", "NodeTreeList", "<%= features_path %>/");
-<%    # Set the menu item that should be open when the NodeMenu loads
-      node_menu_options = {:default_item => active_menu_item}
-      # Make the Results menu item be shown if a search exists in the session
-      node_menu_options[:show_results] = true unless session[:search].blank? %>
-	  NodeMenu.init("NodeMenu", "<%= features_path %>/", <%= node_menu_options.to_json.html_safe %>);
 	  var characteristic_data = <%= CategoryFeature.get_json_data %>;
 	  var characteristic_selector = new CharacteristicSelector();
 	  characteristic_selector.init('characteristic_selector', {
@@ -20,9 +15,3 @@
 		data: characteristic_data});
 <%  end %>
 <%= category_searcher(true, :category_id => 20, :field_name => 'object_type', :field_label => "#{Feature.human_attribute_name(:object_type).s}: ", :exclude_span => true, :options => {:hasTree => 'true'}) %>
-<!--<h2>THL Place Dictionary of Tibet &amp; the Himalayas</h2>-->
-<div style="clear:both;"></div>
-<div id="FeatureContainer">
-	<div id="FeaturePanelContainer">
-		<%= render :partial => "features/menu" %>
-		<div id="FeaturePanel" class="secondary-universal-navigation">

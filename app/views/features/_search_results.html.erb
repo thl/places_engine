@@ -6,35 +6,37 @@
      pagination_collection = WillPaginate::Collection.new(session[:search][:page], session[:search][:per_page], session[:search][:total_entries])  
      # This is necessary for calculations involving Collection.length to be correct
      pagination_collection.replace(features)
-     @params = session[:search][:params]
+     search_params = session[:search][:params]
      # Otherwise, just use the actual Feature collection in will_paginate
    else
      pagination_collection = features
+	 search_params = params
    end 
    if !features.nil? && features.size > 0 %>
-   <div>
-     <table>
+   <div class="table-responsive">
+     <table class="table table-condensed table-results">
+	 <tbody>
+  	 <thead>
        <tr>
-         <td colspan="2" class="pagination-info-cell">
+         <th colspan="2" class="pagination-info-cell">
 <%=      page_entries_info pagination_collection %>
-       </td>
+       </th>
        </tr>
        <tr>
          <td colspan="2" class="pagination-cell">
-<%=      javascript_tag do %>
-           jQuery(document).ready(function() {
-	         links = jQuery('#NodeSearchResults .pagination a')
-             links.attr('data-remote', true);
-             links.bind('ajax:beforeSend', function(){ NodeMenu.onPaginationClick(); });
-           });
+<%=      javascript_on_load do %>
+	       links = jQuery('#NodeSearchResults .pagination a')
+           links.attr('data-remote', true);
+           links.bind('ajax:beforeSend', function(){ $("#NodeSearchResults").html('<%= image_tag('interface_utils/ajax-loader.gif') %>'); });
 <%       end %>
-<%=      will_paginate pagination_collection, :params => @params.merge({:action => 'search', :controller => 'features'}) %>
+<%=      will_paginate pagination_collection, :params => search_params.merge({:action => 'search', :controller => 'features'}) %>
          </td>
        </tr>
        <tr>
-         <th class="leftText"><%= FeatureName.model_name.human(:count => :many).titleize.s %></th>
-         <th class="leftText"><%= Feature.human_attribute_name(:object_type).s %></th>
+         <th><%= FeatureName.model_name.human(:count => :many).titleize.s %></th>
+         <th><%= Feature.human_attribute_name(:object_type).s %></th>
        </tr>
+     </thead>
 <%     features.each do |f|
          caption = f.caption 
          caption_str = caption.nil? ? nil : caption.content.strip_tags %>
@@ -47,10 +49,11 @@
 <%     end %>
        <tr>
          <td colspan="2" style="padding:0.5em;" class="pagination-cell">
-<%=      will_paginate pagination_collection, :params => @params.merge({:action => 'search', :controller => 'features'}) %>
+<%=      will_paginate pagination_collection, :params => search_params.merge({:action => 'search', :controller => 'features'}) %>
          </td>
        </tr>
-     </table>  
+       </tbody>
+     </table>
    </div>
 <% else %>
    <p><%= ts 'found.none.records', :what => Feature.model_name.human(:count => :many) %></p>

@@ -2,7 +2,6 @@
 <div id="FeatureDetails">
 <%= content_tag :h2, "#{feature_name_header(feature)} #{edit_item_link(admin_feature_path(feature)) if logged_in?}".html_safe %>
 <%= time_units_for(feature) %>
-<%= f_breadcrumb(feature) %><br/>
 <%= render :partial => 'feature_types', :locals => {:feature => feature} %><br/>
 <%  summary = feature.summary
     if !summary.nil? %>

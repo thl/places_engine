@@ -11,7 +11,7 @@
     </li>
 <%  end %>
     <li class="pagination" style="text-align:left !important;">
-<%  pagination = will_paginate @relations, :params => @params, :container => false 
+<%  pagination = will_paginate @relations, :params => params, :container => false 
     unless pagination.nil? %>
 <%=   pagination %>
       <span style='color:#aaa'><%= ts :for, :what => '', :whom => t('feature.record', :what => @category.header, :count => @total_relations_count) %></span>

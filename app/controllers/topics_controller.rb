@@ -8,7 +8,7 @@ class TopicsController < ApplicationController
     if @category.nil?
       redirect_to features_url
     else
-      set_common_variables(session)
+      set_common_variables
       @object_type = Topic.human_name(:count => :many).titleize
       @object_title = @category.header
       @object_url = SubjectsIntegration::SubjectsResource.get_url + "features/#{@category.id}"
@@ -22,15 +22,12 @@ class TopicsController < ApplicationController
         format.xml do
           @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
           @view ||= View.get_by_code('roman.popular')
-          render :template => 'features/paginated_show.xml.builder'
+          render :action => 'paginated_show.xml.builder'
         end
         format.json do
           @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
           @view ||= View.get_by_code('roman.popular')
-          h = Hash.from_xml(render_to_string(:template => 'features/paginated_show.xml.builder'))
-          h[:page] = params[:page] || 1
-          h[:total_pages] = @features.total_pages
-          render :json => h
+          render :json => Hash.from_xml(render_to_string(:action => 'paginated_show.xml.builder'))
         end
       end
     end

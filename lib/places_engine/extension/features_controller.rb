@@ -8,12 +8,11 @@ module PlacesEngine
       
       def search
         conditions = {:is_public => 1}
-        search_options = { :scope => params[:scope], :match => params[:match] }
+        search = Search.new(params[:search])
         @features = nil
-        @params = params
         # The search params that should be observed when creating the session store of search params
-        valid_search_keys = [:filter, :scope, :match, :search_scope, :object_type, :characteristic_id, :has_descriptions, :page ]
-        fid = params[:fid]
+        valid_search_keys = [:object_type, :characteristic_id, :page ]
+        fid = search.fid
         #search_scope = params[:search_scope].blank? ? 'global' : params[:search_scope]
         #if !search_scope.blank?
         #  case search_scope
@@ -55,21 +54,21 @@ module PlacesEngine
               conditions['features.is_public'] = 1
               conditions.delete(:is_public)
             end
-            if !params[:has_descriptions].blank? && params[:has_descriptions] == '1'
-              search_options[:has_descriptions] = true
+            if !search.has_descriptions.blank? && search.has_descriptions == '1'
+              search.has_descriptions = true
             end
-            @features = perform_global_search(search_options).where(conditions).paginate(:page => params[:page] || 1, :per_page => 10)
+            @features = perform_global_search(search).where(conditions).paginate(:page => params[:page] || 1, :per_page => 10)
             @features = @features.joins(joins.join(' ')).select('features.*, DISTINCT feature.id') unless joins.empty?
           end
         #end
         # When using the session store features, we need to provide will_paginate with info about how to render
         # the pagination, so we'll store it in session[:search], along with the feature ids 
-        session[:search] = { :params => @params.reject{|key, val| !valid_search_keys.include?(key.to_sym)},
-          :page => @params[:page] ||= 1, :per_page => @features.per_page, :total_entries => @features.total_entries,
+        session[:search] = { :params => params.reject{|key, val| !valid_search_keys.include?(key.to_sym)}.merge(search.to_h),
+          :page => params[:page] ||= 1, :per_page => @features.per_page, :total_entries => @features.total_entries,
           :total_pages => @features.total_pages, :feature_ids => @features.collect(&:id) }
         # Set the current menu_item to 'results', so that the Results will stay open when the user browses
         # to a new page
-        session[:interface] = {} if session[:interface].nil?
+        session[:interface] ||= {}
         session[:interface][:menu_item] = 'results'
         respond_to do |format|
           format.js # search.js.erb
@@ -98,7 +97,7 @@ module PlacesEngine
           conditions['features.is_public'] = 1
           conditions.delete(:is_public)
         end
-        @features = perform_global_search(search_options).where(conditions).includes(:shapes).references(:shapes)
+        @features = perform_global_search(search).where(conditions).includes(:shapes).references(:shapes)
         @features = @features.joins(joins.join(' ')).select('features.*, DISTINCT feature.id') unless joins.empty?
         respond_to do |format|
           format.json { render :json => { :features => @features.reject{|f| f.shapes.empty?}[0...100].collect(&:fid) }, :callback => params[:callback] }
@@ -121,7 +120,6 @@ module PlacesEngine
           # Should associations be set up to allow for this to be handled with :include instead?
         @total_relations_count = @relations.length
         @relations = @relations.paginate(:page => params[:page] || 1, :per_page => 8)
-        @params = params
         # render related_list.js.erb
       end
       
@@ -210,13 +208,14 @@ module PlacesEngine
         if @feature.nil?
           redirect_to features_url
         else
-          set_common_variables(session)
+          set_common_variables
           session[:interface][:context_id] = @feature.id unless @feature.nil?
           @tab_options = {:entity => @feature}
           @current_tab_id = :topics
           respond_to do |format|
             format.html
             format.xml
+            format.js
             format.json { render :json => Hash.from_xml(render_to_string(:action => 'topics.xml.builder')) }
           end
         end

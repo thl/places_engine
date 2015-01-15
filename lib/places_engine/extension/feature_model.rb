@@ -122,14 +122,6 @@ module PlacesEngine
         end
       end
       
-      def kmaps_url
-        "#{ActionController::Base.relative_url_root}/topics/#{self.fid}"
-      end
-      
-      def topical_map_url
-        "#{ActionController::Base.relative_url_root}/features/#{self.fid}/topics"
-      end
-
       def kmap_path(type = nil)
         a = ['places', self.fid]
         a << type if !type.nil?

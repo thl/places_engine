@@ -1,7 +1,45 @@
-<%= header(:class => 'single-col places', :javascript_files => ['kmaps_engine/treescroll', 'subjects_integration/jquery.draggable.popup'], :stylesheet_files => ["kmaps_engine/#{current_view.code=='roman.scholar' ? 'scholar' : 'popular'}"]) %>
-<div class="shell-1">
-<%= universal_navigation :places, @current_tab_id, custom_secondary_tabs(@current_tab_id) do %>
-<%=   yield %>
-<%  end %>
-</div>
+<%= header(:class => 'html front', :stylesheet_files => ["kmaps_engine/#{current_view.code=='roman.scholar' ? 'scholar' : 'popular'}"]) %>
+<!-- Banner Region -->
+<main class="main-wrapper container">
+	<article class="main-content" role="main">
+		<div class="row">
+			<header class="col-xs-12 titlearea banner">
+				<div role="banner">
+					<h1 class="page-title"><i class="icon shanticon-subjects"></i><span><%= page_header_title %></span></h1>
+					<nav class="breadwrap" role="navigation">
+<%=                   f_breadcrumb %>
+					</nav>
+					<div class="banner-content"></div>
+				</div>
+			</header>
+		</div> <!-- End of Banner Region -->
+		<!-- Begin Content Row -->
+		<div class="row row-offcanvas row-offcanvas-left">
+			<!-- Sidebar First Region -->
+<%=         universal_navigation :places, @current_tab_id, custom_secondary_tabs(@current_tab_id) %>
+			<!-- Begin Page Content -->
+			<section class="content-section col-xs-12 col-sm-9 equal-height">
+				<div class="tab-content">
+					<article class="tab-pane main-col active" id="<%= @current_tab_id %>">
+<%=                   yield %>
+					</article>
+<%=                 render partial: 'main/inactive_tab_content', locals: {current_app_id: :places} %>
+				</div>
+			</section>
+			<!-- END Content -->
+			<!-- Sidebar Second Region -->
+		</div>
+	</article>
+	<div id="search-flyout" class="region extruder right" role="search" style="display: none;">
+		<div class="region region-search-flyout">
+			<div id="block-kmaps-navigator-kmaps-navigator-block" class="block block-kmaps-navigator">
+				<div class="content">
+<%=               render :partial => "features/menu" %>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+<div id="popup_dialog"></div>
+<%= render 'public/menu' %>
 <%= footer %>
