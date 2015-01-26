@@ -1,4 +1,7 @@
 class LocationSweeper < ActionController::Caching::Sweeper
+  include Rails.application.routes.url_helpers
+  include ActionController::Caching::Pages
+  
   observe Shape, Altitude
   FORMATS = ['xml', 'json']
   

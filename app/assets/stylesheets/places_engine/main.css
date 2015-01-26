@@ -1,0 +1,14 @@
+.breadwrap ol li .icon{ background:#4ca6fb; }
+
+#menu .multilevelpushmenu_wrapper .levelHolderClass.rtl .backItemClass a,
+#menu .multilevelpushmenu_wrapper .levelHolderClass.rtl .backItemClass a:active, 
+.main-content .selectpicker li.selected a .icon,
+.main-content .selectpicker>li.selected>a:focus .check-mark,
+.bootstrap-select.btn-group .btn .filter-option span,
+.bootstrap-select.btn-group .btn .filter-option em { color:#4ca6fb; }
+
+.btn.btn-default.btn-red{ background:#4ca6fb !important; }
+
+.content-resources ul.nav-pills li.active {
+	border-left: 10px solid #4ca6fb;
+}

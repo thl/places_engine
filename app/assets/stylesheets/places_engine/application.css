@@ -9,7 +9,12 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
+ *= require places_engine/main
  */
+
+.titlearea, .breadwrap ol li .icon, .ss-full-tabs.nav-tabs > li.active a, .ss-full-tabs.nav-tabs > li.active a:hover {
+    background: none repeat scroll 0 0 #4ca6fb;
+}
 
 .inline_h3 {
 	font-family: "Times New Roman",Times,serif;
