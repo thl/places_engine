@@ -5,6 +5,6 @@ xml.topic do
   xml.per_page(@features.per_page, type: 'integer')
   xml.total_entries(@features.total_entries, type: 'integer')
   xml.features(:type => 'array') do
-    xml << render(:partial => 'features/stripped_feature.xml.builder', :collection => @features, :as => :feature) if !@features.empty?
+    xml << render(:partial => 'features/brief_feature.xml.builder', :collection => @features, :as => :feature) if !@features.empty?
   end
 end
