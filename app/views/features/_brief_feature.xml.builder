@@ -7,10 +7,11 @@ xml.feature do # , :pid => feature.pid
   xml.id(feature.fid, type: 'integer')
   xml.db_id(feature.id, type: 'integer')
   xml.header(header)
-  xml.caption(feature.caption)
-  xml.ancestors(:type => 'array') { xml << render(:partial => 'features/stripped_feature.xml.builder', :collection => hierarchy, :as => :feature) if !hierarchy.empty? }
-  xml.feature_types(:type => 'array') do
-    feature.object_types.each { |type| xml.feature_type(:id => type.id, :title => type.header) } #, :id => type.id
+  caption = feature.caption
+  xml.caption(caption.nil? ? nil : caption.content)
+  xml.ancestors(type: 'array') { xml << render(partial: 'features/stripped_feature.xml.builder', collection: hierarchy, as: :feature) if !hierarchy.empty? }
+  xml.feature_types(type: 'array') do
+    feature.object_types.each { |type| xml.feature_type(id: type.id, title: type.header) } #, :id => type.id
   end
-  xml.has_shapes(feature.has_shapes? ? 1 : 0, :type => 'integer')
+  xml.has_shapes(feature.has_shapes? ? 1 : 0, type: 'integer')
 end
