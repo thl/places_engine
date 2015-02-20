@@ -59,7 +59,7 @@ module PlacesEngine
               search_options[:has_descriptions] = true
             end
             @features = perform_global_search(search_options).where(conditions).paginate(:page => params[:page] || 1, :per_page => 10)
-            @features = @features.joins(joins.join(' ')).select('features.*, DISTINCT feature.id') unless joins.empty?
+            @features = @features.joins(joins.join(' ')) unless joins.empty?
           end
         #end
         # When using the session store features, we need to provide will_paginate with info about how to render
