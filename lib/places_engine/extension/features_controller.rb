@@ -99,7 +99,7 @@ module PlacesEngine
           conditions.delete(:is_public)
         end
         @features = perform_global_search(search_options).where(conditions).includes(:shapes).references(:shapes)
-        @features = @features.joins(joins.join(' ')).select('features.*, DISTINCT feature.id') unless joins.empty?
+        @features = @features.joins(joins) unless joins.empty?
         respond_to do |format|
           format.json { render :json => { :features => @features.reject{|f| f.shapes.empty?}[0...100].collect(&:fid) }, :callback => params[:callback] }
         end
