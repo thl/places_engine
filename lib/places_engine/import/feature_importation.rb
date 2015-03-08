@@ -62,7 +62,7 @@ module PlacesEngine
         self.process_names(44)
         self.process_kmaps(15)
         feature_ids_with_object_types_added += self.process_feature_types(4)
-        self.process_geocodes(4)
+        self.process_geocodes(5)
         feature_ids_with_changed_relations += self.process_feature_relations(15)
         self.process_contestations(3)
         self.process_shapes(3)

@@ -58,7 +58,7 @@ module PlacesEngine
               search.has_descriptions = true
             end
             @features = perform_global_search(search).where(conditions).paginate(:page => params[:page] || 1, :per_page => 10)
-            @features = @features.joins(joins.join(' ')).select('features.*, DISTINCT feature.id') unless joins.empty?
+            @features = @features.joins(joins.join(' ')) unless joins.empty?
           end
         #end
         # When using the session store features, we need to provide will_paginate with info about how to render
@@ -98,7 +98,7 @@ module PlacesEngine
           conditions.delete(:is_public)
         end
         @features = perform_global_search(search).where(conditions).includes(:shapes).references(:shapes)
-        @features = @features.joins(joins.join(' ')).select('features.*, DISTINCT feature.id') unless joins.empty?
+        @features = @features.joins(joins.join(' ')) unless joins.empty?
         respond_to do |format|
           format.json { render :json => { :features => @features.reject{|f| f.shapes.empty?}[0...100].collect(&:fid) }, :callback => params[:callback] }
         end
