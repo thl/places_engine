@@ -3,7 +3,7 @@ require 'kmaps_engine/import/feature_importation'
 module PlacesEngine
   class FeatureImportation < KmapsEngine::FeatureImportation
     # Currently supported fields:
-    # features.fid, features.old_pid, feature_names.delete, feature_names.is_primary.delete
+    # features.fid, features.old_pid, features.position, feature_names.delete, feature_names.is_primary.delete
     # i.feature_names.existing_name
     # i.feature_names.name, i.feature_names.position, i.feature_names.is_primary,
     # i.languages.code/name, i.writing_systems.code/name, i.alt_spelling_systems.code/name
@@ -58,7 +58,7 @@ module PlacesEngine
         self.fields = row.to_hash.delete_if{ |key, value| value.blank? }
         current+=1
         next unless self.get_feature(current)
-        self.add_date('features', self.feature)
+        self.process_feature
         self.process_names(44)
         self.process_kmaps(15)
         feature_ids_with_object_types_added += self.process_feature_types(4)

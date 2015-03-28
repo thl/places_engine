@@ -115,7 +115,8 @@ module PlacesEngine
               'cached_feature_relation_categories.feature_relation_type_id' => @feature_relation_type,
               'cached_feature_relation_categories.feature_is_parent' => @feature_is_parent,
               'cached_feature_names.view_id' => current_view.id
-          ).joins('INNER JOIN "cached_feature_names" ON "cached_feature_relation_categories".related_feature_id = "cached_feature_names".feature_id INNER JOIN "feature_names" ON "cached_feature_names".feature_name_id = "feature_names".id'
+          ).joins(feature: {cached_feature_names: :feature_name}
+          #('INNER JOIN "cached_feature_names" ON "cached_feature_relation_categories".related_feature_id = "cached_feature_names".feature_id INNER JOIN "feature_names" ON "cached_feature_names".feature_name_id = "feature_names".id'
           ).order('feature_names.name')
           # Should associations be set up to allow for this to be handled with :include instead?
         @total_relations_count = @relations.length
