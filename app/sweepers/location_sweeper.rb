@@ -1,6 +1,7 @@
 class LocationSweeper < ActionController::Caching::Sweeper
   include Rails.application.routes.url_helpers
   include ActionController::Caching::Pages
+  include InterfaceUtils::Extensions::Sweeper
   
   observe Shape, Altitude
   FORMATS = ['xml', 'json']
@@ -19,12 +20,5 @@ class LocationSweeper < ActionController::Caching::Sweeper
       options[:format] = format
       expire_page feature_locations_url(options)
     end
-  end
-  
-  private
-  
-  # Very weird! ActionController::Caching seems to assume it is being called from controller. Adding this as hack
-  def self.perform_caching
-    Rails.configuration.action_controller.perform_caching
   end
 end

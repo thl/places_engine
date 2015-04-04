@@ -67,6 +67,8 @@ module PlacesEngine
         self.process_contestations(3)
         self.process_shapes(3)
         self.process_descriptions(3)
+        self.process_captions(2)
+        self.process_summaries(2)
         self.feature.update_attributes({:is_blank => false, :is_public => true})
         #rescue  Exception => e
         #  puts "Something went wrong with feature #{self.feature.pid}!"
