@@ -185,21 +185,17 @@ module PlacesEngine
         prefix = i>0 ? "#{i}.shapes" : 'shapes'
         shapes_lat = self.fields.delete("#{prefix}.lat")
         shapes_lng = self.fields.delete("#{prefix}.lng")
+        lat_f = shapes_lat.to_f
+        lng_f = shapes_lng.to_f
         if !shapes_lat.blank? && !shapes_lng.blank?
-          shape = self.feature.shapes.detect do |s|
-            g = s.geometry
-            g.x == shapes_lng.to_f && g.y == shapes_lat.to_f
-          end
+          shape = self.feature.shapes.detect { |s| s.lng == lng_f && s.lat == lat_f }
           altitude = self.fields.delete("#{prefix}.altitude")
           if shape.nil?
-            shape = Shape.new(:geometry => GeoRuby::SimpleFeatures::Point.new(4326), :fid => self.feature.fid, :altitude => altitude)
-            geo = shape.geometry
-            geo.y = shapes_lat
-            geo.x = shapes_lng
-            shape.geometry = geo
-            shape.save
+            shape = Shape.create(:fid => self.feature.fid, :altitude => altitude)
             if shape.id.nil?
               puts "Shape for feature #{self.feature.pid} could not be saved."
+            else
+              Shape.where(:gid => shape.gid).update_all("geometry = ST_SetSRID(ST_MakePoint(#{shapes_lng}, #{shapes_lat}), 4326)")
             end
           else
             shape.update_attribute(:altitude, altitude) if !altitude.blank? && shape.altitude != altitude
