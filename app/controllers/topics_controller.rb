@@ -16,18 +16,18 @@ class TopicsController < ApplicationController
       respond_to do |format|
         format.html do
           @feature = Feature.find(session[:interface][:context_id]) unless session[:interface][:context_id].blank?
-          render :template => 'features/list'
+          render 'features/list'
         end
-        format.js  { render :template => 'features/paginated_list' }
+        format.js  { render template: 'features/paginated_list' }
         format.xml do
           @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
           @view ||= View.get_by_code('roman.popular')
-          render :action => 'paginated_show.xml.builder'
+          render 'paginated_show.xml.builder'
         end
         format.json do
           @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
           @view ||= View.get_by_code('roman.popular')
-          render :json => Hash.from_xml(render_to_string(:action => 'paginated_show.xml.builder'))
+          render json: Hash.from_xml(render_to_string(:action => 'paginated_show.xml.builder'))
         end
       end
     end
@@ -41,16 +41,17 @@ class TopicsController < ApplicationController
     respond_to do |format|
       format.xml do
         @features = Feature.descendants_by_topic(fids, topic_ids)
-        render :template => 'features/index'
+        render 'features/index'
       end
       format.json do
         @features = Feature.descendants_by_topic(fids, topic_ids)
-        render :json => Hash.from_xml(render_to_string(:template => 'features/index.xml.builder'))
+        render json: Hash.from_xml(render_to_string(template: 'features/index.xml.builder'))
       end
       format.txt do
         perspective_code = params[:perspective_code]
         @features_with_parents = perspective_code.blank? ? Feature.descendants_by_topic_with_parent(fids, topic_ids) : Feature.descendants_by_perspective_and_topics_with_parent(fids, Perspective.get_by_code(perspective_code), topic_ids)
         @view = params[:view_code].nil? ? current_view : View.get_by_code(params[:view_code])
+        render 'features/descendants'
       end
       format.csv do
         perspective_code = params[:perspective_code]
