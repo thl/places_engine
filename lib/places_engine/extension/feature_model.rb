@@ -181,6 +181,22 @@ module PlacesEngine
           des.select{ |f_id| !CumulativeCategoryFeatureAssociation.find_by(category_id: topic_ids, feature_id: f_id).nil? }.collect{|f_id| Feature.find(f_id)}
         end
       end
+      
+      def solr_id
+        "places-#{self.fid}"
+      end
+      
+      def document_for_rsolr
+        doc = RSolr::Xml::Document.new
+        doc.add_field('id', solr_id)
+        doc.add_field('tree', 'places')
+        view = View.get_by_code('roman.popular')
+        name = self.prioritized_name(view)
+        doc.add_field('header', name.nil? ? self.pid : name.name)
+        doc.add_field('feature_types', self.object_types.collect(&:header))
+        doc
+        #RSolr::Xml::Document.new(id: solr_id, uid: solr_id, tree: 'places', header: )
+      end
     end
   end
 end

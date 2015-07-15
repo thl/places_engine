@@ -1,7 +1,7 @@
 class LocationSweeper < ActionController::Caching::Sweeper
+  include InterfaceUtils::Extensions::Sweeper
   include Rails.application.routes.url_helpers
   include ActionController::Caching::Pages
-  include InterfaceUtils::Extensions::Sweeper
   
   observe Shape, Altitude
   FORMATS = ['xml', 'json']
@@ -18,7 +18,7 @@ class LocationSweeper < ActionController::Caching::Sweeper
     options = {:only_path => true, :feature_id => record.feature.fid}
     FORMATS.each do |format|
       options[:format] = format
-      expire_page feature_locations_url(options)
+      expire_full_path_page feature_locations_url(options)
     end
   end
 end

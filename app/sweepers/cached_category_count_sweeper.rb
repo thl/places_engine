@@ -1,4 +1,6 @@
 class CachedCategoryCountSweeper < ActiveRecord::Observer
+  include InterfaceUtils::Extensions::Sweeper
+  
   observe CachedCategoryCount
   
   def after_save(cf)
@@ -10,6 +12,6 @@ class CachedCategoryCountSweeper < ActiveRecord::Observer
   end
   
   def expire_cache(c)
-    ApplicationController.expire_page("/categories/#{c}/counts.xml") if !c.nil?
+    expire_full_path_page("/categories/#{c}/counts.xml") if !c.nil?
   end
 end
