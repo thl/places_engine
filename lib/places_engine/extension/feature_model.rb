@@ -136,6 +136,38 @@ module PlacesEngine
         return parent
       end
 
+      def solr_id
+        "places-#{self.fid}"
+      end
+      
+      def document_for_rsolr
+        doc = RSolr::Xml::Document.new
+        doc.add_field('tree', 'places')
+        self.object_types.each do |o|
+          doc.add_field('feature_types', o.header)
+          doc.add_field('feature_type_ids', o.id)
+        end
+        perspectives = ['cult.reg', 'pol.admin.hier'].collect{ |code| Perspective.get_by_code(code) }
+        perspectives.each do |p|
+          hierarchy = self.closest_ancestors_by_perspective(p)
+          tag = "ancestors_#{p.code}"
+          hierarchy.each{ |f| doc.add_field(tag, f.prioritized_name(View.get_by_code('roman.popular'))) }
+          tag = "ancestor_ids_#{p.code}"
+          hierarchy.each{ |f| doc.add_field(tag, f.fid) }
+        end
+        closest = self.closest_feature_with_shapes
+        closest_fid = closest.nil? ? nil : closest.fid
+        url = closest_fid.nil? ? nil : "#{InterfaceUtils::Server.get_thl_url}/places/maps/interactive/#fid:#{closest_fid}"
+        doc.add_field('interactive_map_url', url)
+        url = closest_fid.nil? ? nil : gis_resources_url(:fids => closest_fid, :host => InterfaceUtils::Server.get_url, :format => 'kmz')
+        doc.add_field('has_shapes', self.has_shapes?)
+        doc.add_field('has_altitudes', self.altitudes.count>0)
+        closest = self.closest_feature_with_shapes
+        closest_fid = closest.nil? ? nil : closest.fid
+        doc.add_field('closest_fid_with_shapes', closest_fid)
+        doc
+      end
+
       module ClassMethods
         def find_by_shape(shape)
           Feature.find_by(fid: shape.fid)
@@ -181,58 +213,6 @@ module PlacesEngine
           topic_ids = topic_ids.first if topic_ids.size==1
           des.select{ |f_id| !CumulativeCategoryFeatureAssociation.find_by(category_id: topic_ids, feature_id: f_id).nil? }.collect{|f_id| Feature.find(f_id)}
         end
-      end
-      
-      def solr_id
-        "places-#{self.fid}"
-      end
-      
-      def document_for_rsolr
-        doc = RSolr::Xml::Document.new
-        doc.add_field('id', solr_id)
-        doc.add_field('tree', 'places')
-        view = View.get_by_code('roman.popular')
-        name = self.prioritized_name(view)
-        doc.add_field('header', name.nil? ? self.pid : name.name)
-        self.object_types.each do |o|
-          doc.add_field('feature_types', o.header)
-          doc.add_field('feature_type_ids', o.id)
-        end
-        self.captions.each{|c| doc.add_field("caption_#{c.language.code}", c.content)}
-        self.summaries.each{|s| doc.add_field("summary_#{s.language.code}", s.content)}
-        self.illustrations.each do |i|
-          p = illustration.picture
-          doc.add_field("illustration_#{p.instance_of?(ExternalPicture) ? 'external' : 'mms'}_url", p.url)
-        end
-        perspectives = ['cult.reg', 'pol.admin.hier'].collect{ |code| Perspective.get_by_code(code) }
-        perspectives.each do |p|
-          hierarchy = self.closest_ancestors_by_perspective(p)
-          tag = "ancestors_#{p.code}"
-          hierarchy.each{ |f| doc.add_field(tag, f.prioritized_name(view)) }
-          tag = "ancestor_ids_#{p.code}"
-          hierarchy.each{ |f| doc.add_field(tag, f.fid) }
-        end
-        closest = self.closest_feature_with_shapes
-        closest_fid = closest.nil? ? nil : closest.fid
-        url = closest_fid.nil? ? nil : "#{InterfaceUtils::Server.get_thl_url}/places/maps/interactive/#fid:#{closest_fid}"
-        doc.add_field('interactive_map_url', url)
-        url = closest_fid.nil? ? nil : gis_resources_url(:fids => closest_fid, :host => InterfaceUtils::Server.get_url, :format => 'kmz')
-        doc.add_field('created_at', self.created_at.utc.iso8601)
-        doc.add_field('updated_at', self.updated_at.utc.iso8601)
-        doc.add_field('has_shapes', self.has_shapes?)
-        doc.add_field('has_altitudes', self.altitudes.count>0)
-        closest = self.closest_feature_with_shapes
-        closest_fid = closest.nil? ? nil : closest.fid
-        doc.add_field('closest_fid_with_shapes', closest_fid)
-        self.names.each do |name|
-          key_arr = ['name', name.language.code]
-          rel_code = name.relationship_code
-          key_arr << rel_code if !rel_code.nil?
-          ws = name.writing_system
-          key_arr << ws.code if !ws.nil?
-          doc.add_field(key_arr.join('_'), name.name)
-        end
-        doc
       end
     end
   end
