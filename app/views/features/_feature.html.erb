@@ -25,9 +25,9 @@
           InsetMap.init({proxyUrl: '<%= proxy_engine_proxy_path %>?proxy_url='});
 <%      end %>
         <p class = "view-on-map">
-<%=       link_to "#{image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-map-simple.gif", :alt => "")} #{ts 'map.full'}".html_safe, "#{InterfaceUtils::Server.get_url}/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}" %>
-<%=       link_to "#{image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-google-maps.png", :alt => "")}#{ts 'map.google'}".html_safe, "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => map_fid, :format => "kmz"), :target => "_blank" %>&nbsp;
-<%=       link_to "#{image_tag("#{InterfaceUtils::Server.get_url}/global/images/icon-google-earth.png", :alt => "")} #{ts 'map.earth'}".html_safe, {:action => :gis_resources, :fids => map_fid, :format => "kmz"}, :target => "_blank" %>
+<%=       link_to "#{image_tag("#{InterfaceUtils::Server.get_thl_url}/global/images/icon-map-simple.gif", :alt => "")} #{ts 'map.full'}".html_safe, "#{InterfaceUtils::Server.get_thl_url}/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}" %>
+<%=       link_to "#{image_tag("#{InterfaceUtils::Server.get_thl_url}/global/images/icon-google-maps.png", :alt => "")}#{ts 'map.google'}".html_safe, "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => map_fid, :format => "kmz"), :target => "_blank" %>&nbsp;
+<%=       link_to "#{image_tag("#{InterfaceUtils::Server.get_thl_url}/global/images/icon-google-earth.png", :alt => "")} #{ts 'map.earth'}".html_safe, {:action => :gis_resources, :fids => map_fid, :format => "kmz"}, :target => "_blank" %>
         </p>
       </div>
 <%  end

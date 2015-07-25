@@ -84,7 +84,7 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
   closest = feature.closest_feature_with_shapes
   closest_fid = closest.nil? ? nil : closest.fid
   xml.closest_fid_with_shapes(closest_fid, :type => 'integer')
-  url = closest_fid.nil? ? nil : "#{InterfaceUtils::Server.get_url}/places/maps/interactive/#fid:#{closest_fid}"
+  url = closest_fid.nil? ? nil : "#{InterfaceUtils::Server.get_thl_url}/places/maps/interactive/#fid:#{closest_fid}"
   xml.interactive_map_url(url, :type => 'string')
   url = closest_fid.nil? ? nil : gis_resources_url(:fids => closest_fid, :format => 'kmz')
   xml.kmz_url(url, :type => 'string')
