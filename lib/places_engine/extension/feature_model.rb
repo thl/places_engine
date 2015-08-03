@@ -158,13 +158,13 @@ module PlacesEngine
         closest = self.closest_feature_with_shapes
         closest_fid = closest.nil? ? nil : closest.fid
         url = closest_fid.nil? ? nil : "#{InterfaceUtils::Server.get_thl_url}/places/maps/interactive/#fid:#{closest_fid}"
-        doc.add_field('interactive_map_url', url)
+        doc.add_field('interactive_map_url', url) if !url.nil?
         url = closest_fid.nil? ? nil : gis_resources_url(:fids => closest_fid, :host => InterfaceUtils::Server.get_url, :format => 'kmz')
         doc.add_field('has_shapes', self.has_shapes?)
         doc.add_field('has_altitudes', self.altitudes.count>0)
         closest = self.closest_feature_with_shapes
         closest_fid = closest.nil? ? nil : closest.fid
-        doc.add_field('closest_fid_with_shapes', closest_fid)
+        doc.add_field('closest_fid_with_shapes', closest_fid) if !closest_fid.nil?
         doc
       end
 

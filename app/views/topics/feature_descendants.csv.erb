@@ -19,7 +19,7 @@
 	  row += names.collect(&:detailed_name) # Or add this to header: names.collect(&:name_details) and just do 'name'
 	  if first
 		first = false %>
-<%=     CSV.generate_line(['fid', 'types', 'relation', 'parent', 'shape', 'names'], "\t") %>
+<%=     CSV.generate_line(['fid', 'types', 'relation', 'parent', 'shape', 'names'], col_sep: "\t") %>
 <%    end %>
-<%=   CSV.generate_line(row, "\t").html_safe %>
+<%=   CSV.generate_line(row, col_sep: "\t").html_safe %>
 <% end %>
