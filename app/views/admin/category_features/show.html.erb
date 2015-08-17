@@ -1,6 +1,6 @@
 <% add_breadcrumb_item features_link
    add_breadcrumb_item feature_link(@object.feature)
-   add_breadcrumb_item link_to(Topic.human_name(:count => :many).s, admin_feature_category_feature_path(@object.feature))
+   add_breadcrumb_item link_to(Topic.human_name(:count => :many).s, admin_feature_category_features_path(@object.feature))
    add_breadcrumb_item @object %>
 <fieldset>
   <legend><%= "#{CategoryFeature.model_name.human.titleize.s} #{edit_item_link @object}".html_safe %></legend>
