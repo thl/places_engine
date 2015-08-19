@@ -254,18 +254,18 @@ module PlacesEngine
           puts "Could find kmap #{kmap_str} for feature #{self.feature.pid}."
           next
         end      
-        conditions = { :category_id => kmap.id }
-        category_feature = category_features.find_by(conditions)
-        values = {}
+        values = { :category_id => kmap.id }
+        # avoid checking first
+        # category_feature = category_features.find_by(conditions)
         show_parent = self.fields.delete("#{kmap_prefix}.show_parent")
         values[:show_parent] = show_parent.downcase=='yes' if !show_parent.blank?
         show_root = self.fields.delete("#{kmap_prefix}.show_root")
         values[:show_root] = show_root.downcase=='yes' if !show_root.blank?
-        if category_feature.nil?
-          category_feature = category_features.create(conditions.merge(values))
-        else
-          category_feature.update_attributes(values)
-        end
+        #if category_feature.nil?
+        category_feature = category_features.create(values)
+        #else
+          #category_feature.update_attributes(values)
+        #end
         self.spreadsheet.imports.create(:item => category_feature) if category_feature.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
         next if category_feature.nil?
         0.upto(3) do |j|
