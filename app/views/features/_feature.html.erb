@@ -22,7 +22,7 @@
       <div id="map-column">
         <div id="inset_map" class="fid-<%= map_fid %> language-<%= current_view.code %>"></div>
 <%=     javascript_on_load do %>
-          InsetMap.init({proxyUrl: '<%= proxy_engine_proxy_path %>?proxy_url='});
+          InsetMap.init({proxyUrl: '<%= proxy_engine_proxy_path %>?proxy_url=', geoserverUrl: '<%= geoserver_url %>' });
 <%      end %>
         <p class = "view-on-map">
 <%=       link_to "#{image_tag("#{InterfaceUtils::Server.get_thl_url}/global/images/icon-map-simple.gif", :alt => "")} #{ts 'map.full'}".html_safe, "#{InterfaceUtils::Server.get_thl_url}/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}" %>

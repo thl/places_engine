@@ -13,6 +13,9 @@ var InsetMap = {
 			if(typeof options['proxyUrl'] != 'undefined'){
 				this.proxyUrl = options['proxyUrl'];
 			}
+			if(typeof options['geoserverUrl'] != 'undefined'){
+				this.geoserverUrl = options['geoserverUrl'];
+			}
 		}
 		this.fid = this.getFid();
 		if(this.fid){

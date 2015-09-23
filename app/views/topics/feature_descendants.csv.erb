@@ -1,9 +1,6 @@
-<%  tib_script_id = WritingSystem.get_by_code('tibt').id
-    chi_sim_script_id = WritingSystem.get_by_code('hans').id 
-    chi_trad_script_id = WritingSystem.get_by_code('hant').id
-    view = View.get_by_code('pri.tib.sec.chi')
-	first = true %>
-<%  @features_with_parents.collect do |pair|
+<%= CSV.generate_line(['fid', 'types', 'relation', 'parent', 'shape', 'names'], col_sep: "\t") -%>
+<%  view = View.get_by_code('pri.tib.sec.chi')
+    @features_with_parents.collect do |pair|
       feature = pair[0]
       parent = pair[1]
       relation = pair[2]
@@ -16,10 +13,6 @@
       # Add shape
       row << feature.shapes.collect{|s| shape_display_string(s) }.join(', ')
 	  names = feature.flattened_name_tree
-	  row += names.collect(&:detailed_name) # Or add this to header: names.collect(&:name_details) and just do 'name'
-	  if first
-		first = false %>
-<%=     CSV.generate_line(['fid', 'types', 'relation', 'parent', 'shape', 'names'], col_sep: "\t") %>
-<%    end %>
-<%=   CSV.generate_line(row, col_sep: "\t").html_safe %>
-<% end %>
+	  row += names.collect(&:detailed_name) # Or add this to header: names.collect(&:name_details) and just do 'name' -%>
+<%=   CSV.generate_line(row, col_sep: "\t").html_safe -%>
+<% end -%>

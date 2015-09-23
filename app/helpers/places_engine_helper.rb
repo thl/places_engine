@@ -16,4 +16,15 @@ module PlacesEngineHelper
   def topical_map_url(feature)
     topics_feature_path(feature.fid)
   end
+  
+  def geoserver_url
+    case InterfaceUtils::Server.environment
+    when InterfaceUtils::Server::DEVELOPMENT
+      return 'http://dev.thlib.org:8080/thlib-geoserver'
+    when InterfaceUtils::Server::LOCAL
+      return 'http://localhost:8080/geoserver'
+    else
+      return 'http://www.thlib.org:8080/thdl-geoserver'
+    end
+  end
 end
