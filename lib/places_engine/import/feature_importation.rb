@@ -19,8 +19,11 @@ module PlacesEngine
     # [i.]shapes.lat, [i.]shapes.lng, [i.]shapes.altitude,
     # [i.]shapes.altitude.estimate, [i.]shapes.altitude.minimum, [i.]shapes.altitude.maximum,
     # [i.]shapes.altitude.average, [i.]shapes.altitude.delete
-    # descriptions.delete, [i.]descriptions.title, [i.]descriptions.content, [i.]descriptions.author.fullname
-
+    # descriptions.delete, [i.]descriptions.title, [i.]descriptions.content, [i.]descriptions.author.fullname, [i.]descriptions.language.code/name
+    # [i.]captions:
+    # content, author.fullname
+    # [i.]summaries:
+    # content, author.fullname
 
     # Fields that accept time_units:
     # features, i.feature_names[.j], [i.]feature_types[.j], i.kmaps[.j], [i.]kXXX[.j], i.feature_geo_codes[.j], [i.]feature_relations[.j], [i.]shapes[.j]
@@ -36,12 +39,13 @@ module PlacesEngine
     # .info_source.id/code, info_source.note
     # When info source is a document: .info_source[.i].volume, info_source[.i].pages
     # When info source is an online resource: .info_source[.i].path, .info_source[.i].name
+    # When info source is a oral source: .info_source.oral.fullname
 
     # Fields that accept note:
     # [i.]feature_names[.j], i.kmaps[.j], [i.]kXXX[.j], [i.]feature_types[.j], [i.]feature_relations[.j], [i.]shapes[.j], i.feature_geo_codes[.j]
 
     # Note fields:
-    # .note
+    # .note, .title
 
     def do_feature_import(filename, task_code)
       task = ImportationTask.find_by(task_code: task_code)
