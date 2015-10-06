@@ -33,7 +33,8 @@ module PlacesEngine
     # .time_units.calendar_id, .time_units.frequency_id
 
     # Fields that accept info_source:
-    # [i.]feature_names[.j], [i.]feature_types[.j], i.feature_geo_codes[.j], [i.]kXXX[.j], i.kmaps[.j], [i.]feature_relations[.j], [i.]shapes[.j]
+    # [i.]feature_names[.j], [i.]feature_types[.j], i.feature_geo_codes[.j], [i.]kXXX[.j], i.kmaps[.j],
+    # [i.]feature_relations[.j], [i.]shapes[.j], [i.]summaries[.j]
 
     # info_source fields:
     # .info_source.id/code, info_source.note
@@ -187,33 +188,33 @@ module PlacesEngine
       # Deal with shapes
       0.upto(n) do |i|
         prefix = i>0 ? "#{i}.shapes" : 'shapes'
+        gid = self.fields.delete("#{prefix}.gid")
         shapes_lat = self.fields.delete("#{prefix}.lat")
         shapes_lng = self.fields.delete("#{prefix}.lng")
-        lat_f = shapes_lat.to_f
-        lng_f = shapes_lng.to_f
+        shape = gid.blank? ? nil : Shape.find(gid)
         if !shapes_lat.blank? && !shapes_lng.blank?
-          shape = self.feature.shapes.detect { |s| s.lng == lng_f && s.lat == lat_f }
-          altitude = self.fields.delete("#{prefix}.altitude")
+          lat_f = shapes_lat.to_f
+          lng_f = shapes_lng.to_f
           if shape.nil?
-            shape = Shape.create(:fid => self.feature.fid, :altitude => altitude)
-            if shape.id.nil?
-              puts "Shape for feature #{self.feature.pid} could not be saved."
-            else
+            shape = self.feature.shapes.detect { |s| s.lng == lng_f && s.lat == lat_f } 
+            if shape.nil?
+              shape = Shape.create(:fid => self.feature.fid)
               Shape.where(:gid => shape.gid).update_all("geometry = ST_SetSRID(ST_MakePoint(#{shapes_lng}, #{shapes_lat}), 4326)")
             end
           else
-            shape.update_attribute(:altitude, altitude) if !altitude.blank? && shape.altitude != altitude
-          end
-          if !shape.nil?
-            0.upto(3) do |j|
-              second_prefix = j==0 ? prefix : "#{prefix}.#{j}"
-              self.add_date(second_prefix, shape)
-              self.add_note(second_prefix, shape)
-              self.add_info_source(second_prefix, shape)
-            end
+            Shape.where(:gid => shape.gid).update_all("geometry = ST_SetSRID(ST_MakePoint(#{shapes_lng}, #{shapes_lat}), 4326)")
           end
         else
           puts "Can't specify a latitude without a longitude and viceversa for feature #{self.feature.pid}" if !shapes_lat.blank? || !shapes_lng.blank?
+        end
+        next if shape.nil?
+        altitude = self.fields.delete("#{prefix}.altitude")
+        shape.update_attribute(:altitude, altitude) if !altitude.blank?
+        0.upto(3) do |j|
+          second_prefix = j==0 ? prefix : "#{prefix}.#{j}"
+          self.add_date(second_prefix, shape)
+          self.add_note(second_prefix, shape)
+          self.add_info_source(second_prefix, shape)
         end
         # deal with "extra" altitudes
         estimate_str = self.fields.delete("#{prefix}.altitude.estimate")
