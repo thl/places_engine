@@ -49,11 +49,15 @@ module PlacesEngine
       end
       
       def descendants_by_topic(topic_ids)
-        self.descendants_by_topic([self.fid], topic_ids)
+        Feature.descendants_by_topic([self.fid], topic_ids)
       end
       
       def descendants_by_topic_with_parent(topic_ids)
         Feature.descendants_by_topic_with_parent([self.fid], topic_ids)
+      end
+      
+      def faceted_descendants(options = Hash.new)
+        Feature.faceted_descendants(options.merge(fids: [self.fid]))
       end
       
       #
@@ -212,6 +216,40 @@ module PlacesEngine
           end
           topic_ids = topic_ids.first if topic_ids.size==1
           des.select{ |f_id| !CumulativeCategoryFeatureAssociation.find_by(category_id: topic_ids, feature_id: f_id).nil? }.collect{|f_id| Feature.find(f_id)}
+        end
+        
+        def faceted_descendants(options = Hash.new)
+          #fids, topic_ids, include_range, exclude_ranges
+          fids = options[:fids]
+          return nil if fids.nil?
+          pending = fids.collect{|fid| Feature.get_by_fid(fid)}
+          des = []
+          while !pending.empty?
+            e = pending.pop
+            FeatureRelation.select('child_node_id').where(:parent_node_id => e, :feature_relation_type_id => FeatureRelationType.hierarchy_ids + [FeatureRelationType.get_by_code('is.contained.by').id]).each do |r|
+              c = r.child_node_id
+              if !des.include? c
+                des << c
+                pending.push(c)
+              end
+            end
+          end
+          topic_ids = options[:topic_ids]
+          return des if topic_ids.nil?
+          topic_ids = topic_ids.first if topic_ids.size==1
+          include_range = options[:include_range]
+          exclude_ranges = options[:exclude_ranges]
+          res = ''
+          des.select do |f_id|
+            cfs = CategoryFeature.where(feature_id: f_id, category_id: topic_ids)
+            if include_range.blank?
+              !cfs.empty?
+            else
+              !cfs.index { |cf| !cf.time_units.index { |t| !t.nil? && t.between?(include_range[0], include_range[1]) && (exclude_ranges.blank? || exclude_ranges.index{|r| t.range_equal?(r)}.nil?) }.nil? }.nil?
+            end
+          end.collect do |f_id|
+            Feature.find(f_id)
+          end
         end
       end
     end
