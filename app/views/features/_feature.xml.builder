@@ -7,6 +7,7 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
   xml.names(:type => 'array') do
     View.all.each do |v|
       name = feature.prioritized_name(v)
+      next if name.nil?
       tags = {:id => name.id, :language => name.language.code, :view => v.code, :name => name.name}
       tags[:writing_system] = name.writing_system.code if !name.writing_system.nil?
       tags[:language] = name.language.code if !name.language.nil?
