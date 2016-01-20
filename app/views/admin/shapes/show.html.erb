@@ -5,7 +5,7 @@
 <fieldset>
    <legend>
 <%=  Shape.model_name.human.titleize.s %>
-<%=  edit_item_link @object %>
+<%=  edit_item_link(@object) if @object.is_point? %>
    </legend>
    <div class="row">
      <label><%= Shape.human_attribute_name(:gid).s %></label>

@@ -14,8 +14,7 @@
        <th><%= t('date.this', :count => :many).titleize.s.s %></th>
        <th><%= ts 'add.record', :what => t('date.this', :count => 1).titleize %></th>
      </tr>
-<%   list = list.sort_by{|a| a.position}
-     list.each do |item| 
+<%   list.each do |item|
        next if item.feature.nil? 
        path = admin_feature_feature_object_type_path(item.feature, item) %>
        <tr><td class="listActionsCol">

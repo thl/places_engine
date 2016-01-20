@@ -58,7 +58,7 @@
     <legend><%= Feature.human_attribute_name(:object_type, :count => :many).s %> <%= link_to ts('change.record', :what => t('priorit.ization_of.feature_types')), prioritize_feature_object_types_admin_features_path(@object) %></legend>
 <%= highlighted_new_item_link [@object, :feature_object_type] %>
     <br class="clear"/>
-<%= render :partial => 'admin/feature_object_types/list', :locals => { :list => @object.feature_object_types, :hide_feature_id => true } %>
+<%= render :partial => 'admin/feature_object_types/list', :locals => { :list => @object.feature_object_types.order(:position), :hide_feature_id => true } %>
 <%= association_note_list_fieldset(FeatureObjectType.name) %>
 </fieldset>
 <fieldset>
@@ -79,7 +79,7 @@
     <legend><%= Shape.model_name.human(:count => :many).titleize.s %> <%= link_to ts('change.record', :what => t('priorit.ization_of.locations')), prioritize_feature_shapes_admin_features_path(@object) %></legend>
 <%= highlighted_new_item_link [@object, :shape] %>
     <br class="clear"/>
-<%= render :partial => 'admin/shapes/list', :locals => { :list => @object.shapes } %>
+<%= render :partial => 'admin/shapes/list', :locals => { :list => @object.shapes.order(:position) } %>
 <%= association_note_list_fieldset(Shape.name) %>
 </fieldset>
 <fieldset>

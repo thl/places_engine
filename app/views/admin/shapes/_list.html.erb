@@ -13,7 +13,6 @@
        <th><%= t('date.this', :count => :many).titleize.s %></th>
        <th><%= ts 'add.record', :what => t('date.this', :count => 1).titleize %></th>
      </tr>
-<%   list = list.sort_by{|a| a.position} %>
 <%   list.each do |item| %>
      <tr>
        <td class="listActionsCol">
@@ -21,7 +20,7 @@
 <%=    if item.is_point?
          list_actions_for_item(item, :delete_path => path, :view_path => path, :edit_path => item.feature ? edit_admin_feature_shape_path(item.feature, item) : admin_shape_path(item))
        else
-         list_actions_for_item(item, :hide_delete => true, :hide_edit => true, :view_path => path)
+         list_actions_for_item(item, :delete_path => path, :hide_edit => true, :view_path => path)
        end %>
        </td>
        <td><%= item.gid.to_s %></td>
