@@ -1,10 +1,10 @@
-<%= CSV.generate_line(['fid', 'types', 'relation', 'parent', 'shape', 'names'], col_sep: "\t") -%>
-<%  view = View.get_by_code('pri.tib.sec.chi')
+<%= CSV.generate_line(['fid', 'date', 'types', 'relation', 'parent', 'shape', '1.feature_names.name', '1.languages.code', '1.writing_systems.code', '1.feature_name_relations.relationship.code', '1.feature_name_relations.parent_node'], col_sep: "\t") -%>
+<%  view = current_view #View.get_by_code('pri.tib.sec.chi')
     @features_with_parents.collect do |pair|
       feature = pair[0]
       parent = pair[1]
       relation = pair[2]
-      row = [feature.fid]
+      row = [feature.fid, feature.created_at]
 	  # Add feature type
       row << feature.feature_object_types.collect{|fot| fot.category.header }.join(', ') 
       row << ((relation.nil? || relation.feature_relation_type.nil?) ? '' : relation.feature_relation_type.code)
@@ -13,6 +13,12 @@
       # Add shape
       row << feature.shapes.collect{|s| shape_display_string(s) }.join(', ')
 	  names = feature.flattened_name_tree
-	  row += names.collect(&:detailed_name) # Or add this to header: names.collect(&:name_details) and just do 'name' -%>
+	  #row += names.collect(&:detailed_name) # Or add this to header: names.collect(&:name_details) and just do 'name'
+	  names.each do |n|
+		  parent = n.parent
+		  i = parent.nil? ? nil : names.index{|e| e.id == parent.id}
+		  i += 1 if !i.nil?
+		  row += [n.name, n.language.code, n.writing_system.code, n.relationship_code, i]
+	  end -%>
 <%=   CSV.generate_line(row, col_sep: "\t").html_safe -%>
 <% end -%>
