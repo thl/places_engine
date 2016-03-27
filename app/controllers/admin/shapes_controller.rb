@@ -23,8 +23,9 @@ class Admin::ShapesController < ResourceController::Base
     # Specify the SRID as 4326
     y = params[:shape][:lat] if !params[:shape][:lat].blank? && params[:shape][:lat].to_f > 0.0
     x = params[:shape][:lng] if !params[:shape][:lng].blank? && params[:shape][:lng].to_f > 0.0
-    @object = Shape.new(:geometry => "POINT(#{x} #{y})", :fid => params[:shape][:fid], :altitude => params[:shape][:altitude])
+    @object = Shape.new(fid: params[:shape][:fid], altitude: params[:shape][:altitude])
     if @object.save
+      Shape.where(gid: @object.gid).update_all("geometry = ST_SetSRID(ST_Point(#{x}, #{y}),4326)")
       set_flash :create
     else
       set_flash :create_fails
