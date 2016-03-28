@@ -151,11 +151,11 @@ module PlacesEngine
           doc.add_field('feature_types', o.header)
           doc.add_field('feature_type_ids', o.id)
         end
-        #self.category_features.where(:type => nil).each do |cf|
-        #  next if !cf.time_units.empty? || !cf.string_value.blank? || !cf.numeric_value.blank? || (c=cf.category).nil?
-        #  doc.add_field('associated_subjects', c.header)
-        #  doc.add_field('associated_subject_ids', c.id)
-        #end
+        self.category_features.where(:type => nil).each do |cf|
+          next if !cf.time_units.empty? || !cf.string_value.blank? || !cf.numeric_value.blank? || (c=cf.category).nil?
+          doc.add_field('associated_subjects', c.header)
+          doc.add_field('associated_subject_ids', c.id)
+        end
         perspectives = ['cult.reg', 'pol.admin.hier'].collect{ |code| Perspective.get_by_code(code) }
         perspectives.each do |p|
           hierarchy = self.closest_ancestors_by_perspective(p)
