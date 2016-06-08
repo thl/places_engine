@@ -1,5 +1,3 @@
-<%  category_features = feature.category_features.where(:type => nil) %>
-<%= content_tag :h3, CategoryFeature.model_name.human(:count => category_features.size).titleize.s unless category_features.empty? %>
     <ul id="CategoryFeaturesList">
 <%  category_features.each do |cf|
       c = cf.category

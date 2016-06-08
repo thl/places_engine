@@ -1,15 +1,17 @@
-<%= header(:class => 'html front', :stylesheet_files => ["kmaps_engine/#{current_view.code=='roman.scholar' ? 'scholar' : 'popular'}"]) %>
-<!-- Banner Region -->
-<main class="main-wrapper container">
+<%= header(class: "html not-front #{logged_in? ? 'logged-in' : 'not-logged-in'} no-sidebars page-places kmaps rails", stylesheet_files: ["kmaps_engine/#{current_view.code=='roman.scholar' ? 'scholar' : 'popular'}"]) %>
+<!-- Begin Content Region -->
+<main class="main-wrapper container-fluid">
 	<article class="main-content" role="main">
 		<div class="row">
-			<header class="col-xs-12 titlearea banner">
+			<!-- Banner Region -->
+			<header class="titlearea banner">
 				<div role="banner">
-					<h1 class="page-title"><i class="icon shanticon-places"></i><span><%= page_header_title %></span></h1>
-					<nav class="breadwrap" role="navigation">
+					<h1 class="page-title"><span class="icon shanticon-places"></span><span class="page-title-text"><%= page_header_title %></span></h1>
+					<nav class="breadwrap">
 <%=                   f_breadcrumb %>
 					</nav>
 					<div class="banner-content"></div>
+					<div class="banner-tabs"></div>
 				</div>
 			</header>
 		</div> <!-- End of Banner Region -->
@@ -18,16 +20,34 @@
 			<!-- Sidebar First Region -->
 <%=         universal_navigation :places, @current_tab_id, custom_secondary_tabs(@current_tab_id) %>
 			<!-- Begin Page Content -->
-			<section class="content-section col-xs-12 col-sm-9 equal-height">
-				<div class="tab-content">
-					<article class="tab-pane main-col active" id="<%= @current_tab_id %>">
-<%=                   yield %>
+			<section class="content-section col-xs-12 col-md-9 equal-height">
+				<button type="button" class="btn btn-default view-offcanvas-sidebar" data-toggle="offcanvas" style="display:none;">
+					<span class="icon"></span>
+				</button>
+	          	<!-- Message Area -->
+	          	<!-- Main Content -->
+				<div class="tab-content container-fluid">
+					<article id="tab-overview" class="tab-pane main-col active">
+						<div class="region region-content">
+							<div id="block-system-main" class="block block-system">
+								<div class="content">
+									<!-- Column Resources  -->
+									<!-- Column Main -->
+									<div class="tab-content">
+										<article class="tab-pane main-col active" id="<%= @current_tab_id %>">
+<%=                                         render 'public/flash' %>
+<%=                                         yield %>
+					                    </article>
+<%=                                     render partial: 'main/inactive_tab_content', locals: {current_app_id: :places} %>
+				                    </div>
+			                        <!-- END Content -->
+			                        <!-- Sidebar Second Region -->
+								</div>
+							</div>
+						</div>
 					</article>
-<%=                 render partial: 'main/inactive_tab_content', locals: {current_app_id: :places} %>
 				</div>
 			</section>
-			<!-- END Content -->
-			<!-- Sidebar Second Region -->
 		</div>
 	</article>
 	<div id="search-flyout" class="region extruder right" role="search" style="display: none;">
@@ -40,6 +60,9 @@
 		</div>
 	</div>
 </main>
+<!-- End Main Content -->
 <div id="popup_dialog"></div>
 <%= render 'public/public_menu' %>
+</div>
+<!-- End wrap-all -->
 <%= footer %>

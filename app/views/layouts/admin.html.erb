@@ -1,41 +1,43 @@
-<%  header_options = { :class => 'html front', :javascript_files => ['kmaps_engine/admin', 'subjects_integration/application'], :stylesheet_files => ['kmaps_engine/admin'] }
+<%  header_options = { class: 'html not-front logged-in no-sidebars page-places kmaps rails', javascript_files: ['kmaps_engine/admin', 'subjects_integration/application'], stylesheet_files: ['kmaps_engine/admin'] }
     header_options[:title] = "#{model_name.classify.constantize.model_name.human.titleize}: #{controller.action_name.humanize}" if defined?(model_name) && !model_name.blank? %>
 <%= header(header_options) %>
 <!-- Banner Region -->
 <main class="main-wrapper container">
 	<article class="main-content" role="main">
 		<div class="row">
-			<header class="col-xs-12 titlearea banner">
+			<!-- Banner Region -->
+			<header class="titlearea banner">
 				<div role="banner">
-					<h1 class="page-title"><i class="icon shanticon-places"></i><span><%= @page_title if @page_title %></span></h1>
-					<nav class="breadwrap" role="navigation">
+					<h1 class="page-title"><span class="icon shanticon-places"></span><span class="page-title-text"><%= @page_title if @page_title %></span></h1>
+					<nav class="breadwrap">
 <%=                   render_breadcrumbs %>
 					</nav>
 					<div class="banner-content"></div>
+					<div class="banner-tabs"></div>
 				</div>
 			</header>
 		</div> <!-- End of Banner Region -->
 		<!-- Begin Content Row -->
 		<div class="row row-offcanvas row-offcanvas-left">
+			<!-- Sidebar First Region -->
             <div class="right"><%= resource_nav %></div>
 			<!-- Begin Page Content -->
-
-			<section class="content-section col-xs-12 col-sm-9 equal-height">
-<%=           yield %>
+			<section class="content-section">
+	          	<!-- Message Area -->
+	          	<!-- Main Content -->
+				<div class="region region-content">
+					<div id="block-system-main" class="block block-system">
+						<div class="content">
+<%=                       render 'public/flash' %>
+<%=                       yield %>
+						</div>
+					</div>
+				</div>
 			</section>
 			<!-- END Content -->
 			<!-- Sidebar Second Region -->
 		</div>
 	</article>
-	<div id="search-flyout" class="region extruder right" role="search" style="display: none;">
-		<div class="region region-search-flyout">
-			<div id="block-kmaps-navigator-kmaps-navigator-block" class="block block-kmaps-navigator">
-				<div class="content">
-<%=               render :partial => "public/admin_menu" %>
-				</div>
-			</div>
-		</div>
-	</div>
 </main>
 <%= render 'public/admin_menu' %>
 <%= footer %>

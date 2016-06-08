@@ -1,4 +1,6 @@
 class Admin::AltitudesController < ResourceController::Base
+  include KmapsEngine::ResourceObjectAuthentication
+  
   cache_sweeper :location_sweeper, :only => [:update, :destroy]
   
   belongs_to :feature

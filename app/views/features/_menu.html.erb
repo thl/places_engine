@@ -1,5 +1,6 @@
 <% active_item = active_menu_item %>
 <section id="kmaps-search" role="search">
+  <!-- BEGIN Input section -->
   <section class="input-section" style="display:none">
 <%= form_for @search_form, url: search_features_path, remote: true do |form| %>
     <div class="search-group">
@@ -66,6 +67,7 @@
 	  });
 <%  end %>
   </section>
+  <!-- END input section -->
   <!-- BEGIN view section -->
   <section class="view-section">
     <ul class="nav nav-tabs">

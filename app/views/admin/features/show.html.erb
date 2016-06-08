@@ -18,6 +18,16 @@
     <label><%= Feature.human_attribute_name(:is_public).s %></label> <span><%= @object.is_public? ? "Yes" : "No" %></span>
   </div>
 </fieldset>
+<% if current_user.admin? %>
+   <fieldset>
+     <legend><%= Collection.model_name.human(count: :many).titleize.s %></legend>
+     <div class="left highlight">
+<%=    new_item_link [@object, :affiliation] %>
+     </div>
+     <br class="clear"/>
+<%=  render :partial => 'admin/affiliations/list', :locals => { :list => @object.affiliations } %>
+   </fieldset>
+<% end %>
 <fieldset>
     <legend><%= FeatureName.model_name.human(:count => :many).titleize.s %> <%= link_to ts('change.record', :what => t('priorit.ization_of.names')), prioritize_feature_names_admin_features_path(@object) %></legend>
     <div class="left highlight">
@@ -89,13 +99,18 @@
 <%= render :partial => 'admin/altitudes/list', :locals => { :list => @object.altitudes } %>
 <%= association_note_list_fieldset(Altitude.name) %>
 </fieldset>
-<fieldset>
-    <legend><%= FeatureRelation.model_name.human(:count => :many).titleize.s %></legend>
-<%= highlighted_new_item_link locate_for_relation_admin_feature_path(@object), ts('new.record', :what => FeatureRelation.model_name.human) %>
-    <br class="clear"/>
-<%= render :partial => 'admin/feature_relations/list', :locals => { :list => @object.all_relations, :object => @object, :use_first => false, :use_names => true } %>
-<%= association_note_list_fieldset(FeatureRelation.name) %>
-</fieldset>
+<% if current_user.admin? || @object.authorized_for_descendants?(current_user) %>
+   <fieldset>
+     <legend><%= FeatureRelation.model_name.human(:count => :many).titleize.s %></legend>
+     <div class="left highlight">
+<%=    new_item_link new_admin_feature_path(parent_id: @object.id), ts('new.record', :what => t(:child)) %> |
+<%=    new_item_link locate_for_relation_admin_feature_path(@object), ts('new.record', :what => FeatureRelation.model_name.human) %>
+     </div>
+     <br class="clear"/>
+<%=  render :partial => 'admin/feature_relations/list', :locals => { :list => @object.all_relations, :object => @object, :use_first => false, :use_names => true } %>
+<%=  association_note_list_fieldset(FeatureRelation.name) %>
+   </fieldset>
+<%  end %>
 <fieldset>
     <legend><%= Description.model_name.human(:count => :many).titleize.s %></legend>
 <%= highlighted_new_item_link [@object, :description] %>

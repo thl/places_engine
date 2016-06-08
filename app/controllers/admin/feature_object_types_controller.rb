@@ -1,4 +1,5 @@
 class Admin::FeatureObjectTypesController < AclController
+  include KmapsEngine::ResourceObjectAuthentication
   resource_controller
   
   helper :admin, 'admin/category_features'  

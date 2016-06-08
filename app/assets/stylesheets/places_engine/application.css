@@ -9,7 +9,6 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
- *= require places_engine/main
  */
 
 .titlearea, .breadwrap ol li .icon, .ss-full-tabs.nav-tabs > li.active a, .ss-full-tabs.nav-tabs > li.active a:hover {
@@ -23,23 +22,23 @@
 	font-size: 15px;
 }
 
-#FeatureDetails .view-on-map {
+.view-on-map {
 	display: block;
     margin-top: 5px;
 }
 
-#FeatureDetails .view-on-map img {
+.view-on-map img {
 	display: inline;
 }
 
 
-#FeatureDetails #inset_map {
+#inset_map {
 	width: 280px;
 	height: 200px;
 	margin-top: 5px !important;
 }
 
-#FeatureDetails #map-column {
+#map-column {
 	width: 320px;
 	float: left;
 }

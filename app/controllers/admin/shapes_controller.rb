@@ -1,4 +1,6 @@
 class Admin::ShapesController < ResourceController::Base
+  include KmapsEngine::ResourceObjectAuthentication
+  
   cache_sweeper :feature_sweeper, :only => [:update, :destroy]
   cache_sweeper :location_sweeper, :only => [:update, :destroy]
   
