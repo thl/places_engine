@@ -158,7 +158,7 @@ module PlacesEngine
         end
         perspectives = ['cult.reg', 'pol.admin.hier'].collect{ |code| Perspective.get_by_code(code) }
         perspectives.each do |p|
-          hierarchy = self.closest_ancestors_by_perspective(p)
+          hierarchy = self.ancestors_by_perspective(p)
           tag = "ancestors_#{p.code}"
           hierarchy.each{ |f| doc.add_field(tag, f.prioritized_name(View.get_by_code('roman.popular'))) }
           tag = "ancestor_ids_#{p.code}"
