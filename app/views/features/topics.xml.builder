@@ -29,6 +29,7 @@ xml.feature do
           display = stack.join(' > ')
           display << ": #{values.join(', ')}" if !values.empty?
           xml.display_string(display)
+          xml << render(partial: 'time_units/index.xml.builder', locals: {time_units: association.time_units})
         end
       end
     end

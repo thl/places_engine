@@ -20,10 +20,10 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
       xml.name(tags)
     end
   end
-  parents = feature.all_parent_relations.collect(&:parent_node)
-  xml.parents(:type => 'array') { xml << render(:partial => 'stripped_feature.xml.builder', :collection => parents, :as => :feature) if !parents.empty? }
-  children = feature.all_child_relations.collect(&:child_node)
-  xml.children(:type => 'array') { xml << render(:partial => 'stripped_feature.xml.builder', :collection => children, :as => :feature) if !children.empty? }
+  parents = feature.all_parent_relations
+  xml.parents(:type => 'array') { xml << render(:partial => 'stripped_parent_relation.xml.builder', :collection => parents, :as => :parent_relation) if !parents.empty? }
+  children = feature.all_child_relations
+  xml.children(:type => 'array') { xml << render(:partial => 'stripped_child_relation.xml.builder', :collection => children, :as => :child_relation) if !children.empty? }
   xml.perspectives(:type => 'array') do
     per = Perspective.get_by_code(default_perspective_code)
     hierarchy = feature.closest_ancestors_by_perspective(per)
@@ -98,6 +98,7 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
     xml.video_count(feature.media_count(:type => 'Video').to_s, :type => 'integer')
     xml.document_count(feature.media_count(:type => 'Document').to_s, :type => 'integer')
   end
+  xml << render(partial: 'time_units/index.xml.builder', locals: {time_units: feature.time_units})
   xml.created_at(feature.created_at, :type => 'datetime')
   xml.updated_at(feature.updated_at, :type => 'datetime')
 end

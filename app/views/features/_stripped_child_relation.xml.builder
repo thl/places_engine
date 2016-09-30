@@ -1,0 +1,1 @@
+xml << render(:partial => 'stripped_feature.xml.builder', locals: {feature: child_relation.child_node, relation: child_relation})
