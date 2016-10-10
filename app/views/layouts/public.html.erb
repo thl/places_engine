@@ -2,25 +2,27 @@
 <!-- Begin Content Region -->
 <main class="main-wrapper container-fluid">
 	<article class="main-content" role="main">
-		<div class="row">
+		<section class="row">
 			<!-- Banner Region -->
-			<header class="titlearea banner">
-				<div role="banner">
+			<div class="titlearea banner">
+				<div>
+				<header role="banner">
 					<h1 class="page-title"><span class="icon shanticon-places"></span><span class="page-title-text"><%= page_header_title %></span></h1>
-					<nav class="breadwrap">
+				</header>
+				<nav class="breadwrap">
 <%=                   f_breadcrumb %>
-					</nav>
-					<div class="banner-content"></div>
-					<div class="banner-tabs"></div>
+				</nav>
+				<div class="banner-content"></div>
+				<div class="banner-tabs"></div>
 				</div>
-			</header>
-		</div> <!-- End of Banner Region -->
+			</div>
+		</section> <!-- End of Banner Row -->
 		<!-- Begin Content Row -->
-		<div class="row row-offcanvas row-offcanvas-left">
+		<section class="row row-offcanvas" role="main">
 			<!-- Sidebar First Region -->
-<%=         universal_navigation :places, @current_tab_id, custom_secondary_tabs(@current_tab_id) %>
+
 			<!-- Begin Page Content -->
-			<section class="content-section col-xs-12 col-md-9 equal-height">
+			<section class="content-section  equal-height">
 				<button type="button" class="btn btn-default view-offcanvas-sidebar" data-toggle="offcanvas" style="display:none;">
 					<span class="icon"></span>
 				</button>
@@ -31,25 +33,30 @@
 						<div class="region region-content">
 							<div id="block-system-main" class="block block-system">
 								<div class="content">
+									<div id="places-main">										
 									<!-- Column Resources  -->
+<%=         universal_navigation :places, @current_tab_id, custom_secondary_tabs(@current_tab_id) %>
 									<!-- Column Main -->
-									<div class="tab-content">
-										<article class="tab-pane main-col active" id="<%= @current_tab_id %>">
+									<section  class="content-section col-xs-12 col-md-9 equal-height">
+										<div class="tab-content">
+										<article class="tab-pane active" id="<%= @current_tab_id %>">
 <%=                                         render 'public/flash' %>
 <%=                                         yield %>
 					                    </article>
 <%=                                     render partial: 'main/inactive_tab_content', locals: {current_app_id: :places} %>
-				                    </div>
+				                    	</div> <!-- END tab-content -->
+  							  		</section><!-- END content-section -->
+								</div>
 			                        <!-- END Content -->
 			                        <!-- Sidebar Second Region -->
 								</div>
-							</div>
-						</div>
+							</div> <!-- END block-system-main -->
+						</div> <!-- END region -->
 					</article>
-				</div>
-			</section>
-		</div>
-	</article>
+				</div> <!-- END tab-content -->
+			</section> <!-- END content-section -->
+		</section> <!-- END row row-offcanvas -->
+	</article> <!-- END main-content -->
 	<div id="search-flyout" class="region extruder right" role="search" style="display: none;">
 		<div class="region region-search-flyout">
 			<div id="block-kmaps-navigator-kmaps-navigator-block" class="block block-kmaps-navigator">
