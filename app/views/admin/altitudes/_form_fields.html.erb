@@ -2,22 +2,22 @@
 	<legend><%= ts :for, :what => Altitude.model_name.human.titleize, :whom => @parent_object.name %></legend>
 	<div class="row">
 <%= f.label(:average).s %>
-<%= f.text_field :average, :class => :text %>
+<%= f.text_field :average, class: [:text, 'text-full form-control form-text'] %>
     </div>
 	<div class="row">
 <%= f.label(:estimate).s %>
-<%= f.text_field :estimate, :class => :text %>
+<%= f.text_field :estimate, class: [:text, 'text-full form-control form-text'] %>
     </div>
 	<div class="row">
 <%= f.label(:minimum).s %>
-<%= f.text_field :minimum, :class => :text %>
+<%= f.text_field :minimum, class: [:text, 'text-full form-control form-text'] %>
     </div>
 	<div class="row">
 <%= f.label(:maximum).s %>
-<%= f.text_field :maximum, :class => :text %>
+<%= f.text_field :maximum, class: [:text, 'text-full form-control form-text'] %>
     </div>
 	<div class="row">
 <%= f.label(:unit).s %>
-<%= f.collection_select(:unit_id, Unit.options, :id, :title, { :include_blank => false }) %>
+<%= f.collection_select(:unit_id, Unit.options, :id, :title, { :include_blank => false }, class: 'form-control form-select ss-select selectpicker') %>
 	</div>
 </fieldset>

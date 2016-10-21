@@ -78,7 +78,7 @@
 <% if !category_features.empty? %>
   <section class="panel panel-default">
     <div class="panel-heading">
-      <h6><a href="#collapseOne" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= CategoryFeature.model_name.human(:count => category_features.size).titleize.s %></a></h6>
+      <h6><a href="#collapseOne" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle"><span class="glyphicon glyphicon-plus"></span><%= CategoryFeature.model_name.human(:count => category_features.size).titleize.s %></a></h6>
     </div>
     <div id="collapseOne" class="panel-collapse collapse in">
       <div class="panel-body">
@@ -89,7 +89,7 @@
 <% end %>
   <section class="panel panel-default">
     <div class="panel-heading">
-      <h6><a class="accordion-toggle" data-parent="#accordion" data-toggle="collapse" href="#collapseTwo" aria-expanded="true"><span class="glyphicon glyphicon-plus"></span><%= FeatureName.model_name.human(:count => feature.names.size).titleize.s %></a></h6>
+      <h6><a class="accordion-toggle collapsed" data-parent="#accordion" data-toggle="collapse" href="#collapseTwo" aria-expanded="true"><span class="glyphicon glyphicon-plus"></span><%= FeatureName.model_name.human(:count => feature.names.size).titleize.s %></a></h6>
     </div>
     <div id="collapseTwo" class="panel-collapse collapse">
       <div class="panel-body">

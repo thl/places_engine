@@ -33,12 +33,11 @@
 
 
 #inset_map {
-	width: 280px;
-	height: 200px;
+	height: 600px;
 	margin-top: 5px !important;
 }
 
 #map-column {
-	width: 320px;
+	width: 100%;
 	float: left;
 }

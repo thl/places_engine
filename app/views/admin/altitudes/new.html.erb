@@ -1,9 +1,9 @@
 <%  add_breadcrumb_item features_link
     add_breadcrumb_item feature_link(@parent_object)
-    add_breadcrumb_item link_to(Altitude.model_name.human(:count => :many).s, admin_feature_altitudes_path(@parent_object))
+    add_breadcrumb_item link_to(Altitude.model_name.human(count: :many).s, admin_feature_altitudes_path(@parent_object))
     add_breadcrumb_item ts('new.this') %>
 <%= form_for [:admin, @parent_object, @object] do |f| %>
 <%=   f.hidden_field :feature_id %>
-<%=   render :partial=>'form_fields', :locals=>{:f=>f,:object=>@object} %>
-<%=   link_to ts('cancel.this'), collection_path %> | <%= globalized_submit_tag 'creat.e.this' %>
+<%=   render partial: 'form_fields', locals: {f: f, object: @object} %>
+<%=   link_to ts('cancel.this'), collection_path, class: 'btn btn-primary form-submit', id: 'edit-cancel' %> | <%= globalized_submit_tag 'creat.e.this', class: 'btn btn-primary form-submit' %>
 <%  end %>

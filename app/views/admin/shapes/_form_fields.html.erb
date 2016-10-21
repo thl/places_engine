@@ -3,14 +3,14 @@
   <legend><%= Shape.model_name.human.titleize.s %></legend>
   <div class="row">
 <%= f.label :latitude, ts('location.latitude') %>
-<%= f.text_field :lat, :class => :text %>
+<%= f.text_field :lat, class: [:text, 'text-full form-control form-text'] %>
   </div>
   <div class="row">
 <%= f.label :longitude, ts('location.longitude') %>
-<%= f.text_field :lng, :class => :text %>
+<%= f.text_field :lng, class: [:text, 'text-full form-control form-text'] %>
   </div>
   <div class="row">
 <%= f.label(:altitude).s %>
-<%= f.text_field :altitude, :class => :text %>
+<%= f.text_field :altitude, class: [:text, 'text-full form-control form-text'] %>
   </div>	
 </fieldset>
