@@ -29,7 +29,7 @@
            links.attr('data-remote', true);
            links.bind('ajax:beforeSend', function(){ $("#NodeSearchResults").html('<%= image_tag('interface_utils/ajax-loader.gif') %>'); });
 <%       end %>
-<%=      will_paginate pagination_collection, :params => search_params.merge({:action => 'search', :controller => 'features'}) %>
+<%=      will_paginate pagination_collection, :params => search_params.merge({:action => 'search', :controller => '/features'}) %>
          </td>
        </tr>
        <tr>
@@ -49,7 +49,7 @@
 <%     end %>
        <tr>
          <td colspan="2" style="padding:0.5em;" class="pagination-cell">
-<%=      will_paginate pagination_collection, :params => search_params.merge({:action => 'search', :controller => 'features'}) %>
+<%=      will_paginate pagination_collection, :params => search_params.merge({:action => 'search', :controller => '/features'}) %>
          </td>
        </tr>
        </tbody>

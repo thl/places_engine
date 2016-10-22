@@ -1,6 +1,7 @@
 <div id="FeatureDetails">
 <h3>Subjects associated with feature <%= feature_name_header(@feature) %></h3>
-<%= render :partial => 'feature_types', :locals => {:feature => @feature} %>
-<%= render :partial => 'topics', :locals => {:feature => @feature} %>
+<%= render partial: 'feature_types', locals: {feature: @feature} %>
+<%  category_features = @feature.category_features.where(type: nil) %>
+<%= render partial: 'topics', locals: {feature: @feature, category_features: category_features} %>
 <%= javascript_on_load "document.title = '#{ts 'app.short'} - #{feature_name_header(@feature)} - #{ts 'relat.ed.record', :what => Feature.model_name.human.titleize}'" %>		
 </div>
