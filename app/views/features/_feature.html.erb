@@ -1,7 +1,7 @@
 <%= javascript_on_load("ActivateDraggablePopups('.has-draggable-popups');") %>
 <%= content_tag :h6, "#{feature_name_header(feature)} #{edit_item_link(admin_feature_path(feature)) if logged_in? && object_authorized?(feature)}".html_safe %>
 <%= time_units_for(feature) %>
-<%= render :partial => 'feature_types', :locals => {:feature => feature} %><br/>
+
 <%  summary = feature.summary
     if summary.nil?
       caption = feature.caption
@@ -15,7 +15,7 @@
 <%=   summary.content.html_safe %>
       </div>
 <%  end %>
-    <div id="gallery">
+<%= render :partial => 'feature_types', :locals => {:feature => feature} %><br/>
 <%  closest_fid_with_shapes = feature.closest_feature_with_shapes(:logged_in? => logged_in?)
     if closest_fid_with_shapes.nil?
       shapes = []
@@ -25,25 +25,12 @@
       shapes = shapes.where(:is_public => true) if !logged_in?
       map_fid = closest_fid_with_shapes.fid
     end
-    if !map_fid.nil? %>
-      <div id="map-column">
-        <div id="inset_map" class="fid-<%= map_fid %> language-<%= current_view.code %>"></div>
-<%=     javascript_on_load do %>
-          InsetMap.init({proxyUrl: '<%= proxy_engine_proxy_path %>?proxy_url=', geoserverUrl: '<%= geoserver_url %>' });
-<%      end %>
-        <p class = "view-on-map">
-<%=       link_to "#{image_tag("#{InterfaceUtils::Server.get_thl_url}/global/images/icon-map-simple.gif", :alt => "")} #{ts 'map.full'}".html_safe, "#{InterfaceUtils::Server.get_thl_url}/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}" %>
-<%=       link_to "#{image_tag("#{InterfaceUtils::Server.get_thl_url}/global/images/icon-google-maps.png", :alt => "")}#{ts 'map.google'}".html_safe, "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => map_fid, :format => "kmz"), :target => "_blank" %>&nbsp;
-<%=       link_to "#{image_tag("#{InterfaceUtils::Server.get_thl_url}/global/images/icon-google-earth.png", :alt => "")} #{ts 'map.earth'}".html_safe, {:action => :gis_resources, :fids => map_fid, :format => "kmz"}, :target => "_blank" %>
-        </p>
-      </div>
-<%  end
-    illustration = feature.illustration
+	illustration = feature.illustration
     if !illustration.nil?
       picture = feature.illustration.picture
       rendered_height = 200
       rendered_width = picture.width.nil? || picture.height.nil? ? nil : picture.width * rendered_height / picture.height %>
-      <div id="illustration"<%= " style=\"width:#{rendered_width}px;\"".html_safe if !rendered_width.nil? %>>
+      <div class='resource-overview-image'<%= " style=\"width:#{rendered_width}px;\"".html_safe if !rendered_width.nil? %>>
 <%    if picture.instance_of?(MmsIntegration::Picture) %>
 <%=     link_to image_tag(picture.url, :height => rendered_height), MmsIntegration::Medium.element_url(picture.id, :format => 'html') %>
 <%    else %>
@@ -69,9 +56,23 @@
 <%        end %>
         </p>
 <%    end %>
-      </div>
+      </div> <!-- END resource-overview-image -->
 <%  end %>
-    </div>
+<%  if !map_fid.nil? %>
+      <div class="map-renditions" id="map-column">
+        <div id="map-canvas">
+          <div id="inset_map" class="fid-<%= map_fid %> language-<%= current_view.code %>"></div>
+<%=       javascript_on_load do %>
+            InsetMap.init({proxyUrl: '<%= proxy_engine_proxy_path %>?proxy_url=', geoserverUrl: '<%= geoserver_url %>' });
+<%        end %>
+          <p class = "view-on-map">
+<%=         link_to "#{image_tag("#{InterfaceUtils::Server.get_thl_url}/global/images/icon-map-simple.gif", :alt => "")} #{ts 'map.full'}".html_safe, "#{InterfaceUtils::Server.get_thl_url}/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}" %>
+<%=         link_to "#{image_tag("#{InterfaceUtils::Server.get_thl_url}/global/images/icon-google-maps.png", :alt => "")}#{ts 'map.google'}".html_safe, "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => map_fid, :format => "kmz"), :target => "_blank" %>&nbsp;
+<%=         link_to "#{image_tag("#{InterfaceUtils::Server.get_thl_url}/global/images/icon-google-earth.png", :alt => "")} #{ts 'map.earth'}".html_safe, {:action => :gis_resources, :fids => map_fid, :format => "kmz"}, :target => "_blank" %>
+          </p>
+        </div> <!-- END map-canvas -->
+     </div> <!-- END map-renditions -->
+<%  end %>
     <div style="clear: both;"></div>
 <div id="accordion" class="panel-group">
 <% category_features = feature.category_features.where(:type => nil) %>
