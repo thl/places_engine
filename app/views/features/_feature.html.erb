@@ -28,13 +28,12 @@
 	illustration = feature.illustration
     if !illustration.nil?
       picture = feature.illustration.picture
-      rendered_height = 200
-      rendered_width = picture.width.nil? || picture.height.nil? ? nil : picture.width * rendered_height / picture.height %>
-      <div class='resource-overview-image'<%= " style=\"width:#{rendered_width}px;\"".html_safe if !rendered_width.nil? %>>
+	  rendered_width = picture.width.nil? || picture.width>576 ? 576 : picture.width %>
+      <div class='resource-overview-image'>
 <%    if picture.instance_of?(MmsIntegration::Picture) %>
-<%=     link_to image_tag(picture.url, :height => rendered_height), MmsIntegration::Medium.element_url(picture.id, :format => 'html') %>
+<%=     link_to image_tag(picture.url, :width => rendered_width), MmsIntegration::Medium.element_url(picture.id, :format => 'html') %>
 <%    else %>
-<%=     link_to image_tag(picture.url, :height => rendered_height), picture.url %>
+<%=     link_to image_tag(picture.url, :width => rendered_width), picture.url %>
 <%    end
       place = illustration.place
       if place.nil?

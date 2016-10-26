@@ -33,12 +33,17 @@
 
 
 #inset_map {
-	height: 600px;
+	height: 356px;
+	width:576px;
 	margin-top: 5px !important;
 }
 
 #map-column {
-	width: 100%;
+	width:576px;
 	float: left;
-	height:640px;
+	height:396px;
+}
+
+#map-canvas {
+	height:386px;
 }
