@@ -156,12 +156,17 @@ module PlacesEngine
           doc.add_field('associated_subjects', c.header)
           doc.add_field('associated_subject_ids', c.id)
         end
-        perspectives = ['cult.reg', 'pol.admin.hier'].collect{ |code| Perspective.get_by_code(code) }
+        perspectives = Perspective.where(is_public: true) #['cult.reg', 'pol.admin.hier'].collect{ |code| Perspective.get_by_code(code) }
         perspectives.each do |p|
           hierarchy = self.ancestors_by_perspective(p)
           tag = "ancestors_#{p.code}"
           hierarchy.each{ |f| doc.add_field(tag, f.prioritized_name(View.get_by_code('roman.popular'))) }
           tag = "ancestor_ids_#{p.code}"
+          hierarchy.each{ |f| doc.add_field(tag, f.fid) }
+          hierarchy = self.closest_ancestors_by_perspective(p)
+          tag = "ancestors_closest_#{p.code}"
+          hierarchy.each{ |f| doc.add_field(tag, f.prioritized_name(View.get_by_code('roman.popular'))) }
+          tag = "ancestor_ids_closest_#{p.code}"
           hierarchy.each{ |f| doc.add_field(tag, f.fid) }
         end
         closest = self.closest_feature_with_shapes

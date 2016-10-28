@@ -34,18 +34,19 @@ class Altitude < ActiveRecord::Base
   end
   
 end
-
-# == Schema Info
-# Schema version: 20110923232332
+# == Schema Information
 #
 # Table name: altitudes
 #
-#  id         :integer         not null, primary key
-#  feature_id :integer         not null
-#  unit_id    :integer         not null
-#  average    :integer
-#  estimate   :string(255)
+#  id         :integer          not null, primary key
+#  feature_id :integer          not null
 #  maximum    :integer
 #  minimum    :integer
-#  created_at :timestamp
+#  average    :integer
+#  unit_id    :integer          not null
+#  created_at :datetime
+#  updated_at :datetime
+#  estimate   :string(255)
+#
+
 #  updated_at :timestamp

@@ -91,23 +91,24 @@ class CategoryFeature < ActiveRecord::Base
     end
   end
 end
-
-# == Schema Info
-# Schema version: 20110923232332
+# == Schema Information
 #
 # Table name: category_features
 #
-#  id             :integer         not null, primary key
-#  category_id    :integer         not null
-#  feature_id     :integer         not null
+#  id             :integer          not null, primary key
+#  feature_id     :integer          not null
+#  category_id    :integer          not null
 #  perspective_id :integer
-#  label          :string(255)
-#  numeric_value  :integer
-#  position       :integer         not null, default(0)
-#  prefix_label   :boolean         not null, default(TRUE)
-#  show_parent    :boolean         not null
-#  show_root      :boolean         not null, default(TRUE)
-#  string_value   :string(255)
+#  created_at     :datetime
+#  updated_at     :datetime
+#  position       :integer          default(0), not null
 #  type           :string(255)
-#  created_at     :timestamp
+#  string_value   :string(255)
+#  numeric_value  :integer
+#  show_parent    :boolean          default(FALSE), not null
+#  show_root      :boolean          default(TRUE), not null
+#  label          :string(255)
+#  prefix_label   :boolean          default(TRUE), not null
+#
+
 #  updated_at     :timestamp

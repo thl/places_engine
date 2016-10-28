@@ -5,16 +5,17 @@ class Contestation < ActiveRecord::Base
   belongs_to :feature
   has_many :imports, :as => 'item', :dependent => :destroy
 end
-
-# == Schema Info
-# Schema version: 20110923232332
+# == Schema Information
 #
 # Table name: contestations
 #
-#  id               :integer         not null, primary key
+#  id               :integer          not null, primary key
+#  feature_id       :integer          not null
+#  contested        :boolean          default(TRUE), not null
 #  administrator_id :integer
 #  claimant_id      :integer
-#  feature_id       :integer         not null
-#  contested        :boolean         not null, default(TRUE)
-#  created_at       :timestamp
+#  created_at       :datetime
+#  updated_at       :datetime
+#
+
 #  updated_at       :timestamp

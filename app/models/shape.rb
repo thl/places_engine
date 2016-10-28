@@ -75,18 +75,19 @@ class Shape < ActiveRecord::Base
   end
   
 end
-
-# == Schema Info
-# Schema version: 20110923232332
+# == Schema Information
 #
 # Table name: shapes
 #
-#  gid        :integer         not null, primary key
-#  altitude   :integer
-#  area       :
-#  fid        :integer
+#  gid        :integer          not null, primary key
 #  geometry   :geometry
-#  is_public  :boolean         not null, default(TRUE)
-#  position   :integer         not null, default(0)
-#  created_at :timestamp
+#  fid        :integer
+#  position   :integer          default(0), not null
+#  area       :float
+#  altitude   :integer
+#  is_public  :boolean          default(TRUE), not null
+#  created_at :datetime
+#  updated_at :datetime
+#
+
 #  updated_at :timestamp

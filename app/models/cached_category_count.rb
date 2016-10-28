@@ -26,16 +26,17 @@ class CachedCategoryCount < ActiveRecord::Base
     return cached_count
   end
 end
-
-# == Schema Info
-# Schema version: 20110923232332
+# == Schema Information
 #
 # Table name: cached_category_counts
 #
-#  id                :integer         not null, primary key
-#  category_id       :integer         not null
-#  count             :integer         not null
-#  count_with_shapes :integer         not null
-#  cache_updated_at  :timestamp       not null
-#  created_at        :timestamp
+#  id                :integer          not null, primary key
+#  category_id       :integer          not null
+#  count             :integer          not null
+#  cache_updated_at  :datetime         not null
+#  created_at        :datetime
+#  updated_at        :datetime
+#  count_with_shapes :integer          not null
+#
+
 #  updated_at        :timestamp
