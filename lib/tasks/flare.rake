@@ -4,7 +4,7 @@ namespace :places_engine do
     task :reindex_all_with_subjects => :environment do
       features = CategoryFeature.where(:type => nil).select('feature_id').distinct.order('feature_id').collect(&:feature).reject(&:nil?)
       features.each do |f|
-        if f.update_solr
+        if f.index
           puts "#{Time.now}: Reindexed #{f.fid}."
         else
           puts "#{Time.now}: #{f.fid} failed."

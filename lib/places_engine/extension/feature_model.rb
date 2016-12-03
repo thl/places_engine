@@ -5,6 +5,8 @@ module PlacesEngine
       include Rails.application.routes.url_helpers
       
       included do
+        acts_as_indexable uid_prefix: 'places'
+        
         has_many :altitudes, :dependent => :destroy
         has_many :category_features, :dependent => :destroy
         has_many :contestations, :dependent => :destroy
@@ -138,10 +140,6 @@ module PlacesEngine
         parent = ancestors.detect{|a| a.fid != self.fid && a.feature_object_types.detect{|ft| ft.category_id==29}}
         parent = self.parents.first if parent.nil?
         return parent
-      end
-
-      def solr_id
-        "places-#{self.fid}"
       end
       
       def document_for_rsolr
