@@ -4,8 +4,8 @@ class AssociatedMediaController < ApplicationController
 
   # GET /topics/1/pictures
   def pictures
-    @media = MmsIntegration::Place.paginated_media(@feature.fid, 'pictures', page: params[:page], :per_page => params[:per_page])
-    @title = ts(:in, :what => MmsIntegration::Picture.human_name(:count => :many).titleize, :where => @feature.prioritized_name(current_view).name)
+    @media = MmsIntegration::Picture.search_by_place(@feature.fid, page: params[:page] || 1, per_page: MmsIntegration::Picture::PER_PAGE )
+    @title = ts(:in, what: MmsIntegration::Picture.human_name(count: :many).titleize, where: @feature.prioritized_name(current_view).name)
     render_media
   end
   

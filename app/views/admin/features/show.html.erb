@@ -11,20 +11,20 @@
     </div>
     <div id="collapseOne" class="panel-collapse collapse in">
       <div class="panel-body">
-  <legend><%= ts 'information.general' %> <%= edit_item_link @object %></legend>
-  <div class="row">
-    <label><%= Feature.human_attribute_name(:pid).s %></label> <span><%= @object.pid %></span>
-  </div>
-<% if !@object.old_pid.blank? %>
-   <div class="row">
-     <label><%= Feature.human_attribute_name(:old_pid).s %></label> <span><%= @object.old_pid %></span>
-   </div>
-<% end %>
-  <div class="row">
-    <label><%= Feature.human_attribute_name(:is_public).s %></label> <span><%= @object.is_public? ? "Yes" : "No" %></span>
-  </div>
-</div> <!-- END panel-body -->
-</div> <!-- END collapseOne -->
+       <legend><%= ts 'information.general' %> <%= edit_item_link @object %></legend>
+       <div class="row">
+       <label><%= Feature.human_attribute_name(:pid).s %></label> <span><%= @object.pid %></span>
+      </div>
+<%   if !@object.old_pid.blank? %>
+      <div class="row">
+        <label><%= Feature.human_attribute_name(:old_pid).s %></label> <span><%= @object.old_pid %></span>
+      </div>
+<%    end %>
+      <div class="row">
+        <label><%= Feature.human_attribute_name(:is_public).s %></label> <span><%= @object.is_public? ? "Yes" : "No" %></span>
+      </div>
+    </div> <!-- END panel-body -->
+  </div> <!-- END collapseOne -->
 </section> <!-- END panel -->
 <% if current_user.admin? %>
   <section class="panel panel-default">
@@ -76,11 +76,10 @@
 <%= highlighted_new_item_link [@object, :caption] %>
     <br class="clear"/>
 <%= render :partial => 'admin/captions/list', :locals => { :list => @object.captions } %>
-		</div> <!-- EDN panel-body -->
+		</div> <!-- END panel-body -->
 	</div> <!-- END collapseFour -->
 </section>
-
-    <section class="panel panel-default">
+<section class="panel panel-default">
       <div class="panel-heading">
         <h6><a href="#collapseFive" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= Summary.model_name.human(:count => :many).titleize.s %></a></h6>
       </div>
