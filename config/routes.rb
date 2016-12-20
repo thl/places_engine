@@ -1,11 +1,4 @@
 Rails.application.routes.draw do
-  resources :associated_media, only: :show do
-    member do
-      get 'pictures'
-      get 'videos'
-      get 'documents'
-    end
-  end
   
   resources :categories do
     resources :counts, controller: 'cached_category_counts'
