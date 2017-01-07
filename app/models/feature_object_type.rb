@@ -7,9 +7,22 @@ class FeatureObjectType < CategoryFeature
   #
   belongs_to :perspective
   has_many :imports, :as => 'item', :dependent => :destroy
+  has_many :citations, :as => :citable, :dependent => :destroy
   
   after_save do |record|
     record.feature.update_object_type_positions if !record.skip_update
+  end
+  
+  def citations
+    Citation.where(citable_type: ['CategoryFeature', 'FeatureObjectType'], citable_id: self.id)
+  end
+
+  def time_units
+    TimeUnit.where(dateable_type: ['CategoryFeature', 'FeatureObjectType'], dateable_id: self.id)
+  end
+
+  def notes
+    Note.where(notable_type: ['CategoryFeature', 'FeatureObjectType'], notable_id: self.id)
   end
 end
 # == Schema Information
