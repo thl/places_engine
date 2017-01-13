@@ -76,7 +76,8 @@ var InsetMap = {
 	addFeatureByFid: function(fid){
 		var new_layer = new OpenLayers.Layer.THLWMS('FID: '+fid, {
 			cql_filter: "fid="+fid+"",
-			styles: "thl_noscale"
+			styles: "thl_noscale",
+			geoserver_url: this.geoserverUrl
 		});
 		new_layer.showPlaceNames();
 		// Many view codes aren't set up in GeoServer yet, so we'll have to wait to use setLanguage()
@@ -90,7 +91,6 @@ var InsetMap = {
 	},
 
 	initMap: function(){
-	
 		OpenLayers.ProxyHost = this.proxyUrl;
 		OpenLayers.Util.onImageLoadErrorColor = "transparent";
 		OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
@@ -107,7 +107,7 @@ var InsetMap = {
 		};
 	
 		InsetMap.map = new OpenLayers.Map('inset_map', mapOptions);
-	
+		
 		/*InsetMap.map.addControl(new OpenLayers.Control.MousePosition({
 			displayProjection: new OpenLayers.Projection("EPSG:4326"),
 			numDigits: 4

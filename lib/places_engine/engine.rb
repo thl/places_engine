@@ -1,7 +1,7 @@
 module PlacesEngine
   class Engine < ::Rails::Engine
     initializer :assets do |config|
-      Rails.application.config.assets.precompile.concat(['places_engine/inset-map.js', 'places_engine/top.js'])
+      Rails.application.config.assets.precompile.concat(['places_engine/inset-map.js', 'places_engine/top.js', 'places_engine/THLWMS.js'])
     end
         
     initializer :loader do |config|
