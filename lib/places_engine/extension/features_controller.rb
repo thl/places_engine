@@ -166,9 +166,10 @@ module PlacesEngine
 
         # Find the proper instance of GeoServer, based on the current environment
         geoserver_base = case InterfaceUtils::Server.environment
-        when InterfaceUtils::Server::DEVELOPMENT, InterfaceUtils::Server::LOCAL  then 'http://localhost:8080/thlib-geoserver/'
-        when InterfaceUtils::Server::PRODUCTION                                  then 'http://localhost:8080/thdl-geoserver/'
-        else                                                                          'http://www.thlib.org:8080/thdl-geoserver/'
+        when InterfaceUtils::Server::LOCAL, InterfaceUtils::Server::DEVELOPMENT,
+             InterfaceUtils::Server::STAGING    then 'http://localhost:8080/thlib-geoserver/'
+        when InterfaceUtils::Server::PRODUCTION then 'http://localhost:8080/thdl-geoserver/'
+        else                                         'http://www.thlib.org:8080/thdl-geoserver/'
         end
         if service.nil?
           render :nothing => true
