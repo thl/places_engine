@@ -1,33 +1,33 @@
 <% add_breadcrumb_item features_link
-   add_breadcrumb_item feature_link(@object.feature)
-   add_breadcrumb_item feature_shapes_link(@object.feature)
-   add_breadcrumb_item @object %>
+   add_breadcrumb_item feature_link(object.feature)
+   add_breadcrumb_item feature_shapes_link(object.feature)
+   add_breadcrumb_item object %>
 <fieldset>
    <legend>
 <%=  Shape.model_name.human.titleize.s %>
-<%=  edit_item_link(@object) if @object.is_point? %>
+<%=  edit_item_link(object) if object.is_point? %>
    </legend>
    <div class="row">
      <label><%= Shape.human_attribute_name(:gid).s %></label>
-     <span><%= def_if_blank(@object, :gid) %></span>
+     <span><%= def_if_blank(object, :gid) %></span>
    </div>
-<% if @object.is_point? %>
+<% if object.is_point? %>
    <div class="row">
      <label><%= Shape.human_attribute_name(:latitude).s %></label>
-     <span><%= def_if_blank(@object, :lat) %></span>
+     <span><%= def_if_blank(object, :lat) %></span>
    </div>
    <div class="row">
      <label><%= Shape.human_attribute_name(:longitude).s %></label>
-     <span><%= def_if_blank @object, :lng %></span>
+     <span><%= def_if_blank object, :lng %></span>
    </div>
    <div class="row">
      <label><%= Altitude.model_name.human.titleize.s %></label>
-     <span><%= def_if_blank @object, :altitude %></span>
+     <span><%= def_if_blank object, :altitude %></span>
    </div>
 <% else %>
    <div class="row">
      <label><%= Shape.model_name.human(:count => :many).titleize.s %></label>
-     <span><%= shape_display_string(@object) %></span>
+     <span><%= shape_display_string(object) %></span>
    </div>
 <% end %>
 </fieldset>

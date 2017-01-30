@@ -12,12 +12,10 @@ class Admin::AltitudesController < ResourceController::Base
   protected
   
   def parent_association
-    @parent_object ||= parent_object
-    @parent_object.altitudes # ResourceController needs this for the parent association
+    parent_object.altitudes # ResourceController needs this for the parent association
   end
   
   def collection
-    @parent_object ||= parent_object
-    @collection = Altitude.where(:feature_id => @parent_object.id).page(params[:page])
+    @collection = Altitude.where(:feature_id => parent_object.id).page(params[:page])
   end
 end

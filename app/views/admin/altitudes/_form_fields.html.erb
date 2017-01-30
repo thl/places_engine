@@ -1,5 +1,5 @@
 <fieldset>	
-	<legend><%= ts :for, :what => Altitude.model_name.human.titleize, :whom => @parent_object.name %></legend>
+	<legend><%= ts :for, :what => Altitude.model_name.human.titleize, :whom => parent_object.name %></legend>
 	<div class="row">
 <%= f.label(:average).s %>
 <%= f.text_field :average, class: [:text, 'text-full form-control form-text'] %>

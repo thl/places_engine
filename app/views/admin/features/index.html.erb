@@ -1,6 +1,6 @@
 <% add_breadcrumb_item features_link
    if @locating_relation
-     add_breadcrumb_items(feature_link(@object), feature_relations_link(@object), ts('select.record', :what => t('relat.ion.this', :count => 1)))
+     add_breadcrumb_items(feature_link(object), feature_relations_link(object), ts('select.record', :what => t('relat.ion.this', :count => 1)))
 end %>
 <div id="featureContextTreeAndList">
   <div id="featureContextList">
@@ -29,7 +29,7 @@ end %>
       <tr class="<%= @context_feature==item ? 'selected' : '' %>">  
         <td class="listActionsCol">
 <%      if @locating_relation %>
-<%=       form_tag new_admin_feature_feature_relation_path(@object), {:method=>:get} %>
+<%=       form_tag new_admin_feature_feature_relation_path(object), {:method=>:get} %>
 <%=         hidden_field_tag :target_id, item.id %>
 <%=         globalized_submit_tag 'select.this' %>
           </form>

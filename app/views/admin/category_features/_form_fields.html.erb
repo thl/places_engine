@@ -1,6 +1,6 @@
 <%= error_messages_for model_name %>
 <%= category_fields({
-		subject: {display: f_label(@object.feature), label: f.label(:feature, Feature.model_name.human.titleize.s) },
+		subject: {display: f_label(object.feature), label: f.label(:feature, Feature.model_name.human.titleize.s) },
 		root: nil,
 		var_name: :category_feature,
 		include_js: false,

@@ -28,9 +28,8 @@ class Admin::CategoryFeaturesController < AclController
   end
   
   def collection
-    @parent_object ||= parent_object
     filter = params[:filter]
-    search_results = parent? ? CategoryFeature.contextual_search(filter, @parent_object.id) : CategoryFeature.search(filter)
+    search_results = parent? ? CategoryFeature.contextual_search(filter, parent_object.id) : CategoryFeature.search(filter)
     @collection = search_results.page(params[:page])
   end
   

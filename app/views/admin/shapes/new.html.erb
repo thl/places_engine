@@ -1,9 +1,9 @@
 <%  add_breadcrumb_item features_link
-    add_breadcrumb_item feature_link(@object.feature)
+    add_breadcrumb_item feature_link(object.feature)
     add_breadcrumb_item link_to(Shape.model_name.human(count: :many).s, collection_path)
     add_breadcrumb_item ts('new.this') %>
-<%= form_for @object, url: admin_feature_shapes_path(@object.feature) do |f| %>
-<%=   f.hidden_field :fid, value: @object.fid %>
-<%=   render partial: 'form_fields', locals: {f: f, object:@object} %>
+<%= form_for object, url: admin_feature_shapes_path(object.feature) do |f| %>
+<%=   f.hidden_field :fid, value: object.fid %>
+<%=   render partial: 'form_fields', locals: {f: f, object:object} %>
 <%=   link_to ts('cancel.this'), collection_path, class: 'btn btn-primary form-submit', id: 'edit-cancel' %> | <%= globalized_submit_tag 'creat.e.this', class: 'btn btn-primary form-submit' %>
 <%  end %>

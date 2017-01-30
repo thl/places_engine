@@ -2,7 +2,7 @@ class Admin::FeatureObjectTypesController < AclController
   include KmapsEngine::ResourceObjectAuthentication
   resource_controller
   
-  helper :admin, 'admin/category_features'  
+  helper :admin, 'admin/category_features'
   belongs_to :feature
   
   new_action.before do
@@ -37,11 +37,10 @@ class Admin::FeatureObjectTypesController < AclController
   end
 
   def collection
-    @parent_object ||= parent_object
     page = params[:page]
     filter = params[:filter]
     if parent?
-      @collection = FeatureObjectType.contextual_search(filter, @parent_object.id).page(page)
+      @collection = FeatureObjectType.contextual_search(filter, parent_object.id).page(page)
     else
       @collection = FeatureObjectType.search(filter).page(page)
     end

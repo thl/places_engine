@@ -54,12 +54,10 @@ class Admin::ShapesController < ResourceController::Base
   
     #def object
     #  @object = Shape.find(params[:id])
-    #  @parent_object = @object.feature
     #  @object
     #end
     
     # def parent_association
-    #   @parent_object=parent_object # ResourceController normally sets this
     #   if params[:id].nil?
     #     return parent_object.parent_relations 
     #   end
@@ -69,8 +67,6 @@ class Admin::ShapesController < ResourceController::Base
     # end
 
     def collection
-      # needed for the list view
-      @parent_object = parent_object if parent?
       @collection = Feature.find(params[:feature_id]).shapes
     end
 end
