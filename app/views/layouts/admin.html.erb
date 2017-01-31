@@ -1,4 +1,4 @@
-<%  header_options = { class: 'html not-front logged-in no-sidebars page-places kmaps rails', javascript_files: ['kmaps_engine/admin', 'subjects_integration/application'], stylesheet_files: ['kmaps_engine/admin'] }
+<%  header_options = { class: 'html not-front logged-in no-sidebars page-places kmaps rails', javascript_files: ['kmaps_engine/admin'], stylesheet_files: ['kmaps_engine/admin'] }
     header_options[:title] = "#{model_name.classify.constantize.model_name.human.titleize}: #{controller.action_name.humanize}" if defined?(model_name) && !model_name.blank? %>
 <%= header(header_options) %>
 <!-- Banner Region -->
@@ -41,12 +41,20 @@
 <%=                       yield %>
 						</div>
 					</article>
-				</div>
-			</section>
-			<!-- END Content -->
-			<!-- Sidebar Second Region -->
-		</section>
-	</article>
+				</div> <!-- END tab-content -->
+			</section> <!-- END Content --> <!-- Sidebar Second Region -->
+		</section> <!-- END row row-offcanvas -->
+	</article> <!-- END main-content -->
+<%= javascript_on_load do %>
+      jQuery(window).unbind("scroll");
+      NodeTree.init('NodeTree', 'NodeTreeList', '<%= features_path %>/');
+      var characteristic_data = <%= CategoryFeature.get_json_data %>;
+      var characteristic_selector = new CharacteristicSelector();
+      characteristic_selector.init('characteristic_selector', {
+      fieldLabel: "<%= Topic.human_name.titleize %>:",
+      data: characteristic_data});
+<%  end %>
+<%= category_searcher(true, :category_id => 20, :field_name => 'object_type', :field_label => "#{Feature.human_attribute_name(:object_type).s}: ", :exclude_span => true, :options => {:hasTree => 'true'}) %>
 	<div id="search-flyout" class="region extruder right" role="search" style="display: none;">
 		<div class="region region-search-flyout">
 			<div id="block-kmaps-navigator-kmaps-navigator-block" class="block block-kmaps-navigator">

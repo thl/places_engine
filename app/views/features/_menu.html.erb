@@ -105,7 +105,7 @@
 <%=           render :partial => 'features/search_results', :locals => {:use_session => true, :features => search_results} %>
 <%          end
           end %>
-        </div>  
+        </div>
       </div>
 	</div>
   </section>
@@ -113,7 +113,7 @@
 <% # If a search is made via GET params (e.g. /features?filter=china), we need to perform it.
    valid_search_params = [:filter, :context_id, :match, :object_type, :characteristic_id, :scope, :search_scope, :has_descriptions].collect{|p| p.to_s }
    unless (params.keys & valid_search_params).empty? %>
-<%=  link_to '', search_features_path, :remote => true, :id => 'ajax_search_results', :style => "display:none;" %>
+<%=  link_to '', search_features_path, :remote => true, :id => 'ajax_search_results', :style => 'display:none;' %>
 <%=  javascript_tag("$('#ajax_search_results').bind('ajax:beforeSend', function(){ NodeMenu.beginSearch() })") %>
-<%=  javascript_on_load "jQuery('#ajax_search_results').click()" %>
+<%=  javascript_on_load("jQuery('#ajax_search_results').click()") %>
 <% end %>

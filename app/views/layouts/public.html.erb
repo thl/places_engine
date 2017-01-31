@@ -1,4 +1,4 @@
-<%= header(class: "html not-front #{logged_in? ? 'logged-in' : 'not-logged-in'} no-sidebars page-places kmaps rails", stylesheet_files: ["kmaps_engine/#{current_view.code=='roman.scholar' ? 'scholar' : 'popular'}"]) %>
+<%= header(class: "html not-front #{logged_in? ? 'logged-in' : 'not-logged-in'} no-sidebars page-places kmaps rails", stylesheet_files: ["kmaps_engine/#{current_view.code=='roman.scholar' ? 'scholar' : 'popular'}", 'kmaps_engine/xml-books'], javascript_files: ['http://openlayers.org/api/OpenLayers.js','places_engine/THLWMS','places_engine/inset-map',"http://maps.googleapis.com/maps/api/js?key=#{google_maps_key}&sensor=false"]) %>
 <!-- Begin Content Region -->
 <main class="main-wrapper container-fluid">
 	<article class="main-content" role="main">
@@ -57,6 +57,16 @@
 			</section> <!-- END content-section -->
 		</section> <!-- END row row-offcanvas -->
 	</article> <!-- END main-content -->
+<%= javascript_on_load do %>
+      jQuery(window).unbind("scroll");
+      NodeTree.init('NodeTree', 'NodeTreeList', '<%= features_path %>/');
+      var characteristic_data = <%= CategoryFeature.get_json_data %>;
+      var characteristic_selector = new CharacteristicSelector();
+      characteristic_selector.init('characteristic_selector', {
+      fieldLabel: "<%= Topic.human_name.titleize %>:",
+      data: characteristic_data});
+<%  end %>
+<%= category_searcher(true, :category_id => 20, :field_name => 'object_type', :field_label => "#{Feature.human_attribute_name(:object_type).s}: ", :exclude_span => true, :options => {:hasTree => 'true'}) %>
 	<div id="search-flyout" class="region extruder right" role="search" style="display: none;">
 		<div class="region region-search-flyout">
 			<div id="block-kmaps-navigator-kmaps-navigator-block" class="block block-kmaps-navigator">
