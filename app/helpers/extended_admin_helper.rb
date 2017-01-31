@@ -11,7 +11,7 @@ module ExtendedAdminHelper
       items=[]
       if options[:use_first]
         items << (options[:link_first] ? 
-          (options[:use_names] ? f_link(feature, admin_feature_path(feature)) : feature_link(feature)) : 
+          (options[:use_names] ? f_link(feature, admin_feature_path(feature.fid)) : feature_link(feature)) :
           feature_label(feature))
       end
       if options[:use_relation]
@@ -20,7 +20,7 @@ module ExtendedAdminHelper
       end
       if options[:use_second]
         items << (options[:link_second] ? 
-          (options[:use_names] ? f_link(other, admin_feature_path(other)) : feature_link(other)) : 
+          (options[:use_names] ? f_link(other, admin_feature_path(other.fid)) : feature_link(other)) :
           feature_label(other))
         if options[:show_feature_types]
           items << "(" + other.object_types.collect{|type| type.header }.join(", ") + ")"
