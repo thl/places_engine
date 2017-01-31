@@ -85,7 +85,7 @@
 		      <img src="http://thlib.org/global/images/ajax-loader.gif" alt="" style="display:inline;" /> <%= ts :loading %>
 <%          end
             unless @feature.nil? %>
-<%=           javascript_on_load "NodeTree.loadExpandedTree(#{@feature.closest_hierarchical_feature_id_by_perspective(current_perspective)})" %>
+<%=           javascript_on_load "NodeTree.loadExpandedTree(#{@feature.closest_hierarchical_feature_id_by_perspective(current_perspective)}#{(defined?(admin) && admin) ? ', true' : ', false'})" %>
 <%          end %>
           </div>
 	    </div>
