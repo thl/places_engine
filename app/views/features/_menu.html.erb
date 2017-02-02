@@ -75,21 +75,22 @@
       <li class="treeview<%= ' active' if active_item == 'browse' %>"><a href=".treeview" data-toggle="tab"><span class="icon shanticon-tree"></span>Tree</a></li>
       <li class="listview<%= ' active' if active_item == 'results' %>"><a href=".listview" data-toggle="tab"><span class="icon shanticon-list"></span>List</a></li>
     </ul>
-	<div class="tab-content">
-	  <div class="treeview tab-pane<%= ' active' if active_item == 'browse' %>">
-	    <div id="NodeTree">
-	      <div id="NodeTreeList">
-<%          if @feature.nil? %>
+	  <div class="tab-content">
+	    <div class="treeview tab-pane<%= ' active' if active_item == 'browse' %>">
+	      <div id="NodeTree">
+	        <div id="NodeTreeList">
+<%          feature = contextual_feature
+            if feature.nil? %>
 <%=           render :partial => "features/node_tree", :locals => { :children => @top_level_nodes } %>
 <%          else %>
-		      <img src="http://thlib.org/global/images/ajax-loader.gif" alt="" style="display:inline;" /> <%= ts :loading %>
+		          <img src="http://thlib.org/global/images/ajax-loader.gif" alt="" style="display:inline;" /> <%= ts :loading %>
 <%          end
-            unless @feature.nil? %>
-<%=           javascript_on_load "NodeTree.loadExpandedTree(#{@feature.closest_hierarchical_feature_id_by_perspective(current_perspective)}#{(defined?(admin) && admin) ? ', true' : ', false'})" %>
+            unless feature.nil? %>
+<%=           javascript_on_load "NodeTree.loadExpandedTree(#{feature.closest_hierarchical_feature_id_by_perspective(current_perspective)}#{(defined?(admin) && admin) ? ', true' : ', false'})" %>
 <%          end %>
           </div>
+	      </div>
 	    </div>
-	  </div>
       <div class="listview tab-pane<%= ' active' if active_item == 'results' %>">
         <div id="NodeSearchResults" >
 <%        if session[:search].blank? %>
@@ -107,7 +108,7 @@
           end %>
         </div>
       </div>
-	</div>
+	  </div>
   </section>
 </section>
 <% # If a search is made via GET params (e.g. /features?filter=china), we need to perform it.
