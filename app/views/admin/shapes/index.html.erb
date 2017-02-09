@@ -5,4 +5,11 @@
      add_breadcrumb_item Shape.model_name.human(:count => :many).s
    end %>
 <br class="clear"/>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= Shape.model_name.human.pluralize.s %></h6>
+  </div>
+  <div class="panel-body">
 <%= render :partial => 'list', :locals => { :list => @collection } %>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

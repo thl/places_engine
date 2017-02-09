@@ -2,6 +2,18 @@
    add_breadcrumb_item feature_link(parent_object)
    add_breadcrumb_item link_to(Altitude.model_name.human(:count => :many).s, admin_feature_altitudes_path(parent_object))
    add_breadcrumb_item object.id %>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= Altitude.model_name.human.titleize.s %></h6>
+  </div>
+  <div class="panel-body">
+  <div id="accordion" class="panel-group">
+<section class="panel panel-default">
+    <div class="panel-heading">
+      <h6><a href="#collapseOne" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle"><span class="glyphicon glyphicon-plus"></span><%= Altitude.model_name.human.titleize.s %></a></h6>
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse in">
+      <div class="panel-body">
 <fieldset>	
   <legend><%= ts :for, :what => Altitude.model_name.human.titleize.s, :whom => parent_object.name %> <%= edit_item_link object %> <%= delete_item_link object %></legend>
   <div class="row">
@@ -21,6 +33,40 @@
     <span><%= def_if_blank object, :unit, :title %></span>
   </div>
 </fieldset>
+    </div> <!-- END panel-body -->
+  </div> <!-- END collapseOne -->
+</section> <!-- END panel -->
+<section class="panel panel-default">
+    <div class="panel-heading">
+      <h6><a href="#collapseTwo" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= ts 'Citations' %></a></h6>
+    </div>
+    <div id="collapseTwo" class="panel-collapse collapse">
+      <div class="panel-body">
 <%= citation_list_fieldset %>
+    </div> <!-- END panel-body -->
+  </div> <!-- END collapseTwo -->
+</section> <!-- END panel -->
+<section class="panel panel-default">
+    <div class="panel-heading">
+      <h6><a href="#collapseThree" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= ts 'Notes' %></a></h6>
+    </div>
+    <div id="collapseThree" class="panel-collapse collapse">
+      <div class="panel-body">
 <%= note_list_fieldset %>
+    </div> <!-- END panel-body -->
+  </div> <!-- END collapseThree -->
+</section> <!-- END panel -->
+<section class="panel panel-default">
+    <div class="panel-heading">
+      <h6><a href="#collapseFour" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= ts 'Dates' %></a></h6>
+    </div>
+    <div id="collapseFour" class="panel-collapse collapse">
+      <div class="panel-body">
 <%= time_unit_list_fieldset %>
+    </div> <!-- END panel-body -->
+  </div> <!-- END collapseFour -->
+</section> <!-- END panel -->
+  </div> <!-- END accordion -->
+
+</div> <!-- END panel-body -->
+</section> <!-- END panel -->

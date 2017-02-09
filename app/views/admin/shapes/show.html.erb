@@ -2,6 +2,18 @@
    add_breadcrumb_item feature_link(object.feature)
    add_breadcrumb_item feature_shapes_link(object.feature)
    add_breadcrumb_item object %>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= Shape.model_name.human.titleize.s %></h6>
+  </div>
+  <div class="panel-body">
+  <div id="accordion" class="panel-group">
+<section class="panel panel-default">
+    <div class="panel-heading">
+      <h6><a href="#collapseOne" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle"><span class="glyphicon glyphicon-plus"></span><%= Shape.model_name.human.titleize.s %></a></h6>
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse in">
+      <div class="panel-body">
 <fieldset>
    <legend>
 <%=  Shape.model_name.human.titleize.s %>
@@ -31,5 +43,29 @@
    </div>
 <% end %>
 </fieldset>
+    </div> <!-- END panel-body -->
+  </div> <!-- END collapseOne -->
+</section> <!-- END panel -->
+<section class="panel panel-default">
+    <div class="panel-heading">
+      <h6><a href="#collapseTwo" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= ts 'Notes' %></a></h6>
+    </div>
+    <div id="collapseTwo" class="panel-collapse collapse">
+      <div class="panel-body">
 <%= note_list_fieldset %>
+    </div> <!-- END panel-body -->
+  </div> <!-- END collapseTwo -->
+</section> <!-- END panel -->
+<section class="panel panel-default">
+    <div class="panel-heading">
+      <h6><a href="#collapseFour" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= ts 'Dates' %></a></h6>
+    </div>
+    <div id="collapseFour" class="panel-collapse collapse">
+      <div class="panel-body">
 <%= time_unit_list_fieldset %>
+    </div> <!-- END panel-body -->
+  </div> <!-- END collapseFour -->
+</section> <!-- END panel -->
+  </div> <!-- END accordion -->
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->
