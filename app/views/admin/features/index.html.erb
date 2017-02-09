@@ -18,6 +18,11 @@ end %>
       <%#= context_search_message(@context_feature) %>
     </div>
     <br class="clear"/>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= FeatureName.model_name.human.pluralize.s %></h6>
+  </div>
+  <div class="panel-body">
     <table class="listGrid">
 <%= pagination_row :colspan=>3 %>  
       <tr>
@@ -50,6 +55,8 @@ end %>
       </tr>
 <%    end %>
     </table>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->
   </div>
   <br class="clear"/>
 </div>

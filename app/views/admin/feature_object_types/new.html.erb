@@ -2,9 +2,16 @@
     add_breadcrumb_item feature_link(object.feature)
     add_breadcrumb_item link_to(FeatureObjectType.model_name.human(count: :many).s, collection_path)
     add_breadcrumb_item ts('new.this') %>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= FeatureObjectType.model_name.human.titleize.s %></h6>
+  </div>
+  <div class="panel-body">
 <%= form_for [:admin, object] do |f| %>
 <%=   hidden_field_tag 'feature_id', object.feature.id %>
 <%=	  category_form_table(form_partial: 'form_fields', 
         footer: "#{link_to ts('cancel.this'), collection_path, class: 'btn btn-primary form-submit', id: 'edit-cancel'} | #{globalized_submit_tag 'creat.e.this', class: 'btn btn-primary form-submit'}",
         locals: { f: f, object: object, single_selection: false }) %>
 <%  end %>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

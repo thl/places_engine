@@ -2,7 +2,14 @@
     add_breadcrumb_item feature_link(object.feature)
     add_breadcrumb_item link_to(Shape.model_name.human(count: :many).s, collection_path)
     add_breadcrumb_item ts('edit.this') %>
+<section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= Shape.model_name.human.titleize.s %></h6>
+  </div>
+  <div class="panel-body">
 <%= form_for object, url: admin_feature_shape_path(object.feature, object), method: :put do |f| %>
 <%=   render partial: 'form_fields', locals: {f: f, object: object} %>
 <%=   link_to ts('cancel.this'), collection_path, class: 'btn btn-primary form-submit', id: 'edit-cancel' %> | <%= globalized_submit_tag 'update.this', class: 'btn btn-primary form-submit' %>
 <%  end %>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->
