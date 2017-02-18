@@ -9,6 +9,7 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
+ *= require subjects_integration/application
  */
 
 .titlearea, .breadwrap ol li .icon, .ss-full-tabs.nav-tabs > li.active a, .ss-full-tabs.nav-tabs > li.active a:hover {
