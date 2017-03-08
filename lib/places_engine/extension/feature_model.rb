@@ -143,19 +143,105 @@ module PlacesEngine
       end
       
       def document_for_rsolr
-        doc = RSolr::Xml::Document.new
-        doc.add_field('tree', 'places')
-        self.object_types.each do |o|
-          doc.add_field('feature_types', o.header)
-          doc.add_field('feature_type_ids', o.id)
-        end
-        self.category_features.where(:type => nil).each do |cf|
-          next if !cf.time_units.empty? || !cf.string_value.blank? || !cf.numeric_value.blank? || (c=cf.category).nil?
-          doc.add_field('associated_subjects', c.header)
-          doc.add_field('associated_subject_ids', c.id)
-        end
-        perspectives = Perspective.where(is_public: true) #['cult.reg', 'pol.admin.hier'].collect{ |code| Perspective.get_by_code(code) }
-        perspectives.each do |p|
+        v = View.get_by_code('roman.popular')
+        per = Perspective.get_by_code('pol.admin.hier')
+
+        object_types = self.object_types
+        category_features = self.category_features.where(:type => nil)
+          .select{ |cf| !cf.time_units.empty? || !cf.string_value.blank? || !cf.numeric_value.blank? }
+          .collect(&:category)
+          .reject(&:nil?)
+
+				parent_relations = FeatureRelationType.joins(:feature_relations)
+					.where('feature_relations.child_node_id' => self.id).distinct
+
+				parents_documents = parent_relations.collect do |r|
+					feature_types = CachedFeatureRelationCategory.select(:category_id).distinct
+						.where(feature_relation_type_id: r.id, feature: self.id).collect(&:category)
+					feature_types.collect do |t|
+						features = CachedFeatureRelationCategory.where(category_id: t.id,
+																													 feature_relation_type_id: r.id,
+																													 feature_id: self.id,
+																													 feature_is_parent: false).collect(&:related_feature)
+            features.collect do |rf|
+              related_subjects = rf.category_features.collect(&:category).select{|c| c}
+              { id: "#{self.uid}_#{r.code}_#{t.id}_#{rf.fid}",
+                block_child_type: ['related_places'],
+                related_places_id_s: "places-#{rf.fid}",
+                related_places_header_s: rf.prioritized_name(v).name,
+                related_names_t: rf.names.collect(&:name).uniq,
+                related_places_path_s: rf.closest_ancestors_by_perspective(per).collect(&:fid).join('/'),
+                related_places_feature_type_s: t.header,
+                related_subjects_t: related_subjects.collect(&:header),
+                related_places_feature_type_id_i: t.id,
+                related_subjects_ids: related_subjects.collect(&:id),
+                related_places_relation_label_s: r.asymmetric_label,
+                related_places_relation_code_s: r.code,
+                block_type: ['child'] }
+            end
+					end
+				end.flatten
+
+				child_relations = FeatureRelationType.joins(:feature_relations)
+					.where('feature_relations.parent_node_id' => self.id).distinct
+				children_documents = child_relations.collect do |r|
+					feature_types = CachedFeatureRelationCategory.select(:category_id).distinct
+						.where(feature_relation_type_id: r.id, feature: self.id).collect(&:category)
+					feature_types.collect do |t|
+						features = CachedFeatureRelationCategory.where(category_id: t.id,
+																													 feature_relation_type_id: r.id,
+																													 feature_id: self.id,
+																													 feature_is_parent: true).collect(&:related_feature)
+            features.collect do |rf|
+              related_subjects = rf.category_features.collect(&:category).select{|c| c}
+              { id: "#{self.uid}_#{r.asymmetric_code}_#{t.id}_#{rf.fid}",
+                block_child_type: ['related_places'],
+                related_places_id_s: "places-#{rf.fid}",
+                related_places_header_s: rf.prioritized_name(v).name,
+                related_names_t: rf.names.collect(&:name).uniq,
+                related_places_path_s: rf.closest_ancestors_by_perspective(per).collect(&:fid).join('/'),
+                related_places_feature_type_s: t.header,
+                related_subjects_t: related_subjects.collect(&:header),
+                related_places_feature_type_id_i: t.id,
+                related_subject_ids: related_subjects.collect(&:id),
+                related_places_relation_label_s: r.label,
+                related_places_relation_code_s: r.asymmetric_code,
+                block_type: ['child'] }
+            end
+          end
+        end.flatten
+
+        doc = { tree: 'places',
+                feature_types: object_types.collect(&:header),
+                feature_type_ids: object_types.collect(&:id),
+                associated_subjects: category_features.collect(&:header),
+                associated_subject_ids: category_features.collect(&:id),
+                has_shapes: self.has_shapes?,
+                has_altitudes: self.altitudes.count>0,
+                block_type: ['parent'],
+                '_childDocuments_'  => object_types.collect do |ft|
+                  { id: "#{self.uid}_featureType_#{ft.id}",
+                    feature_type_path_s: ft.ancestors.collect(&:id).join('/'),
+                    block_child_type: ['feature_types'],
+                    block_type: ['child'],
+                    feature_type_name_s: ft.header ,
+                    related_names_t: ft.names.collect(&:name).uniq,
+                    feature_type_id_i: ft.id }
+                end + parents_documents + children_documents }
+
+        closest = self.closest_feature_with_shapes
+        closest_fid = closest.nil? ? nil : closest.fid
+        url = closest_fid.nil? ? nil : "#{InterfaceUtils::Server.get_thl_url}/places/maps/interactive/#fid:#{closest_fid}"
+        doc[:interactive_map_url] = url unless url.nil?
+
+        url = closest_fid.nil? ? nil : gis_resources_url(:fids => closest_fid, :host => InterfaceUtils::Server.get_url, :format => 'kmz')
+        doc[:kmz_url] = url unless url.nil?
+
+        closest = self.closest_feature_with_shapes
+        closest_fid = closest.nil? ? nil : closest.fid
+        doc[:closest_fid_with_shapes] = closest_fid unless closest_fid.nil?
+
+        Perspective.where(is_public: true).each do |p|  #['cult.reg', 'pol.admin.hier'].collect{ |code| Perspective.get_by_code(code) }
           tag = 'ancestors_'
           id_tag = 'ancestor_ids_'
           hierarchy = self.ancestors_by_perspective(p)
@@ -166,19 +252,9 @@ module PlacesEngine
           end
           tag << p.code
           id_tag << p.code
-          hierarchy.each{ |f| doc.add_field(tag, f.prioritized_name(View.get_by_code('roman.popular'))) }
-          hierarchy.each{ |f| doc.add_field(id_tag, f.fid) }
+          doc[tag] = hierarchy.collect{ |f| f.prioritized_name(v).name }
+          doc[id_tag] = hierarchy.collect{ |f| f.fid }
         end
-        closest = self.closest_feature_with_shapes
-        closest_fid = closest.nil? ? nil : closest.fid
-        url = closest_fid.nil? ? nil : "#{InterfaceUtils::Server.get_thl_url}/places/maps/interactive/#fid:#{closest_fid}"
-        doc.add_field('interactive_map_url', url) if !url.nil?
-        url = closest_fid.nil? ? nil : gis_resources_url(:fids => closest_fid, :host => InterfaceUtils::Server.get_url, :format => 'kmz')
-        doc.add_field('has_shapes', self.has_shapes?)
-        doc.add_field('has_altitudes', self.altitudes.count>0)
-        closest = self.closest_feature_with_shapes
-        closest_fid = closest.nil? ? nil : closest.fid
-        doc.add_field('closest_fid_with_shapes', closest_fid) if !closest_fid.nil?
         doc
       end
 
