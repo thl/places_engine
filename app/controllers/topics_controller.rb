@@ -15,7 +15,7 @@ class TopicsController < ApplicationController
       @features = Feature.where('cumulative_category_feature_associations.category_id' => @category.id, 'cached_feature_names.view_id' => current_view.id).joins(:cumulative_category_feature_associations).references(:cumulative_category_feature_associations).includes(:cached_feature_names => :feature_name).paginate(:page => params[:page] || 1, :per_page => params[:per_page] || 15).order('feature_names.name')
       respond_to do |format|
         format.html do
-          @feature = Feature.find(session[:interface][:context_id]) unless session[:interface][:context_id].blank?
+          @feature = Feature.find(session[:interface][:context_id]) unless session[:interface].blank? || session[:interface][:context_id].blank?
           render 'features/list'
         end
         format.js  { render template: 'features/paginated_list' }
