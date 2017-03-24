@@ -5,9 +5,13 @@
     object_id: <%= @feature.id.to_s %>
   });
 <% end
-   add_breadcrumb_item features_link
    add_breadcrumb_item feature_link(@feature)
    add_breadcrumb_item ts('change.record', :what => t('priorit.ization_of.shapes')) %>
+ <section class="panel panel-content">
+  <div class="panel-heading">
+    <h6><%= ts('change.record', :what => t('priorit.ization_of.locations')) %></h6>
+  </div>
+  <div class="panel-body">
 <div>
   <h1><%= ts('change.record', :what => t('priorit.ization_of.locations')) %>: <%= f_label(@feature) %></h1>
 </div>
@@ -35,3 +39,5 @@
 <div class="returnLink">
 <%= link_to "&#8592; #{ts 'snippet.feature.return'}".html_safe, admin_feature_path(@feature.fid) %>
 </div>
+  </div> <!-- END panel-body -->
+</section> <!-- END panel -->

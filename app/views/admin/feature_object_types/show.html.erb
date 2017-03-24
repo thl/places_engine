@@ -1,7 +1,6 @@
-<% add_breadcrumb_item features_link
-   add_breadcrumb_item feature_link(object.feature)
+<% add_breadcrumb_item feature_link(object.feature)
    add_breadcrumb_item link_to(FeatureObjectType.model_name.human(:count => :many).s, admin_feature_feature_object_types_path(object.feature))
-   add_breadcrumb_item object %>
+   add_breadcrumb_item object.id %>
 <section class="panel panel-content">
   <div class="panel-heading">
     <h6><%= FeatureObjectType.model_name.human.titleize.s %><%= edit_item_link @blurb %></h6>

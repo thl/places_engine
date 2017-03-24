@@ -59,7 +59,7 @@ class Admin::ShapesController < ResourceController::Base
     
     # def parent_association
     #   if params[:id].nil?
-    #     return parent_object.parent_relations 
+    #     return parent_object.parent_relations
     #   end
     #   # Gotta find it seperately, will get a recursive stack error elsewise
     #   o = Shape.find(params[:id])

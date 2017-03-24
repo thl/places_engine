@@ -6,8 +6,10 @@ class Admin::AltitudesController < ResourceController::Base
   belongs_to :feature
   
   # create.wants.html { redirect_to polymorphic_url([:admin, object.feature]) }
-  update.wants.html { redirect_to polymorphic_url([:admin, object.feature]) }
-  destroy.wants.html { redirect_to polymorphic_url([:admin, object.feature]) }
+  #update.wants.html { redirect_to polymorphic_url([:admin, object.feature]) }
+  #destroy.wants.html { redirect_to polymorphic_url([:admin, object.feature]) }
+  update.wants.html { redirect_to admin_feature_url(object.feature.fid) }
+  destroy.wants.html { redirect_to admin_feature_url(object.feature.fid) }
   
   protected
   

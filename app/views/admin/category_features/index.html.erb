@@ -1,5 +1,4 @@
-<% add_breadcrumb_item features_link
-   add_breadcrumb_item feature_link(parent_object) if parent_object
+<% add_breadcrumb_item feature_link(parent_object) if parent_object
    add_breadcrumb_item Topic.human_name(:count => :many).s %>
 <div>
   <div class="right highlight">

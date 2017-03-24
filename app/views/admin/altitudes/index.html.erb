@@ -1,5 +1,4 @@
-<% add_breadcrumb_item features_link
-   add_breadcrumb_item feature_link(parent_object)
+<% add_breadcrumb_item feature_link(parent_object)
    add_breadcrumb_item Altitude.model_name.human(:count => :many).s %>
 <div>
   <div class="right highlight">
@@ -7,7 +6,7 @@
 <%=   new_item_link [parent_object, :altitude] %>
 <%  else %>
 <%=   parent_resource_dependency_message %>
-<%  end %>		
+<%  end %>
   </div>
 </div>
 <br class="clear"/>

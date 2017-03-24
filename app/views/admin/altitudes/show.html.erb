@@ -1,5 +1,4 @@
-<% add_breadcrumb_item features_link
-   add_breadcrumb_item feature_link(parent_object)
+<% add_breadcrumb_item feature_link(parent_object)
    add_breadcrumb_item link_to(Altitude.model_name.human(:count => :many).s, admin_feature_altitudes_path(parent_object))
    add_breadcrumb_item object.id %>
 <section class="panel panel-content">
