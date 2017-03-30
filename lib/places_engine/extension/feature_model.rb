@@ -148,7 +148,6 @@ module PlacesEngine
 
         object_types = self.object_types
         category_features = self.category_features.where(:type => nil)
-          .select{ |cf| !cf.time_units.empty? || !cf.string_value.blank? || !cf.numeric_value.blank? }
           .collect(&:category)
           .reject(&:nil?)
 
