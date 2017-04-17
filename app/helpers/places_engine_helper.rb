@@ -27,4 +27,46 @@ module PlacesEngineHelper
       return 'http://www.thlib.org:8080/thdl-geoserver'
     end
   end
+
+  def feature_relation_tree(feature)
+    v = current_view
+    p = current_perspective
+    ancestors = feature.current_ancestors(p)
+    last_parent = ancestors.last
+    parent = ancestors.shift
+    if !parent.nil?
+      parent_node = {title: parent.prioritized_name(v).name, state: {expanded: true}, enableLinks: true, href: feature_path(parent.fid)}
+      tree = [parent_node]
+      while parent = ancestors.shift
+        parent_node[:children] = [{title: parent.prioritized_name(v).name, state: {expanded: true}}]
+        parent_node[:href] = feature_path(parent.fid)
+        parent_node = parent_node[:children].first
+      end
+      children_for_current = nil
+      parent_node[:title] << " (#{last_parent.feature_object_types.collect{|fot| fot.category.header}.join(', ')})"
+      parent_node[:children] = last_parent.current_children(p,v).collect do |c|
+        node = {title: c.prioritized_name(v).name, href: feature_path(c.fid)}
+        if feature.fid == c.fid
+          node[:backColor] = '#eaeaea'
+          node[:expanded] = true
+          node[:active] = true
+          node[:children] = []
+          children_for_current = node[:children]
+        end
+        node
+      end
+      children_for_current.concat(feature.all_child_relations
+        .collect{|c| {title: "#{c.child_node.prioritized_name(v).name} (from #{c.perspective.name}: #{c.child_node.feature_object_types.collect{|fot| fot.category.header}.join(', ')}; #{c.feature_relation_type.asymmetric_label})", href: feature_path(c.child_node.fid)}})
+    else
+      tree = []
+    end
+    apr = []
+    if last_parent.nil?
+      apr = feature.all_parent_relations
+    else
+      apr = feature.all_parent_relations.where.not(parent_node_id: last_parent.id)
+    end
+    parents_not_in_tree = apr.collect{|c| {title: "#{c.parent_node.prioritized_name(v).name} (from #{c.perspective.name}: #{c.parent_node.feature_object_types.collect{|fot| fot.category.header}.join(', ')}; #{c.feature_relation_type.label})", href: feature_path(c.parent_node.fid)}}
+    {tree: tree, not_in_tree: parents_not_in_tree}
+  end
 end

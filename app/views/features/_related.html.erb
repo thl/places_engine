@@ -77,45 +77,164 @@ function collapse_all_categories(){
 }
 </script>
 
-<% feature_label = fname_labels(@feature).s
-   relation_counts = CachedFeatureRelationCategory.select('feature_relation_type_id, feature_is_parent, COUNT(DISTINCT related_feature_id) AS count').group('feature_relation_type_id, feature_is_parent').where(:feature_id => @feature.id).order(:feature_relation_type_id)
-   if relation_counts.length > 0 %>
-   <p>
-<%=  link_to ts('tree.expand', :what => t('all.these')), '#', onclick: "expand_all_categories()", :class => "expand-all-categories expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
-<%=  link_to ts('tree.collapse', :what => t('all.these')), '#', onclick: "collapse_all_categories()", :class => "collapse-all-categories expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
-   </p>
-   <div class="related-features-categories has-ajax-pagination has-hash-feature-links">
-<%   relation_counts.each do |rc|
-       feature_relation_type = rc.feature_relation_type
-       feature_is_parent = rc.feature_is_parent
-       count = rc.count %>
-       <h3><%= feature_label %> <%= "#{feature_is_parent ? feature_relation_type.label : feature_relation_type.asymmetric_label}" %> (<%= count %>):</h3>
-<%     # Is there a way to :include => categories and use an :order instead of this .sort{}?
-       CachedFeatureRelationCategory.group('category_id').where(:feature_id => @feature.id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent).count.sort do |a,b|
-         # Some of these .finds are returning nil, but it's not clear why.
-         SubjectsIntegration::Feature.find(a[0]).nil? || SubjectsIntegration::Feature.find(b[0]).nil? ? 0 : SubjectsIntegration::Feature.find(a[0]).header.casecmp(SubjectsIntegration::Feature.find(b[0]).header)
-       end.each do |c|
-         category_id, count = c
-         category = SubjectsIntegration::Feature.find(category_id)
-         # This has returned nil in some cases on production, so we need to check it to prevent a fatal error below
-         unless category.nil? 
-	       div_id = "list_#{category_id}_#{feature_relation_type.id}_#{feature_is_parent}" %>
-           <p><strong>
-<%=        link_to SubjectsIntegration::Feature.find(category_id).header, related_list_feature_path(@feature.id, :category_id => category_id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent.to_s),
-             :remote => true, :id => "link_#{div_id}", :class => 'expandable-link-contracted' %>
-           </strong> (<%= count %>)
-           </p>
-           <div id="<%= div_id %>" style="display:none;" class="related-feature-list pagination-click-results"></div>
-<%=        javascript_tag("$('#link_#{div_id}').bind('ajax:beforeSend', function(){ if(!on_category_click('#{div_id}')) return false; });") %>
-<%       end
-       end
-     end %>
-   </div>
-<br />
-<p>
-<%= link_to ts('tree.expand', :what => t('all.these')), '#', onclick: "expand_all_categories()", :class => "expand-all-categories expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
-<%= link_to ts('tree.collapse', :what => t('all.these')), '#', onclick: "collapse_all_categories()", :class => "collapse-all-categories expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
-</p>
-<% else %>
-     <p><%= ts 'snippet.feature.not.related' %></p>
+<div id='myTabs'>
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#relation_details" aria-controls="home" role="tab" data-toggle="tab">Relation Details</a></li>
+    <li role="presentation"><a href="#relation_tree" aria-controls="profile" role="tab" data-toggle="tab">Relation tree</a></li>
+  </ul>
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="relation_details">
+      <section class="panel panel-content">
+        <div class="panel-heading">
+          <h6>Relation Details</h6>
+        </div>
+        <div class="panel-body">
+          <% feature_label = fname_labels(@feature).s
+          relation_counts = CachedFeatureRelationCategory.select('feature_relation_type_id, feature_is_parent, COUNT(DISTINCT related_feature_id) AS count').group('feature_relation_type_id, feature_is_parent').where(:feature_id => @feature.id).order(:feature_relation_type_id)
+          if relation_counts.length > 0 %>
+        <p>
+        <%=  link_to ts('tree.expand', :what => t('all.these')), '#', onclick: "expand_all_categories()", :class => "expand-all-categories expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
+        <%=  link_to ts('tree.collapse', :what => t('all.these')), '#', onclick: "collapse_all_categories()", :class => "collapse-all-categories expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
+        </p>
+        <div class="related-features-categories has-ajax-pagination has-hash-feature-links">
+          <%   relation_counts.each do |rc|
+            feature_relation_type = rc.feature_relation_type
+            feature_is_parent = rc.feature_is_parent
+            count = rc.count %>
+          <h3><%= feature_label %> <%= "#{feature_is_parent ? feature_relation_type.label : feature_relation_type.asymmetric_label}" %> (<%= count %>):</h3>
+          <%     # Is there a way to :include => categories and use an :order instead of this .sort{}?
+            CachedFeatureRelationCategory.group('category_id').where(:feature_id => @feature.id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent).count.sort do |a,b|
+            # Some of these .finds are returning nil, but it's not clear why.
+            SubjectsIntegration::Feature.find(a[0]).nil? || SubjectsIntegration::Feature.find(b[0]).nil? ? 0 : SubjectsIntegration::Feature.find(a[0]).header.casecmp(SubjectsIntegration::Feature.find(b[0]).header)
+          end.each do |c|
+            category_id, count = c
+            category = SubjectsIntegration::Feature.find(category_id)
+            # This has returned nil in some cases on production, so we need to check it to prevent a fatal error below
+            unless category.nil? 
+              div_id = "list_#{category_id}_#{feature_relation_type.id}_#{feature_is_parent}" %>
+            <p><strong>
+              <%=        link_to SubjectsIntegration::Feature.find(category_id).header, related_list_feature_path(@feature.id, :category_id => category_id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent.to_s),
+                :remote => true, :id => "link_#{div_id}", :class => 'expandable-link-contracted' %>
+            </strong> (<%= count %>)
+            </p>
+            <div id="<%= div_id %>" style="display:none;" class="related-feature-list pagination-click-results"></div>
+            <%=        javascript_tag("$('#link_#{div_id}').bind('ajax:beforeSend', function(){ if(!on_category_click('#{div_id}')) return false; });") %>
+          <%       end
+          end
+          end %>
+        </div>
+        <br />
+        <p>
+        <%= link_to ts('tree.expand', :what => t('all.these')), '#', onclick: "expand_all_categories()", :class => "expand-all-categories expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
+        <%= link_to ts('tree.collapse', :what => t('all.these')), '#', onclick: "collapse_all_categories()", :class => "collapse-all-categories expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
+        </p>
+      <% else %>
+        <p><%= ts 'snippet.feature.not.related' %></p>
+      <% end %>
+        </div> <!-- END panel-body -->
+      </section> <!-- END panel -->
+		</div>
+    <div role="tabpanel" class="tab-pane" id="relation_tree">
+      <section class="panel panel-content">
+        <div class="panel-heading">
+          <h6>Relation Tree</h6>
+        </div>
+        <div class="panel-body">
+          <% rt = feature_relation_tree(@feature)
+          fnit = rt.empty? ? "" : rt[:not_in_tree].empty? ? "" : rt[:not_in_tree]
+          frt = rt.empty? ? "" : rt[:tree].empty? ? "" : rt[:tree] %>
+        <% unless frt.empty? %>
+          <h3>Hierarchy tree</h3>
+          <div id='relation_tree_container'></div>
+        <% end %>
+        <% unless fnit.empty? %>
+          <h3>Not In tree</h3>
+          <div id='nit_relation_tree_container'></div>
+        <% end %>
+        </div> <!-- END panel-body -->
+      </section> <!-- END panel -->
+  </div>
+	</div> <!-- Tab Panes end -->
+</div> <!-- myTabs end -->
+
+<%= javascript_include_tag 'kmaps_tree/jquery.fancytree-all.min' %>
+<%#= stylesheet_link_tag 'ui.fancytree.min' %>
+<%= stylesheet_link_tag 'kmaps_tree/kmapstree' %>
+<script type='text/javascript'>
+function getTree(){
+  var tree = <%= frt.to_json.html_safe %>;
+  return tree;
+}
+function getNotInTree(){
+  var tree = <%= fnit.to_json.html_safe %>;
+  return tree;
+}
+$(document).ready(function(){
+  <% unless frt.empty? %>
+      $('#relation_tree_container').fancytree({
+				extensions: ["glyph"],
+        source: getTree(),
+				glyph: {
+					map: {
+						doc: "",
+						docOpen: "",
+						error: "glyphicon glyphicon-warning-sign",
+						expanderClosed: "glyphicon glyphicon-plus-sign",
+						expanderLazy: "glyphicon glyphicon-plus-sign",
+						// expanderLazy: "glyphicon glyphicon-expand",
+						expanderOpen: "glyphicon glyphicon-minus-sign",
+						// expanderOpen: "glyphicon glyphicon-collapse-down",
+						folder: "",
+						folderOpen: "",
+						loading: "glyphicon glyphicon-refresh"
+							//              loading: "icon-spinner icon-spin"
+					}
+        },
+        activate: function(event, data){
+          var node = data.node,
+            orgEvent = data.originalEvent;
+          if(node.data.href){
+            window.location.href=node.data.href;
+          }
+        }
+			});
+  $("#relation_tree_container").fancytree("getRootNode").visit(function(node){
+    node.setExpanded(true);
+  });
 <% end %>
+<% unless fnit.empty? %>
+      $('#nit_relation_tree_container').fancytree({
+				extensions: ["glyph"],
+        source: getNotInTree(),
+				glyph: {
+					map: {
+						doc: "",
+						docOpen: "",
+						error: "glyphicon glyphicon-warning-sign",
+						expanderClosed: "glyphicon glyphicon-plus-sign",
+						expanderLazy: "glyphicon glyphicon-plus-sign",
+						// expanderLazy: "glyphicon glyphicon-expand",
+						expanderOpen: "glyphicon glyphicon-minus-sign",
+						// expanderOpen: "glyphicon glyphicon-collapse-down",
+						folder: "",
+						folderOpen: "",
+						loading: "glyphicon glyphicon-refresh"
+							//              loading: "icon-spinner icon-spin"
+					}
+				},
+        activate: function(event, data){
+          var node = data.node,
+            orgEvent = data.originalEvent;
+          if(node.data.href){
+            window.location.href=node.data.href;
+          }
+        }
+      });
+  $("#nit_relation_tree_container").fancytree("getRootNode").visit(function(node){
+    node.setExpanded(true);
+  });
+<% end %>
+});
+</script>

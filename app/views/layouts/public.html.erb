@@ -33,12 +33,13 @@
 						<div class="region region-content">
 							<div id="block-system-main" class="block block-system">
 								<div class="content">
-									<div id="places-main">										
+									<div id="places-main">
 									<!-- Column Resources  -->
 <%=         universal_navigation :places, @current_tab_id, custom_secondary_tabs(@current_tab_id) %>
 									<!-- Column Main -->
 									<section  class="content-section col-xs-12 col-md-9 equal-height">
 										<div class="tab-content">
+                      <div id="tab-content-loading" style="display:none"></div>
 										<article class="tab-pane active" id="<%= @current_tab_id %>">
 <%=                                         render 'public/flash' %>
 <%=                                         yield %>
