@@ -22,13 +22,7 @@ xml.feature do
           xml.root(title: root.header, id: root.id, caption: caption.nil? ? nil : caption.content)
           xml.numeric_value(association.numeric_value, type: 'integer')
           xml.string_value(association.string_value, type: 'string')
-          values = []
-          values << association.string_value if !association.string_value.blank?
-          values << association.numeric_value if !association.numeric_value.nil?
-          stack = association.category_stack
-          display = stack.join(' > ')
-          display << ": #{values.join(', ')}" if !values.empty?
-          xml.display_string(display)
+          xml.display_string(association.display_string)
           xml << render(partial: 'time_units/index.xml.builder', locals: {time_units: association.time_units})
           xml << render(partial: 'citations/index.xml.builder', locals: {citations: association.citations})
           xml << render(partial: 'notes/index.xml.builder', locals: {notes: association.notes})

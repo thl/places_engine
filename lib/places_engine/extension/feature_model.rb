@@ -147,16 +147,55 @@ module PlacesEngine
         per = Perspective.get_by_code('pol.admin.hier')
 
         object_types = self.object_types
-        category_features = self.category_features.where(:type => nil)
-          .collect(&:category)
-          .reject(&:nil?)
 
+        child_documents = object_types.collect do |ft|
+          cd = { id: "#{self.uid}_featureType_#{ft.id}",
+                 feature_type_path_s: ft.ancestors.collect(&:id).join('/'),
+                 block_child_type: ['feature_types'],
+                 block_type: ['child'],
+                 feature_type_name_s: ft.header ,
+                 related_names_t: ft.names.collect(&:name).uniq,
+                 feature_type_id_i: ft.id,
+                 feature_type_caption_s: ft.caption,
+                 feature_type_caption_t: ft.nested_captions.collect(&:content)
+               }
+          cd[:feature_type_caption_s] = ft.caption.content if !ft.caption.nil?
+          cd
+        end
+        
+        category_features = self.category_features.where(:type => nil)
+        # REVISAR DE AQUI EN ADELANTE!!!
+        
+        child_documents = child_documents + category_features.collect do |cf|
+          c = cf.category
+          next if c.nil?
+          cd = { id: "#{self.uid}_relatedSubject_#{c.id}",
+                 block_child_type: ['related_subjects'],
+                 related_subjects_id_s: "subjects-#{c.id}",
+                 related_subjects_header_s: c.header,
+                 related_names_t: c.names.collect(&:name).uniq,
+                 related_subjects_path_s: c.ancestors.collect(&:id).join('/'),
+                 related_subjects_id_i: c.id,
+                 related_subjects_caption_t: c.nested_captions.collect(&:content),
+                 block_type: ['child'],
+                 related_subjects_prefix_label_b: cf.prefix_label,
+                 related_subjects_parent_show_b: cf.show_parent,
+                 related_subjects_root_show_b: cf.show_root,
+                 related_subjects_display_string_s: cf.display_string,
+                 related_subjects_numeric_value_i: cf.numeric_value,
+                 related_subjects_string_value_s: cf.string_value,
+                 related_subjects_time_units_t: cf.time_units.collect(&:to_s)
+               }
+          cd[:related_subjects_caption_s] = c.caption.content if !c.caption.nil?
+          cd[:related_subjects_parent_title_s] = c.parent.header if !c.parent.nil?
+          cd
+        end.compact
+        
 				parent_relations = FeatureRelationType.joins(:feature_relations)
 					.where('feature_relations.child_node_id' => self.id).distinct
-
-				parents_documents = parent_relations.collect do |r|
-					feature_types = CachedFeatureRelationCategory.select(:category_id).distinct
-						.where(feature_relation_type_id: r.id, feature: self.id).collect(&:category)
+        
+				child_documents = child_documents + parent_relations.collect do |r|
+					feature_types = CachedFeatureRelationCategory.select(:category_id).distinct.where(feature_relation_type_id: r.id, feature: self.id).collect(&:category)
 					feature_types.collect do |t|
 						features = CachedFeatureRelationCategory.where(category_id: t.id,
 																													 feature_relation_type_id: r.id,
@@ -180,10 +219,11 @@ module PlacesEngine
             end
 					end
 				end.flatten
-
+        
 				child_relations = FeatureRelationType.joins(:feature_relations)
 					.where('feature_relations.parent_node_id' => self.id).distinct
-				children_documents = child_relations.collect do |r|
+        
+        child_documents = child_documents + child_relations.collect do |r|
 					feature_types = CachedFeatureRelationCategory.select(:category_id).distinct
 						.where(feature_relation_type_id: r.id, feature: self.id).collect(&:category)
 					feature_types.collect do |t|
@@ -209,25 +249,16 @@ module PlacesEngine
             end
           end
         end.flatten
-
+        
         doc = { tree: 'places',
                 feature_types: object_types.collect(&:header),
                 feature_type_ids: object_types.collect(&:id),
-                associated_subjects: category_features.collect(&:header),
+                associated_subjects: category_features.collect(&:category).compact.collect(&:header),
                 associated_subject_ids: category_features.collect(&:id),
                 has_shapes: self.has_shapes?,
                 has_altitudes: self.altitudes.count>0,
                 block_type: ['parent'],
-                '_childDocuments_'  => object_types.collect do |ft|
-                  { id: "#{self.uid}_featureType_#{ft.id}",
-                    feature_type_path_s: ft.ancestors.collect(&:id).join('/'),
-                    block_child_type: ['feature_types'],
-                    block_type: ['child'],
-                    feature_type_name_s: ft.header ,
-                    related_names_t: ft.names.collect(&:name).uniq,
-                    feature_type_id_i: ft.id }
-                end + parents_documents + children_documents }
-
+                '_childDocuments_'  => child_documents }
         closest = self.closest_feature_with_shapes
         closest_fid = closest.nil? ? nil : closest.fid
         url = closest_fid.nil? ? nil : "#{InterfaceUtils::Server.get_thl_url}/places/maps/interactive/#fid:#{closest_fid}"
