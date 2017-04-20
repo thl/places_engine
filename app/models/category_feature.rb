@@ -13,6 +13,9 @@ class CategoryFeature < ActiveRecord::Base
   extend IsDateable
   include KmapsEngine::IsNotable
 
+  validates_presence_of :feature_id
+  validates_presence_of :category_id
+
   after_destroy do |record|
     feature = record.feature
     CategoryFeature.delete_cumulative_information(record.category, feature.id)
@@ -60,8 +63,15 @@ class CategoryFeature < ActiveRecord::Base
     "#{category.header}"
   end
   
-  validates_presence_of :feature_id
-  validates_presence_of :category_id
+  def display_string
+    values = []
+    values << self.string_value if !self.string_value.blank?
+    values << self.numeric_value if !self.numeric_value.nil?
+    stack = self.category_stack
+    display = stack.join(' > ')
+    display << ": #{values.join(', ')}" if !values.empty?
+    display
+  end
   
   def self.contextual_search(filter, context_id)
     self.search(filter).where(:feature_id => context_id)
