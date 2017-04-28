@@ -150,7 +150,7 @@ function collapse_all_categories(){
           <div id='relation_tree_container'></div>
         <% end %>
         <% unless fnit.empty? %>
-          <h3>Not In tree</h3>
+          <h3>Related features not in hierarchy tree</h3>
           <div id='nit_relation_tree_container'></div>
         <% end %>
         </div> <!-- END panel-body -->
@@ -198,11 +198,12 @@ $(document).ready(function(){
           if(node.data.href){
             window.location.href=node.data.href;
           }
+        },
+        lazyLoad: function(event, data){
+          var node = data.node;
+          data.result = { url: "/features/"+node.key+"/fancy_children.json" };
         }
 			});
-  $("#relation_tree_container").fancytree("getRootNode").visit(function(node){
-    node.setExpanded(true);
-  });
 <% end %>
 <% unless fnit.empty? %>
       $('#nit_relation_tree_container').fancytree({

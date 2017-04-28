@@ -7,8 +7,8 @@ en:
                 one: 'altitude'
                 other: 'altitudes'
             feature:
-                one: 'feature'
-                other: 'features'
+                one: 'place'
+                other: 'places'
             feature_geo_code:
                 one: 'geocode'
                 other: 'geocodes'
