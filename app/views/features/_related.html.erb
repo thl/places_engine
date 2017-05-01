@@ -142,23 +142,24 @@ function collapse_all_categories(){
           <h6>Relation Tree</h6>
         </div>
         <div class="panel-body">
-          <% rt = feature_relation_tree(@feature)
+<%        rt = feature_relation_tree(@feature)
           fnit = rt.empty? ? "" : rt[:not_in_tree].empty? ? "" : rt[:not_in_tree]
-          frt = rt.empty? ? "" : rt[:tree].empty? ? "" : rt[:tree] %>
-        <% unless frt.empty? %>
-          <h3>Hierarchy tree</h3>
-          <div id='relation_tree_container'></div>
-        <% end %>
-        <% unless fnit.empty? %>
-          <h3>Related features not in hierarchy tree</h3>
-          <div id='nit_relation_tree_container'></div>
-        <% end %>
+          frt = rt.empty? ? "" : rt[:tree].empty? ? "" : rt[:tree]
+          unless frt.empty? %>
+            <h3>Hierarchy tree</h3>
+            <div id='relation_tree_container'></div>
+<%        end
+          unless fnit.empty? %>
+            <h3>Related features not in hierarchy tree</h3>
+            <div id='nit_relation_tree_container'></div>
+<%        end %>
         </div> <!-- END panel-body -->
       </section> <!-- END panel -->
   </div>
 	</div> <!-- Tab Panes end -->
 </div> <!-- myTabs end -->
 
+<% #TODO: when flyout uses fancytree remove this js %>
 <%= javascript_include_tag 'kmaps_tree/jquery.fancytree-all.min' %>
 <%#= stylesheet_link_tag 'ui.fancytree.min' %>
 <%= stylesheet_link_tag 'kmaps_tree/kmapstree' %>
@@ -201,7 +202,7 @@ $(document).ready(function(){
         },
         lazyLoad: function(event, data){
           var node = data.node;
-          data.result = { url: "/features/"+node.key+"/fancy_children.json" };
+  data.result = { url: "<%= features_path %>/"+node.key+"/fancy_children.json" };
         }
 			});
 <% end %>
