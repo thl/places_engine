@@ -80,16 +80,13 @@ function collapse_all_categories(){
 <div id='myTabs'>
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#relation_details" aria-controls="home" role="tab" data-toggle="tab">Relation Details</a></li>
-    <li role="presentation"><a href="#relation_tree" aria-controls="profile" role="tab" data-toggle="tab">Relation tree</a></li>
+    <li role="presentation" class="active"><a href="#relation_details" aria-controls="home" role="tab" data-toggle="tab">Summary</a></li>
+    <li role="presentation"><a href="#relation_tree" aria-controls="profile" role="tab" data-toggle="tab">Relationship tree</a></li>
   </ul>
   <!-- Tab panes -->
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="relation_details">
       <section class="panel panel-content">
-        <div class="panel-heading">
-          <h6>Relation Details</h6>
-        </div>
         <div class="panel-body">
           <% feature_label = fname_labels(@feature).s
           relation_counts = CachedFeatureRelationCategory.select('feature_relation_type_id, feature_is_parent, COUNT(DISTINCT related_feature_id) AS count').group('feature_relation_type_id, feature_is_parent').where(:feature_id => @feature.id).order(:feature_relation_type_id)
@@ -138,9 +135,6 @@ function collapse_all_categories(){
 		</div>
     <div role="tabpanel" class="tab-pane" id="relation_tree">
       <section class="panel panel-content">
-        <div class="panel-heading">
-          <h6>Relation Tree</h6>
-        </div>
         <div class="panel-body">
 <%        rt = feature_relation_tree(@feature)
           fnit = rt.empty? ? "" : rt[:not_in_tree].empty? ? "" : rt[:not_in_tree]
