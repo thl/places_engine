@@ -215,6 +215,7 @@ module PlacesEngine
                 related_subjects_ids: related_subjects.collect(&:id),
                 related_places_relation_label_s: r.asymmetric_label,
                 related_places_relation_code_s: r.code,
+                related_kmaps_node_type: 'parent',
                 block_type: ['child'] }
             end
 					end
@@ -245,6 +246,7 @@ module PlacesEngine
                 related_subject_ids: related_subjects.collect(&:id),
                 related_places_relation_label_s: r.label,
                 related_places_relation_code_s: r.asymmetric_code,
+                related_kmaps_node_type: 'child',
                 block_type: ['child'] }
             end
           end
