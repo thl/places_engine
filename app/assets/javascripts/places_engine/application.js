@@ -11,3 +11,4 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require subjects_integration/application
+//= require places_engine/flyout-typeahead

@@ -1,0 +1,307 @@
+/**
+ * This files contains the javascript that initialize the flyout search
+ * capabilities, the serach flyout uses typeahead and a version of the 
+ * plugin created by dwardjgarret for kmaps typeahed based on twitter's
+ * typeahead.
+ *
+ * This code is based on the code create for the drupal site:
+ * modules/custom/shanti_kmaps_admin/js/shanti_kmaps_filter.js
+ */
+
+(function ($) {
+
+  fsettings = {
+    shanti_kmaps_admin_server_solr_terms: "https://ss558499-us-east-1-aws.measuredsearch.com/solr/kmterms_dev",
+//shanti_kmaps_admin_server_solr_terms:"https://ss206212-us-east-1-aws.measuredsearch.com/solr/kmterms_prod2",
+    //shanti_kmaps_admin_server_solr_terms: "<%= Flare.session.config.url %>",
+    domain: 'subjects',
+    root_kmap_path: 'null'
+  };
+
+    // local "globals"
+    var filtered = {};
+
+    // utility functions
+    function extractKMapID(line) {
+        var kmap_id = null;
+        var rgx1 = /\s(\w?\d+)$/;
+        var matches = rgx1.exec(line);
+        if (matches != null) {
+            var kmap_id = matches[1];
+        }
+        return kmap_id;
+    }
+
+    function pickFilter(namespace, type, suggestion) {
+        var $box = $('#' + namespace + '-filter-box-' + type);
+        var kmap_id = 'F' + suggestion.id;
+        var item = {
+            domain: 'subjects', // default
+            id: suggestion.id,
+            header: suggestion.value,
+            path: '{{' + suggestion.id + '}}'
+        };
+        if (!filtered[namespace][type][kmap_id]) {
+            filtered[namespace][type][kmap_id] = item;
+            var $el = $("<div/>").addClass('selected-kmap ' + kmap_id).appendTo($box);
+            $("<span class='icon shanticon-close2'></span>").addClass('delete-me').addClass(kmap_id).appendTo($el);
+            $("<span>" + item.header + " " + kmap_id + "</span>").addClass('kmap-label').appendTo($el);
+            $el.attr({
+                'data-kmap-id-int': item.id,
+                'data-kmap-path': item.path,
+                'data-kmap-header': item.header
+            });
+        //    Drupal.attachBehaviors($el); //Drupal adds all the behaviours for the current element, we have to check if there are some that we need and add them manually but what would be best is that all the event binding 'on' use the new jquery delegate
+        }
+    }
+
+    function getNamespace($el, suffix) {
+        return $el.attr('id').replace(suffix, '');
+    }
+
+    function getFilter(namespace, type) {
+        return $('#' + namespace + '-search-filter-' + type);
+    }
+
+    function getFilterBox(namespace, type) {
+        return $('#' + namespace + '-filter-box-' + type);
+    }
+
+    function getTypeahead(namespace) {
+        return $('#' + namespace + '-search-term');
+    }
+        var search_key = '';
+	$(document).ready(function(){
+		var $typeaheadExplorer = $('#kmaps-explorer-search-term');
+    /* just for the close button */
+    $('.kmap-typeahead-picker, .kmap-tree-picker').each(function () {
+                var $xbtn = $('button.searchreset', this);
+                var $srch = $(".kmap-search-term:not(.kmaps-tt-hint)", this);  // the main search input
+                $srch.data("holder", $srch.attr("placeholder"));
+
+                // click
+                $xbtn.click(function () {
+                    if ($srch.hasClass('kmaps-tt-input')) { // typeahead picker
+                        $xbtn.addClass('resetting');
+                        $srch.kmapsTypeahead('setValue', '', false);
+                        window.setTimeout(function () {
+                            $xbtn.removeClass('resetting');
+                            $xbtn.hide();
+                        }, 300);
+                    }
+                    else { // tree picker
+                        $srch.val('');
+                        $xbtn.hide();
+                    }
+                });
+
+                // --- focusin - focusout
+                $srch.focusin(function () {
+                    $srch.attr("placeholder", "");
+                    $xbtn.show();
+                }).focusout(function () {
+                    $srch.attr("placeholder", $srch.data("holder"));
+
+                    // see http://stackoverflow.com/questions/13980448/jquery-focusout-click-conflict
+                    // and http://stackoverflow.com/questions/8981463/detect-if-hovering-over-element-with-jquery
+                    if (!$xbtn.hasClass('resetting') && $xbtn.parent().find('.searchreset:hover').length > 0) {
+                        if ($srch.hasClass('kmaps-tt-input')) { // typeahead picker
+                            $xbtn.addClass('resetting');
+                            $srch.kmapsTypeahead('setValue', '', false);
+                            window.setTimeout(function () {
+                                $xbtn.removeClass('resetting');
+                                $xbtn.hide();
+                            }, 300);
+                        }
+                        else { // tree picker
+                            $srch.val('');
+                            $xbtn.hide();
+                        }
+                    }
+                    else {
+                        var str = $srch.data("holder");
+                        if (str.indexOf($srch.val()) > -1) {
+                            $xbtn.hide();
+                        }
+                    }
+                });
+            });
+     /* END - just for the close button */
+		$typeaheadExplorer.kmapsTypeahead({
+			term_index: fsettings.shanti_kmaps_admin_server_solr_terms,
+			//term_index: "<%= Flare.session.config.url %>",
+			domain: 'places', //or subjects
+			menu: $('.listview > .view-wrap'),
+			root_kmapid:null ,
+			ancestors: 'off', //don't display ancestry in search results
+			fields: 'ancestors', //get ancestors field for use in popover
+			max_terms: 30,
+			min_chars: 0,
+			pager: 'on',
+			empty_query: '*:*',
+			empty_limit: 30,
+			empty_sort: 'header_ssort ASC', // sortable header field
+			sort: 'header_ssort ASC', // sort even when there's a search term
+			filters: fsettings.shanti_kmaps_admin_solr_filter_query ? fsettings.shanti_kmaps_admin_solr_filter_query : ''
+
+		}).bind('typeahead:asyncrequest',
+			function () {
+				search_key = $typeaheadExplorer.typeahead('val'); //get search term
+			}
+		).bind('typeahead:select',
+			function (ev, sel) {
+				var id = sel.doc.id.substring(sel.doc.id.indexOf('-') + 1);
+				window.location.href = "features/"+sel.id;
+				//window.location.href = "<%#= features_path %>/"+sel.id;
+				$typeaheadExplorer.typeahead('val', search_key); // revert back to search key
+			}
+		);
+
+    $('.kmap-filter-box').each(function () {
+      var type = $(this).attr('data-search-filter');
+      var namespace = getNamespace($(this), '-filter-box-' + type);
+      if (!filtered[namespace]) {
+        filtered[namespace] = {};
+      }
+      filtered[namespace][type] = {}; // Init filters for this field
+    });
+
+    $('.kmap-filter-box').on('click', '.delete-me', function (e) {
+      var $el = $(this).parent();
+      var $box = $(this).closest('.kmap-filter-box');
+      var type = $box.attr('data-search-filter'); //feature_type or associated_subject
+      var namespace = getNamespace($box, '-filter-box-' + type);
+      var $filter = getFilter(namespace, type);
+      var $typeahead = getTypeahead(namespace);
+      var others = [];
+      if (filtered[namespace]) {
+        others = Object.keys(filtered[namespace]);
+        others.splice(others.indexOf(type), 1);
+      }
+      var kmap_id = extractKMapID($(this).next('span.kmap-label').html());
+      var field = type + "_ids";
+      var search = $filter.typeahead('val'); //get search term
+      KMapsUtil.removeFilters($typeahead, field, filtered[namespace][type]);
+      delete filtered[namespace][type][kmap_id];
+      KMapsUtil.trackTypeaheadSelected($filter, filtered[namespace][type]);
+      $el.remove();
+      var fq = KMapsUtil.getFilters(field, filtered[namespace][type], $box.hasClass('kmaps-conjunctive-filters') ? 'AND' : 'OR');
+      $typeahead.kmapsTypeahead('addFilters', fq).kmapsTypeahead('setValue', $typeahead.typeahead('val'), false);
+      for (var i=0; i<others.length; i++) {
+        getFilter(namespace, others[i]).kmapsTypeahead('refetchPrefetch', fq);
+      }
+      $filter.kmapsTypeahead('refacetPrefetch', fq);
+      $filter.kmapsTypeahead('setValue', search, false); // 'false' prevents dropdown from re-opening
+    });
+
+    $('.kmap-search-filter').each(function () {
+      var $filter = $(this);
+      var type = $filter.attr('data-search-filter'); //feature_type or associated_subject
+      var namespace = getNamespace($filter, '-search-filter-' + type);
+      var others = [];
+      if (filtered[namespace]) {
+        others = Object.keys(filtered[namespace]);
+        others.splice(others.indexOf(type), 1);
+      }
+      /*  kmaps navigator domain handling
+                 var domain = (settings.kmaps_explorer) ? settings.kmaps_explorer.app : 'places';
+                 */
+      $filter.kmapsTypeahead({
+        term_index: fsettings.shanti_kmaps_admin_server_solr_terms,
+        domain: 'subjects', // always Filter by Subject
+        filters: KMapsUtil.getFilterQueryForFilter(type),
+        ancestors: 'off',
+        min_chars: 0,
+        selected: 'omit',
+        prefetch_facets: 'on',
+        prefetch_field: type + 's', //feature_types or associated_subjects
+        //prefetch_filters: fsettings.root_kmap_path ? ['tree:' + fsettings.domain, 'ancestor_id_path:' + fsettings.root_kmap_path] : ['tree:' + fsettings.domain],
+        prefetch_filters: ['tree: places'],
+        max_terms: 50
+      }).bind('typeahead:select',
+        function (ev, suggestion) {
+          if (suggestion.count > 0) { // should not be able to select zero-result filters
+            var mode = suggestion.refacet ? 'AND' : 'OR';
+            var $typeahead = getTypeahead(namespace);
+            var $box = getFilterBox(namespace, type);
+            var field = type + "_ids";
+            KMapsUtil.removeFilters($typeahead, field, filtered[namespace][type]);
+            pickFilter(namespace, type, suggestion);
+            $box.toggleClass('kmaps-conjunctive-filters', mode == 'AND');
+            KMapsUtil.trackTypeaheadSelected($filter, filtered[namespace][type]);
+            var fq = KMapsUtil.getFilters(field, filtered[namespace][type], mode);
+            $typeahead.kmapsTypeahead('addFilters', fq).kmapsTypeahead('setValue', $typeahead.typeahead('val'), false);
+            for (var i=0; i<others.length; i++) {
+              getFilter(namespace, others[i]).kmapsTypeahead('refetchPrefetch', fq);
+            }
+            $filter.kmapsTypeahead('refacetPrefetch', fq);
+            $filter.kmapsTypeahead('setValue', '', false); // reset filter after selection
+          }
+        }
+      );
+    });
+    /* scope filters */
+    getScopeField = function(){
+      var scope = $("input[name='search[scope]']").val();
+      var autocompleteField = '';
+      switch(scope){
+        case 'full_text':
+          autocompleteField = '*';
+          break;
+        case 'name':
+          autocompleteField = 'name_autocomplete';
+          break;
+        default:
+          autocompleteField = 'name_autocomplete';
+      }
+      return autocompleteField;
+    };
+    $("input[name='search[scope]']").on('change',function(){
+      var $filter = $(this);
+      var namespace = 'kmaps-explorer';
+      var $typeahead = getTypeahead(namespace);
+      var autocompleteField = getScopeField();
+      $typeahead.kmapsTypeahead('setAutocompleteField', autocompleteField);
+      $typeahead.kmapsTypeahead('setValue', $typeahead.val(), false);
+    });
+    $("input[name='search[match]']").on('change',function(){
+      var $filter = $(this);
+      var namespace = 'kmaps-explorer';
+      var $typeahead = getTypeahead(namespace);
+      $typeahead.kmapsTypeahead('setMatchCriterion',$filter.val());
+      $typeahead.kmapsTypeahead('setValue', $typeahead.val(), false);
+    });
+/* Go to FID */
+    var $typeaheadFID = $('#search_fid');
+		$typeaheadFID.kmapsTypeahead({
+			term_index: fsettings.shanti_kmaps_admin_server_solr_terms,
+			//term_index: "<%= Flare.session.config.url %>",
+			domain: 'places', //or subjects
+			menu: $('.listview > .view-wrap'),
+			root_kmapid:null ,
+			ancestors: 'off', //don't display ancestry in search results
+			fields: 'ancestors', //get ancestors field for use in popover
+			max_terms: 30,
+			min_chars: 0,
+			pager: 'on',
+			empty_query: '*:*',
+			empty_limit: 30,
+			empty_sort: 'header_ssort ASC', // sortable header field
+			sort: 'header_ssort ASC', // sort even when there's a search term
+			filters: fsettings.shanti_kmaps_admin_solr_filter_query ? fsettings.shanti_kmaps_admin_solr_filter_query : '',
+      autocomplete_field: 'id',
+
+		}).bind('typeahead:asyncrequest',
+			function () {
+				search_key = $typeaheadFID.typeahead('val'); //get search term
+			}
+		).bind('typeahead:select',
+			function (ev, sel) {
+				var id = sel.doc.id.substring(sel.doc.id.indexOf('-') + 1);
+				window.location.href = "features/"+sel.id;
+				//window.location.href = "<%#= features_path %>/"+sel.id;
+				$typeaheadFID.typeahead('val', search_key); // revert back to search key
+			}
+		)
+  });
+})(jQuery);

@@ -54,7 +54,6 @@ module PlacesEngine
               conditions['features.is_public'] = 1
               conditions.delete(:is_public)
             end
-            search.has_descriptions = !search.has_descriptions.blank? && search.has_descriptions == '1'
             @features = perform_global_search(search).where(conditions).paginate(:page => params[:page] || 1, :per_page => 10)
             @features = @features.joins(joins.join(' ')) unless joins.empty?
           end
