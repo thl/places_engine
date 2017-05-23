@@ -1,20 +1,20 @@
 /**
  * This files contains the javascript that initialize the flyout search
- * capabilities, the serach flyout uses typeahead and a version of the 
- * plugin created by dwardjgarret for kmaps typeahed based on twitter's
+ * capabilities, the serach flyout uses typeahead a version of the
+ * plugin created by dwardjgarret for kmaps, this plugin is based on twitter's
  * typeahead.
  *
  * This code is based on the code create for the drupal site:
  * modules/custom/shanti_kmaps_admin/js/shanti_kmaps_filter.js
  */
-
+;
 (function ($) {
+  "use strict";
 
-  fsettings = {
-    shanti_kmaps_admin_server_solr_terms: "https://ss558499-us-east-1-aws.measuredsearch.com/solr/kmterms_dev",
-//shanti_kmaps_admin_server_solr_terms:"https://ss206212-us-east-1-aws.measuredsearch.com/solr/kmterms_prod2",
-    //shanti_kmaps_admin_server_solr_terms: "<%= Flare.session.config.url %>",
-    domain: 'subjects',
+  const fsettings = {
+    shanti_kmaps_admin_server_solr_terms: "<%= Flare.session.config.url %>",
+    domain: 'places',
+    filters_domain: 'subjects',
     root_kmap_path: 'null'
   };
 
@@ -36,7 +36,7 @@
         var $box = $('#' + namespace + '-filter-box-' + type);
         var kmap_id = 'F' + suggestion.id;
         var item = {
-            domain: 'subjects', // default
+            domain: fsettings.filters_domain , // default subjects
             id: suggestion.id,
             header: suggestion.value,
             path: '{{' + suggestion.id + '}}'
@@ -70,7 +70,8 @@
     function getTypeahead(namespace) {
         return $('#' + namespace + '-search-term');
     }
-        var search_key = '';
+
+  var search_key = '';
 	$(document).ready(function(){
 		var $typeaheadExplorer = $('#kmaps-explorer-search-term');
     /* just for the close button */
@@ -129,8 +130,7 @@
      /* END - just for the close button */
 		$typeaheadExplorer.kmapsTypeahead({
 			term_index: fsettings.shanti_kmaps_admin_server_solr_terms,
-			//term_index: "<%= Flare.session.config.url %>",
-			domain: 'places', //or subjects
+			domain: fsettings.domain, //or subjects
 			menu: $('.listview > .view-wrap'),
 			root_kmapid:null ,
 			ancestors: 'off', //don't display ancestry in search results
@@ -142,8 +142,8 @@
 			empty_limit: 30,
 			empty_sort: 'header_ssort ASC', // sortable header field
 			sort: 'header_ssort ASC', // sort even when there's a search term
-			filters: fsettings.shanti_kmaps_admin_solr_filter_query ? fsettings.shanti_kmaps_admin_solr_filter_query : ''
-
+			filters: fsettings.shanti_kmaps_admin_solr_filter_query ? fsettings.shanti_kmaps_admin_solr_filter_query : '',
+      autocomplete_field: 'name_autocomplete'
 		}).bind('typeahead:asyncrequest',
 			function () {
 				search_key = $typeaheadExplorer.typeahead('val'); //get search term
@@ -151,8 +151,7 @@
 		).bind('typeahead:select',
 			function (ev, sel) {
 				var id = sel.doc.id.substring(sel.doc.id.indexOf('-') + 1);
-				window.location.href = "features/"+sel.id;
-				//window.location.href = "<%#= features_path %>/"+sel.id;
+				window.location.href = "<%= features_path %>/"+sel.id;
 				$typeaheadExplorer.typeahead('val', search_key); // revert back to search key
 			}
 		);
@@ -203,12 +202,9 @@
         others = Object.keys(filtered[namespace]);
         others.splice(others.indexOf(type), 1);
       }
-      /*  kmaps navigator domain handling
-                 var domain = (settings.kmaps_explorer) ? settings.kmaps_explorer.app : 'places';
-                 */
       $filter.kmapsTypeahead({
         term_index: fsettings.shanti_kmaps_admin_server_solr_terms,
-        domain: 'subjects', // always Filter by Subject
+        domain: fsettings.filters_domain, // Most of the times Filter by Subject
         filters: KMapsUtil.getFilterQueryForFilter(type),
         ancestors: 'off',
         min_chars: 0,
@@ -216,7 +212,7 @@
         prefetch_facets: 'on',
         prefetch_field: type + 's', //feature_types or associated_subjects
         //prefetch_filters: fsettings.root_kmap_path ? ['tree:' + fsettings.domain, 'ancestor_id_path:' + fsettings.root_kmap_path] : ['tree:' + fsettings.domain],
-        prefetch_filters: ['tree: places'],
+        prefetch_filters: ['tree: '+fsettings.domain],
         max_terms: 50
       }).bind('typeahead:select',
         function (ev, suggestion) {
@@ -228,6 +224,7 @@
             KMapsUtil.removeFilters($typeahead, field, filtered[namespace][type]);
             pickFilter(namespace, type, suggestion);
             $box.toggleClass('kmaps-conjunctive-filters', mode == 'AND');
+            $box.show();
             KMapsUtil.trackTypeaheadSelected($filter, filtered[namespace][type]);
             var fq = KMapsUtil.getFilters(field, filtered[namespace][type], mode);
             $typeahead.kmapsTypeahead('addFilters', fq).kmapsTypeahead('setValue', $typeahead.typeahead('val'), false);
@@ -241,67 +238,89 @@
       );
     });
     /* scope filters */
-    getScopeField = function(){
-      var scope = $("input[name='search[scope]']").val();
+    const getScopeField = function(){
+      const scope = $("input[name='search[scope]']:checked").val();
       var autocompleteField = '';
       switch(scope){
         case 'full_text':
-          autocompleteField = '*';
+          autocompleteField = 'text';
+          $("#search_match_contains").click();
+          $("input[name='search[match]']:not(:checked)").parent('div').parent('label').hide();
           break;
         case 'name':
           autocompleteField = 'name_autocomplete';
+          $("input[name='search[match]']").parent('div').parent('label').show();
           break;
         default:
           autocompleteField = 'name_autocomplete';
+          $("input[name='search[match]']").attr('disabled',false);
       }
       return autocompleteField;
     };
     $("input[name='search[scope]']").on('change',function(){
-      var $filter = $(this);
-      var namespace = 'kmaps-explorer';
-      var $typeahead = getTypeahead(namespace);
-      var autocompleteField = getScopeField();
+      const $filter = $(this);
+      const namespace = 'kmaps-explorer';
+      const $typeahead = getTypeahead(namespace);
+      const autocompleteField = getScopeField();
       $typeahead.kmapsTypeahead('setAutocompleteField', autocompleteField);
       $typeahead.kmapsTypeahead('setValue', $typeahead.val(), false);
     });
     $("input[name='search[match]']").on('change',function(){
-      var $filter = $(this);
-      var namespace = 'kmaps-explorer';
-      var $typeahead = getTypeahead(namespace);
-      $typeahead.kmapsTypeahead('setMatchCriterion',$filter.val());
+      const $filter = $(this);
+      const filter_value = $filter.val();
+      const namespace = 'kmaps-explorer';
+      const $typeahead = getTypeahead(namespace);
+      var autocompleteField = 'name_autocomplete';
+      switch($filter.val()){
+        case 'begins':
+        case 'exactly':
+          autocompleteField = 'name';
+          $("#search-note").show();
+          $typeahead.kmapsTypeahead('setCaseSensitive', true);
+          break
+        default:
+          autocompleteField = 'name_autocomplete';
+          $("#search-note").hide();
+          $typeahead.kmapsTypeahead('setCaseSensitive', false);
+      }
+      $typeahead.kmapsTypeahead('setAutocompleteField', autocompleteField);
+      $typeahead.kmapsTypeahead('setMatchCriterion',filter_value);
       $typeahead.kmapsTypeahead('setValue', $typeahead.val(), false);
     });
 /* Go to FID */
-    var $typeaheadFID = $('#search_fid');
-		$typeaheadFID.kmapsTypeahead({
-			term_index: fsettings.shanti_kmaps_admin_server_solr_terms,
-			//term_index: "<%= Flare.session.config.url %>",
-			domain: 'places', //or subjects
-			menu: $('.listview > .view-wrap'),
-			root_kmapid:null ,
-			ancestors: 'off', //don't display ancestry in search results
-			fields: 'ancestors', //get ancestors field for use in popover
-			max_terms: 30,
-			min_chars: 0,
-			pager: 'on',
-			empty_query: '*:*',
-			empty_limit: 30,
-			empty_sort: 'header_ssort ASC', // sortable header field
-			sort: 'header_ssort ASC', // sort even when there's a search term
-			filters: fsettings.shanti_kmaps_admin_solr_filter_query ? fsettings.shanti_kmaps_admin_solr_filter_query : '',
-      autocomplete_field: 'id',
-
-		}).bind('typeahead:asyncrequest',
-			function () {
-				search_key = $typeaheadFID.typeahead('val'); //get search term
-			}
-		).bind('typeahead:select',
-			function (ev, sel) {
-				var id = sel.doc.id.substring(sel.doc.id.indexOf('-') + 1);
-				window.location.href = "features/"+sel.id;
-				//window.location.href = "<%#= features_path %>/"+sel.id;
-				$typeaheadFID.typeahead('val', search_key); // revert back to search key
-			}
-		)
+    var gotoFID = function(elem) {
+      const fid = elem.val();
+      var params = {
+        'q': 'id:'+fsettings.domain+'-'+fid,
+        'wt': 'json',
+        'fl': 'id'
+      };
+      var callBack = function(data){
+        if((data.response !== undefined) && (data.response.numFound !== undefined) && data.response.numFound > 0) {
+          window.location.href = "<%= features_path %>/"+fid;
+        } else {
+          var msg = 'No results for <span class="kmaps-tt-query">' + fid + '</span>. ';
+          $('.listview > .view-wrap .kmaps-tt-dataset').html('<div class="kmaps-tt-message kmaps-tt-no-results">' + msg + '</div>');
+        }
+      };
+      $.ajax({
+        url: fsettings.shanti_kmaps_admin_server_solr_terms+"/select/",
+        data: $.param(params,true),
+        dataType: 'jsonp',
+        jsonp: 'json.wrf',
+        success: callBack,
+        error: callBack,
+      });
+    };
+    const $gotoFidElement = $('#goto-fid input');
+    const $gotoFidButton = $('#goto-fid button');
+    $gotoFidElement.keyup(function(event){
+          if(event.keyCode == 13){
+                    gotoFID($gotoFidElement);
+                }
+    });
+    $gotoFidButton.on('click',function(){
+                    gotoFID($gotoFidElement);
+    });
   });
 })(jQuery);
