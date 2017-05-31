@@ -281,9 +281,15 @@ module PlacesEngine
             hierarchy = self.closest_ancestors_by_perspective(p)
             tag << 'closest_'
             id_tag << 'closest_'
+            closest_ancestor_in_tree = Feature.find(self.closest_hierarchical_feature_id_by_perspective(p))
+            path = closest_ancestor_in_tree.ancestors_by_perspective(p).collect(&:fid)
+          else
+            path = hierarchy.collect(&:fid)
+            doc["level_#{p.code}_i"] = path.size
           end
           tag << p.code
           id_tag << p.code
+          doc["ancestor_id_#{p.code}_path"] = path.join('/')
           doc[tag] = hierarchy.collect{ |f| f.prioritized_name(v).name }
           doc[id_tag] = hierarchy.collect{ |f| f.fid }
         end
