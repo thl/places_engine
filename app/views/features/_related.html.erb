@@ -141,6 +141,7 @@ function collapse_all_categories(){
           frt = rt.empty? ? "" : rt[:tree].empty? ? "" : rt[:tree]
           unless frt.empty? %>
             <h3>Hierarchy tree</h3>
+            <div id='relation_tree_container2'></div>
             <div id='relation_tree_container'></div>
 <%        end
           unless fnit.empty? %>
@@ -155,6 +156,7 @@ function collapse_all_categories(){
 
 <% #TODO: when flyout uses fancytree remove this js %>
 <%= javascript_include_tag 'kmaps_tree/jquery.fancytree-all.min' %>
+<%= javascript_include_tag 'kmaps_engine/kmaps_fancytree' %>
 <%#= stylesheet_link_tag 'ui.fancytree.min' %>
 <%= stylesheet_link_tag 'kmaps_tree/kmapstree' %>
 <script type='text/javascript'>
@@ -167,6 +169,9 @@ function getNotInTree(){
   return tree;
 }
 $(document).ready(function(){
+  $("#relation_tree_container2").kmapsFancytree({
+    featureId: <%= @feature.fid %>,
+  });
   <% unless frt.empty? %>
       $('#relation_tree_container').fancytree({
 				extensions: ["glyph"],
