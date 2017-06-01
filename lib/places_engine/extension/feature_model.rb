@@ -279,6 +279,8 @@ module PlacesEngine
           hierarchy = self.ancestors_by_perspective(p)
           if hierarchy.blank?
             hierarchy = self.closest_ancestors_by_perspective(p)
+            doc["ancestor_id_closest_#{p.code}_path"] = hierarchy.collect(&:fid).join('/')
+            doc["level_closest_#{p.code}_i"] = hierarchy.size
             tag << 'closest_'
             id_tag << 'closest_'
             closest_ancestor_in_tree = Feature.find(self.closest_hierarchical_feature_id_by_perspective(p))
