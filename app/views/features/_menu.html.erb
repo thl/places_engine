@@ -95,6 +95,15 @@
 		  jQuery.ajax({ type: 'POST', url: '<%= set_session_variables_features_path %>', data: 'menu_item=browse', success: function(){}, error: function(){} });
 	  });
 <%  end %>
+<%= javascript_on_load do %>
+  $("#kmaps-explorer-search-term").flyoutKmapsTypeahead({
+    hostname: "<%= Flare.session.config.url %>",
+    domain: 'places',
+    filters_domain: 'subjects',
+    root_kmap_path: null,
+    features_path: '<%= features_path %>/',
+  });
+<% end %>
   </section>
   <!-- END input section -->
   <!-- BEGIN view section -->
