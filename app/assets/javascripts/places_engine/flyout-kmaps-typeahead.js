@@ -6,6 +6,9 @@
  *
  * This code is based on the code create for the drupal site:
  * modules/custom/shanti_kmaps_admin/js/shanti_kmaps_filter.js
+ *
+ * Using the jQuery boilerplate for the plugin:
+ * https://github.com/jquery-boilerplate/jquery-patterns/blob/master/patterns/jquery.basic.plugin-boilerplate.js
  */
 ;(function ( $, window, document, undefined ) {
   "use strict";
@@ -87,7 +90,6 @@
         'data-kmap-path': item.path,
         'data-kmap-header': item.header
       });
-      //    Drupal.attachBehaviors($el); //Drupal adds all the behaviours for the current element, we have to check if there are some that we need and add them manually but what would be best is that all the event binding 'on' use the new jquery delegate
     }
   }
 
@@ -107,13 +109,13 @@
     return $('#' + namespace + '-search-term');
   }
 
+  // END - utility functions
   var search_key = '';
   Plugin.prototype = {
     init: function(){
       const plugin = this;
-      //;;var $typeaheadExplorer = $('#kmaps-explorer-search-term');
       var $typeaheadExplorer = $(plugin.element);
-      /* just for the close button */
+      /* typeahead input field behaviours and reset button behaviours */
       $('.kmap-typeahead-picker, .kmap-tree-picker').each(function () {
         var $xbtn = $('button.searchreset', this);
         var $srch = $(".kmap-search-term:not(.kmaps-tt-hint)", this);  // the main search input
@@ -166,8 +168,8 @@
           }
         });
       });
+      /* END - typeahead input behaviours and reset button behaviours */
 
-      /* END - just for the close button */
       $typeaheadExplorer.kmapsTypeahead({
         term_index: plugin.options.hostname,
         domain: plugin.options.domain,
@@ -366,6 +368,7 @@
       });
     },
   }
+
 	// You don't need to change something below:
 	// A really lightweight plugin wrapper around the constructor,
 	// preventing against multiple instantiations and allowing any
