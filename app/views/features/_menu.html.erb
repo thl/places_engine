@@ -71,9 +71,6 @@
          data-search-filter="associated_subject" style="display:none"></div>
 </div>
 <hr>
-<%#=     form.hidden_field :context_id %>
-<%#=     form.label :fid, "Or Go to #{Feature.human_attribute_name(:pid)}:" %>
-<%#=     form.text_field :fid %>
     <div id='goto-fid' class="input-group">
       <input type="text" class="form-control" placeholder="Go to place ID...">
       <span class="input-group-btn">
@@ -82,18 +79,6 @@
     </div><!-- /input-group -->
       </div>
 	</section>
-<%  end %>
-<%= javascript_on_load do %>
-      $('#new_search').bind("ajax:beforeSend", function() {
-	    $("#NodeSearchResults").html('<%= image_tag('interface_utils/ajax-loader.gif') %>');
-		$('.nav a[href=".listview"]').tab('show')
-	  });
-	  $('.nav a[href=".listview"]').on('shown.bs.tab', function (e) {
-		  jQuery.ajax({ type: 'POST', url: '<%= set_session_variables_features_path %>', data: 'menu_item=results', success: function(){}, error: function(){} });
-	  });
-	  $('.nav a[href=".treeview"]').on('shown.bs.tab', function (e) {
-		  jQuery.ajax({ type: 'POST', url: '<%= set_session_variables_features_path %>', data: 'menu_item=browse', success: function(){}, error: function(){} });
-	  });
 <%  end %>
 <%= javascript_on_load do %>
   $("#kmaps-explorer-search-term").flyoutKmapsTypeahead({
@@ -131,31 +116,7 @@
 	    </div>
       <div class="listview tab-pane<%= ' active' if active_item == 'results' %>">
         <div class="view-wrap"></div>
-        <!--
-        <div id="NodeSearchResults" >
-<%        if session[:search].blank? %>
-<%=         ts 'snippet.search' %>
-<%        else
-            begin
-              search_results = Feature.find(session[:search][:feature_ids])
-            rescue
-              search_results = nil
-              session[:search] = nil
-            end
-            if !search_results.blank? %>
-<%=           render :partial => 'features/search_results', :locals => {:use_session => true, :features => search_results} %>
-<%          end
-          end %>
-        </div>
-        -->
       </div>
 	  </div>
   </section>
 </section>
-<% # If a search is made via GET params (e.g. /features?filter=china), we need to perform it.
-   valid_search_params = [:filter, :context_id, :match, :object_type, :characteristic_id, :scope, :search_scope, :has_descriptions].collect{|p| p.to_s }
-   unless (params.keys & valid_search_params).empty? %>
-<%=  link_to '', search_features_path, :remote => true, :id => 'ajax_search_results', :style => 'display:none;' %>
-<%=  javascript_tag("$('#ajax_search_results').bind('ajax:beforeSend', function(){ NodeMenu.beginSearch() })") %>
-<%=  javascript_on_load("jQuery('#ajax_search_results').click()") %>
-<% end %>

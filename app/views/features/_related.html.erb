@@ -14,7 +14,7 @@
 
   // Since clicking on links of the form "/features#59" would normally just change the url
   // hash and not change the page content, we need to send these links to NodeTree.showNode(id),
-  // which opens up the specified feature. 
+  // which opens up the specified feature.
   jQuery('.has-hash-feature-links a[href*=\\/features#]').on('click', function(){
     var id = this.href.match(/features#([\d]+)$/);
     if(id){
@@ -109,7 +109,7 @@ function collapse_all_categories(){
             category_id, count = c
             category = SubjectsIntegration::Feature.find(category_id)
             # This has returned nil in some cases on production, so we need to check it to prevent a fatal error below
-            unless category.nil? 
+            unless category.nil?
               div_id = "list_#{category_id}_#{feature_relation_type.id}_#{feature_is_parent}" %>
             <ul>
               <li>
