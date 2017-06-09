@@ -170,12 +170,15 @@ function getNotInTree(){
   var tree = <%= fnit.to_json.html_safe %>;
   return tree;
 }
-$(document).ready(function(){
+</script>
+<%= javascript_on_load do %>
   // Functionality for columnizer
-  $('.kmaps-list-columns:not(.subjects-in-places)').columnize({
+  $('.kmaps-list-columns:not(.subjects-in-places):not(.already_columnized)').addClass('already_columnized').columnize({
     width: 330,
-    lastNeverTallest : true
+    lastNeverTallest : true,
+    buildOnce: true
   });
+  console.log("Ok is here");
   // dontsplit = don't break these headers
   $('.places-in-places').find('.column > h6, .column > ul > li, .column ul').addClass("dontsplit");
   // dontend = don't end column with headers
@@ -248,5 +251,4 @@ $(document).ready(function(){
     node.setExpanded(true);
   });
 <% end %>
-});
-</script>
+<% end %>
