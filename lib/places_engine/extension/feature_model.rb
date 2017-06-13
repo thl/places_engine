@@ -215,6 +215,7 @@ module PlacesEngine
                 related_subjects_ids: related_subjects.collect(&:id),
                 related_places_relation_label_s: r.asymmetric_label,
                 related_places_relation_code_s: r.code,
+                related_kmaps_node_type: 'parent',
                 block_type: ['child'] }
             end
 					end
@@ -245,6 +246,7 @@ module PlacesEngine
                 related_subject_ids: related_subjects.collect(&:id),
                 related_places_relation_label_s: r.label,
                 related_places_relation_code_s: r.asymmetric_code,
+                related_kmaps_node_type: 'child',
                 block_type: ['child'] }
             end
           end
@@ -277,11 +279,19 @@ module PlacesEngine
           hierarchy = self.ancestors_by_perspective(p)
           if hierarchy.blank?
             hierarchy = self.closest_ancestors_by_perspective(p)
+            doc["ancestor_id_closest_#{p.code}_path"] = hierarchy.collect(&:fid).join('/')
+            doc["level_closest_#{p.code}_i"] = hierarchy.size
             tag << 'closest_'
             id_tag << 'closest_'
+            closest_ancestor_in_tree = Feature.find(self.closest_hierarchical_feature_id_by_perspective(p))
+            path = closest_ancestor_in_tree.ancestors_by_perspective(p).collect(&:fid)
+          else
+            path = hierarchy.collect(&:fid)
+            doc["level_#{p.code}_i"] = path.size
           end
           tag << p.code
           id_tag << p.code
+          doc["ancestor_id_#{p.code}_path"] = path.join('/')
           doc[tag] = hierarchy.collect{ |f| f.prioritized_name(v).name }
           doc[id_tag] = hierarchy.collect{ |f| f.fid }
         end
