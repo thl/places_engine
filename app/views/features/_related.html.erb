@@ -170,6 +170,7 @@ function getNotInTree(){
 }
 $(document).ready(function(){
   $("#relation_tree_container2").kmapsFancytree({
+    hostname: "<%= Flare.session.config.url %>",
     featureId: <%= @feature.fid %>,
   });
   <% unless frt.empty? %>
