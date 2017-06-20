@@ -136,12 +136,12 @@ function collapse_all_categories(){
     <div role="tabpanel" class="tab-pane" id="relation_tree">
       <section class="panel panel-content">
         <div class="panel-body">
-<%        rt = feature_relation_tree(@feature)
+            <div id='relation_tree_container2'></div>
+<%        rt = [] #feature_relation_tree(@feature)
           fnit = rt.empty? ? "" : rt[:not_in_tree].empty? ? "" : rt[:not_in_tree]
           frt = rt.empty? ? "" : rt[:tree].empty? ? "" : rt[:tree]
           unless frt.empty? %>
             <h3>Hierarchy tree</h3>
-            <div id='relation_tree_container2'></div>
             <div id='relation_tree_container'></div>
 <%        end
           unless fnit.empty? %>
@@ -170,8 +170,13 @@ function getNotInTree(){
 }
 $(document).ready(function(){
   $("#relation_tree_container2").kmapsFancytree({
-    hostname: "<%= Flare.session.config.url %>",
-    featureId: <%= @feature.fid %>,
+    hostname: "<%= Flare.session.config.scheme+'://'+Flare.session.config.hostname %>",
+    featureId: "<%= @feature.fid %>",
+    termIndex: "<%= Flare.session.config.path %>",
+    seedTree: {
+      descendants: true,
+      directAncestors: false,
+    },
   });
   <% unless frt.empty? %>
       $('#relation_tree_container').fancytree({
