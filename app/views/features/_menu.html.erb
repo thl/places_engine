@@ -72,23 +72,12 @@
   <section class="view-section">
     <ul class="nav nav-tabs">
 <%    active_item = active_menu_item %>
-      <li class="treeview<%= ' active' if active_item == 'browse' %>"><a href=".treeview" data-toggle="tab"><span class="icon shanticon-tree"></span>Tree</a></li>
+      <li class="treeview<%= ' active' if active_item == 'browse' %>"><a href=".treeview" data-toggle="tab"><span class="icon shanticon-tree"></span>Solr Tree</a></li>
       <li class="listview<%= ' active' if active_item == 'results' %>"><a href=".listview" data-toggle="tab"><span class="icon shanticon-list"></span>List</a></li>
     </ul>
 	  <div class="tab-content">
 	    <div class="treeview tab-pane<%= ' active' if active_item == 'browse' %>">
-	      <div id="NodeTree">
-	        <div id="NodeTreeList">
-<%          feature = contextual_feature
-            if feature.nil? %>
-<%=           render :partial => "features/node_tree", :locals => { :children => @top_level_nodes } %>
-<%          else %>
-		          <img src="http://thlib.org/global/images/ajax-loader.gif" alt="" style="display:inline;" /> <%= ts :loading %>
-<%          end
-            unless feature.nil? %>
-<%=           javascript_on_load "NodeTree.loadExpandedTree(#{feature.closest_hierarchical_feature_id_by_perspective(current_perspective)}#{(defined?(admin) && admin) ? ', true' : ', false'})" %>
-<%          end %>
-          </div>
+	      <div id="tree" class="view-wrap">
 	      </div>
 	    </div>
       <div class="listview tab-pane<%= ' active' if active_item == 'results' %>">
@@ -111,6 +100,39 @@
 	  </div>
   </section>
 </section>
+<%#= javascript_include_tag 'kmaps_engine/kmaps_fancytree' %>
+<% feature = contextual_feature %>
+    <script type='text/javascript'>
+$(document).ready(function(){
+        $("#tree").kmapsTree({
+          termindex_root: "<%= Flare.session.config.scheme+'://'+Flare.session.config.hostname+Flare.session.config.path %>",
+          kmindex_root: "<%= Flare.session.config.scheme+'://'+Flare.session.config.hostname+'/solr/kmassets_dev' %>",
+          type: 'places',
+          root_kmap_path: '13735',
+          baseUrl: "<%= features_path %>",
+          //expand_path: "13735/13740/1/2/317/637",
+          //activeNodeId: '637',
+          //expand_path: "13735/13740/1/2/317/637/434",
+          expand_path: "",
+          perspective: "<%= current_perspective.code %>",
+<%         unless feature.nil? %>
+           activeNodeId: "<%= feature.fid %>",
+<%        end %>
+        });
+
+  /*
+  $("#tree").kmapsFancytree({
+    hostname: "<%= Flare.session.config.scheme+'://'+Flare.session.config.hostname %>",
+    featureId: "<%= @feature.fid %>",
+    termIndex: "<%= Flare.session.config.path %>",
+    seedTree: {
+      descendants: true,
+      directAncestors: false,
+    },
+  });
+*/
+});
+    </script>
 <% # If a search is made via GET params (e.g. /features?filter=china), we need to perform it.
    valid_search_params = [:filter, :context_id, :match, :object_type, :characteristic_id, :scope, :search_scope, :has_descriptions].collect{|p| p.to_s }
    unless (params.keys & valid_search_params).empty? %>

@@ -81,7 +81,7 @@ function collapse_all_categories(){
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#relation_details" aria-controls="home" role="tab" data-toggle="tab">Summary</a></li>
-    <li role="presentation"><a href="#relation_tree" aria-controls="profile" role="tab" data-toggle="tab">Relationship tree</a></li>
+    <li role="presentation"><a href="#relation_tree" aria-controls="profile" role="tab" data-toggle="tab">Relationship Tree</a></li>
   </ul>
   <!-- Tab panes -->
   <div class="tab-content">
@@ -173,6 +173,7 @@ $(document).ready(function(){
     hostname: "<%= Flare.session.config.scheme+'://'+Flare.session.config.hostname %>",
     featureId: "<%= @feature.fid %>",
     termIndex: "<%= Flare.session.config.path %>",
+    perspective: "<%= current_perspective.code %>",
     seedTree: {
       descendants: true,
       directAncestors: false,
