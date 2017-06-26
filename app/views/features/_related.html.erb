@@ -14,7 +14,7 @@
 
   // Since clicking on links of the form "/features#59" would normally just change the url
   // hash and not change the page content, we need to send these links to NodeTree.showNode(id),
-  // which opens up the specified feature. 
+  // which opens up the specified feature.
   jQuery('.has-hash-feature-links a[href*=\\/features#]').on('click', function(){
     var id = this.href.match(/features#([\d]+)$/);
     if(id){
@@ -95,12 +95,12 @@ function collapse_all_categories(){
         <%=  link_to ts('tree.expand', :what => t('all.these')), '#', onclick: "expand_all_categories()", :class => "expand-all-categories expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
         <%=  link_to ts('tree.collapse', :what => t('all.these')), '#', onclick: "collapse_all_categories()", :class => "collapse-all-categories expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
         </p>
-        <div class="related-features-categories has-ajax-pagination has-hash-feature-links">
+        <div class="places-in-places kmaps-list-columns related-features-categories has-ajax-pagination has-hash-feature-links">
           <%   relation_counts.each do |rc|
             feature_relation_type = rc.feature_relation_type
             feature_is_parent = rc.feature_is_parent
             count = rc.count %>
-          <h3><%= feature_label %> <%= "#{feature_is_parent ? feature_relation_type.label : feature_relation_type.asymmetric_label}" %> (<%= count %>):</h3>
+          <h6><%= feature_label %> <%= "#{feature_is_parent ? feature_relation_type.label : feature_relation_type.asymmetric_label}" %> (<%= count %>):</h6>
           <%     # Is there a way to :include => categories and use an :order instead of this .sort{}?
             CachedFeatureRelationCategory.group('category_id').where(:feature_id => @feature.id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent).count.sort do |a,b|
             # Some of these .finds are returning nil, but it's not clear why.
@@ -109,15 +109,19 @@ function collapse_all_categories(){
             category_id, count = c
             category = SubjectsIntegration::Feature.find(category_id)
             # This has returned nil in some cases on production, so we need to check it to prevent a fatal error below
-            unless category.nil? 
+            unless category.nil?
               div_id = "list_#{category_id}_#{feature_relation_type.id}_#{feature_is_parent}" %>
-            <p><strong>
+            <ul>
+              <li>
               <%=        link_to SubjectsIntegration::Feature.find(category_id).header, related_list_feature_path(@feature.id, :category_id => category_id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent.to_s),
                 :remote => true, :id => "link_#{div_id}", :class => 'expandable-link-contracted' %>
-            </strong> (<%= count %>)
-            </p>
+             (<%= count %>)
+             <ul>
             <div id="<%= div_id %>" style="display:none;" class="related-feature-list pagination-click-results"></div>
             <%=        javascript_tag("$('#link_#{div_id}').bind('ajax:beforeSend', function(){ if(!on_category_click('#{div_id}')) return false; });") %>
+             </ul>
+              </li>
+            </ul>
           <%       end
           end
           end %>
@@ -168,7 +172,15 @@ function getNotInTree(){
   var tree = <%= fnit.to_json.html_safe %>;
   return tree;
 }
-$(document).ready(function(){
+</script>
+<%= javascript_on_load do %>
+  // Functionality for columnizer
+  $('.kmaps-list-columns:not(.subjects-in-places):not(.already_columnized)').addClass('already_columnized').columnize({
+    width: 330,
+    lastNeverTallest : true,
+    buildOnce: true
+  });
+
   $("#relation_tree_container2").kmapsFancytree({
     hostname: "<%= Flare.session.config.scheme+'://'+Flare.session.config.hostname %>",
     featureId: "<%= @feature.fid %>",
@@ -244,5 +256,4 @@ $(document).ready(function(){
     node.setExpanded(true);
   });
 <% end %>
-});
-</script>
+<% end %>

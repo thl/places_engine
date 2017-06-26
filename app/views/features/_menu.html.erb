@@ -4,14 +4,14 @@
   <section class="input-section" style="display:none">
 <%= form_for @search_form, url: search_features_path, remote: true do |form| %>
     <div class="search-group">
-	  <div class="input-group" id="searcharea">
-<%=     form.text_field :filter, class: 'form-control kms', placeholder: 'Enter Search...' %>
-	    <span class="input-group-btn">
-<%=       form.button class: 'btn btn-default' do %>
-            <span class="icon"></span>
-<%        end %>
-        </span>
-      </div>
+      <!-- typeahead search -->
+<div class="kmap-typeahead-picker">
+  <label class="flyout-search-label"><span>Search:</span></label>
+    <%=     text_field_tag "kmaps-explorer-search-term", "",  class: 'kmap-search-term form-control form-text', placeholder: 'Enter Search...', autocomplete: :off %>
+  <span class="icon shanticon-magnify"></span>
+  <button type="button" class="btn searchreset" aria-label="Clear search text" style="display: none;"><span class="icon"></span></button>
+</div>
+      <!-- END - typeahead search -->
 	  <div class="form-group">
 <%=     link_to '#', class: 'advanced-link toggle-link' do %>
           <span class="icon"></span><%= ts(:advanced) %>
@@ -19,61 +19,87 @@
 	  </div>
 <%=   javascript_on_load do %>
         $('.advanced-link').click ( function () {
-          $(this).toggleClass("show-advanced",'fast');
+        var tg = $('.advanced-view').is(":visible");
+         $(this).toggleClass("show-advanced",'fast');
           $(".advanced-view").slideToggle('fast');
           $(".advanced-view").toggleClass("show-options");
+          ShantiSarvaka.searchTabHeight(!tg);
         });
 <%    end %>
     </div>
 	<section class="advanced-view" style="<%= 'display:none;' unless current_show_advanced_search  %>">
 	   <div class="form-group" id="searchScopeGroup">
+       <label><span>Filter:</span> search scope</label>
         <div>
-<%=       form.radio_button :scope, 'full_text' %> <%= ts 'search.full_text' %>
-<%=       form.radio_button :scope, 'name' %> <%= FeatureName.model_name.human.titleize.s %>
+<%=       form.radio_button :scope, 'full_text' %>
+<%=       form.label :scope, ts('search.full_text'), value: 'full_text' %>
+<%=       form.radio_button :scope, 'name' %>
+<%=       form.label :scope, FeatureName.model_name.human.titleize.s, value: 'name'%>
         </div>
         <div>
-<%=       form.radio_button :match, 'contains' %> <%= ts 'search.contains' %>
-<%=       form.radio_button :match, 'begins' %> <%= ts 'search.begins' %>
-<%=       form.radio_button :match, 'exactly' %> <%= ts 'search.exactly' %>
+          <%=       form.radio_button :match, 'contains' %>
+          <%= form.label :match, ts('search.contains'), value: 'contains' %>
+<%=       form.radio_button :match, 'begins' %>
+<%=       form.label :match, ts('search.begins'), value: 'begins' %>
+<%=       form.radio_button :match, 'exactly' %>
+<%=       form.label :match, ts('search.exactly'), value: 'exactly' %>
         </div>
-        <div>
-<%=       form.check_box :has_descriptions %>
-<%=       form.label :has_descriptions, ts('snippet.essay.with') %>
-        </div>
-        <div id="tmb_category_selector_object_type"></div>
-        <div id="characteristic_selector"></div>
-<!--    <div>  Select Scope: -->
-<%        # form.radio_button :search_scope, 'global' Global
-          # form.radio_button :search_scope, 'contextual' Contextual
-          # form.radio_button :search_scope, 'fid' THL ID 
-%>
-<!--    </div> -->
-<%=     form.hidden_field :context_id %>
-<%=     form.label :fid, "Or Go to #{Feature.human_attribute_name(:pid)}:" %>
-<%=     form.text_field :fid %>
+        <div id="search-note" style='display:none'><p>'Starts with' and 'Exactly' filters are case sensitive</p></div>
+        <hr />
+<div id="kmaps-explorer-filter-feature_type"
+     class="kmap-filter"
+     data-search-filter="feature_type">
+    <label><span>Filter:</span> select feature types</label>
+    <input id="kmaps-explorer-search-filter-feature_type"
+           class="kmap-search-filter form-control form-text" type="text"
+           data-search-filter="feature_type"
+           placeholder="Filter by feature types">
+    <div id="kmaps-explorer-filter-box-feature_type"
+         class="kmap-filter-box"
+         data-search-filter="feature_type" style="display:none"></div>
+</div>
+<div id="kmaps-explorer-filter-associated_subject"
+     class="kmap-filter"
+     data-search-filter="associated_subject">
+    <label><span>Filter:</span> select associated subject</label>
+    <input id="kmaps-explorer-search-filter-associated_subject"
+           class="kmap-search-filter form-control form-text" type="text"
+           data-search-filter="associated_subject"
+           placeholder="Filter by associated subject">
+    <div id="kmaps-explorer-filter-box-associated_subject"
+         class="kmap-filter-box"
+         data-search-filter="associated_subject" style="display:none"></div>
+</div>
+<hr>
+    <div id='goto-fid' class="input-group">
+      <input type="text" class="form-control" placeholder="Go to place ID...">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button">Go!</button>
+      </span>
+    </div><!-- /input-group -->
       </div>
 	</section>
 <%  end %>
 <%= javascript_on_load do %>
-      $('#new_search').bind("ajax:beforeSend", function() {
-	    $("#NodeSearchResults").html('<%= image_tag('interface_utils/ajax-loader.gif') %>');
-		$('.nav a[href=".listview"]').tab('show')
-	  });
-	  $('.nav a[href=".listview"]').on('shown.bs.tab', function (e) {
-		  jQuery.ajax({ type: 'POST', url: '<%= set_session_variables_features_path %>', data: 'menu_item=results', success: function(){}, error: function(){} });
-	  });
-	  $('.nav a[href=".treeview"]').on('shown.bs.tab', function (e) {
-		  jQuery.ajax({ type: 'POST', url: '<%= set_session_variables_features_path %>', data: 'menu_item=browse', success: function(){}, error: function(){} });
-	  });
-<%  end %>
+  $("#kmaps-explorer-search-term").flyoutKmapsTypeahead({
+    hostname: "<%= Flare.session.config.url %>",
+    domain: 'places',
+    filters_domain: 'subjects',
+    root_kmap_path: null,
+    features_path: '<%= features_path %>/',
+  });
+<% end %>
   </section>
   <!-- END input section -->
   <!-- BEGIN view section -->
   <section class="view-section">
     <ul class="nav nav-tabs">
 <%    active_item = active_menu_item %>
-      <li class="treeview<%= ' active' if active_item == 'browse' %>"><a href=".treeview" data-toggle="tab"><span class="icon shanticon-tree"></span>Solr Tree</a></li>
-      <li class="listview<%= ' active' if active_item == 'results' %>"><a href=".listview" data-toggle="tab"><span class="icon shanticon-list"></span>List</a></li>
+      <li class="treeview<%= ' active' if active_item == 'browse' %>"><a href=".treeview" data-toggle="tab"><span class="icon shanticon-tree"></span>Tree</a></li>
+      <li class="listview<%= ' active' if active_item == 'results' %>"><a href=".listview" data-toggle="tab"><span class="icon shanticon-list"></span>Results</a></li>
+    </ul>
+	  <div class="tab-content">
+	    <div class="treeview tab-pane<%= ' active' if active_item == 'browse' %>">
     </ul>
 	  <div class="tab-content">
 	    <div class="treeview tab-pane<%= ' active' if active_item == 'browse' %>">
@@ -81,21 +107,7 @@
 	      </div>
 	    </div>
       <div class="listview tab-pane<%= ' active' if active_item == 'results' %>">
-        <div id="NodeSearchResults" >
-<%        if session[:search].blank? %>
-<%=         ts 'snippet.search' %>
-<%        else
-            begin
-              search_results = Feature.find(session[:search][:feature_ids])
-            rescue
-              search_results = nil
-              session[:search] = nil
-            end
-            if !search_results.blank? %>
-<%=           render :partial => 'features/search_results', :locals => {:use_session => true, :features => search_results} %>
-<%          end
-          end %>
-        </div>
+        <div class="view-wrap"></div>
       </div>
 	  </div>
   </section>
