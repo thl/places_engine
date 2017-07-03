@@ -140,15 +140,34 @@ function collapse_all_categories(){
     <div role="tabpanel" class="tab-pane" id="relation_tree">
       <section class="panel panel-content">
         <div class="panel-body">
+<%        rt = feature_relation_tree(@feature)
+          fnit = rt.empty? ? "" : rt[:not_in_tree].empty? ? "" : rt[:not_in_tree]
+          frt = rt.empty? ? "" : rt[:tree].empty? ? "" : rt[:tree]
+          unless frt.empty? %>
             <h3>Hierarchy tree</h3>
             <div id='relation_tree_container'></div>
+<%        end
+          unless fnit.empty? %>
+            <h3>Related features not in hierarchy tree</h3>
+            <div id='nit_relation_tree_container'></div>
+<%        end %>
         </div> <!-- END panel-body -->
       </section> <!-- END panel -->
   </div>
 	</div> <!-- Tab Panes end -->
 </div> <!-- myTabs end -->
 
-<%= javascript_include_tag 'kmaps_engine/kmaps_fancytree' %>
+<%= stylesheet_link_tag 'kmaps_tree/kmapstree' %>
+<script type='text/javascript'>
+function getTree(){
+  var tree = <%= frt.to_json.html_safe %>;
+  return tree;
+}
+function getNotInTree(){
+  var tree = <%= fnit.to_json.html_safe %>;
+  return tree;
+}
+</script>
 <%= javascript_on_load do %>
   // Functionality for columnizer
   $('.kmaps-list-columns:not(.subjects-in-places):not(.already_columnized)').addClass('already_columnized').columnize({
@@ -156,15 +175,76 @@ function collapse_all_categories(){
     lastNeverTallest : true,
     buildOnce: true
   });
+  // dontsplit = don't break these headers
+  $('.places-in-places').find('.column > h6, .column > ul > li, .column ul').addClass("dontsplit");
+  // dontend = don't end column with headers
+  $('.places-in-places').find('.column > h6, .column > ul > li').addClass("dontend");
 
-  $("#relation_tree_container").kmapsFancytree({
-    hostname: "<%= Flare.session.config.scheme+'://'+Flare.session.config.hostname %>",
-    featureId: "<%= @feature.fid %>",
-    termIndex: "<%= Flare.session.config.path %>",
-    perspective: "<%= current_perspective.code %>",
-    seedTree: {
-      descendants: true,
-      directAncestors: false,
-    },
+  // End - Functionality for columnizer
+
+  <% unless frt.empty? %>
+      $('#relation_tree_container').fancytree({
+				extensions: ["glyph"],
+        source: getTree(),
+				glyph: {
+					map: {
+						doc: "",
+						docOpen: "",
+						error: "glyphicon glyphicon-warning-sign",
+						expanderClosed: "glyphicon glyphicon-plus-sign",
+						expanderLazy: "glyphicon glyphicon-plus-sign",
+						// expanderLazy: "glyphicon glyphicon-expand",
+						expanderOpen: "glyphicon glyphicon-minus-sign",
+						// expanderOpen: "glyphicon glyphicon-collapse-down",
+						folder: "",
+						folderOpen: "",
+						loading: "glyphicon glyphicon-refresh"
+							//              loading: "icon-spinner icon-spin"
+					}
+        },
+        activate: function(event, data){
+          var node = data.node,
+            orgEvent = data.originalEvent;
+          if(node.data.href){
+            window.location.href=node.data.href;
+          }
+        },
+        lazyLoad: function(event, data){
+          var node = data.node;
+  data.result = { url: "<%= features_path %>/"+node.key+"/fancy_children.json" };
+        }
+			});
+<% end %>
+<% unless fnit.empty? %>
+      $('#nit_relation_tree_container').fancytree({
+				extensions: ["glyph"],
+        source: getNotInTree(),
+				glyph: {
+					map: {
+						doc: "",
+						docOpen: "",
+						error: "glyphicon glyphicon-warning-sign",
+						expanderClosed: "glyphicon glyphicon-plus-sign",
+						expanderLazy: "glyphicon glyphicon-plus-sign",
+						// expanderLazy: "glyphicon glyphicon-expand",
+						expanderOpen: "glyphicon glyphicon-minus-sign",
+						// expanderOpen: "glyphicon glyphicon-collapse-down",
+						folder: "",
+						folderOpen: "",
+						loading: "glyphicon glyphicon-refresh"
+							//              loading: "icon-spinner icon-spin"
+					}
+				},
+        activate: function(event, data){
+          var node = data.node,
+            orgEvent = data.originalEvent;
+          if(node.data.href){
+            window.location.href=node.data.href;
+          }
+        }
+      });
+  $("#nit_relation_tree_container").fancytree("getRootNode").visit(function(node){
+    node.setExpanded(true);
   });
+<% end %>
 <% end %>
