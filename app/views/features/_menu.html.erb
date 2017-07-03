@@ -81,9 +81,12 @@
 	</section>
 <%  end %>
 <%= javascript_on_load do %>
+  $("#kmaps-explorer-search-term").focusin(function(){
+   $(".view-section .nav.nav-tabs a[href='.listview']").tab("show");
+  });
   $("#kmaps-explorer-search-term").flyoutKmapsTypeahead({
     hostname: "<%= Flare.session.config.url %>",
-    domain: 'places',
+    domain: "<%= Feature.uid_prefix %>",//"places",
     filters_domain: 'subjects',
     root_kmap_path: null,
     features_path: '<%= features_path %>/',
@@ -112,7 +115,6 @@
 	  </div>
   </section>
 </section>
-<%#= javascript_include_tag 'kmaps_engine/kmaps_fancytree' %>
 <% feature = contextual_feature %>
     <script type='text/javascript'>
 $(document).ready(function(){
