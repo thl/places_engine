@@ -100,6 +100,7 @@ function collapse_all_categories(){
             feature_relation_type = rc.feature_relation_type
             feature_is_parent = rc.feature_is_parent
             count = rc.count %>
+          <div class="feature-block">
           <h6><%= feature_label %> <%= "#{feature_is_parent ? feature_relation_type.label : feature_relation_type.asymmetric_label}" %> (<%= count %>):</h6>
           <%     # Is there a way to :include => categories and use an :order instead of this .sort{}?
             CachedFeatureRelationCategory.group('category_id').where(:feature_id => @feature.id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent).count.sort do |a,b|
@@ -123,8 +124,9 @@ function collapse_all_categories(){
               </li>
             </ul>
           <%       end
-          end
           end %>
+          </div> <!-- END - feature-block -->
+          <% end %>
         </div>
         <br />
         <p>
@@ -151,11 +153,17 @@ function collapse_all_categories(){
 <%= javascript_include_tag 'kmaps_engine/kmaps_fancytree' %>
 <%= javascript_on_load do %>
   // Functionality for columnizer
+  // dontsplit = don't break these headers
+  $('.places-in-places').find('.column > h6, .column > ul > li, .column ul').addClass("dontsplit");
+  // dontend = don't end column with headers
+  $('.places-in-places').find('.column > h6, .column > ul > li').addClass("dontend");
+  $('.places-in-places').find('.feature-block').addClass("dontend");
   $('.kmaps-list-columns:not(.subjects-in-places):not(.already_columnized)').addClass('already_columnized').columnize({
     width: 330,
     lastNeverTallest : true,
     buildOnce: true
   });
+  // END - Functionality for columnizer
 
   $("#relation_tree_container").kmapsFancytree({
     hostname: "<%= Flare.session.config.scheme+'://'+Flare.session.config.hostname %>",
