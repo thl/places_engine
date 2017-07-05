@@ -103,9 +103,6 @@
     </ul>
 	  <div class="tab-content">
 	    <div class="treeview tab-pane<%= ' active' if active_item == 'browse' %>">
-    </ul>
-	  <div class="tab-content">
-	    <div class="treeview tab-pane<%= ' active' if active_item == 'browse' %>">
 	      <div id="tree" class="view-wrap">
 	      </div>
 	    </div>
@@ -121,7 +118,7 @@ $(document).ready(function(){
         $("#tree").kmapsTree({
           termindex_root: "<%= Flare.session.config.scheme+'://'+Flare.session.config.hostname+Flare.session.config.path %>",
           kmindex_root: "<%= Flare.session.config.scheme+'://'+Flare.session.config.hostname+'/solr/kmassets_dev' %>",
-          type: 'places',
+          type: "<%= Feature.uid_prefix %>", //places
           root_kmap_path: '13735',
           baseUrl: "<%= features_path %>",
           expand_path: "",
