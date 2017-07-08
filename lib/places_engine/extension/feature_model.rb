@@ -205,7 +205,7 @@ module PlacesEngine
               related_subjects = rf.category_features.collect(&:category).select{|c| c}
               { id: "#{self.uid}_#{r.code}_#{t.id}_#{rf.fid}",
                 block_child_type: ['related_places'],
-                related_places_id_s: "places-#{rf.fid}",
+                related_places_id_s: "#{Feature.uid_prefix}-#{rf.fid}",
                 related_places_header_s: rf.prioritized_name(v).name,
                 related_names_t: rf.names.collect(&:name).uniq,
                 related_places_path_s: rf.closest_ancestors_by_perspective(per).collect(&:fid).join('/'),
@@ -213,8 +213,10 @@ module PlacesEngine
                 related_subjects_t: related_subjects.collect(&:header),
                 related_places_feature_type_id_i: t.id,
                 related_subjects_ids: related_subjects.collect(&:id),
-                related_places_relation_label_s: r.asymmetric_label,
+                related_places_relation_label_s: r.label,
+                related_places_relation_asymmetric_label_s: r.asymmetric_label,
                 related_places_relation_code_s: r.code,
+                related_places_relation_asymmetric_code_s: r.asymmetric_code,
                 related_kmaps_node_type: 'parent',
                 block_type: ['child'] }
             end
@@ -236,7 +238,7 @@ module PlacesEngine
               related_subjects = rf.category_features.collect(&:category).select{|c| c}
               { id: "#{self.uid}_#{r.asymmetric_code}_#{t.id}_#{rf.fid}",
                 block_child_type: ['related_places'],
-                related_places_id_s: "places-#{rf.fid}",
+                related_places_id_s: "#{Feature.uid_prefix}-#{rf.fid}",
                 related_places_header_s: rf.prioritized_name(v).name,
                 related_names_t: rf.names.collect(&:name).uniq,
                 related_places_path_s: rf.closest_ancestors_by_perspective(per).collect(&:fid).join('/'),
@@ -245,7 +247,9 @@ module PlacesEngine
                 related_places_feature_type_id_i: t.id,
                 related_subject_ids: related_subjects.collect(&:id),
                 related_places_relation_label_s: r.label,
-                related_places_relation_code_s: r.asymmetric_code,
+                related_places_relation_asymmetric_label_s: r.asymmetric_label,
+                related_places_relation_code_s: r.code,
+                related_places_relation_asymmetric_code_s: r.asymmetric_code,
                 related_kmaps_node_type: 'child',
                 block_type: ['child'] }
             end
