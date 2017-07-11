@@ -205,7 +205,7 @@ module PlacesEngine
               related_subjects = rf.category_features.collect(&:category).select{|c| c}
               { id: "#{self.uid}_#{r.code}_#{t.id}_#{rf.fid}",
                 block_child_type: ['related_places'],
-                related_places_id_s: "places-#{rf.fid}",
+                related_places_id_s: "#{Feature.uid_prefix}-#{rf.fid}",
                 related_places_header_s: rf.prioritized_name(v).name,
                 related_names_t: rf.names.collect(&:name).uniq,
                 related_places_path_s: rf.closest_ancestors_by_perspective(per).collect(&:fid).join('/'),
@@ -213,8 +213,10 @@ module PlacesEngine
                 related_subjects_t: related_subjects.collect(&:header),
                 related_places_feature_type_id_i: t.id,
                 related_subjects_ids: related_subjects.collect(&:id),
-                related_places_relation_label_s: r.asymmetric_label,
+                related_places_relation_label_s: r.label,
+                related_places_relation_asymmetric_label_s: r.asymmetric_label,
                 related_places_relation_code_s: r.code,
+                related_places_relation_asymmetric_code_s: r.asymmetric_code,
                 related_kmaps_node_type: 'parent',
                 block_type: ['child'] }
             end
@@ -236,7 +238,7 @@ module PlacesEngine
               related_subjects = rf.category_features.collect(&:category).select{|c| c}
               { id: "#{self.uid}_#{r.asymmetric_code}_#{t.id}_#{rf.fid}",
                 block_child_type: ['related_places'],
-                related_places_id_s: "places-#{rf.fid}",
+                related_places_id_s: "#{Feature.uid_prefix}-#{rf.fid}",
                 related_places_header_s: rf.prioritized_name(v).name,
                 related_names_t: rf.names.collect(&:name).uniq,
                 related_places_path_s: rf.closest_ancestors_by_perspective(per).collect(&:fid).join('/'),
@@ -245,7 +247,9 @@ module PlacesEngine
                 related_places_feature_type_id_i: t.id,
                 related_subject_ids: related_subjects.collect(&:id),
                 related_places_relation_label_s: r.label,
-                related_places_relation_code_s: r.asymmetric_code,
+                related_places_relation_asymmetric_label_s: r.asymmetric_label,
+                related_places_relation_code_s: r.code,
+                related_places_relation_asymmetric_code_s: r.asymmetric_code,
                 related_kmaps_node_type: 'child',
                 block_type: ['child'] }
             end
@@ -272,29 +276,6 @@ module PlacesEngine
         closest = self.closest_feature_with_shapes
         closest_fid = closest.nil? ? nil : closest.fid
         doc[:closest_fid_with_shapes] = closest_fid unless closest_fid.nil?
-
-        Perspective.where(is_public: true).each do |p|  #['cult.reg', 'pol.admin.hier'].collect{ |code| Perspective.get_by_code(code) }
-          tag = 'ancestors_'
-          id_tag = 'ancestor_ids_'
-          hierarchy = self.ancestors_by_perspective(p)
-          if hierarchy.blank?
-            hierarchy = self.closest_ancestors_by_perspective(p)
-            doc["ancestor_id_closest_#{p.code}_path"] = hierarchy.collect(&:fid).join('/')
-            doc["level_closest_#{p.code}_i"] = hierarchy.size
-            tag << 'closest_'
-            id_tag << 'closest_'
-            closest_ancestor_in_tree = Feature.find(self.closest_hierarchical_feature_id_by_perspective(p))
-            path = closest_ancestor_in_tree.ancestors_by_perspective(p).collect(&:fid)
-          else
-            path = hierarchy.collect(&:fid)
-            doc["level_#{p.code}_i"] = path.size
-          end
-          tag << p.code
-          id_tag << p.code
-          doc["ancestor_id_#{p.code}_path"] = path.join('/')
-          doc[tag] = hierarchy.collect{ |f| f.prioritized_name(v).name }
-          doc[id_tag] = hierarchy.collect{ |f| f.fid }
-        end
         doc
       end
 
