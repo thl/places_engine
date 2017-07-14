@@ -156,6 +156,9 @@
       </div>
     </section>
 <%  end
+    #feature.closest_feature_with_shapes(:logged_in? => logged_in?)
+    #if !shapes.empty? 
+  if feature.has_shapes?(:logged_in? => logged_in?)
     if !shapes.empty? %>
     <section class="panel panel-default">
       <div class="panel-heading">
@@ -204,5 +207,6 @@
         </div>
       </div>
     </section>
-<%  end %>
+<%  end
+    end %>
 </div>
