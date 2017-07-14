@@ -119,8 +119,8 @@ $(document).ready(function(){
           termindex_root: "<%= Flare.session.config.scheme+'://'+Flare.session.config.hostname+Flare.session.config.path %>",
           kmindex_root: "<%= Flare.session.config.scheme+'://'+Flare.session.config.hostname+'/solr/kmassets_dev' %>",
           type: "<%= Feature.uid_prefix %>", //places
-          root_kmap_path: '13735',
-          baseUrl: "<%= features_path %>",
+          root_kmap_path: '',
+          baseUrl: "<%= features_path %>/%%ID%%",
           expand_path: "",
           perspective: "<%= current_perspective.code %>",
 <%        unless feature.nil? %>
