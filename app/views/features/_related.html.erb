@@ -166,9 +166,8 @@ function collapse_all_categories(){
   // END - Functionality for columnizer
 
   $("#relation_tree_container").kmapsFancytree({
-    hostname: "<%= Flare.session.config.scheme+'://'+Flare.session.config.hostname %>",
     featureId: "<%= @feature.fid %>",
-    termIndex: "<%= Flare.session.config.path %>",
+    termIndex: "<%= Feature.config.url %>",
     perspective: "<%= current_perspective.code %>",
     seedTree: {
       descendants: true,
