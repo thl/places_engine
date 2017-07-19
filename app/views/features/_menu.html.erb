@@ -89,7 +89,7 @@
     domain: "<%= Feature.uid_prefix %>",//"places",
     filters_domain: 'subjects',
     root_kmap_path: null,
-    features_path: '<%= features_path %>/',
+    features_path: "<%= (defined?(admin) && admin) ? admin_features_path : features_path %>/"
   });
 <% end %>
   </section>
@@ -120,7 +120,8 @@ $(document).ready(function(){
           kmindex_root: "<%= MmsIntegration::Picture.config.url %>",
           type: "<%= Feature.uid_prefix %>", //places
           root_kmap_path: '13735',
-          baseUrl: "<%= features_path %>",
+          //baseUrl: "<%= features_path %>",
+          baseUrl: "<%= (defined?(admin) && admin) ? admin_features_path : features_path %>/%%ID%%",
           expand_path: "",
           perspective: "<%= current_perspective.code %>",
 <%        unless feature.nil? %>
