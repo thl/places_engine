@@ -1,4 +1,5 @@
 module PlacesEngine
+  require 'open-uri'
   module Extension
     module FeaturesController
       extend ActiveSupport::Concern
