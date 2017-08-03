@@ -24,7 +24,7 @@ class Admin::CategoryFeaturesController < AclController
     else
       mca_cats.each { |c_id| @feature.category_features.create(:category_id => c_id) }
       redirect_to admin_feature_url(@feature.fid)
-    end    
+    end
   end
   
   def collection

@@ -60,7 +60,7 @@ module PlacesEngine
           end
         #end
         # When using the session store features, we need to provide will_paginate with info about how to render
-        # the pagination, so we'll store it in session[:search], along with the feature ids 
+        # the pagination, so we'll store it in session[:search], along with the feature ids
         session[:search] = { :params => params.reject{|key, val| !valid_search_keys.include?(key.to_sym)}.merge(search.to_h),
           :page => params[:page] ||= 1, :per_page => @features.per_page, :total_entries => @features.total_entries,
           :total_pages => @features.total_pages, :feature_ids => @features.collect(&:id) }
