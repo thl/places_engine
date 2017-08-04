@@ -48,42 +48,54 @@ module PlacesEngine
     # Note fields:
     # .note, .title
 
-    def do_feature_import(filename, task_code)
+    def do_feature_import(filename, task_code, from, to_s)
       task = ImportationTask.find_by(task_code: task_code)
       task = ImportationTask.create(:task_code => task_code) if task.nil?
       self.spreadsheet = task.spreadsheets.find_by(filename: filename)
       self.spreadsheet = task.spreadsheets.create(:filename => filename, :imported_at => Time.now) if self.spreadsheet.nil?
       country_type = SubjectsIntegration::Feature.find(29)
       country_type_id = country_type.id
-      current = 0
+      interval = 100
       feature_ids_with_changed_relations = Array.new
       feature_ids_with_object_types_added = Array.new
       puts "#{Time.now}: Starting importation."
-      CSV.foreach(filename, headers: true, col_sep: "\t") do |row|
-        self.fields = row.to_hash.delete_if{ |key, value| value.blank? }
-        current+=1
-        next unless self.get_feature(current)
-        self.process_feature
-        self.process_names(44)
-        self.process_kmaps(15)
-        feature_ids_with_object_types_added += self.process_feature_types(4)
-        self.process_geocodes(5)
-        feature_ids_with_changed_relations += self.process_feature_relations(15)
-        self.process_contestations(3)
-        self.process_shapes(3)
-        self.process_descriptions(3)
-        self.process_captions(2)
-        self.process_summaries(2)
-        self.feature.update_attributes({:is_blank => false, :is_public => true})
-        #rescue  Exception => e
-        #  puts "Something went wrong with feature #{self.feature.pid}!"
-        #  puts e.to_s
-        #end
-        if self.fields.empty?
-          puts "#{Time.now}: #{self.feature.pid} processed."
-        else
-          puts "#{Time.now}: #{self.feature.pid}: the following fields have been ignored: #{self.fields.keys.join(', ')}"
+      rows = CSV.read(filename, headers: true, col_sep: "\t")
+      current = from.blank? ? 0 : from.to_i
+      to = to_s.blank? ? rows.size : to_s.to_i
+      while current<to
+        limit = current + interval
+        limit = rows.size if limit > rows.size
+        sid = Spawnling.new do
+          puts "Spawning sub-process #{Process.pid}."
+          for i in current...limit
+            row = rows[i]
+            self.fields = row.to_hash.delete_if{ |key, value| value.blank? }
+            next unless self.get_feature(i+1)
+            self.process_feature
+            self.process_names(44)
+            self.process_kmaps(15)
+            feature_ids_with_object_types_added += self.process_feature_types(4)
+            self.process_geocodes(5)
+            feature_ids_with_changed_relations += self.process_feature_relations(15)
+            self.process_contestations(3)
+            self.process_shapes(3)
+            self.process_descriptions(3)
+            self.process_captions(2)
+            self.process_summaries(2)
+            self.feature.update_attributes({:is_blank => false, :is_public => true})
+            #rescue  Exception => e
+            #  puts "Something went wrong with feature #{self.feature.pid}!"
+            #  puts e.to_s
+            #end
+            if self.fields.empty?
+              puts "#{Time.now}: #{self.feature.pid} processed."
+            else
+              puts "#{Time.now}: #{self.feature.pid}: the following fields have been ignored: #{self.fields.keys.join(', ')}"
+            end
+          end
         end
+        Spawnling.wait([sid])
+        current = limit
       end
       puts "Updating cache..."
       # running triggers on feature_relation

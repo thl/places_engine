@@ -1,5 +1,6 @@
 <%= javascript_on_load("ActivateDraggablePopups('.has-draggable-popups');") %>
-<%= content_tag :h6, "#{feature_name_header(feature)} #{edit_item_link(admin_feature_path(feature.fid)) if logged_in? && object_authorized?(feature)}".html_safe %>
+<% edit_link_options = {target: true} %>
+<%= content_tag :h6, "#{feature_name_header(feature)} #{edit_item_link(admin_feature_path(feature.fid),"",edit_link_options) if logged_in? && object_authorized?(feature)}".html_safe %>
 <%= time_units_for(feature) %>
 
 <%  summary = feature.summary
@@ -156,6 +157,9 @@
       </div>
     </section>
 <%  end
+    #feature.closest_feature_with_shapes(:logged_in? => logged_in?)
+    #if !shapes.empty? 
+  if feature.has_shapes?(:logged_in? => logged_in?)
     if !shapes.empty? %>
     <section class="panel panel-default">
       <div class="panel-heading">
@@ -204,5 +208,6 @@
         </div>
       </div>
     </section>
-<%  end %>
+<%  end
+    end %>
 </div>
