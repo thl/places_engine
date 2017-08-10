@@ -137,3 +137,10 @@ $(document).ready(function(){
 <%=  javascript_tag("$('#ajax_search_results').bind('ajax:beforeSend', function(){ NodeMenu.beginSearch() })") %>
 <%=  javascript_on_load("jQuery('#ajax_search_results').click()") %>
 <% end %>
+<% use_session ||= true
+if use_session && !session[:search].blank? %>
+  <%=   javascript_on_load do %>
+    var session_search = <%= session[:search].to_json.html_safe %>;
+    $("#kmaps-explorer-search-term").flyoutKmapsTypeahead('restoreSavedSearch', session_search,'kmaps-explorer');
+  <% end %>
+<% end %>
