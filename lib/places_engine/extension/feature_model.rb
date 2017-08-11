@@ -203,10 +203,12 @@ module PlacesEngine
 																													 feature_is_parent: false).collect(&:related_feature)
             features.collect do |rf|
               related_subjects = rf.category_features.collect(&:category).select{|c| c}
+              name = rf.prioritized_name(v)
+              name_str = name.nil? ? nil : name.name 
               { id: "#{self.uid}_#{r.code}_#{t.id}_#{rf.fid}",
                 block_child_type: ['related_places'],
                 related_places_id_s: "#{Feature.uid_prefix}-#{rf.fid}",
-                related_places_header_s: rf.prioritized_name(v).name,
+                related_places_header_s: name_str,
                 related_names_t: rf.names.collect(&:name).uniq,
                 related_places_path_s: rf.closest_ancestors_by_perspective(per).collect(&:fid).join('/'),
                 related_places_feature_type_s: t.header,
