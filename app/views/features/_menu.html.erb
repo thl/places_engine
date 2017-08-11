@@ -122,6 +122,7 @@ $(document).ready(function(){
           root_kmap_path: '13735',
           //baseUrl: "<%= features_path %>",
           baseUrl: "<%= (defined?(admin) && admin) ? admin_features_path : features_path %>/%%ID%%",
+          save_search_url: "<%= save_search_features_path %>",
           expand_path: "",
           perspective: "<%= current_perspective.code %>",
 <%        unless feature.nil? %>
