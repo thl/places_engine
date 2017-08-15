@@ -3,11 +3,6 @@ Rails.application.routes.draw do
   resources :categories do
     resources :counts, controller: 'cached_category_counts'
   end
-  resources :features do
-    collection do
-      match :save_search, to: 'features#save_search', via: [:post, :get]
-    end
-  end
   resources :contestations
   namespace :admin do
     resources :altitudes do

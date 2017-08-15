@@ -86,11 +86,11 @@
   });
   $("#kmaps-explorer-search-term").flyoutKmapsTypeahead({
     hostname: "<%= Feature.config.url %>",
+    hostname_assets: "<%= Flare.config.asset_url %>",
     domain: "<%= Feature.uid_prefix %>",//"places",
     filters_domain: 'subjects',
     root_kmap_path: null,
     features_path: "<%= (defined?(admin) && admin) ? admin_features_path : features_path %>/",
-    save_search_url: "<%= save_search_features_path %>",
   });
 <% end %>
   </section>
@@ -138,10 +138,9 @@ $(document).ready(function(){
 <%=  javascript_tag("$('#ajax_search_results').bind('ajax:beforeSend', function(){ NodeMenu.beginSearch() })") %>
 <%=  javascript_on_load("jQuery('#ajax_search_results').click()") %>
 <% end %>
-<% use_session ||= true
-if use_session && !session[:search].blank? %>
-  <%=   javascript_on_load do %>
-    var session_search = <%= session[:search].to_json.html_safe %>;
-    $("#kmaps-explorer-search-term").flyoutKmapsTypeahead('restoreSavedSearch', session_search,'kmaps-explorer');
-  <% end %>
+<%=   javascript_on_load do %>
+  var session_search = Cookies.getJSON('search_<%= Feature.uid_prefix %>');
+  if(session_search) {
+  $("#kmaps-explorer-search-term").flyoutKmapsTypeahead('restoreSavedSearch', session_search,'kmaps-explorer');
+  }
 <% end %>

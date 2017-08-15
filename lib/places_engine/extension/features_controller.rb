@@ -7,15 +7,6 @@ module PlacesEngine
       included do
       end
       
-      def save_search
-        session[:search] = { search_term: params[:search],
-                             scope:  params[:scope],
-                             match: params[:match],
-                             filters: params[:filters]
-        }
-                render :nothing => true
-      end
-
       def search
         conditions = {:is_public => 1}
         search = Search.new(params[:search])
