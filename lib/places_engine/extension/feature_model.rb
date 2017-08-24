@@ -215,10 +215,8 @@ module PlacesEngine
                 related_subjects_t: related_subjects.collect(&:header),
                 related_places_feature_type_id_i: t.id,
                 related_subjects_ids: related_subjects.collect(&:id),
-                related_places_relation_label_s: r.label,
-                related_places_relation_asymmetric_label_s: r.asymmetric_label,
+                related_places_relation_label_s: r.asymmetric_label,
                 related_places_relation_code_s: r.code,
-                related_places_relation_asymmetric_code_s: r.asymmetric_code,
                 related_kmaps_node_type: 'parent',
                 block_type: ['child'] }
             end
@@ -249,9 +247,7 @@ module PlacesEngine
                 related_places_feature_type_id_i: t.id,
                 related_subject_ids: related_subjects.collect(&:id),
                 related_places_relation_label_s: r.label,
-                related_places_relation_asymmetric_label_s: r.asymmetric_label,
-                related_places_relation_code_s: r.code,
-                related_places_relation_asymmetric_code_s: r.asymmetric_code,
+                related_places_relation_code_s: r.asymmetric_code,
                 related_kmaps_node_type: 'child',
                 block_type: ['child'] }
             end
