@@ -150,10 +150,12 @@ module PlacesEngine
 
         child_documents = object_types.collect do |ft|
           cd = { id: "#{self.uid}_featureType_#{ft.id}",
+                 related_uid_s: "subjects-#{ft.id}",
+                 origin_uid_s: self.uid,
                  feature_type_path_s: ft.ancestors.collect(&:id).join('/'),
                  block_child_type: ['feature_types'],
                  block_type: ['child'],
-                 feature_type_name_s: ft.header ,
+                 feature_type_name_s: ft.header,
                  related_names_t: ft.names.collect(&:name).uniq,
                  feature_type_id_i: ft.id,
                  feature_type_caption_s: ft.caption,
@@ -170,6 +172,8 @@ module PlacesEngine
           c = cf.category
           next if c.nil?
           cd = { id: "#{self.uid}_relatedSubject_#{c.id}",
+                 related_uid_s: "subjects-#{c.id}",
+                 origin_uid_s: self.uid,
                  block_child_type: ['related_subjects'],
                  related_subjects_id_s: "subjects-#{c.id}",
                  related_subjects_header_s: c.header,
@@ -206,6 +210,8 @@ module PlacesEngine
               name = rf.prioritized_name(v)
               name_str = name.nil? ? nil : name.name 
               { id: "#{self.uid}_#{r.code}_#{t.id}_#{rf.fid}",
+                related_uid_s: rf.uid,
+                origin_uid_s: self.uid,
                 block_child_type: ['related_places'],
                 related_places_id_s: "#{Feature.uid_prefix}-#{rf.fid}",
                 related_places_header_s: name_str,
@@ -237,6 +243,8 @@ module PlacesEngine
             features.collect do |rf|
               related_subjects = rf.category_features.collect(&:category).select{|c| c}
               { id: "#{self.uid}_#{r.asymmetric_code}_#{t.id}_#{rf.fid}",
+                related_uid_s: rf.uid,
+                origin_uid_s: self.uid,
                 block_child_type: ['related_places'],
                 related_places_id_s: "#{Feature.uid_prefix}-#{rf.fid}",
                 related_places_header_s: rf.prioritized_name(v).name,
