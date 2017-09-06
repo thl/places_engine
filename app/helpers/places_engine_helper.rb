@@ -18,14 +18,7 @@ module PlacesEngineHelper
   end
   
   def geoserver_url
-    case InterfaceUtils::Server.environment
-    when InterfaceUtils::Server::DEVELOPMENT
-      return 'http://dev.thlib.org:8080/thlib-geoserver'
-    when InterfaceUtils::Server::LOCAL
-      return 'http://localhost:8080/thlib-geoserver'
-    else
-      return 'http://www.thlib.org:8080/thdl-geoserver'
-    end
+    PlacesEngine::Configuration.geoserver_url
   end
 
   def feature_relation_tree(feature, show_siblings = false)

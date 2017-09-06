@@ -58,16 +58,6 @@
 			</section> <!-- END content-section -->
 		</section> <!-- END row row-offcanvas -->
 	</article> <!-- END main-content -->
-<%= javascript_on_load do %>
-      jQuery(window).unbind("scroll");
-      NodeTree.init('NodeTree', 'NodeTreeList', '<%= features_path %>/');
-      var characteristic_data = <%= CategoryFeature.get_json_data %>;
-      var characteristic_selector = new CharacteristicSelector();
-      characteristic_selector.init('characteristic_selector', {
-      fieldLabel: "<%= Topic.human_name.titleize %>:",
-      data: characteristic_data});
-<%  end %>
-<%= category_searcher(false, category_id: 20, field_name: 'object_type', field_label: "#{Feature.human_attribute_name(:object_type).s}: ", exclude_span: true, options: { hasTree: 'true' }) %>
 	<div id="search-flyout" class="region extruder right" role="search" style="display: none;">
 		<div class="region region-search-flyout">
 			<div id="block-kmaps-explorer-kmaps-explorer-block" class="block block-kmaps-explorer">

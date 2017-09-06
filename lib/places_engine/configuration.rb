@@ -103,12 +103,16 @@ module PlacesEngine
       '/geoserver'
     end
 
-    def geoserver_url(u = nil)
+    def geoserver_url
       res = "#{scheme}://"
       res << "#{hostname}"
-      res << "#{u}@" if !u.blank?
       res << ":#{port}" if !port.blank?
       res << "#{path}"
+    end
+    
+    def self.geoserver_url
+      @@configuration ||= Configuration.new
+      @@configuration.geoserver_url
     end
 
     #

@@ -2,7 +2,6 @@
 <% edit_link_options = {target: true} %>
 <%= content_tag :h6, "#{feature_name_header(feature)} #{edit_item_link(admin_feature_path(feature.fid),"",edit_link_options) if logged_in? && object_authorized?(feature)}".html_safe %>
 <%= time_units_for(feature) %>
-
 <%  summary = feature.summary
     if summary.nil?
       caption = feature.caption
@@ -62,11 +61,8 @@
       <div class="map-renditions" id="map-column">
         <div id="map-canvas">
           <div id="inset_map" class="fid-<%= map_fid %> language-<%= current_view.code %>"></div>
-<%= config = PlacesEngine::Configuration.new
-config.geoserver_url
-%>
 <%=       javascript_on_load do %>
-            InsetMap.init({proxyUrl: '<%= proxy_engine_proxy_path %>?proxy_url=', geoserverUrl: '<%= config.geoserver_url %>' });
+            InsetMap.init({proxyUrl: '<%= proxy_engine_proxy_path %>?proxy_url=', geoserverUrl: '<%= geoserver_url %>' });
 <%        end %>
           <p class = "view-on-map">
 <%=         link_to "#{image_tag("#{InterfaceUtils::Server.get_thl_url}/global/images/icon-map-simple.gif", :alt => "")} #{ts 'map.full'}".html_safe, "#{InterfaceUtils::Server.get_thl_url}/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}" %>
