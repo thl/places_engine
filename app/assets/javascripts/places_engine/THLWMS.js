@@ -22,6 +22,7 @@ OpenLayers.Layer.THLWMS = OpenLayers.Class(OpenLayers.Layer.WMS, {
 				sphericalMercator: true,
 				projection: new OpenLayers.Projection("EPSG:900913"),
 				units: "m",
+        geoserverUrl: 'http://localhost:8080/thlib-geoserver',
 				styles: this.placeNamesShown ? this.defaultStyleName : this.noNamesStyleName
 				// The 'tiled' param enables metatiling in GeoServer, which will renders 3x3 tiles into one big tile, thus eliminating
 				// most duplicate labels
@@ -125,6 +126,7 @@ OpenLayers.Layer.THLWMS = OpenLayers.Class(OpenLayers.Layer.WMS, {
 	},
 	
 	setMapEnvironment: function(){
+    return null;
 		// Determine the map's environment
 		if(window.location.host.indexOf('localhost') == 0){
 			this.mapEnvironment = 'local';
