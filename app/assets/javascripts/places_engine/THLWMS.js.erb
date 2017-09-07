@@ -22,7 +22,7 @@ OpenLayers.Layer.THLWMS = OpenLayers.Class(OpenLayers.Layer.WMS, {
 				sphericalMercator: true,
 				projection: new OpenLayers.Projection("EPSG:900913"),
 				units: "m",
-        geoserverUrl: 'http://localhost:8080/thlib-geoserver',
+				geoserverUrl: '<%= PlacesEngine::Configuration.geoserver_url %>', //http://localhost:8080/thlib-geoserver
 				styles: this.placeNamesShown ? this.defaultStyleName : this.noNamesStyleName
 				// The 'tiled' param enables metatiling in GeoServer, which will renders 3x3 tiles into one big tile, thus eliminating
 				// most duplicate labels
@@ -51,9 +51,7 @@ OpenLayers.Layer.THLWMS = OpenLayers.Class(OpenLayers.Layer.WMS, {
 	isLoaded: false,
 	
 	isLanguageDependent: true,
-	
-	mapEnvironment: 'production',
-	
+		
 	geoserverUrl: null,
 	
 	defaultStyleName: null,
@@ -126,33 +124,8 @@ OpenLayers.Layer.THLWMS = OpenLayers.Class(OpenLayers.Layer.WMS, {
 	},
 	
 	setMapEnvironment: function(){
-    return null;
 		// Determine the map's environment
-		if(window.location.host.indexOf('localhost') == 0){
-			this.mapEnvironment = 'local';
-		}else if(window.location.host.indexOf('dev.thlib') == 0){
-			this.mapEnvironment = 'dev';
-		}else{
-			this.mapEnvironment = 'production';
-		}
-
-		// Set variables that depend on the map's environment
-		switch(this.mapEnvironment){
-			case 'local':
-				//this.geoserverUrl = 'http://dev.thlib.org:8080/thlib-geoserver';
-				this.geoserverUrl = 'http://localhost:8080/thlib-geoserver';
-				break;
-			case 'dev':
-				//this.geoserverUrl = 'http://dev.thlib.org:8080/thlib-geoserver'; /* Does not work (ndg, 1-17-11) */
-				this.geoserverUrl = 'http://www.thlib.org:8080/thdl-geoserver';
-				break;
-			case 'staging':
-				this.geoserverUrl = 'http://staging.thlib.org:8080/thlib-geoserver';
-				break;
-			case 'production':
-				this.geoserverUrl = 'http://www.thlib.org:8080/thdl-geoserver';
-				break;
-		}
+		this.geoserverUrl = '<%= PlacesEngine::Configuration.geoserver_url %>';
 	},
 	
 	getPrimaryLayer: function(){
