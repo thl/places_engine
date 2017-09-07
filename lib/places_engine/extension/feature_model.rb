@@ -261,12 +261,12 @@ module PlacesEngine
             end
           end
         end.flatten
-        
+        associated_subjects = category_features.collect(&:category).compact
         doc = { tree: 'places',
                 feature_types: object_types.collect(&:header),
                 feature_type_ids: object_types.collect(&:id),
-                associated_subjects: category_features.collect(&:category).compact.collect(&:header),
-                associated_subject_ids: category_features.collect(&:id),
+                associated_subjects: associated_subjects.collect(&:header),
+                associated_subject_ids: associated_subjects.collect(&:id),
                 has_shapes: self.has_shapes?,
                 has_altitudes: self.altitudes.count>0,
                 block_type: ['parent'],
