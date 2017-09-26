@@ -7,16 +7,16 @@ require "places_engine/version"
 Gem::Specification.new do |s|
   s.name        = "places_engine"
   s.version     = PlacesEngine::VERSION
-  s.authors     = ["TODO: Your name"]
-  s.email       = ["TODO: Your email"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of PlacesEngine."
-  s.description = "TODO: Description of PlacesEngine."
+  s.authors     = ["Andres Montano"]
+  s.email       = ["amontano@virginia.edu"]
+  s.homepage    = "http://places.kmaps.virginia.edu"
+  s.summary     = "Engine that provides functionality for knowledge map of places."
+  s.description = "Engine that provides functionality for knowledge map of places."
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["test/**/*"]
 
-  s.add_dependency "rails", "~> 4.0"
+  s.add_dependency 'rails', '~> 4.1.16'
   # s.add_dependency "jquery-rails"
   # s.add_dependency 'georuby'
 end
