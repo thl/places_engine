@@ -76,21 +76,69 @@ function collapse_all_categories(){
   $('.collapse-all-categories').hide();
 }
 </script>
+<%= javascript_on_load do %>
+  var termIndex = "<%= Feature.config.url %>";
+  var assetIndex = "<%= Flare.config.asset_url %>";
+  var count = 0;
+  var key =  "<%= Feature.uid_prefix %>-<%= @feature.fid %>";
+  var relatedCountsUrl =
+  termIndex + '/select?q={!child of=block_type:parent}id:' + key + '&wt=json&indent=true&group=true&group.field=block_child_type&group.limit=0&wt=json&json.wrf=?';
+  $.ajax({
+    type: "GET",
+    url: relatedCountsUrl,
+    dataType: "jsonp",
+    timeout: 90000,
+    error: function (e) {
+      console.error(e);
+    },
+    beforeSend: function () {
+    },
+
+    success: function (data) {
+      var updates = {};
+
+      $.each(data.grouped.block_child_type.groups, function (x, y) {
+      var block_child_type = y.groupValue;
+      var rel_count = y.doclist.numFound;
+      updates[block_child_type] = rel_count;
+      });
+
+      count = updates;
+      //;;;console.log("shown.bs.popover handler: " + key + "(" + ") : " + JSON.stringify(updates));
+      $(".relatedCountContainer").each(function(){
+          $(this).html(count["related_<%= Feature.uid_prefix %>"]);
+      });
+    }
+  });
+<% end %>
 
 <div id='myTabs'>
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#relation_details" aria-controls="home" role="tab" data-toggle="tab">Summary</a></li>
-    <li role="presentation"><a href="#relation_tree" aria-controls="profile" role="tab" data-toggle="tab">Relationship Tree</a></li>
+    <li role="presentation" class="active"><a href="#relation_tree" aria-controls="profile" role="tab" data-toggle="tab">Relationships</a></li>
+    <li role="presentation"><a id="summary-tab-link" href="#relation_details" aria-controls="home" role="tab" data-toggle="tab">Summary</a></li>
   </ul>
   <!-- Tab panes -->
   <div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="relation_details">
+    <div role="tabpanel" class="tab-pane active" id="relation_tree">
       <section class="panel panel-content">
         <div class="panel-body">
-          <% feature_label = fname_labels(@feature).s
-          relation_counts = CachedFeatureRelationCategory.select('feature_relation_type_id, feature_is_parent, COUNT(DISTINCT related_feature_id) AS count').group('feature_relation_type_id, feature_is_parent').where(:feature_id => @feature.id).order(:feature_relation_type_id)
+          <p>
+          <% feature_label = fname_labels(@feature).s %>
+          <strong><%= feature_label %></strong> has <strong class="relatedCountContainer"></strong> subordinate features, which you are presented with its superordinate categories in the tree below. The summary tab instead classifies <%= feature_label %>'s immediately subordinate features, as well as features non-hierarchically related to it.
+          </p>
+            <div id='relation_tree_container'></div>
+        </div> <!-- END panel-body -->
+      </section> <!-- END panel -->
+  </div>
+    <div role="tabpanel" class="tab-pane" id="relation_details">
+      <section class="panel panel-content">
+        <div class="panel-body">
+          <% relation_counts = CachedFeatureRelationCategory.select('feature_relation_type_id, feature_is_parent, COUNT(DISTINCT related_feature_id) AS count').group('feature_relation_type_id, feature_is_parent').where(:feature_id => @feature.id).order(:feature_relation_type_id)
           if relation_counts.length > 0 %>
+          <p>
+          <strong><%= feature_label %></strong> has <strong class="relatedCountContainer"><%#= relation_counts %></strong> other features directly related to it, which are presented here. The relationships tab instead presents all subordinate and superordinate categories for <%= feature_label %>.
+          </p>
         <p>
         <%=  link_to ts('tree.expand', :what => t('all.these')), '#', onclick: "expand_all_categories()", :class => "expand-all-categories expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
         <%=  link_to ts('tree.collapse', :what => t('all.these')), '#', onclick: "collapse_all_categories()", :class => "collapse-all-categories expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
@@ -139,39 +187,36 @@ function collapse_all_categories(){
         </div> <!-- END panel-body -->
       </section> <!-- END panel -->
 		</div>
-    <div role="tabpanel" class="tab-pane" id="relation_tree">
-      <section class="panel panel-content">
-        <div class="panel-body">
-            <h3>Hierarchy tree</h3>
-            <div id='relation_tree_container'></div>
-        </div> <!-- END panel-body -->
-      </section> <!-- END panel -->
-  </div>
 	</div> <!-- Tab Panes end -->
 </div> <!-- myTabs end -->
 
-<%= javascript_include_tag 'kmaps_engine/kmaps_fancytree' %>
 <%= javascript_on_load do %>
-  // Functionality for columnizer
-  // dontsplit = don't break these headers
-  $('.places-in-places').find('.column > h6, .column > ul > li, .column ul').addClass("dontsplit");
-  // dontend = don't end column with headers
-  $('.places-in-places').find('.column > h6, .column > ul > li').addClass("dontend");
-  $('.places-in-places').find('.feature-block').addClass("dontsplit");
-  $('.kmaps-list-columns:not(.subjects-in-places):not(.already_columnized)').addClass('already_columnized').columnize({
+  $('#summary-tab-link[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    // Functionality for columnizer
+    // dontsplit = don't break these headers
+    $('.places-in-places').find('.column > h6, .column > ul > li, .column ul').addClass("dontsplit");
+    // dontend = don't end column with headers
+    $('.places-in-places').find('.column > h6, .column > ul > li').addClass("dontend");
+    $('.places-in-places').find('.feature-block').addClass("dontsplit");
+    $('.kmaps-list-columns:not(.subjects-in-places):not(.already_columnized)').addClass('already_columnized').columnize({
     width: 330,
     lastNeverTallest : true,
     buildOnce: true
+    });
   });
   // END - Functionality for columnizer
 
   $("#relation_tree_container").kmapsFancytree({
     featureId: "<%= @feature.fid %>",
     termIndex: "<%= Feature.config.url %>",
+    assetIndex: "<%= Flare.config.asset_url %>",
     perspective: "<%= current_perspective.code %>",
+    tree: "<%= Feature.uid_prefix %>", //places
+    domain: "<%= Feature.uid_prefix %>", //places
     seedTree: {
       descendants: true,
       directAncestors: false,
-    }
+    },
+    displayPopup: true
   });
 <% end %>
