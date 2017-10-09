@@ -125,7 +125,7 @@ function collapse_all_categories(){
         <div class="panel-body">
           <p>
           <% feature_label = fname_labels(@feature).s %>
-          <strong><%= feature_label %></strong> has <strong class="relatedCountContainer"></strong> subordinate features, which you are presented with its superordinate categories in the tree below. The summary tab instead classifies <%= feature_label %>'s immediately subordinate features, as well as features non-hierarchically related to it.
+          <strong><%= feature_label %></strong> has <strong class="relatedCountContainer"></strong> subordinate places, which you can see presented with its superordinate categories in the tree below. The summary tab instead classifies <%= feature_label %>'s immediately subordinate places, as well as places non-hierarchically related to it.
           </p>
             <div id='relation_tree_container'></div>
         </div> <!-- END panel-body -->
@@ -137,7 +137,7 @@ function collapse_all_categories(){
           <% relation_counts = CachedFeatureRelationCategory.select('feature_relation_type_id, feature_is_parent, COUNT(DISTINCT related_feature_id) AS count').group('feature_relation_type_id, feature_is_parent').where(:feature_id => @feature.id).order(:feature_relation_type_id)
           if relation_counts.length > 0 %>
           <p>
-          <strong><%= feature_label %></strong> has <strong class="relatedCountContainer"><%#= relation_counts %></strong> other features directly related to it, which are presented here. The relationships tab instead presents all subordinate and superordinate categories for <%= feature_label %>.
+          <strong><%= feature_label %></strong> has <strong class="relatedCountContainer"><%#= relation_counts %></strong> other places directly related to it, which are presented here. The relationships tab instead presents all subordinate and superordinate categories for <%= feature_label %>.
           </p>
         <p>
         <%=  link_to ts('tree.expand', :what => t('all.these')), '#', onclick: "expand_all_categories()", :class => "expand-all-categories expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
@@ -190,6 +190,7 @@ function collapse_all_categories(){
 	</div> <!-- Tab Panes end -->
 </div> <!-- myTabs end -->
 
+<%= javascript_include_tag 'kmaps_engine/kmaps_fancytree' %>
 <%= javascript_on_load do %>
   $('#summary-tab-link[data-toggle="tab"]').on('shown.bs.tab', function (e) {
     // Functionality for columnizer
