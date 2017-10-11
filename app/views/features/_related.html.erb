@@ -12,17 +12,6 @@
     return false;
   });
 
-  // Since clicking on links of the form "/features#59" would normally just change the url
-  // hash and not change the page content, we need to send these links to NodeTree.showNode(id),
-  // which opens up the specified feature.
-  jQuery('.has-hash-feature-links a[href*=\\/features#]').on('click', function(){
-    var id = this.href.match(/features#([\d]+)$/);
-    if(id){
-      id = id[1];
-      NodeTree.showNode(id);
-    }
-    return true;
-  });
 <% end %>
 <script type="text/javascript">
 // This is a switch that we can turn off when we "Expand/collapse all" to allow more than one
@@ -104,7 +93,6 @@ function collapse_all_categories(){
       });
 
       count = updates;
-      //;;;console.log("shown.bs.popover handler: " + key + "(" + ") : " + JSON.stringify(updates));
       $(".relatedCountContainer").each(function(){
           $(this).html(count["related_<%= Feature.uid_prefix %>"]);
       });
