@@ -100,6 +100,115 @@ function collapse_all_categories(){
   });
 <% end %>
 
+<%= javascript_on_load do %>
+  //Code for Summary
+  ;;;console.log("Going to start the Summary code");
+  var termIndex = "<%= Feature.config.url %>";
+  var assetIndex = "<%= Flare.config.asset_url %>";
+  var domain = "<%= Feature.uid_prefix %>";
+  var perspective = "<%= current_perspective.code %>";
+  var SOLR_ROW_LIMIT = 200;
+  var count = 0;
+  var featureId =  "<%= Feature.uid_prefix %>-<%= @feature.fid %>";
+  var featuresPath = "";
+  var fieldList = [
+    "header",
+    "id",
+    "ancestor*",
+    "caption_eng",
+    "related_"+domain+"_feature_type_s",
+    "related_"+domain+"_relation_label_s"
+  ].join(",");
+  if(domain == "places"){
+    fieldList += ",related_subjects_t";
+  }
+  var url = termIndex + "/select?" +
+  "&q=" + "{!child of=block_type:parent}id:" + featureId +
+  "&fl=child_count:[subquery],uid,related_"+domain+"_id_s,related_"+domain+"_header_s" +","+ fieldList +
+  "&expand=true" +
+  "&child_count.fq=related_kmaps_node_type:child" +
+  "&child_count.fl=uid" +
+  "&child_count.rows=" + "0" +
+  "&child_count.q={!child of='block_type:parent'}{!term f=uid v=$row.related_"+domain+"_id_s}" +
+  "&fq=related_kmaps_node_type:" + "child" +
+  "&fq="+"{!collapse field=related_"+domain+"_id_s}" +
+  "&limit=" + SOLR_ROW_LIMIT +
+  "&indent=true" +
+  "&wt=json" +
+  "&json.wrf=?" +
+  "&sort=related_"+domain+"_header_s+asc" +
+  "&rows=" + SOLR_ROW_LIMIT;
+  url = termIndex + "/select?" +
+  "fl=uid,[child parentFilter=block_type:parent]&q=uid:" + featureId +
+  "&limit=" + SOLR_ROW_LIMIT +
+  "&indent=true" +
+  "&wt=json" +
+  "&json.wrf=?";
+  ;;;console.log(url);
+  $.ajax({
+    url: url,
+    dataType: 'jsonp',
+    jsonp: 'json.wrf'
+  }).done(function(data){
+    ;;;console.log(data);
+    const response = data.response;
+    if(response.numFound > 0){
+      const result = response.docs[0]["_childDocuments_"].reduce(function(acc,currentNode,index){
+        ;;;console.log(currentNode["id"]);
+        ;;;console.log(currentNode);
+        ;;;console.log(currentNode["related_kmaps_node_type"]);
+        let node_type = currentNode["related_kmaps_node_type"] ;
+        if(node_type === undefined) {
+          node_type = "other";
+        }
+        if(acc[node_type] === undefined){
+          acc[node_type] =  [];
+        }
+        let relation_label = currentNode["related_"+ domain +"_relation_label_s"];
+        if(acc[node_type][relation_label] === undefined){
+          acc[node_type][relation_label] = [];
+        }
+        let related_feature_type = currentNode["related_"+ domain + "_feature_type_s"];
+        if(acc[node_type][relation_label][related_feature_type] === undefined) {
+          acc[node_type][relation_label][related_feature_type] = [];
+        }
+        acc[node_type][relation_label][related_feature_type].push(currentNode);
+        return acc;
+      }, []);
+      ;;;console.log(result);
+      function addSummaryItems(group_key,data,container){
+        for(var key in data[group_key]){
+          var feature_block = jQuery('<div></div>').addClass('feature-block');
+          var header = jQuery('<h6></h6>').html(key);
+          feature_block.append(header);
+          var relation_list = jQuery('<ul></ul>');
+          for(var relation_label in data[group_key][key]){
+            var relation = jQuery('<li></li>');
+            relation.append(relation_label);
+            var feature_type_list = jQuery('<ul></ul>');
+            for(var feature_type in data[group_key][key][relation_label]){
+              var feature_type_item = jQuery('<li></li>');
+              ;;;console.log("....");
+              ;;;console.log(data[group_key][key][relation_label][feature_type]);
+              feature_type_item.append(data[group_key][key][relation_label][feature_type]["related_"+domain+"_header_s"]);
+              feature_type_list.append(feature_type_item);
+            }
+            relation.append(feature_type_list);
+            relation_list.append(relation);
+          }
+          feature_block.append(relation_list);
+          container.append(feature_block);
+        }
+      }
+      addSummaryItems('parent',result,jQuery('.places-in-places'));
+      addSummaryItems('child',result,jQuery('.places-in-places'));
+      addSummaryItems('other',result,jQuery('.places-in-places'));
+    } else {
+     //Empty result set
+    }
+  });
+<% end %>
+
 <div id='myTabs'>
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
