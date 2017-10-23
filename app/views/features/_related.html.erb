@@ -65,6 +65,7 @@ function collapse_all_categories(){
   $('.collapse-all-categories').hide();
 }
 </script>
+<% feature_label = fname_labels(@feature).s %>
 <%= javascript_on_load do %>
   var termIndex = "<%= Feature.config.url %>";
   var assetIndex = "<%= Flare.config.asset_url %>";
@@ -99,10 +100,8 @@ function collapse_all_categories(){
     }
   });
 <% end %>
-
 <%= javascript_on_load do %>
   //Code for Summary
-  ;;;console.log("Going to start the Summary code");
   var termIndex = "<%= Feature.config.url %>";
   var assetIndex = "<%= Flare.config.asset_url %>";
   var domain = "<%= Feature.uid_prefix %>";
@@ -110,7 +109,7 @@ function collapse_all_categories(){
   var SOLR_ROW_LIMIT = 200;
   var count = 0;
   var featureId =  "<%= Feature.uid_prefix %>-<%= @feature.fid %>";
-  var featuresPath = "";
+  var featuresPath = "<%= features_path %>/%%ID%%";
   var fieldList = [
     "header",
     "id",
@@ -139,24 +138,19 @@ function collapse_all_categories(){
   "&sort=related_"+domain+"_header_s+asc" +
   "&rows=" + SOLR_ROW_LIMIT;
   url = termIndex + "/select?" +
-  "fl=uid,[child parentFilter=block_type:parent]&q=uid:" + featureId +
+  "fl=uid,[child parentFilter=block_type:parent limit=1000]&q=uid:" + featureId +
   "&limit=" + SOLR_ROW_LIMIT +
   "&indent=true" +
   "&wt=json" +
   "&json.wrf=?";
-  ;;;console.log(url);
   $.ajax({
     url: url,
     dataType: 'jsonp',
     jsonp: 'json.wrf'
   }).done(function(data){
-    ;;;console.log(data);
     const response = data.response;
     if(response.numFound > 0){
       const result = response.docs[0]["_childDocuments_"].reduce(function(acc,currentNode,index){
-        ;;;console.log(currentNode["id"]);
-        ;;;console.log(currentNode);
-        ;;;console.log(currentNode["related_kmaps_node_type"]);
         let node_type = currentNode["related_kmaps_node_type"] ;
         if(node_type === undefined) {
           node_type = "other";
@@ -168,41 +162,61 @@ function collapse_all_categories(){
         if(acc[node_type][relation_label] === undefined){
           acc[node_type][relation_label] = [];
         }
-        let related_feature_type = currentNode["related_"+ domain + "_feature_type_s"];
-        if(acc[node_type][relation_label][related_feature_type] === undefined) {
-          acc[node_type][relation_label][related_feature_type] = [];
+        for(related_subject_key in currentNode["related_subjects_t"]){
+          let related_subject = currentNode["related_subjects_t"][related_subject_key];
+          if(acc[node_type][relation_label][related_subject] === undefined) {
+          acc[node_type][relation_label][related_subject] = {};
+          }
+          let node_id = currentNode['related_'+domain+'_id_s'];
+          acc[node_type][relation_label][related_subject][node_id] = currentNode;
         }
-        acc[node_type][relation_label][related_feature_type].push(currentNode);
         return acc;
       }, []);
-      ;;;console.log(result);
+      var feature_name = $('<%= feature_label %>')[0];
       function addSummaryItems(group_key,data,container){
-        for(var key in data[group_key]){
+        for(var key in data[group_key]){ //parent,child, other
           var feature_block = jQuery('<div></div>').addClass('feature-block');
-          var header = jQuery('<h6></h6>').html(key);
+          var header = jQuery('<h6></h6>').html(feature_name.innerText +" "+ key);
           feature_block.append(header);
-          var relation_list = jQuery('<ul></ul>');
-          for(var relation_label in data[group_key][key]){
+          var relation_subject_list = jQuery('<ul></ul>');
+          for(var relation_subject in data[group_key][key]){
             var relation = jQuery('<li></li>');
-            relation.append(relation_label);
-            var feature_type_list = jQuery('<ul></ul>');
-            for(var feature_type in data[group_key][key][relation_label]){
-              var feature_type_item = jQuery('<li></li>');
-              ;;;console.log("....");
-              ;;;console.log(data[group_key][key][relation_label][feature_type]);
-              feature_type_item.append(data[group_key][key][relation_label][feature_type]["related_"+domain+"_header_s"]);
-              feature_type_list.append(feature_type_item);
+            var feature_list = jQuery('<ul></ul>');
+            var feature_count = 0;
+            var sortedFeatures = featureSort(data[group_key][key][relation_subject]);
+            for(var feature_index in sortedFeatures){
+              var feature_item = jQuery('<li></li>');
+              var currNode = sortedFeatures[feature_index];
+              var currNodeID = currNode["related_"+domain+"_id_s"].replace(domain+"-","");
+              feature_item.append("<a href="+featuresPath.replace("%%ID%%",currNodeID)+">"+currNode["related_"+domain+"_header_s"]+"</a>");
+              feature_list.append(feature_item);
+              feature_count++;
             }
-            relation.append(feature_type_list);
-            relation_list.append(relation);
+            relation.append(relation_subject+" ("+feature_count+")");
+            relation.append(feature_list);
+            relation_subject_list.append(relation);
           }
-          feature_block.append(relation_list);
+          feature_block.append(relation_subject_list);
           container.append(feature_block);
         }
       }
-      addSummaryItems('parent',result,jQuery('.places-in-places'));
-      addSummaryItems('child',result,jQuery('.places-in-places'));
-      addSummaryItems('other',result,jQuery('.places-in-places'));
+      function featureSort(features){
+        var featuresArr = [];
+        for(var key in features){
+            var index = 0;
+            while(index < featuresArr.length){
+              var curr_feature = featuresArr[index];
+              if(features[key]["related_"+domain+"_header_s"] < curr_feature["related_"+domain+"_header_s"] )
+                break;
+              index++;
+            }
+            featuresArr.splice(index,0,features[key]);
+        }
+        return featuresArr;
+      }
+      addSummaryItems('parent',result,jQuery('.'+domain+'-in-'+domain));
+      addSummaryItems('child',result,jQuery('.'+domain+'-in-'+domain));
+      //addSummaryItems('other',result,jQuery('.'+domain+'-in-'+domain));
     } else {
      //Empty result set
     }
@@ -221,7 +235,6 @@ function collapse_all_categories(){
       <section class="panel panel-content">
         <div class="panel-body">
           <p>
-          <% feature_label = fname_labels(@feature).s %>
           <strong><%= feature_label %></strong> has <strong class="relatedCountContainer"></strong> subordinate places, which you can see presented with its superordinate categories in the tree below. The summary tab instead classifies <%= feature_label %>'s immediately subordinate places, as well as places non-hierarchically related to it.
           </p>
             <div id='relation_tree_container'></div>
@@ -231,56 +244,11 @@ function collapse_all_categories(){
     <div role="tabpanel" class="tab-pane" id="relation_details">
       <section class="panel panel-content">
         <div class="panel-body">
-          <% relation_counts = CachedFeatureRelationCategory.select('feature_relation_type_id, feature_is_parent, COUNT(DISTINCT related_feature_id) AS count').group('feature_relation_type_id, feature_is_parent').where(:feature_id => @feature.id).order(:feature_relation_type_id)
-          if relation_counts.length > 0 %>
           <p>
           <strong><%= feature_label %></strong> has <strong class="relatedCountContainer"><%#= relation_counts %></strong> other places directly related to it, which are presented here. The relationships tab instead presents all subordinate and superordinate categories for <%= feature_label %>.
           </p>
-        <p>
-        <%=  link_to ts('tree.expand', :what => t('all.these')), '#', onclick: "expand_all_categories()", :class => "expand-all-categories expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
-        <%=  link_to ts('tree.collapse', :what => t('all.these')), '#', onclick: "collapse_all_categories()", :class => "collapse-all-categories expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
-        </p>
-        <div class="places-in-places kmaps-list-columns related-features-categories has-ajax-pagination has-hash-feature-links">
-          <%   relation_counts.each do |rc|
-            feature_relation_type = rc.feature_relation_type
-            feature_is_parent = rc.feature_is_parent
-            count = rc.count %>
-          <div class="feature-block">
-          <h6><%= feature_label %> <%= "#{feature_is_parent ? feature_relation_type.label : feature_relation_type.asymmetric_label}" %> (<%= count %>):</h6>
-          <%     # Is there a way to :include => categories and use an :order instead of this .sort{}?
-            CachedFeatureRelationCategory.group('category_id').where(:feature_id => @feature.id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent).count.sort do |a,b|
-            # Some of these .finds are returning nil, but it's not clear why.
-            SubjectsIntegration::Feature.find(a[0]).nil? || SubjectsIntegration::Feature.find(b[0]).nil? ? 0 : SubjectsIntegration::Feature.find(a[0]).header.casecmp(SubjectsIntegration::Feature.find(b[0]).header)
-          end.each do |c|
-            category_id, count = c
-            category = SubjectsIntegration::Feature.find(category_id)
-            # This has returned nil in some cases on production, so we need to check it to prevent a fatal error below
-            unless category.nil?
-              div_id = "list_#{category_id}_#{feature_relation_type.id}_#{feature_is_parent}" %>
-            <ul>
-              <li>
-              <%=        link_to SubjectsIntegration::Feature.find(category_id).header, related_list_feature_path(@feature.id, :category_id => category_id, :feature_relation_type_id => feature_relation_type.id, :feature_is_parent => feature_is_parent.to_s),
-                :remote => true, :id => "link_#{div_id}", :class => 'expandable-link-contracted' %>
-             (<%= count %>)
-             <ul>
-            <div id="<%= div_id %>" style="display:none;" class="related-feature-list pagination-click-results"></div>
-            <%=        javascript_tag("$('#link_#{div_id}').bind('ajax:beforeSend', function(){ if(!on_category_click('#{div_id}')) return false; });") %>
-             </ul>
-              </li>
-            </ul>
-          <%       end
-          end %>
-          </div> <!-- END - feature-block -->
-          <% end %>
-        </div>
+        <div class="places-in-places kmaps-list-columns related-features-categories has-ajax-pagination has-hash-feature-links"></div>
         <br />
-        <p>
-        <%= link_to ts('tree.expand', :what => t('all.these')), '#', onclick: "expand_all_categories()", :class => "expand-all-categories expandable-link-contracted", :style => "font-weight:bold;font-variant:small-caps;" %>
-        <%= link_to ts('tree.collapse', :what => t('all.these')), '#', onclick: "collapse_all_categories()", :class => "collapse-all-categories expandable-link-expanded", :style => "font-weight:bold;font-variant:small-caps;display:none;" %>
-        </p>
-      <% else %>
-        <p><%= ts 'snippet.feature.not.related' %></p>
-      <% end %>
         </div> <!-- END panel-body -->
       </section> <!-- END panel -->
 		</div>
