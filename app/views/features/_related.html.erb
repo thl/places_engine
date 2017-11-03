@@ -235,7 +235,7 @@ function collapse_all_categories(){
       <section class="panel panel-content">
         <div class="panel-body">
           <p>
-          <strong><%= feature_label %></strong> has <strong class="relatedCountContainer"></strong> subordinate places, which you can see presented with its superordinate categories in the tree below. The summary tab instead classifies <%= feature_label %>'s immediately subordinate places, as well as places non-hierarchically related to it.
+           <strong><%= feature_label %></strong> has <strong class="relatedCountContainer"></strong> subordinate places. You can browse those subordinate places as well as its superordinate places with the tree below. See the summary tab if you instead prefer to view only  its immediately subordinate places grouped together in useful ways, as well as places non-hierarchically related to it.
           </p>
             <div id='relation_tree_container'></div>
         </div> <!-- END panel-body -->
@@ -245,7 +245,7 @@ function collapse_all_categories(){
       <section class="panel panel-content">
         <div class="panel-body">
           <p>
-          <strong><%= feature_label %></strong> has <strong class="relatedCountContainer"><%#= relation_counts %></strong> other places directly related to it, which are presented here. The relationships tab instead presents all subordinate and superordinate categories for <%= feature_label %>.
+           <strong><%= feature_label %></strong> has <strong class="relatedCountContainer"><%#= relation_counts %></strong> other places directly related to it, which are presented here. See the relationships tab if you instead prefer to browse  all subordinate and superordinate places for<%= feature_label %>.
           </p>
         <div class="places-in-places kmaps-list-columns related-features-categories has-ajax-pagination has-hash-feature-links"></div>
         <br />
