@@ -123,26 +123,12 @@ function collapse_all_categories(){
   }
   var url = termIndex + "/select?" +
   "&q=" + "{!child of=block_type:parent}id:" + featureId +
-  "&fl=child_count:[subquery],uid,related_"+domain+"_id_s,related_"+domain+"_header_s" +","+ fieldList +
-  "&expand=true" +
-  "&child_count.fq=related_kmaps_node_type:child" +
-  "&child_count.fl=uid" +
-  "&child_count.rows=" + "0" +
-  "&child_count.q={!child of='block_type:parent'}{!term f=uid v=$row.related_"+domain+"_id_s}" +
-  "&fq=related_kmaps_node_type:" + "child" +
-  "&fq="+"{!collapse field=related_"+domain+"_id_s}" +
-  "&limit=" + SOLR_ROW_LIMIT +
+  "&fl=*,uid,related_"+domain+"_id_s,related_"+domain+"_header_s" +","+ fieldList +
+  "&rows=" + SOLR_ROW_LIMIT +
   "&indent=true" +
   "&wt=json" +
   "&json.wrf=?" +
-  "&sort=related_"+domain+"_header_s+asc" +
-  "&rows=" + SOLR_ROW_LIMIT;
-  url = termIndex + "/select?" +
-  "fl=uid,[child parentFilter=block_type:parent limit=1000]&q=uid:" + featureId +
-  "&limit=" + SOLR_ROW_LIMIT +
-  "&indent=true" +
-  "&wt=json" +
-  "&json.wrf=?";
+  "&sort=related_"+domain+"_header_s+asc";
   $.ajax({
     url: url,
     dataType: 'jsonp',
@@ -150,7 +136,7 @@ function collapse_all_categories(){
   }).done(function(data){
     const response = data.response;
     if(response.numFound > 0){
-      const result = response.docs[0]["_childDocuments_"].reduce(function(acc,currentNode,index){
+      const result = response.docs.reduce(function(acc,currentNode,index){
         let node_type = currentNode["related_kmaps_node_type"] ;
         if(node_type === undefined) {
           node_type = "other";
@@ -178,12 +164,12 @@ function collapse_all_categories(){
           var feature_block = jQuery('<div></div>').addClass('feature-block');
           var header = jQuery('<h6></h6>').html(feature_name.innerText +" "+ key);
           feature_block.append(header);
-          var relation_subject_list = jQuery('<ul></ul>');
+          var relation_subject_list = jQuery('<ul class="collapsibleList"></ul>');
           for(var relation_subject in data[group_key][key]){
             var relation = jQuery('<li></li>');
             var feature_list = jQuery('<ul></ul>');
             var feature_count = 0;
-            var sortedFeatures = featureSort(data[group_key][key][relation_subject]);
+            var sortedFeatures = data[group_key][key][relation_subject];
             for(var feature_index in sortedFeatures){
               var feature_item = jQuery('<li></li>');
               var currNode = sortedFeatures[feature_index];
@@ -247,7 +233,9 @@ function collapse_all_categories(){
           <p>
            <strong><%= feature_label %></strong> has <strong class="relatedCountContainer"><%#= relation_counts %></strong> other places directly related to it, which are presented here. See the relationships tab if you instead prefer to browse  all subordinate and superordinate places for<%= feature_label %>.
           </p>
+          <h5> <span class="collapsible_all_btn collapsible_expand_all">Expand all</span> / <span class="collapsible_all_btn collapsible_collapse_all">Collapse all</span> </h5>
         <div class="places-in-places kmaps-list-columns related-features-categories has-ajax-pagination has-hash-feature-links"></div>
+          <h5> <span class="collapsible_all_btn collapsible_expand_all">Expand all</span> / <span class="collapsible_all_btn collapsible_collapse_all">Collapse all</span> </h5>
         <br />
         </div> <!-- END panel-body -->
       </section> <!-- END panel -->
@@ -269,9 +257,16 @@ function collapse_all_categories(){
     lastNeverTallest : true,
     buildOnce: true
     });
+    CollapsibleLists.apply();
+    $("ul.collapsibleList li.collapsibleListClosed").trigger("click");
   });
   // END - Functionality for columnizer
-
+  $(".collapsible_expand_all").on("click",function(e){
+    $("ul.collapsibleList li.collapsibleListClosed").trigger("click");
+  });
+  $(".collapsible_collapse_all").on("click",function(e){
+    $("ul.collapsibleList li.collapsibleListOpen").trigger("click");
+  });
   $("#relation_tree_container").kmapsFancytree({
     featureId: "<%= @feature.fid %>",
     termIndex: "<%= Feature.config.url %>",
@@ -286,3 +281,18 @@ function collapse_all_categories(){
     displayPopup: true
   });
 <% end %>
+<style>
+.collapsibleList li{
+  cursor           : auto;
+}
+li.collapsibleListOpen,li.collapsibleListClosed, .collapsible_all_btn{
+  cursor           : pointer;
+}
+.collapsible_all_btn{
+  color: #454fa4;
+}
+.collapsible_all_btn:hover{
+  color: #df3d26;
+}
+</style>
+<%= javascript_include_tag('collapsible_list/CollapsibleLists') %>
