@@ -174,10 +174,14 @@ function collapse_all_categories(){
               var feature_item = jQuery('<li></li>');
               var currNode = sortedFeatures[feature_index];
               var currNodeID = currNode["related_"+domain+"_id_s"].replace(domain+"-","");
-              feature_item.append("<a href="+featuresPath.replace("%%ID%%",currNodeID)+">"+currNode["related_"+domain+"_header_s"]+"</a>");
+              var currItem = jQuery("<a href="+featuresPath.replace("%%ID%%",currNodeID)+">"+currNode["related_"+domain+"_header_s"]+"</a>");
+              var pop_container = jQuery('<span class="popover-kmaps" data-id="'+domain+'-'+currNodeID+'"><span class="popover-kmaps-tip"></span><span class="icon shanticon-menu3"></span></span>');
+              feature_item.append(currItem);
+              feature_item.append(jQuery(pop_container));
               feature_list.append(feature_item);
               feature_count++;
             }
+            relation.append(jQuery('<span class="glyphicon"></span> '));
             relation.append(relation_subject+" ("+feature_count+")");
             relation.append(feature_list);
             relation_subject_list.append(relation);
@@ -245,6 +249,8 @@ function collapse_all_categories(){
 
 <%= javascript_include_tag 'kmaps_engine/kmaps_fancytree' %>
 <%= javascript_on_load do %>
+  var collapsibleApplied = false;
+  var popupsSet = false;
   $('#summary-tab-link[data-toggle="tab"]').on('shown.bs.tab', function (e) {
     // Functionality for columnizer
     // dontsplit = don't break these headers
@@ -257,8 +263,21 @@ function collapse_all_categories(){
     lastNeverTallest : true,
     buildOnce: true
     });
-    CollapsibleLists.apply();
-    $("ul.collapsibleList li.collapsibleListClosed").trigger("click");
+    if(!collapsibleApplied){
+      CollapsibleLists.apply();
+      collapsibleApplied = true;
+    }
+    if(!popupsSet){
+      jQuery('#relation_details .popover-kmaps').kmapsPopup({
+        termIndex: "<%= Feature.config.url %>",
+        assetIndex: "<%= Flare.config.asset_url %>",
+        domain: "<%= Feature.uid_prefix %>",
+        perspective: "<%= current_perspective.code %>",
+        featureId:  "",
+        featuresPath: "<%= features_path %>/%%ID%%"
+      });
+      popupsSet = true;
+     }
   });
   // END - Functionality for columnizer
   $(".collapsible_expand_all").on("click",function(e){
@@ -293,6 +312,19 @@ li.collapsibleListOpen,li.collapsibleListClosed, .collapsible_all_btn{
 }
 .collapsible_all_btn:hover{
   color: #df3d26;
+}
+li.collapsibleListOpen .glyphicon:before{
+  content: "\e082";
+}
+li.collapsibleListClosed .glyphicon:before{
+  content: "\e081";
+}
+li.collapsibleListOpen:before, li.collapsibleListClosed:before{
+  display:none !important;
+}
+.collapsibleList span.glyphicon {
+  padding-right: 5px;
+  color: #4ca6fb !important;
 }
 </style>
 <%= javascript_include_tag('collapsible_list/CollapsibleLists') %>
