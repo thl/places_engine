@@ -1,5 +1,5 @@
 class Contestation < ActiveRecord::Base
-  attr_accessible :administrator, :claimant, :contested
+  #attr_accessible :administrator, :claimant, :contested
   belongs_to :administrator, :class_name => 'Feature'
   belongs_to :claimant, :class_name => 'Feature'
   belongs_to :feature

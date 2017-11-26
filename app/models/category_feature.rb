@@ -1,6 +1,4 @@
 class CategoryFeature < ActiveRecord::Base
-  attr_accessible :prefix_label, :label, :string_value, :numeric_value, :show_parent, :category_id, :show_root, :skip_update
-  
   attr_accessor :skip_update
   
   belongs_to :feature

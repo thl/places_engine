@@ -33,6 +33,13 @@ class Admin::CategoryFeaturesController < AclController
     @collection = search_results.page(params[:page])
   end
   
+  protected
+  
+  # Only allow a trusted parameter "white list" through.
+  def category_feature_params
+    params.require(:category_feature).permit(:prefix_label, :label, :string_value, :numeric_value, :show_parent, :category_id, :show_root, :skip_update)
+  end
+  
   private
   
   def build_object

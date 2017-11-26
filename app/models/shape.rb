@@ -3,7 +3,6 @@ class Shape < ActiveRecord::Base
   include KmapsEngine::IsNotable
   include KmapsEngine::IsCitable
   
-  attr_accessible :altitude, :geometry, :fid
   belongs_to :feature, :foreign_key => 'fid', :primary_key => 'fid'
   
   # after_save { |record| record.feature.touch if !record.feature.nil? }

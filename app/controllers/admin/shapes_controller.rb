@@ -69,4 +69,10 @@ class Admin::ShapesController < ResourceController::Base
     def collection
       @collection = Feature.find(params[:feature_id]).shapes
     end
+    
+    # Only allow a trusted parameter "white list" through.
+    def shape_params
+      params.require(:shape).permit(:altitude, :geometry, :fid)
+    end
+    
 end
