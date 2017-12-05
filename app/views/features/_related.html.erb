@@ -183,26 +183,26 @@ function collapse_all_categories(){
         $("#relation_details .tab-content-loading").show();
       }
     }).done(function(data){
-      const response = data.response;
+      var response = data.response;
       if(response.numFound > 0){
-        const result = response.docs.reduce(function(acc,currentNode,index){
-          let node_type = currentNode["related_kmaps_node_type"] ;
+        var result = response.docs.reduce(function(acc,currentNode,index){
+          var node_type = currentNode["related_kmaps_node_type"] ;
           if(node_type === undefined) {
             node_type = "other";
           }
           if(acc[node_type] === undefined){
             acc[node_type] =  [];
           }
-          let relation_label = currentNode["related_"+ domain +"_relation_label_s"];
+          var relation_label = currentNode["related_"+ domain +"_relation_label_s"];
           if(acc[node_type][relation_label] === undefined){
             acc[node_type][relation_label] = [];
           }
           for(related_subject_key in currentNode["related_subjects_t"]){
-            let related_subject = currentNode["related_subjects_t"][related_subject_key];
+            var related_subject = currentNode["related_subjects_t"][related_subject_key];
             if(acc[node_type][relation_label][related_subject] === undefined) {
             acc[node_type][relation_label][related_subject] = {};
             }
-            let node_id = currentNode['related_'+domain+'_id_s'];
+            var node_id = currentNode['related_'+domain+'_id_s'];
             acc[node_type][relation_label][related_subject][node_id] = currentNode;
           }
           return acc;
