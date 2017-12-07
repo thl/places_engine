@@ -3,7 +3,6 @@ class Altitude < ActiveRecord::Base
   extend IsDateable
   include KmapsEngine::IsNotable
   
-  attr_accessible :average, :estimate, :minimum, :maximum, :unit_id  
   belongs_to :feature
   belongs_to :unit
   has_many :imports, :as => 'item', :dependent => :destroy

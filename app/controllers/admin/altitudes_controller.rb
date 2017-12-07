@@ -20,4 +20,9 @@ class Admin::AltitudesController < ResourceController::Base
   def collection
     @collection = Altitude.where(:feature_id => parent_object.id).page(params[:page])
   end
+  
+  # Only allow a trusted parameter "white list" through.
+  def altitude_params
+    params.require(:altitude).permit(:average, :estimate, :minimum, :maximum, :unit_id)
+  end
 end
