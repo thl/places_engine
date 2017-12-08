@@ -1,72 +1,6 @@
-<%= javascript_on_load do %>
-  // Ajaxify the pagination for lists of features
-  jQuery('.has-ajax-pagination .pagination a').on('click', function() {
-    var this_link = this;
-    jQuery.ajax({
-      type: 'POST',
-      url: this.href,
-      success: function(html){
-        jQuery(this_link).parents('.pagination-click-results:first').html(html);
-      }
-    });
-    return false;
-  });
-
-<% end %>
-<script type="text/javascript">
-// This is a switch that we can turn off when we "Expand/collapse all" to allow more than one
-// Ajax div to be open at once.
-var accordion_enabled = true;
-
-function on_category_click(ajax_div_id){
-  var ajax_div = $('#'+ajax_div_id);
-  var link_parent = ajax_div.prev('p').find('a');
-  var toggle_speed = 300;
-  // This is used after ajax_div.toggle(), so it is the opposite of the current state.
-  var is_hidden = !(ajax_div.css('display') == 'none');
-  
-  // Toggle the Ajax div
-  ajax_div.toggle(toggle_speed);
-
-  if(accordion_enabled){
-    // Hide all of the other Ajax divs and switch their "expanded/contracted" state.
-    $('.related-feature-list').not('#'+ajax_div_id)
-      .hide(toggle_speed)
-      .prev('p').find('a').removeClass('expandable-link-expanded').addClass('expandable-link-contracted');
-  }
-
-  // Change the Ajax div's "expanded/contracted" state.
-  if(is_hidden){
-  link_parent.removeClass('expandable-link-expanded').addClass('expandable-link-contracted');
-  }else{
-  link_parent.removeClass('expandable-link-contracted').addClass('expandable-link-expanded');
-  }
-
-  // If the ajax_div is now hidden, return false so that the Ajax isn't called again.
-  if(is_hidden){
-  return false;
-  }
-  return true;
-}
-
-function expand_all_categories(){
-  accordion_enabled = false;
-  $('.related-features-categories .expandable-link-contracted').click();
-  accordion_enabled = true;
-  $('.collapse-all-categories').show();
-  $('.expand-all-categories').hide();
-}
-
-function collapse_all_categories(){
-  accordion_enabled = false;
-  $('.related-features-categories .expandable-link-expanded').click();
-  accordion_enabled = true;
-  $('.expand-all-categories').show();
-  $('.collapse-all-categories').hide();
-}
-</script>
 <% feature_label = fname_labels(@feature).s %>
 <%= javascript_on_load do %>
+  //Related Counts on Solr
   var termIndex = "<%= Feature.config.url %>";
   var assetIndex = "<%= Flare.config.asset_url %>";
   var count = 0;
@@ -83,16 +17,13 @@ function collapse_all_categories(){
     },
     beforeSend: function () {
     },
-
     success: function (data) {
       var updates = {};
-
       $.each(data.grouped.block_child_type.groups, function (x, y) {
       var block_child_type = y.groupValue;
       var rel_count = y.doclist.numFound;
       updates[block_child_type] = rel_count;
       });
-
       count = updates;
       $(".relatedCountContainer").each(function(){
           $(this).html(count["related_<%= Feature.uid_prefix %>"]);
@@ -215,7 +146,6 @@ function collapse_all_categories(){
             feature_block.append(header);
             var relation_subject_list = jQuery('<ul class="collapsibleList"></ul>');
             var relation_subjects_ordered = Object.keys(data[group_key][key]).sort();
-            //for(var relation_subject in data[group_key][key]){
             for(var relation_subject in relation_subjects_ordered){
               relation_subject = relation_subjects_ordered[relation_subject];
               var relation = jQuery('<li></li>');
@@ -328,10 +258,10 @@ function collapse_all_categories(){
 <% end %>
 <style>
 .collapsibleList li{
-  cursor           : auto;
+  cursor: auto;
 }
 li.collapsibleListOpen,li.collapsibleListClosed, .collapsible_all_btn{
-  cursor           : pointer;
+  cursor: pointer;
 }
 .collapsible_all_btn{
   color: #454fa4;
