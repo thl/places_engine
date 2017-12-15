@@ -6,13 +6,13 @@
 <%= javascript_include_tag 'kmaps_engine/kmaps_fancytree' %>
 <%= javascript_on_load do %>
   $("#relation_tree_container").kmapsFancytree({
-    featureId: 13735,
+    featureId: "",
     featuresPath: "<%= new_admin_feature_path %>?parent_id=%%ID%%",
     termIndex: "<%= Feature.config.url %>",
     perspective: "<%= current_perspective.code %>",
     seedTree: {
       descendants: true,
-      directAncestors: false,
+      directAncestors: true,
     },
     displayPopup: false
   });
