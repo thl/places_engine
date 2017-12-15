@@ -204,6 +204,8 @@ module PlacesEngine
           all_feature_types = rf.feature_object_types.collect(&:category).select{|c| c}
           main_feature_type = all_feature_types.first
           relation_type = r.feature_relation_type
+          label = relation_type.asymmetric_label
+          label = relation_type.label if label.blank?
           { id: "#{self.uid}_#{relation_type.code}_#{rf.fid}",
             related_uid_s: rf.uid,
             origin_uid_s: self.uid,
@@ -218,7 +220,7 @@ module PlacesEngine
             related_subject_ids: related_subjects.collect(&:id),
             related_places_feature_types_t: all_feature_types.collect(&:header),
             related_places_feature_type_ids: all_feature_types.collect(&:id),
-            related_places_relation_label_s: relation_type.asymmetric_label,
+            related_places_relation_label_s: label,
             related_places_relation_code_s: relation_type.code,
             related_kmaps_node_type: 'parent',
             block_type: ['child'] }
@@ -233,7 +235,9 @@ module PlacesEngine
           all_feature_types = rf.feature_object_types.collect(&:category).select{|c| c}
           main_feature_type = all_feature_types.first
           relation_type = r.feature_relation_type
-          { id: "#{self.uid}_#{relation_type.asymmetric_code}_#{rf.fid}",
+          code = relation_type.asymmetric_code
+          code = relation_type.code if code.blank?
+          { id: "#{self.uid}_#{code}_#{rf.fid}",
             related_uid_s: rf.uid,
             origin_uid_s: self.uid,
             block_child_type: ['related_places'],
@@ -248,7 +252,7 @@ module PlacesEngine
             related_places_feature_types_t: all_feature_types.collect(&:header),
             related_places_feature_type_ids: all_feature_types.collect(&:id),
             related_places_relation_label_s: relation_type.label,
-            related_places_relation_code_s: relation_type.asymmetric_code,
+            related_places_relation_code_s: code,
             related_kmaps_node_type: 'child',
             block_type: ['child'] }
         end.flatten
