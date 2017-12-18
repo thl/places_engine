@@ -195,71 +195,66 @@ module PlacesEngine
           cd
         end.compact
         
-				parent_relations = FeatureRelationType.joins(:feature_relations)
-					.where('feature_relations.child_node_id' => self.id).distinct
-        
+				parent_relations = self.all_parent_relations
 				child_documents = child_documents + parent_relations.collect do |r|
-					feature_types = CachedFeatureRelationCategory.select(:category_id).distinct.where(feature_relation_type_id: r.id, feature: self.id).collect(&:category)
-					feature_types.collect do |t|
-						features = CachedFeatureRelationCategory.where(category_id: t.id,
-																													 feature_relation_type_id: r.id,
-																													 feature_id: self.id,
-																													 feature_is_parent: false).collect(&:related_feature)
-            features.collect do |rf|
-              related_subjects = rf.category_features.collect(&:category).select{|c| c}
-              name = rf.prioritized_name(v)
-              name_str = name.nil? ? nil : name.name 
-              { id: "#{self.uid}_#{r.code}_#{t.id}_#{rf.fid}",
-                related_uid_s: rf.uid,
-                origin_uid_s: self.uid,
-                block_child_type: ['related_places'],
-                related_places_id_s: "#{Feature.uid_prefix}-#{rf.fid}",
-                related_places_header_s: name_str,
-                related_names_t: rf.names.collect(&:name).uniq,
-                related_places_path_s: rf.closest_ancestors_by_perspective(per).collect(&:fid).join('/'),
-                related_places_feature_type_s: t.header,
-                related_subjects_t: related_subjects.collect(&:header),
-                related_places_feature_type_id_i: t.id,
-                related_subjects_ids: related_subjects.collect(&:id),
-                related_places_relation_label_s: r.asymmetric_label,
-                related_places_relation_code_s: r.code,
-                related_kmaps_node_type: 'parent',
-                block_type: ['child'] }
-            end
-					end
+          rf = r.parent_node
+          related_subjects = rf.category_features.collect(&:category).select{|c| c}
+          name = rf.prioritized_name(v)
+          name_str = name.nil? ? nil : name.name
+          all_feature_types = rf.feature_object_types.collect(&:category).select{|c| c}
+          main_feature_type = all_feature_types.first
+          relation_type = r.feature_relation_type
+          label = relation_type.asymmetric_label
+          label = relation_type.label if label.blank?
+          { id: "#{self.uid}_#{relation_type.code}_#{rf.fid}",
+            related_uid_s: rf.uid,
+            origin_uid_s: self.uid,
+            block_child_type: ['related_places'],
+            related_places_id_s: "#{Feature.uid_prefix}-#{rf.fid}",
+            related_places_header_s: name_str,
+            related_names_t: rf.names.collect(&:name).uniq,
+            related_places_path_s: rf.closest_ancestors_by_perspective(per).collect(&:fid).join('/'),
+            related_places_feature_type_s: main_feature_type.nil? ? '' : main_feature_type.header,
+            related_places_feature_type_id_i: main_feature_type.nil? ? nil : main_feature_type.id,
+            related_subjects_t: related_subjects.collect(&:header),
+            related_subject_ids: related_subjects.collect(&:id),
+            related_places_feature_types_t: all_feature_types.collect(&:header),
+            related_places_feature_type_ids: all_feature_types.collect(&:id),
+            related_places_relation_label_s: label,
+            related_places_relation_code_s: relation_type.code,
+            related_kmaps_node_type: 'parent',
+            block_type: ['child'] }
 				end.flatten
         
-				child_relations = FeatureRelationType.joins(:feature_relations)
-					.where('feature_relations.parent_node_id' => self.id).distinct
-        
+				child_relations = self.all_child_relations
         child_documents = child_documents + child_relations.collect do |r|
-					feature_types = CachedFeatureRelationCategory.select(:category_id).distinct
-						.where(feature_relation_type_id: r.id, feature: self.id).collect(&:category)
-					feature_types.collect do |t|
-						features = CachedFeatureRelationCategory.where(category_id: t.id,
-																													 feature_relation_type_id: r.id,
-																													 feature_id: self.id,
-																													 feature_is_parent: true).collect(&:related_feature)
-            features.collect do |rf|
-              related_subjects = rf.category_features.collect(&:category).select{|c| c}
-              { id: "#{self.uid}_#{r.asymmetric_code}_#{t.id}_#{rf.fid}",
-                related_uid_s: rf.uid,
-                origin_uid_s: self.uid,
-                block_child_type: ['related_places'],
-                related_places_id_s: "#{Feature.uid_prefix}-#{rf.fid}",
-                related_places_header_s: rf.prioritized_name(v).name,
-                related_names_t: rf.names.collect(&:name).uniq,
-                related_places_path_s: rf.closest_ancestors_by_perspective(per).collect(&:fid).join('/'),
-                related_places_feature_type_s: t.header,
-                related_subjects_t: related_subjects.collect(&:header),
-                related_places_feature_type_id_i: t.id,
-                related_subject_ids: related_subjects.collect(&:id),
-                related_places_relation_label_s: r.label,
-                related_places_relation_code_s: r.asymmetric_code,
-                related_kmaps_node_type: 'child',
-                block_type: ['child'] }
-            end
-          end
+          rf = r.child_node
+          related_subjects = rf.category_features.collect(&:category).select{|c| c}
+          name = rf.prioritized_name(v)
+          name_str = name.nil? ? nil : name.name
+          all_feature_types = rf.feature_object_types.collect(&:category).select{|c| c}
+          main_feature_type = all_feature_types.first
+          relation_type = r.feature_relation_type
+          code = relation_type.asymmetric_code
+          code = relation_type.code if code.blank?
+          { id: "#{self.uid}_#{code}_#{rf.fid}",
+            related_uid_s: rf.uid,
+            origin_uid_s: self.uid,
+            block_child_type: ['related_places'],
+            related_places_id_s: "#{Feature.uid_prefix}-#{rf.fid}",
+            related_places_header_s: name_str,
+            related_names_t: rf.names.collect(&:name).uniq,
+            related_places_path_s: rf.closest_ancestors_by_perspective(per).collect(&:fid).join('/'),
+            related_places_feature_type_s: main_feature_type.nil? ? '' : main_feature_type.header,
+            related_places_feature_type_id_i: main_feature_type.nil? ? nil : main_feature_type.id,
+            related_subjects_t: related_subjects.collect(&:header),
+            related_subject_ids: related_subjects.collect(&:id),
+            related_places_feature_types_t: all_feature_types.collect(&:header),
+            related_places_feature_type_ids: all_feature_types.collect(&:id),
+            related_places_relation_label_s: relation_type.label,
+            related_places_relation_code_s: code,
+            related_kmaps_node_type: 'child',
+            block_type: ['child'] }
         end.flatten
         associated_subjects = category_features.collect(&:category).compact
         doc = { tree: 'places',
