@@ -100,7 +100,7 @@
     }
     var url = termIndex + "/select?" +
     "&q=" + "{!child of=block_type:parent}id:" + featureId +
-    "&fl=*,uid,related_"+domain+"_id_s,related_"+domain+"_header_s" +","+ fieldList +
+    "&fl=related*,related_"+domain+"_feature_types_t,uid,related_"+domain+"_id_s,related_"+domain+"_header_s" +","+ fieldList +
     "&rows=" + SOLR_ROW_LIMIT +
     "&indent=true" +
     "&wt=json" +
@@ -128,13 +128,13 @@
           if(acc[node_type][relation_label] === undefined){
             acc[node_type][relation_label] = [];
           }
-          for(related_subject_key in currentNode["related_subjects_t"]){
-            var related_subject = currentNode["related_subjects_t"][related_subject_key];
-            if(acc[node_type][relation_label][related_subject] === undefined) {
-            acc[node_type][relation_label][related_subject] = {};
+          for(related_feature_type_key in currentNode["related_"+domain+"_feature_types_t"]){
+            var related_feature_type = currentNode["related_"+domain+"_feature_types_t"][related_feature_type_key];
+            if(acc[node_type][relation_label][related_feature_type] === undefined) {
+              acc[node_type][relation_label][related_feature_type] = {};
             }
             var node_id = currentNode['related_'+domain+'_id_s'];
-            acc[node_type][relation_label][related_subject][node_id] = currentNode;
+            acc[node_type][relation_label][related_feature_type][node_id] = currentNode;
           }
           return acc;
         }, []);
