@@ -4,7 +4,7 @@
   var termIndex = "<%= Feature.config.url %>";
   var assetIndex = "<%= Flare.config.asset_url %>";
   var count = 0;
-  var key =  "<%= Feature.uid_prefix %>-<%= @feature.fid %>";
+  var key =  "<%= @feature.uid %>";
   var relatedCountsUrl =
   termIndex + '/select?q={!child of=block_type:parent}id:' + key + '&wt=json&indent=true&group=true&group.field=block_child_type&group.limit=0&wt=json&json.wrf=?';
   $.ajax({
@@ -85,7 +85,7 @@
     var perspective = "<%= current_perspective.code %>";
     var SOLR_ROW_LIMIT = 200;
     var count = 0;
-    var featureId =  "<%= Feature.uid_prefix %>-<%= @feature.fid %>";
+    var featureId =  "<%= @feature.uid %>";
     var featuresPath = "<%= features_path %>/%%ID%%";
     var fieldList = [
       "header",

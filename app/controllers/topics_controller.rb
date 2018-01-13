@@ -21,12 +21,12 @@ class TopicsController < ApplicationController
         format.js  { render template: 'features/paginated_list' }
         format.xml do
           @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
-          @view ||= View.get_by_code('roman.popular')
+          @view ||= View.get_by_code(default_view_code)
           render 'paginated_show.xml.builder'
         end
         format.json do
           @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
-          @view ||= View.get_by_code('roman.popular')
+          @view ||= View.get_by_code(default_view_code)
           render json: Hash.from_xml(render_to_string(:action => 'paginated_show.xml.builder'))
         end
       end

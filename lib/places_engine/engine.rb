@@ -14,7 +14,7 @@ module PlacesEngine
       require 'places_engine/extension/notes_controller'
       require 'places_engine/extension/admin_citations_controller'
       require 'places_engine/extension/admin_notes_controller'
-      
+
       Feature.send :include, PlacesEngine::Extension::ForNamePositioning
       Feature.send :include, PlacesEngine::Extension::FeatureModel
       FeatureRelation.send :include, PlacesEngine::Extension::FeatureRelationModel

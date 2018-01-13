@@ -5,8 +5,6 @@ module PlacesEngine
       include Rails.application.routes.url_helpers
       
       included do
-        acts_as_indexable uid_prefix: 'places'
-        
         has_many :altitudes, :dependent => :destroy
         has_many :category_features, :dependent => :destroy
         has_many :contestations, :dependent => :destroy
@@ -39,7 +37,7 @@ module PlacesEngine
             break node.id if node.has_shapes?(options)
           end
           # check if county parent has shapes (county)
-          pol_admin = Perspective.get_by_code('pol.admin.hier')
+          pol_admin = Perspective.get_by_code(KmapsEngine::ApplicationSettings.default_perspective_code)
           first_county_relation = self.all_parent_relations.find_by(perspective_id: pol_admin.id)
           if !first_county_relation.nil?
             node = first_county_relation.parent_node
@@ -136,15 +134,15 @@ module PlacesEngine
       end
       
       def context_feature
-        ancestors = self.current_ancestors(Perspective.get_by_code('pol.admin.hier'))
+        ancestors = self.current_ancestors(KmapsEngine::ApplicationSettings.default_perspective_code)
         parent = ancestors.detect{|a| a.fid != self.fid && a.feature_object_types.detect{|ft| ft.category_id==29}}
         parent = self.parents.first if parent.nil?
         return parent
       end
       
       def document_for_rsolr
-        v = View.get_by_code('roman.popular')
-        per = Perspective.get_by_code('pol.admin.hier')
+        v = View.get_by_code(KmapsEngine::ApplicationSettings.default_view_code)
+        per = Perspective.get_by_code(KmapsEngine::ApplicationSettings.default_perspective_code)
 
         object_types = self.object_types
 
