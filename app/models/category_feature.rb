@@ -2,7 +2,7 @@ class CategoryFeature < ActiveRecord::Base
   attr_accessor :skip_update
   
   belongs_to :feature
-  belongs_to :perspective
+  belongs_to :perspective, optional: true
   has_many :imports, :as => 'item', :dependent => :destroy
   # belongs_to :category
 

@@ -75,8 +75,8 @@ module PlacesEngine
       end
       
       def update_cached_feature_relation_categories
-        CachedFeatureRelationCategory.destroy_all(:feature_id => self.id)
-        CachedFeatureRelationCategory.destroy_all(:related_feature_id => self.id)
+        CachedFeatureRelationCategory.where(feature_id: self.id).destroy_all
+        CachedFeatureRelationCategory.where(related_feature_id: self.id).destroy_all
 
       	self.all_relations.each do |relation|
       		relation.child_node.feature_object_types.each do |fot|
