@@ -54,7 +54,7 @@ module PlacesEngine
       included do
         LANG_CODES_BY_FIDS = {5244 => 'urd', 427 => 'dzo', 426 => 'nep', 425 => 'hin', 2 => 'bod', 431 => 'bod', 432 => 'bod', 428 => 'bod', 430 => 'bod', 1 => 'zho'}
         LANG_CODES_BY_FEATURE_IDS = {}
-        LANG_CODES_BY_FIDS.each_key{|fid| LANG_CODES_BY_FEATURE_IDS[Feature.find_by(fid: fid).id] = LANG_CODES_BY_FIDS[fid] }
+        LANG_CODES_BY_FIDS.each_key{|fid| LANG_CODES_BY_FEATURE_IDS[Feature.get_by_fid(fid).id] = LANG_CODES_BY_FIDS[fid] }
       end
 
       module ClassMethods
