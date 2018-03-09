@@ -13,7 +13,7 @@
       <section class="panel panel-content">
         <div class="panel-body">
           <p>
-          <strong><%= feature_label %></strong> has <strong class="relatedCountContainer"></strong> subordinate <%= Feature.model_name.human(count: related_features_count).s %>. <%= ts('snippet.feature.browse_related', count: related_features_count) %> See the summary tab if you instead prefer to view only  its immediately subordinate places grouped together in useful ways, as well as places non-hierarchically related to it.
+          <strong><%= feature_label %></strong> has <strong class="relatedCountContainer"><%= related_features_count %></strong> subordinate <%= Feature.model_name.human(count: related_features_count).s %>. <%= ts('snippet.feature.browse_related', count: related_features_count) %> See the summary tab if you instead prefer to view only  its immediately subordinate places grouped together in useful ways, as well as places non-hierarchically related to it.
           </p>
             <div id='relation_tree_container'></div>
         </div> <!-- END panel-body -->
@@ -23,7 +23,10 @@
       <section class="panel panel-content">
         <div class="panel-body">
           <p>
-          <strong><%= feature_label %></strong> has <strong class="relatedCountContainer"><%#= relation_counts %></strong> other <%= Feature.model_name.human(count: related_features_count).s %> directly related to it, <%= ts('snippet.feature.browse_summary', count: related_features_count) %> See the relationships tab if you instead prefer to browse  all subordinate and superordinate places for <%= feature_label %>.
+          <%= ts('snippet.feature.browse_summary', who: "<strong>#{feature_label}</strong>",
+                 how_many: "<strong class='relatedCountContainer'>#{related_features_count}</strong>",
+                 what: Feature.model_name.human(count: related_features_count),
+                 count: related_features_count) %> See the relationships tab if you instead prefer to browse  all subordinate and superordinate places for <%= feature_label %>.
           </p>
           <div class='tab-content-loading' style="display:none">Loading...</div>
           <div class="collapsible_btns_container" style="display:none" >
@@ -49,13 +52,6 @@
     domain: "<%= Feature.uid_prefix %>",
     perspective: "<%= current_perspective.code %>",
     tree: "<%= Feature.uid_prefix %>", //places
-  });
-
-  //Related Counts on Solr
-  relatedSolrUtils.getDirectDescendantCount().then(function(count){
-      $(".relatedCountContainer").each(function(){
-          $(this).html(count);
-      });
   });
 
   var summaryLoaded = false;

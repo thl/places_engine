@@ -38,9 +38,6 @@ en:
             browse_related:
               one: 'You can browse this subordinate place as well as its superordinate places with the tree below.'
               other: 'You can browse those subordinate places as well as its superordinate places with the tree below.'
-            browse_summary:
-              one: 'which is presented here.'
-              other: 'which are presented here.'
             geo_code_needs_resource: 'A Feature Geo Code can only be created from a resource that uses one.'
             name:
                 drag_priority: 'Click a name and drag to a new location to indicate the priority between the different names. This priority sequencing of names will be used to decide which name to show on maps, the navigational tree, and other contexts. Thus if there are two version of popular romanization of a name, for example, the prioritized one will be chosen; of if there are two alternative names, the prioritized one will be displayed; and so forth.'
