@@ -8,10 +8,8 @@ module PlacesEngine
         has_many :altitudes, :dependent => :destroy
         has_many :category_features, :dependent => :destroy
         has_many :contestations, :dependent => :destroy
-        has_many :cumulative_category_feature_associations, :dependent => :destroy
         has_many :feature_object_types, -> { order :position }, :dependent => :destroy
         has_many :shapes, :foreign_key => 'fid', :primary_key => 'fid'
-        has_many :cached_feature_relation_categories, :dependent => :destroy
         self.associated_models << FeatureObjectType
       end
       
@@ -74,37 +72,6 @@ module PlacesEngine
         end
       end
       
-      def update_cached_feature_relation_categories
-        CachedFeatureRelationCategory.where(feature_id: self.id).destroy_all
-        CachedFeatureRelationCategory.where(related_feature_id: self.id).destroy_all
-
-      	self.all_relations.each do |relation|
-      		relation.child_node.feature_object_types.each do |fot|
-      		  CachedFeatureRelationCategory.create({
-      		    :feature_id => relation.parent_node_id,
-      		    :related_feature_id => relation.child_node_id,
-      		    :category_id => fot.category_id,
-      		    :feature_relation_type_id => relation.feature_relation_type_id,
-      		    :feature_is_parent => true,
-      		    :perspective_id => relation.perspective_id
-      		  })
-      		end
-      		parent_node = relation.parent_node
-      		if !parent_node.nil?
-      		  parent_node.feature_object_types.each do |fot|
-        		  CachedFeatureRelationCategory.create({
-        		    :feature_id => relation.child_node_id,
-        		    :related_feature_id => relation.parent_node_id,
-        		    :category_id => fot.category_id,
-        		    :feature_relation_type_id => relation.feature_relation_type_id,
-        		    :feature_is_parent => false,
-        		    :perspective_id => relation.perspective_id
-        		  })
-        		end
-    		  end
-      	end
-      end
-
       def category_count
         CategoryFeature.where(:feature_id => self.id).count
       end
@@ -299,11 +266,13 @@ module PlacesEngine
             end
           end
           topic_ids = topic_ids.first if topic_ids.size==1
+          # TODO MANU-4811. Redesign using solr
           des.select{ |d| !CumulativeCategoryFeatureAssociation.where(:category_id => topic_ids, :feature_id => d[0].id).first.nil? }
         end
         
         def descendants_by_perspective_and_topics_with_parent(fids, perspective, topic_ids)
           topic_ids = topic_ids.first if topic_ids.size==1
+          # TODO MANU-4811. Redesign using solr
           self.descendants_by_perspective_with_parent(fids, perspective).select{|d| !CumulativeCategoryFeatureAssociation.find_by(category_id: topic_ids, feature_id: d[0].id).nil?}
         end
         
@@ -321,6 +290,7 @@ module PlacesEngine
             end
           end
           topic_ids = topic_ids.first if topic_ids.size==1
+          # TODO MANU-4811. Redesign using solr
           des.select{ |f_id| !CumulativeCategoryFeatureAssociation.find_by(category_id: topic_ids, feature_id: f_id).nil? }.collect{|f_id| Feature.find(f_id)}
         end
         

@@ -102,31 +102,7 @@ module PlacesEngine
           format.json { render :json => { :features => @features.reject{|f| f.shapes.empty?}[0...100].collect(&:fid) }, :callback => params[:callback] }
         end
       end
-      
-      def related_list
-        @feature = Feature.find(params[:id])
-        @feature_relation_type= FeatureRelationType.find(params[:feature_relation_type_id])
-        @feature_is_parent = params[:feature_is_parent]
-        @category = SubjectsIntegration::Feature.find(params[:category_id])
-        @relations = CachedFeatureRelationCategory.where(
-              'cached_feature_relation_categories.feature_id' => params[:id],
-              'cached_feature_relation_categories.category_id' => params[:category_id],
-              'cached_feature_relation_categories.feature_relation_type_id' => @feature_relation_type,
-              'cached_feature_relation_categories.feature_is_parent' => @feature_is_parent,
-              'cached_feature_names.view_id' => current_view.id
-          ).joins(feature: {cached_feature_names: :feature_name}
-          #('INNER JOIN "cached_feature_names" ON "cached_feature_relation_categories".related_feature_id = "cached_feature_names".feature_id INNER JOIN "feature_names" ON "cached_feature_names".feature_name_id = "feature_names".id'
-          ).order('feature_names.name')
-          # Should associations be set up to allow for this to be handled with :include instead?
-        @total_relations_count = @relations.length
-        @relations = @relations.paginate(:page => params[:page] || 1, :per_page => 8)
-        # render related_list.js.erb
-      end
-      
-      def characteristics_list
-        render :json => CategoryFeature.get_json_data
-      end
-      
+            
       def gis_resources
         fids = params[:fids].split(/\D+/)
         fids.shift if fids.size>0 && fids.first.blank?

@@ -14,31 +14,6 @@ class CategoryFeature < ActiveRecord::Base
   validates_presence_of :feature_id
   validates_presence_of :category_id
 
-  after_destroy do |record|
-    feature = record.feature
-    CategoryFeature.delete_cumulative_information(record.category, feature.id)
-    # feature.touch
-  end
-  
-  before_save do |record|
-    CategoryFeature.delete_cumulative_information(SubjectsIntegration::Feature.find(record.category_id_was), record.feature_id_was) if record.changed? && !record.category_id_was.nil? && (record.category_id_changed? || record.feature_id_changed?)
-  end
-  
-  after_save do |record|
-    cat = record.category
-    feature = record.feature
-    ([cat] + cat.ancestors).each do |c|
-      # Got rid of conditions while I figure out how to deal with this c.id==cat.id || c.cumulative?
-      if CumulativeCategoryFeatureAssociation.find_by(category_id: c.id, feature_id: feature.id).nil?
-        CumulativeCategoryFeatureAssociation.create(:category_id => c.id, :feature_id => feature.id)
-      end
-    end
-    Rails.cache.delete('CategoryFeature-max_updated_at')
-    Rails.cache.delete('category_feature/get_json_data')
-    feature.update_cached_feature_relation_categories if !record.skip_update
-    # feature.touch
-  end
-    
   def category_stack
     stack = []
     stack << self.label if !label.blank? && self.prefix_label
@@ -79,24 +54,6 @@ class CategoryFeature < ActiveRecord::Base
     # need to do a join here (not :include) because we're searching parents and children feature.fids
     search_results = self.joins('LEFT JOIN features f ON f.id=feature_id')
     filter_value.blank? ? search_results : search_results.where(['f.fid = ?', filter_value])
-  end
-  
-  def self.latest_update
-    Rails.cache.fetch('CategoryFeature-max_updated_at', :expires_in => 1.day) { CategoryFeature.maximum(:updated_at) }
-  end
-  
-  def self.get_json_data
-    Rails.cache.fetch('category_feature/get_json_data', :expires_in => 1.day) { CategoryFeature.select('DISTINCT category_id').where(:type => nil).collect{|c| {:value => c.category_id, :label => c.to_s}}.sort_by{|a| a[:label].downcase.strip}.to_json.html_safe }
-  end
-  
-  private
-  
-  def self.delete_cumulative_information(category, feature_id)
-    while !category.nil? && CumulativeCategoryFeatureAssociation.where(:category_id => category.children.collect(&:id), :feature_id => feature_id).count==0
-      CumulativeCategoryFeatureAssociation.delete_all(:category_id => category.id.to_i, :feature_id => feature_id)
-      CachedCategoryCount.updated_count(category.id.to_i, true)
-      category = category.parent
-    end
   end
 end
 # == Schema Information

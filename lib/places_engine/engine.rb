@@ -7,7 +7,6 @@ module PlacesEngine
         
     initializer :loader do |config|
       require 'places_engine/extension/feature_model'
-      require 'places_engine/extension/feature_relation_model'
       require 'places_engine/extension/for_name_positioning'
       require 'places_engine/extension/illustration_model'
       require 'places_engine/extension/citations_controller'
@@ -18,7 +17,6 @@ module PlacesEngine
 
       Feature.send :include, PlacesEngine::Extension::ForNamePositioning
       Feature.send :include, PlacesEngine::Extension::FeatureModel
-      FeatureRelation.send :include, PlacesEngine::Extension::FeatureRelationModel
       Illustration.send :include, PlacesEngine::Extension::IllustrationModel
       CitationsController.send :include, PlacesEngine::Extension::CitationsController
       FeaturesController.send :include, PlacesEngine::Extension::FeaturesController
@@ -29,9 +27,7 @@ module PlacesEngine
     
     initializer :places_sweepers do |config|
       sweeper_folder = File.join('..', '..', 'app', 'sweepers')
-      require_relative File.join(sweeper_folder, 'cached_category_count_sweeper')
       require_relative File.join(sweeper_folder, 'location_sweeper')
-      Rails.application.config.active_record.observers = :cached_category_count_sweeper
     end
   end
 end
