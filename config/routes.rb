@@ -40,6 +40,7 @@ Rails.application.routes.draw do
       end
     end
     resources :shapes do
+      resources :citations
       resources :notes do
         get :add_author, on: :collection
       end
