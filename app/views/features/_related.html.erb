@@ -69,23 +69,23 @@
       relatedSolrUtils.addPlacesSummaryItems(feature_label,feature_path,'child',result);
       //relatedSolrUtils.addPlacesSummaryItems(feature_label,feature_path,'other',result);
 
-      // Functionality for columnizer
-      // dontsplit = don't break these headers
-      $('.places-in-places').find('.column > h6, .column > ul > li, .column ul').addClass("dontsplit");
-      // dontend = don't end column with headers
-      $('.places-in-places').find('.column > h6, .column > ul > li').addClass("dontend");
-      $('.places-in-places').find('.feature-block').addClass("dontsplit");
+      if(!collapsibleApplied){
+        $('ul.collapsibleList').kmapsCollapsibleList();
+        collapsibleApplied = true;
+      }
       if(!columnizedApplied){
+      // Functionality for columnizer
         $('.kmaps-list-columns:not(.subjects-in-places):not(.already_columnized)').addClass('already_columnized').columnize({
           width: 330,
           lastNeverTallest : true,
           buildOnce: true,
         });
+        //reapply kmapsCollapsibleList if the element has lost the kmapscollapsibleList plugin
+        //columnizer seems to cause a bug when the clone doesn't keep the events previously assigned
+        $('ul.collapsibleList').each(function(){
+          if(!($(this).data('plugin_kmapsCollapsibleList'))) $(this).kmapsCollapsibleList();
+        });
         columnizedApplied = true;
-      }
-      if(!collapsibleApplied){
-        $('.collapsibleList').kmapsCollapsibleList();
-        collapsibleApplied = true;
       }
       if(!popupsSet){
         jQuery('#relation_details .popover-kmaps').kmapsPopup({
@@ -109,14 +109,18 @@
     if (!$(".collapsible_expand_all").hasClass("collapsible_all_btn_selected")) {
      $(".collapsible_expand_all").addClass("collapsible_all_btn_selected");
     }
-    $('.collapsibleList').kmapsCollapsibleList('expandAll');
+    $('ul.collapsibleList').each(function(){
+      $(this).kmapsCollapsibleList('expandAll',this);
+    });
   });
   $(".collapsible_collapse_all").on("click",function(e){
    $(".collapsible_expand_all").removeClass("collapsible_all_btn_selected");
     if (!$(".collapsible_collapse_all").hasClass("collapsible_all_btn_selected")) {
      $(".collapsible_collapse_all").addClass("collapsible_all_btn_selected");
     }
-    $('.collapsibleList').kmapsCollapsibleList('collapseAll');
+    $('ul.collapsibleList').each(function(){
+      $(this).kmapsCollapsibleList('collapseAll',this);
+    });
   });
 
   $("#relation_tree_container").kmapsRelationsTree({
