@@ -1,6 +1,6 @@
 <%= stylesheet_link_tag('places_engine/related') %>
 <%  feature_label = fname_labels(@feature).s %>
-<% related_features_count = @feature.get_related_features_count %>
+<% related_features_counts = @feature.get_related_features_counts %>
 <div id='myTabs'>
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
@@ -13,7 +13,7 @@
       <section class="panel panel-content">
         <div class="panel-body">
           <p>
-          <strong><%= feature_label %></strong> has <strong class="relatedCountContainer"><%= related_features_count %></strong> subordinate <%= Feature.model_name.human(count: related_features_count).s %>. <%= ts('snippet.feature.browse_related', count: related_features_count) %> See the summary tab if you instead prefer to view only  its immediately subordinate places grouped together in useful ways, as well as places non-hierarchically related to it.
+          <strong><%= feature_label %></strong> has <strong class="relatedCountContainer"><%= related_features_counts['children'] %></strong> subordinate <%= Feature.model_name.human(count: related_features_counts['children']).s %> and <strong class="relatedCountContainer"><%= related_features_counts['parents'] %></strong> superordinate <%= Feature.model_name.human(count: related_features_counts['parents']).s %>. <%= ts('snippet.feature.browse_related', count: related_features_counts['children']) %> See the summary tab if you instead prefer to view only  its immediately subordinate places grouped together in useful ways, as well as places non-hierarchically related to it.
           </p>
             <div id='relation_tree_container'></div>
         </div> <!-- END panel-body -->
@@ -24,9 +24,9 @@
         <div class="panel-body">
           <p>
           <%= ts('snippet.feature.browse_summary', who: "<strong>#{feature_label}</strong>",
-                 how_many: "<strong class='relatedCountContainer'>#{related_features_count}</strong>",
-                 what: Feature.model_name.human(count: related_features_count),
-                 count: related_features_count) %> See the relationships tab if you instead prefer to browse  all subordinate and superordinate places for <%= feature_label %>.
+                 how_many: "<strong class='relatedCountContainer'>#{related_features_counts['related_features']}</strong>",
+                 what: Feature.model_name.human(count: related_features_counts['related_features']),
+                 count: related_features_counts['related_features']) %> See the relationships tab if you instead prefer to browse  all subordinate and superordinate places for <%= feature_label %>.
           </p>
           <div class='tab-content-loading' style="display:none">Loading...</div>
           <div class="collapsible_btns_container" style="display:none" >
@@ -43,99 +43,18 @@
 	</div> <!-- Tab Panes end -->
 </div> <!-- myTabs end -->
 
+<%= content_tag :div, "", id: 'related_js_data', data: {
+ term_index: Feature.config.url,
+ asset_index: Flare.config.asset_url,
+ feature_id: "#{Feature.uid_prefix}-#{@feature.fid}",
+ domain: Feature.uid_prefix,
+ perspective: current_perspective.code,
+ tree: Feature.uid_prefix,
+ feature_label: feature_label,
+ feature_path: "#{features_path}/%%ID%%",
+ mandala_path: "https://mandala.shanti.virginia.edu/%%APP%%/%%ID%%/%%REL%%/nojs",
+ feature_fid: @feature.fid
+} %>
 <%= javascript_include_tag 'kmaps_engine/kmaps_relations_tree' %>
-<%= javascript_on_load do %>
-  var relatedSolrUtils = kmapsSolrUtils.init({
-    termIndex: "<%= Feature.config.url %>",
-    assetIndex: "<%= Flare.config.asset_url %>",
-    featureId:  "<%= Feature.uid_prefix %>-<%= @feature.fid %>",
-    domain: "<%= Feature.uid_prefix %>",
-    perspective: "<%= current_perspective.code %>",
-    tree: "<%= Feature.uid_prefix %>", //places
-  });
-
-  var summaryLoaded = false;
-  var collapsibleApplied = false;
-  var popupsSet = false;
-  var columnizedApplied = false;
-  $('#summary-tab-link[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-  //Code for Summary
-  if(!summaryLoaded){
-    $("#relation_details .tab-content-loading").show();
-    relatedSolrUtils.getPlacesSummaryElements().then(function(result){
-      var feature_label = $('<%= feature_label %>')[0].innerText;
-      var feature_path = "<%= features_path %>/%%ID%%";
-      relatedSolrUtils.addPlacesSummaryItems(feature_label,feature_path,'parent',result);
-      relatedSolrUtils.addPlacesSummaryItems(feature_label,feature_path,'child',result);
-      //relatedSolrUtils.addPlacesSummaryItems(feature_label,feature_path,'other',result);
-
-      if(!collapsibleApplied){
-        $('ul.collapsibleList').kmapsCollapsibleList();
-        collapsibleApplied = true;
-      }
-      if(!columnizedApplied){
-      // Functionality for columnizer
-        $('.kmaps-list-columns:not(.subjects-in-places):not(.already_columnized)').addClass('already_columnized').columnize({
-          width: 330,
-          lastNeverTallest : true,
-          buildOnce: true,
-        });
-        //reapply kmapsCollapsibleList if the element has lost the kmapscollapsibleList plugin
-        //columnizer seems to cause a bug when the clone doesn't keep the events previously assigned
-        $('ul.collapsibleList').each(function(){
-          if(!($(this).data('plugin_kmapsCollapsibleList'))) $(this).kmapsCollapsibleList();
-        });
-        columnizedApplied = true;
-      }
-      if(!popupsSet){
-        jQuery('#relation_details .popover-kmaps').kmapsPopup({
-          featuresPath: "<%= features_path %>/%%ID%%",
-          domain: "<%= Feature.uid_prefix %>",
-          featureId:  "",
-          mandalaURL: "https://mandala.shanti.virginia.edu/%%APP%%/%%ID%%/%%REL%%/nojs",
-          solrUtils: relatedSolrUtils
-        });
-        popupsSet = true;
-       }
-      $("#relation_details .tab-content-loading").hide();
-      $("#relation_details .collapsible_btns_container").show();
-      summaryLoaded = true;
-    });
-  }
-  }); // END - Summary Tab on show action
-
-  $(".collapsible_expand_all").on("click",function(e){
-   $(".collapsible_collapse_all").removeClass("collapsible_all_btn_selected");
-    if (!$(".collapsible_expand_all").hasClass("collapsible_all_btn_selected")) {
-     $(".collapsible_expand_all").addClass("collapsible_all_btn_selected");
-    }
-    $('ul.collapsibleList').each(function(){
-      $(this).kmapsCollapsibleList('expandAll',this);
-    });
-  });
-  $(".collapsible_collapse_all").on("click",function(e){
-   $(".collapsible_expand_all").removeClass("collapsible_all_btn_selected");
-    if (!$(".collapsible_collapse_all").hasClass("collapsible_all_btn_selected")) {
-     $(".collapsible_collapse_all").addClass("collapsible_all_btn_selected");
-    }
-    $('ul.collapsibleList').each(function(){
-      $(this).kmapsCollapsibleList('collapseAll',this);
-    });
-  });
-
-  $("#relation_tree_container").kmapsRelationsTree({
-    featureId: "<%= @feature.fid %>",
-    termIndex: "<%= Feature.config.url %>",
-    assetIndex: "<%= Flare.config.asset_url %>",
-    perspective: "<%= current_perspective.code %>",
-    tree: "<%= Feature.uid_prefix %>", //places
-    domain: "<%= Feature.uid_prefix %>", //places
-    seedTree: {
-      descendants: true,
-      directAncestors: false,
-    },
-    displayPopup: true,
-    solrUtils: relatedSolrUtils
-  });
-<% end %>
-<%= javascript_include_tag('collapsible_list/jquery.kmapsCollapsibleList') %>
+<%= javascript_include_tag 'places_engine/related-section-initializer' %>
+<%= javascript_include_tag 'collapsible_list/jquery.kmapsCollapsibleList' %>
