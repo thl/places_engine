@@ -8,6 +8,24 @@ module PlacesEngineHelper
       :related => {:index => 3, :title => Feature.model_name.human(count: :many).titleize, :shanticon => 'places'}
     }
   end
+    #
+  # Creates a breadcrumb trail to the feature
+  #
+  def f_places_breadcrumb
+    if @feature.nil?
+      content_tag :ol, "<li>#{link_to(ts('home.this'), root_path)}</li>".html_safe, class: 'breadcrumb'
+    else
+      list = @feature.closest_ancestors_by_perspective(current_perspective).drop(1).collect do |r|
+        name = r.prioritized_name(current_view)
+        name = name.nil? ? r.pid : name.name
+        link_to(name, feature_path(r.fid))
+      end
+      list = [link_to("#{ts('app.short')}:", root_path)] + list[0...list.size-1].collect{|e| "#{e}#{breadcrumb_separator}".html_safe} + [list.last]
+      content_tag :ol, list.collect{|e| "<li>#{e}</li>"}.join.html_safe, class: 'breadcrumb'
+    end
+    # content_tag :div, acts_as_family_tree_breadcrumb(feature, breadcrumb_separator) {|r| f_link(r, feature_path(r.fid), {}, {:s => true})}, :class => "breadcrumbs"
+  end
+
   
   def kmaps_url(feature)
     topic_path(feature.fid)
