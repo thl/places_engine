@@ -1,5 +1,4 @@
 $(function() {
-  ;;;console.log("Hello");
   var relatedSolrUtils = kmapsSolrUtils.init({
     termIndex: $('#related_js_data').data('termIndex'),
     assetIndex: $('#related_js_data').data('assetIndex'),
@@ -8,7 +7,6 @@ $(function() {
     perspective: $('#related_js_data').data('perspective'),
     tree: $('#related_js_data').data('tree'), //places
   });
-  ;;;console.log("okBye");
   var summaryLoaded = false;
   var collapsibleApplied = false;
   var popupsSet = false;
