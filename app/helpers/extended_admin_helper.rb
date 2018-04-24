@@ -47,4 +47,25 @@ module ExtendedAdminHelper
     }
     names[str].nil? ? str : names[str]
   end
+
+  def add_places_breadcrumb_base
+    add_breadcrumb_base
+    case parent_type
+    when :altitude
+      # parent_object is FeatureObjectType
+      add_breadcrumb_item link_to(Altitude.model_name.human(:count => :many).s, admin_feature_altitudes_path(parent_object.feature))
+      add_breadcrumb_item link_to(parent_object.id, admin_feature_altitude_path(parent_object.feature, parent_object))
+    when :category_feature
+      # parent_object is FeatureObjectType
+      add_breadcrumb_item link_to(Topic.human_name(:count => :many).s, admin_feature_category_features_path(parent_object.feature))
+      add_breadcrumb_item link_to(parent_object.id, admin_category_feature_path(parent_object))
+    when :feature_object_type
+      # parent_object is FeatureObjectType
+      add_breadcrumb_item link_to(Feature.human_attribute_name(:object_type, :count => :many).s, admin_feature_feature_object_types_path(parent_object.feature))
+      add_breadcrumb_item link_to(parent_object.id, admin_feature_object_type_path(parent_object))
+    when :shape
+      add_breadcrumb_item link_to(Shape.model_name.human(:count => :many).s, admin_feature_shapes_path(parent_object))
+      add_breadcrumb_item link_to(parent_object.to_s, admin_feature_shape_path(parent_object.feature, parent_object))
+    end
+  end
 end

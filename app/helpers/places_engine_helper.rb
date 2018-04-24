@@ -8,6 +8,14 @@ module PlacesEngineHelper
       :related => {:index => 3, :title => Feature.model_name.human(count: :many).titleize, :shanticon => 'places'}
     }
   end
+    #
+  # Creates a breadcrumb trail to the feature
+  #
+  def f_places_breadcrumb
+    ancestor_list = @feature.nil? ? nil : @feature.closest_ancestors_by_perspective(current_perspective).drop(1)
+    f_breadcrumb(ancestor_list)
+  end
+
   
   def kmaps_url(feature)
     topic_path(feature.fid)
