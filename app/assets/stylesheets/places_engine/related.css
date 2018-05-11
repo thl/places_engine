@@ -21,7 +21,7 @@ li.collapsibleListOpen:before, li.collapsibleListClosed:before{
 }
 .collapsibleList span.glyphicon {
   padding-right: 5px;
-  color: #4ca6fb !important;
+  color: #666 !important;
 }
 #relation_details .tab-content-loading{
   position:relative;
