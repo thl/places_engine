@@ -3,6 +3,7 @@
 <div class="subjects-in-places kmaps-list-columns">
 <%= render partial: 'feature_types', locals: {feature: @feature} %>
 <%  category_features = @feature.category_features.where(type: nil) %>
+<h6>Subjects:</h6>
 <%= render partial: 'topics', locals: {feature: @feature, category_features: category_features} %>
 <%= javascript_on_load "document.title = '#{ts 'app.short'} - #{feature_name_header(@feature)} - #{ts 'relat.ed.record', :what => Feature.model_name.human.titleize}'" %>
 </div>
@@ -15,3 +16,8 @@
     lastNeverTallest : true
   });
 <% end %>
+<%= javascript_on_load do %>
+      jQuery('[data-js-kmaps-popup]:not(.already_kmaps_popup)').addClass('already_kmaps_popup').kmapsPopup({
+        type: POPUP_TYPE_INFO,
+      });
+<%  end %>

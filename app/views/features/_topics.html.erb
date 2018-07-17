@@ -1,18 +1,6 @@
-    <ul id="CategoryFeaturesList">
-<%  category_features.each do |cf|
-      c = cf.category
-      if !c.nil?
-        values = []
-        values << cf.string_value if !cf.string_value.blank?
-        values << cf.numeric_value if !cf.numeric_value.nil?
-        stack = cf.category_stack
-        stack.push(link_to(stack.pop, c.get_url(nil, :format => '')))  %>
-        <li>
-<%=       stack.join(' > ').html_safe %><%= ": #{values.join(', ')}" if !values.empty? %>
-<%=       note_popup_link_for(cf) %>
-<%=       time_units_for(cf) %>
-        </li>
-<%    end
-    end %>
-    </ul>
-<%= note_popup_link_list_for(feature, {:association_type => CategoryFeature.name}) %>
+<% unless category_features.empty? %>
+  <ul id="CategoryFeaturesList">
+    <%= category_feature_list(category_features).html_safe %>
+  </ul>
+  <%= note_popup_link_list_for(feature, {:association_type => CategoryFeature.name}) %>
+<% end %>
