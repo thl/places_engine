@@ -42,7 +42,6 @@ class Admin::CategoryFeaturesController < AclController
   private
   
   def category_feature_params
-    binding.pry
     params.permit(:category_id)
   end
   
