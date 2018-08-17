@@ -12,7 +12,7 @@ class Admin::CategoryFeaturesController < AclController
       redirect_to admin_feature_url(@feature.fid)
     elsif mca_cats.size==1
       mca_hash[:category_id] = mca_cats.first
-      @cf = @feature.category_features.new(mca_hash.permit(:category_id, :string_value, :numeric_value, :show_parent, :show_root, :label, :prefix_label))
+      @cf = @feature.category_features.new(mca_hash.permit(:prefix_label, :label, :string_value, :numeric_value, :show_parent, :category_id, :show_root))
       respond_to do |format|
         if @cf.save
           format.html { redirect_to admin_feature_url(@feature.fid) }
