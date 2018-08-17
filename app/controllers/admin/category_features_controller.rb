@@ -7,13 +7,12 @@ class Admin::CategoryFeaturesController < AclController
   def create
     mca_hash = params[:category_feature]
     mca_cats = mca_hash[:category_id]
-    errors = []
     @feature = Feature.find(params[:feature_id])
     if mca_cats.nil?
       redirect_to admin_feature_url(@feature.fid)
     elsif mca_cats.size==1
       mca_hash[:category_id] = mca_cats.first
-      @cf = @feature.category_features.new(mca_hash)
+      @cf = @feature.category_features.new(mca_hash.permit(:prefix_label, :label, :string_value, :numeric_value, :show_parent, :category_id, :show_root))
       respond_to do |format|
         if @cf.save
           format.html { redirect_to admin_feature_url(@feature.fid) }
@@ -37,7 +36,7 @@ class Admin::CategoryFeaturesController < AclController
   
   # Only allow a trusted parameter "white list" through.
   def category_feature_params
-    params.require(:category_feature).permit(:prefix_label, :label, :string_value, :numeric_value, :show_parent, :category_id, :show_root, :skip_update)
+    params.require(:category_feature).permit(:prefix_label, :label, :string_value, :numeric_value, :show_parent, :category_id, :show_root)
   end
   
   private

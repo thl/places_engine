@@ -93,7 +93,7 @@ class CategoryFeature < ActiveRecord::Base
   
   def self.delete_cumulative_information(category, feature_id)
     while !category.nil? && CumulativeCategoryFeatureAssociation.where(:category_id => category.children.collect(&:id), :feature_id => feature_id).count==0
-      CumulativeCategoryFeatureAssociation.delete_all(:category_id => category.id.to_i, :feature_id => feature_id)
+      CumulativeCategoryFeatureAssociation.where(:category_id => category.id.to_i, :feature_id => feature_id).delete_all
       CachedCategoryCount.updated_count(category.id.to_i, true)
       category = category.parent
     end
