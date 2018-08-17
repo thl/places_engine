@@ -41,10 +41,6 @@ class Admin::CategoryFeaturesController < AclController
   
   private
   
-  def category_feature_params
-    params.permit(:category_id)
-  end
-  
   def build_object
     if object_params.nil?
       @object ||= end_of_association_chain.send :build
