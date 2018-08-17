@@ -36,7 +36,7 @@ class Admin::CategoryFeaturesController < AclController
   
   # Only allow a trusted parameter "white list" through.
   def category_feature_params
-    params.require(:category_feature).permit(:prefix_label, :label, :string_value, :numeric_value, :show_parent, :category_id, :show_root, :skip_update)
+    params.require(:category_feature).permit(:prefix_label, :label, :string_value, :numeric_value, :show_parent, :category_id, :show_root)
   end
   
   private
