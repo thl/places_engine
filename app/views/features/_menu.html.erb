@@ -125,6 +125,7 @@ $(document).ready(function(){
           baseUrl: "<%= (defined?(admin) && admin) ? admin_features_path : features_path %>/%%ID%%",
           expand_path: "",
           perspective: "<%= current_perspective.code %>",
+          view: "<%= current_view.code %>",
 <%        unless feature.nil? %>
           activeNodeId: "<%= feature.fid %>",
 <%        end %>
