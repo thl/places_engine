@@ -3,8 +3,10 @@
 <div class="subjects-in-places kmaps-list-columns">
 <%= render partial: 'feature_types', locals: {feature: @feature} %>
 <%  category_features = @feature.category_features.where(type: nil) %>
-<h6>Subjects:</h6>
+<% if category_features.exists? %>
+<h6>Subjects</h6>
 <%= render partial: 'topics', locals: {feature: @feature, category_features: category_features} %>
+<% end %>
 <%= javascript_on_load "document.title = '#{ts 'app.short'} - #{feature_name_header(@feature)} - #{ts 'relat.ed.record', :what => Feature.model_name.human.titleize}'" %>
 </div>
 <a href="<%= feature_path %>.csv" class="btn btn-sm btn-primary kmaps-btn-down"><%= ts 'Download'%></a>

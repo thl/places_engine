@@ -1,5 +1,5 @@
 <h6><%= "#{Feature.human_attribute_name(:object_type,
-:count => feature.feature_object_types.size).s}:".html_safe unless feature.object_types.empty? %> </h6>
+:count => feature.feature_object_types.size).s}".html_safe unless feature.object_types.empty? %> </h6>
 <ul>
   <% feature.feature_object_types.collect{|fot| [fot, fot.category] }.reject{|a| a[1].nil? }.collect{|a| "#{link_to a[1].header, a[1].get_url(nil, :format => '')}#{note_popup_link_for(a[0])}#{time_units_for(a[0])}"}.each do |a| %>
     <li><%= a.html_safe %></li>
