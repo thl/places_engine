@@ -42,7 +42,7 @@
          caption_str = caption.nil? ? nil : caption.content.strip_tags %>
        <tr class="featureRow" id="feature_<%= f.id %>">
          <td class="leftText">
-<%=      link_to h(feature_name_header(f)).s, feature_path(f.fid), :title => caption_str %>
+<%=      link_to feature_name_header(f), feature_path(f.fid), :title => caption_str %>
          </td>
          <td class="leftText"><%=h f.object_types.first.header rescue '' %></td>
        </tr>
