@@ -5,7 +5,7 @@ class FeatureObjectType < CategoryFeature
   # Associations
   #
   #
-  belongs_to :perspective
+  belongs_to :perspective, optional: true
   has_many :imports, :as => 'item', :dependent => :destroy
   has_many :citations, :as => :citable, :dependent => :destroy
   
