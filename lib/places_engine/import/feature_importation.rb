@@ -48,50 +48,61 @@ module PlacesEngine
     # Note fields:
     # .note, .title
 
-    def do_feature_import(filename, task_code, from, to_s)
+    def do_feature_import(filename:, task_code:, from:, to:, log_level:)
       task = ImportationTask.find_by(task_code: task_code)
       task = ImportationTask.create(:task_code => task_code) if task.nil?
+      log = ActiveSupport::Logger.new("log/places_importation_#{task_code}.log")
+      log.level = log_level.nil? ? Rails.logger.level : log_level.to_i
+
       self.spreadsheet = task.spreadsheets.find_by(filename: filename)
       self.spreadsheet = task.spreadsheets.create(:filename => filename, :imported_at => Time.now) if self.spreadsheet.nil?
-      country_type = SubjectsIntegration::Feature.find(29)
-      country_type_id = country_type.id
       interval = 100
       feature_ids_with_changed_relations = Array.new
       feature_ids_with_object_types_added = Array.new
+
       puts "#{Time.now}: Starting importation."
+      log.error "#{Time.now}: Starting importation."
       rows = CSV.read(filename, headers: true, col_sep: "\t")
       current = from.blank? ? 0 : from.to_i
-      to = to_s.blank? ? rows.size : to_s.to_i
-      while current<to
+      to_i = to.blank? ? rows.size : to.to_i
+      while current<to_i
         limit = current + interval
+        limit = to_i if limit > to_i
         limit = rows.size if limit > rows.size
         sid = Spawnling.new do
-          puts "Spawning sub-process #{Process.pid}."
-          for i in current...limit
-            row = rows[i]
-            self.fields = row.to_hash.delete_if{ |key, value| value.blank? }
-            next unless self.get_feature(i+1)
-            self.process_feature
-            self.process_names(44)
-            self.process_kmaps(15)
-            feature_ids_with_object_types_added += self.process_feature_types(4)
-            self.process_geocodes(5)
-            feature_ids_with_changed_relations += self.process_feature_relations(15)
-            self.process_contestations(3)
-            self.process_shapes(3)
-            self.process_descriptions(3)
-            self.process_captions(2)
-            self.process_summaries(2)
-            self.feature.update_attributes({:is_blank => false, :is_public => true})
-            #rescue  Exception => e
-            #  puts "Something went wrong with feature #{self.feature.pid}!"
-            #  puts e.to_s
-            #end
-            if self.fields.empty?
-              puts "#{Time.now}: #{self.feature.pid} processed."
-            else
-              puts "#{Time.now}: #{self.feature.pid}: the following fields have been ignored: #{self.fields.keys.join(', ')}"
+          begin
+            puts "Spawning sub-process #{Process.pid}."
+            log.debug { "Spawning sub-process #{Process.pid}." }
+            for i in current...limit
+              row = rows[i]
+              self.fields = row.to_hash.delete_if{ |key, value| value.blank? }
+              next unless self.get_feature(i+1)
+              self.process_feature
+              self.process_names(44)
+              self.process_kmaps(15)
+              feature_ids_with_object_types_added += self.process_feature_types(4)
+              self.process_geocodes(5)
+              feature_ids_with_changed_relations += self.process_feature_relations(15)
+              self.process_contestations(3)
+              self.process_shapes(3)
+              self.process_descriptions(3)
+              self.process_captions(2)
+              self.process_summaries(2)
+              self.feature.update_attributes({:is_blank => false, :is_public => true})
+              #rescue  Exception => e
+              #  puts "Something went wrong with feature #{self.feature.pid}!"
+              #  puts e.to_s
+              #end
+              if self.fields.empty?
+                puts "#{Time.now}: #{self.feature.pid} processed."
+              else
+                puts "#{Time.now}: #{self.feature.pid}: the following fields have been ignored: #{self.fields.keys.join(', ')}"
+              end
             end
+          rescue Exception => e
+            log.fatal { "#{Time.now}: An error occured when processing #{Process.pid}:" }
+            log.fatal { e.message }
+            log.fatal { e.backtrace.join("\n") }
           end
         end
         Spawnling.wait([sid])
