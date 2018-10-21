@@ -98,6 +98,7 @@ module PlacesEngine
               else
                 puts "#{Time.now}: #{self.feature.pid}: the following fields have been ignored: #{self.fields.keys.join(', ')}"
               end
+              STDOUT.flush
             end
           rescue Exception => e
             log.fatal { "#{Time.now}: An error occured when processing #{Process.pid}:" }
