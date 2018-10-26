@@ -1,12 +1,12 @@
 <% @features_with_parents.collect do |f|
      if @view.instance_of? Array 
        first_name = f[0].prioritized_name(@view.first)
-	   second_name = f[0].prioritized_name(@view.second) %>
+       second_name = f[0].prioritized_name(@view.second) %>
 <%=    first_name.name %><%= "; #{second_name.name}" if first_name!=second_name %> (<%
        if !f[1].nil?
          first_name = f[1].prioritized_name(@view.first)
-	     second_name = f[1].prioritized_name(@view.second) %><%= first_name.name %><%= "; #{second_name.name}" if first_name!=second_name %> - <%
-	   end %><%= f[0].feature_object_types.first.category.header %>) {<%= f[0].fid %>}
+         second_name = f[1].prioritized_name(@view.second) %><%= first_name.name %><%= "; #{second_name.name}" if first_name!=second_name %> - <%
+       end %><%= f[0].feature_object_types.first.category.header %>) {<%= f[0].fid %>}
 <%   else %>
 <%=    f[0].prioritized_name(@view).name %> (<%= "#{f[1].prioritized_name(@view).name} - " if !f[1].nil? %><%= f[0].feature_object_types.first.category.header %>) {<%= f[0].fid %>}
 <%   end
