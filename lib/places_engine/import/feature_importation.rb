@@ -76,6 +76,7 @@ module PlacesEngine
             for i in current...limit
               row = rows[i]
               self.fields = row.to_hash.delete_if{ |key, value| value.blank? }
+              self.fields.each_value(&:strip!)
               next unless self.get_feature(i+1)
               self.process_feature
               self.process_names(44)
