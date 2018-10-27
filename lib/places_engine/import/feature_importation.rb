@@ -102,6 +102,7 @@ module PlacesEngine
               STDOUT.flush
             end
           rescue Exception => e
+            STDOUT.flush
             log.fatal { "#{Time.now}: An error occured when processing #{Process.pid}:" }
             log.fatal { e.message }
             log.fatal { e.backtrace.join("\n") }
