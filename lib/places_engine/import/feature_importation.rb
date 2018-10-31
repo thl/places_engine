@@ -57,27 +57,31 @@ module PlacesEngine
       self.spreadsheet = task.spreadsheets.find_by(filename: filename)
       self.spreadsheet = task.spreadsheets.create(:filename => filename, :imported_at => Time.now) if self.spreadsheet.nil?
       interval = 100
-      feature_ids_with_changed_relations = Array.new
-      feature_ids_with_object_types_added = Array.new
-
       puts "#{Time.now}: Starting importation."
-      log.error "#{Time.now}: Starting importation."
+      log.debug "#{Time.now}: Starting importation."
       rows = CSV.read(filename, headers: true, col_sep: "\t")
       current = from.blank? ? 0 : from.to_i
       to_i = to.blank? ? rows.size : to.to_i
+      ipc_reader, ipc_writer = IO.pipe('ASCII-8BIT')
+      ipc_writer.set_encoding('ASCII-8BIT')
       while current<to_i
         limit = current + interval
         limit = to_i if limit > to_i
         limit = rows.size if limit > rows.size
         sid = Spawnling.new do
           begin
-            puts "Spawning sub-process #{Process.pid}."
-            log.debug { "Spawning sub-process #{Process.pid}." }
+            puts "#{Time.now}: Spawning sub-process #{Process.pid}."
+            log.debug { "#{Time.now}: Spawning sub-process #{Process.pid}." }
+            ipc_reader.close
+            feature_ids_with_changed_relations = Array.new
+            feature_ids_with_object_types_added = Array.new
+            features_ids_to_cache = Array.new
             for i in current...limit
               row = rows[i]
               self.fields = row.to_hash.delete_if{ |key, value| value.blank? }
               self.fields.each_value(&:strip!)
               next unless self.get_feature(i+1)
+              features_ids_to_cache << self.feature.id
               self.process_feature
               self.process_names(44)
               self.process_kmaps(15)
@@ -101,6 +105,12 @@ module PlacesEngine
               end
               STDOUT.flush
             end
+            ipc_hash = {for_relations: feature_ids_with_changed_relations, for_object_types: feature_ids_with_object_types_added, to_cache: features_ids_to_cache}
+            data = Marshal.dump(ipc_hash)
+            ipc_writer.puts(data.length)
+            ipc_writer.write(data)
+            ipc_writer.flush
+	    ipc_writer.close
           rescue Exception => e
             STDOUT.flush
             log.fatal { "#{Time.now}: An error occured when processing #{Process.pid}:" }
@@ -111,23 +121,64 @@ module PlacesEngine
         Spawnling.wait([sid])
         current = limit
       end
-      puts "Updating cache..."
-      # running triggers on feature_relation
-      feature_ids_with_changed_relations.each do |id| 
-        feature = Feature.find(id)
-        #this has to be added to places dictionary!!!
-        #feature.update_cached_feature_relation_categories
-        feature.update_hierarchy
+      ipc_writer.close
+      sid = Spawnling.new do
+        begin
+          puts "#{Time.now}: Spawning sub-process #{Process.pid}."
+          puts "#{Time.now}: Updating hierarchies for changed relations..."
+          STDOUT.flush
+          # running triggers on feature_relation
+          feature_ids_with_changed_relations = Array.new
+          feature_ids_with_object_types_added = Array.new
+          features_ids_to_cache = Array.new
+          while size_s = ipc_reader.gets do
+            size = size_s.to_i
+            data = ipc_reader.read(size)
+            ipc_hash = Marshal.load(data)
+            feature_ids_with_changed_relations += ipc_hash[:for_relations]
+            feature_ids_with_object_types_added += ipc_hash[:for_object_types]
+            features_ids_to_cache += ipc_hash[:to_cache]
+          end
+          feature_ids_with_changed_relations.uniq!
+          features_ids_to_cache += feature_ids_with_changed_relations
+          feature_ids_with_changed_relations.each do |id|
+            feature = Feature.find(id)
+            #this has to be added to places dictionary!!!
+            #feature.update_cached_feature_relation_categories
+            feature.update_hierarchy
+            log.debug { "#{Time.now}: Updated hierarchy for #{feature.fid}." }
+          end
+          puts "#{Time.now}: Updating object type positions..."
+          STDOUT.flush
+          # running triggers for feature_object_type
+          feature_ids_with_object_types_added.uniq!
+          feature_ids_with_object_types_added.each do |id|
+            feature = Feature.find(id)
+            # have to add this to places dictionary!!!
+            # feature.update_cached_feature_relation_categories if !feature_ids_with_changed_relations.include? id
+            feature.update_object_type_positions
+            log.debug { "#{Time.now}: Updated object type positions for #{feature.fid}." }
+          end
+          puts "#{Time.now}: Reindexing changed features..."
+          STDOUT.flush
+          features_ids_to_cache.uniq!
+          features_ids_to_cache.each do |id|
+            feature = Feature.find(id)
+            feature.index
+            log.debug "#{Time.now}: Reindexed feature #{feature.fid}..."
+          end
+          Feature.commit
+          puts "#{Time.now}: Importation done."
+          log.debug "#{Time.now}: Importation done."
+          STDOUT.flush
+        rescue Exception => e
+          STDOUT.flush
+          log.fatal { "#{Time.now}: An error occured when processing #{Process.pid}:" }
+          log.fatal { e.message }
+          log.fatal { e.backtrace.join("\n") }
+        end
       end
-
-      # running triggers for feature_object_type
-      feature_ids_with_object_types_added.each do |id|
-        feature = Feature.find(id)
-        # have to add this to places dictionary!!!
-        # feature.update_cached_feature_relation_categories if !feature_ids_with_changed_relations.include? id
-        feature.update_object_type_positions
-      end
-      puts "#{Time.now}: Importation done."
+      Spawnling.wait([sid])
     end    
 
     # The optional column "feature_types.id" can be used to specify the feature object type name.
