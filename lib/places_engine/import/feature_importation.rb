@@ -49,28 +49,29 @@ module PlacesEngine
     # .note, .title
 
     def do_feature_import(filename:, task_code:, from:, to:, log_level:)
+      puts "#{Time.now}: Starting importation."
+      log.debug "#{Time.now}: Starting importation."
       task = ImportationTask.find_by(task_code: task_code)
       task = ImportationTask.create(:task_code => task_code) if task.nil?
-      log = ActiveSupport::Logger.new("log/places_importation_#{task_code}.log")
+      log = ActiveSupport::Logger.new("log/import_#{task_code}_#{Rails.env}.log")
       log.level = log_level.nil? ? Rails.logger.level : log_level.to_i
 
       self.spreadsheet = task.spreadsheets.find_by(filename: filename)
       self.spreadsheet = task.spreadsheets.create(:filename => filename, :imported_at => Time.now) if self.spreadsheet.nil?
       interval = 100
-      puts "#{Time.now}: Starting importation."
-      log.debug "#{Time.now}: Starting importation."
       rows = CSV.read(filename, headers: true, col_sep: "\t")
       current = from.blank? ? 0 : from.to_i
       to_i = to.blank? ? rows.size : to.to_i
       ipc_reader, ipc_writer = IO.pipe('ASCII-8BIT')
       ipc_writer.set_encoding('ASCII-8BIT')
+      puts "#{Time.now}: Processing features..."
+      STDOUT.flush
       while current<to_i
         limit = current + interval
         limit = to_i if limit > to_i
         limit = rows.size if limit > rows.size
         sid = Spawnling.new do
           begin
-            puts "#{Time.now}: Spawning sub-process #{Process.pid}."
             log.debug { "#{Time.now}: Spawning sub-process #{Process.pid}." }
             ipc_reader.close
             feature_ids_with_changed_relations = Array.new
@@ -99,11 +100,10 @@ module PlacesEngine
               #  puts e.to_s
               #end
               if self.fields.empty?
-                puts "#{Time.now}: #{self.feature.pid} processed."
+                log.debug { "#{Time.now}: #{self.feature.pid} processed." }
               else
-                puts "#{Time.now}: #{self.feature.pid}: the following fields have been ignored: #{self.fields.keys.join(', ')}"
+                log.debug { "#{Time.now}: #{self.feature.pid}: the following fields have been ignored: #{self.fields.keys.join(', ')}" }
               end
-              STDOUT.flush
             end
             ipc_hash = {for_relations: feature_ids_with_changed_relations, for_object_types: feature_ids_with_object_types_added, to_cache: features_ids_to_cache}
             data = Marshal.dump(ipc_hash)
@@ -124,7 +124,7 @@ module PlacesEngine
       ipc_writer.close
       sid = Spawnling.new do
         begin
-          puts "#{Time.now}: Spawning sub-process #{Process.pid}."
+          log.debug { "#{Time.now}: Spawning sub-process #{Process.pid}." }
           puts "#{Time.now}: Updating hierarchies for changed relations..."
           STDOUT.flush
           # running triggers on feature_relation
@@ -140,7 +140,12 @@ module PlacesEngine
             features_ids_to_cache += ipc_hash[:to_cache]
           end
           feature_ids_with_changed_relations.uniq!
+          log.debug { "#{Time.now}: Will update hierarchy for the following feature ids (NOT FIDS):\n#{feature_ids_with_changed_relations.to_s}." }
           features_ids_to_cache += feature_ids_with_changed_relations
+          features_ids_to_cache.uniq!
+          log.debug { "#{Time.now}: Will reindex the following feature ids (NOT FIDS):\n#{features_ids_to_cache.to_s}." }
+          feature_ids_with_object_types_added.uniq!
+          log.debug { "#{Time.now}: Will update object type positions for the following feature ids (NOT FIDS):\n#{feature_ids_with_object_types_added.to_s}." }
           feature_ids_with_changed_relations.each do |id|
             feature = Feature.find(id)
             #this has to be added to places dictionary!!!
@@ -151,7 +156,6 @@ module PlacesEngine
           puts "#{Time.now}: Updating object type positions..."
           STDOUT.flush
           # running triggers for feature_object_type
-          feature_ids_with_object_types_added.uniq!
           feature_ids_with_object_types_added.each do |id|
             feature = Feature.find(id)
             # have to add this to places dictionary!!!
@@ -161,11 +165,10 @@ module PlacesEngine
           end
           puts "#{Time.now}: Reindexing changed features..."
           STDOUT.flush
-          features_ids_to_cache.uniq!
           features_ids_to_cache.each do |id|
             feature = Feature.find(id)
             feature.index
-            log.debug "#{Time.now}: Reindexed feature #{feature.fid}..."
+            log.debug "#{Time.now}: Reindexed feature #{feature.fid}."
           end
           Feature.commit
           puts "#{Time.now}: Importation done."
