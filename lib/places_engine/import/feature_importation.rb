@@ -52,9 +52,9 @@ module PlacesEngine
       puts "#{Time.now}: Starting importation."
       task = ImportationTask.find_by(task_code: task_code)
       task = ImportationTask.create(:task_code => task_code) if task.nil?
-      log = ActiveSupport::Logger.new("log/import_#{task_code}_#{Rails.env}.log")
-      log.level = log_level.nil? ? Rails.logger.level : log_level.to_i
-      log.debug "#{Time.now}: Starting importation."
+      self.log = ActiveSupport::Logger.new("log/import_#{task_code}_#{Rails.env}.log")
+      self.log.level = log_level.nil? ? Rails.logger.level : log_level.to_i
+      self.log.debug "#{Time.now}: Starting importation."
       self.spreadsheet = task.spreadsheets.find_by(filename: filename)
       self.spreadsheet = task.spreadsheets.create(:filename => filename, :imported_at => Time.now) if self.spreadsheet.nil?
       interval = 100
@@ -71,7 +71,7 @@ module PlacesEngine
         limit = rows.size if limit > rows.size
         sid = Spawnling.new do
           begin
-            log.debug { "#{Time.now}: Spawning sub-process #{Process.pid}." }
+            self.log.debug { "#{Time.now}: Spawning sub-process #{Process.pid}." }
             ipc_reader.close
             feature_ids_with_changed_relations = Array.new
             feature_ids_with_object_types_added = Array.new
@@ -81,6 +81,7 @@ module PlacesEngine
               self.fields = row.to_hash.delete_if{ |key, value| value.blank? }
               self.fields.each_value(&:strip!)
               next unless self.get_feature(i+1)
+              self.progress_bar(i, to_i, self.feature.pid)
               features_ids_to_cache << self.feature.id
               self.process_feature
               self.process_names(44)
@@ -99,9 +100,9 @@ module PlacesEngine
               #  puts e.to_s
               #end
               if self.fields.empty?
-                log.debug { "#{Time.now}: #{self.feature.pid} processed." }
+                self.log.debug { "#{Time.now}: #{self.feature.pid} processed." }
               else
-                log.debug { "#{Time.now}: #{self.feature.pid}: the following fields have been ignored: #{self.fields.keys.join(', ')}" }
+                self.log.warn { "#{Time.now}: #{self.feature.pid}: the following fields have been ignored: #{self.fields.keys.join(', ')}" }
               end
             end
             ipc_hash = {for_relations: feature_ids_with_changed_relations, for_object_types: feature_ids_with_object_types_added, to_cache: features_ids_to_cache}
@@ -112,9 +113,9 @@ module PlacesEngine
 	    ipc_writer.close
           rescue Exception => e
             STDOUT.flush
-            log.fatal { "#{Time.now}: An error occured when processing #{Process.pid}:" }
-            log.fatal { e.message }
-            log.fatal { e.backtrace.join("\n") }
+            self.log.fatal { "#{Time.now}: An error occured when processing #{Process.pid}:" }
+            self.log.fatal { e.message }
+            self.log.fatal { e.backtrace.join("\n") }
           end
         end
         Spawnling.wait([sid])
@@ -123,7 +124,7 @@ module PlacesEngine
       ipc_writer.close
       sid = Spawnling.new do
         begin
-          log.debug { "#{Time.now}: Spawning sub-process #{Process.pid}." }
+          self.log.debug { "#{Time.now}: Spawning sub-process #{Process.pid}." }
           puts "#{Time.now}: Updating hierarchies for changed relations..."
           STDOUT.flush
           # running triggers on feature_relation
@@ -139,45 +140,52 @@ module PlacesEngine
             features_ids_to_cache += ipc_hash[:to_cache]
           end
           feature_ids_with_changed_relations.uniq!
-          log.debug { "#{Time.now}: Will update hierarchy for the following feature ids (NOT FIDS):\n#{feature_ids_with_changed_relations.to_s}." }
+          self.log.debug { "#{Time.now}: Will update hierarchy for the following feature ids (NOT FIDS):\n#{feature_ids_with_changed_relations.to_s}." }
           features_ids_to_cache += feature_ids_with_changed_relations
           features_ids_to_cache.uniq!
-          log.debug { "#{Time.now}: Will reindex the following feature ids (NOT FIDS):\n#{features_ids_to_cache.to_s}." }
+          self.log.debug { "#{Time.now}: Will reindex the following feature ids (NOT FIDS):\n#{features_ids_to_cache.to_s}." }
           feature_ids_with_object_types_added.uniq!
-          log.debug { "#{Time.now}: Will update object type positions for the following feature ids (NOT FIDS):\n#{feature_ids_with_object_types_added.to_s}." }
-          feature_ids_with_changed_relations.each do |id|
+          self.log.debug { "#{Time.now}: Will update object type positions for the following feature ids (NOT FIDS):\n#{feature_ids_with_object_types_added.to_s}." }
+          feature_ids_with_changed_relations.each_index do |i|
+            id = feature_ids_with_changed_relations[i]
             feature = Feature.find(id)
+            self.progress_bar(i, feature_ids_with_changed_relations.size, self.feature.pid)
             #this has to be added to places dictionary!!!
             #feature.update_cached_feature_relation_categories
             feature.update_hierarchy
-            log.debug { "#{Time.now}: Updated hierarchy for #{feature.fid}." }
+            self.log.debug { "#{Time.now}: Updated hierarchy for #{feature.fid}." }
           end
           puts "#{Time.now}: Updating object type positions..."
           STDOUT.flush
           # running triggers for feature_object_type
-          feature_ids_with_object_types_added.each do |id|
+          feature_ids_with_object_types_added.each_index do |i|
+            id = feature_ids_with_object_types_added[i]
             feature = Feature.find(id)
+            self.progress_bar(i, feature_ids_with_object_types_added.size, self.feature.pid)
+            
             # have to add this to places dictionary!!!
             # feature.update_cached_feature_relation_categories if !feature_ids_with_changed_relations.include? id
             feature.update_object_type_positions
-            log.debug { "#{Time.now}: Updated object type positions for #{feature.fid}." }
+            self.log.debug { "#{Time.now}: Updated object type positions for #{feature.fid}." }
           end
           puts "#{Time.now}: Reindexing changed features..."
           STDOUT.flush
-          features_ids_to_cache.each do |id|
+          features_ids_to_cache.each_index do |i|
+            id = features_ids_to_cache[i]
             feature = Feature.find(id)
+            self.progress_bar(i, features_ids_to_cache.size, self.feature.pid)
             feature.index
-            log.debug "#{Time.now}: Reindexed feature #{feature.fid}."
+            self.log.debug "#{Time.now}: Reindexed feature #{feature.fid}."
           end
           Feature.commit
           puts "#{Time.now}: Importation done."
-          log.debug "#{Time.now}: Importation done."
+          self.log.debug "#{Time.now}: Importation done."
           STDOUT.flush
         rescue Exception => e
           STDOUT.flush
-          log.fatal { "#{Time.now}: An error occured when processing #{Process.pid}:" }
-          log.fatal { e.message }
-          log.fatal { e.backtrace.join("\n") }
+          self.log.fatal { "#{Time.now}: An error occured when processing #{Process.pid}:" }
+          self.log.fatal { e.message }
+          self.log.fatal { e.backtrace.join("\n") }
         end
       end
       Spawnling.wait([sid])
@@ -197,7 +205,7 @@ module PlacesEngine
         next if feature_type_id.blank?
         category = SubjectsIntegration::Feature.find(feature_type_id)
         if category.nil?
-          puts "Feature type #{feature_type_id} not found."
+          self.say "Feature type #{feature_type_id} not found."
           next
         end
         feature_object_type = feature_object_types.find_by(category_id: category.id)
@@ -207,7 +215,7 @@ module PlacesEngine
           feature_ids_with_object_types_added << self.feature.id if !feature_ids_with_object_types_added.include? self.feature.id
         end
         if feature_object_type.nil?
-          puts "Couldn't associate feature type #{feature_type_id} to feature #{self.feature.pid}"
+          self.say "Couldn't associate feature type #{feature_type_id} to feature #{self.feature.pid}"
           next
         end
         self.add_date(prefix, feature_object_type)
@@ -237,7 +245,7 @@ module PlacesEngine
         else
           administrator = Feature.where(['feature_names.name = ? AND feature_object_types.category_id = ?', administrator_name, country_type_id]).includes([:names, :feature_object_types]).references([:names, :feature_object_types]).first
           if administrator.nil?
-            puts "Administrator country #{administrator_name} not found."
+            self.say "Administrator country #{administrator_name} not found."
           else
             conditions[:administrator_id] = administrator.id
           end
@@ -248,7 +256,7 @@ module PlacesEngine
         else
           claimant = Feature.includes([:names, :feature_object_types]).references([:names, :feature_object_types]).where(['feature_names.name = ? AND feature_object_types.category_id = ?', claimant_name, country_type_id]).first
           if claimant.nil?
-            puts "Claimant country #{claimant_name} not found."
+            self.say "Claimant country #{claimant_name} not found."
           else
             conditions[:claimant_id] = claimant.id
           end
@@ -259,7 +267,7 @@ module PlacesEngine
           contestation = contestations.create(:administrator_id => administrator.id, :claimant_id => claimant.id, :contested => (contested.downcase == 'yes'))
           self.spreadsheet.imports.create(:item => contestation) if contestation.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
         end
-        puts "Couldn't create contestation between #{claimant_name} and #{administrator_name} for #{self.feature.pid}." if contestation.nil?
+        self.say "Couldn't create contestation between #{claimant_name} and #{administrator_name} for #{self.feature.pid}." if contestation.nil?
       end
     end
 
@@ -284,7 +292,7 @@ module PlacesEngine
             Shape.where(:gid => shape.gid).update_all("geometry = ST_SetSRID(ST_MakePoint(#{shapes_lng}, #{shapes_lat}), 4326)")
           end
         else
-          puts "Can't specify a latitude without a longitude and viceversa for feature #{self.feature.pid}" if !shapes_lat.blank? || !shapes_lng.blank?
+          self.say "Can't specify a latitude without a longitude and viceversa for feature #{self.feature.pid}" if !shapes_lat.blank? || !shapes_lng.blank?
         end
         next if shape.nil?
         altitude = self.fields.delete("#{prefix}.altitude")
@@ -335,7 +343,7 @@ module PlacesEngine
         next if kmap_str.blank?
         kmap = SubjectsIntegration::Feature.find(kmap_str.scan(/\d+/).first.to_i)
         if kmap.nil?
-          puts "Could find kmap #{kmap_str} for feature #{self.feature.pid}."
+          self.say "Could find kmap #{kmap_str} for feature #{self.feature.pid}."
           next
         end      
         values = { :category_id => kmap.id }
@@ -368,7 +376,7 @@ module PlacesEngine
         kmap_id = key.scan(/.*[kK](\d+)/).flatten.first.to_i
         kmap = SubjectsIntegration::Feature.find(kmap_id)
         if kmap.nil?
-          puts "Could find kmap for #{kmap_id} associated with #{key} for #{self.feature.pid}."
+          self.say "Could find kmap for #{kmap_id} associated with #{key} for #{self.feature.pid}."
           next
         end
         numeric_value = value.to_i
@@ -406,7 +414,7 @@ module PlacesEngine
         if !pos.nil?
           kmap = SubjectsIntegration::Feature.find(kmap_id)
           if kmap.nil?
-            puts "Could find kmap #{kmap_id} associated with #{key} for #{self.feature.pid}."
+            self.say "Could find kmap #{kmap_id} associated with #{key} for #{self.feature.pid}."
             next
           end
           conditions = { :category_id => kmap.id }
