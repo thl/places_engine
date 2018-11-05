@@ -149,7 +149,7 @@ module PlacesEngine
           feature_ids_with_changed_relations.each_index do |i|
             id = feature_ids_with_changed_relations[i]
             feature = Feature.find(id)
-            self.progress_bar(i, feature_ids_with_changed_relations.size, self.feature.pid)
+            self.progress_bar(i, feature_ids_with_changed_relations.size, feature.pid)
             #this has to be added to places dictionary!!!
             #feature.update_cached_feature_relation_categories
             feature.update_hierarchy
@@ -161,7 +161,7 @@ module PlacesEngine
           feature_ids_with_object_types_added.each_index do |i|
             id = feature_ids_with_object_types_added[i]
             feature = Feature.find(id)
-            self.progress_bar(i, feature_ids_with_object_types_added.size, self.feature.pid)
+            self.progress_bar(i, feature_ids_with_object_types_added.size, feature.pid)
             
             # have to add this to places dictionary!!!
             # feature.update_cached_feature_relation_categories if !feature_ids_with_changed_relations.include? id
@@ -173,7 +173,7 @@ module PlacesEngine
           features_ids_to_cache.each_index do |i|
             id = features_ids_to_cache[i]
             feature = Feature.find(id)
-            self.progress_bar(i, features_ids_to_cache.size, self.feature.pid)
+            self.progress_bar(i, features_ids_to_cache.size, feature.pid)
             feature.index
             self.log.debug "#{Time.now}: Reindexed feature #{feature.fid}."
           end
