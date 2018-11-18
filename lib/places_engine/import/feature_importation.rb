@@ -283,7 +283,7 @@ module PlacesEngine
           lat_f = shapes_lat.to_f
           lng_f = shapes_lng.to_f
           if shape.nil?
-            shape = self.feature.shapes.detect { |s| s.lng == lng_f && s.lat == lat_f } 
+            shape = self.feature.shapes.detect { |s| s.is_point? && s.lng == lng_f && s.lat == lat_f }
             if shape.nil?
               shape = Shape.create(:fid => self.feature.fid)
               Shape.where(:gid => shape.gid).update_all("geometry = ST_SetSRID(ST_MakePoint(#{shapes_lng}, #{shapes_lat}), 4326)")
