@@ -17,7 +17,7 @@ $(function() {
     $("#relation_details .tab-content-loading").show();
     relatedSolrUtils.getPlacesSummaryElements().then(function(result){
       var feature_label = $($('#related_js_data').data('featureLabel'))[0].innerText;
-      var feature_path = $('#related_js_data').data('featurePath');
+      var feature_path = $('#related_js_data').data('featuresPath');
       relatedSolrUtils.addPlacesSummaryItems(feature_label,feature_path,'parent',result);
       relatedSolrUtils.addPlacesSummaryItems(feature_label,feature_path,'child',result);
       //relatedSolrUtils.addPlacesSummaryItems(feature_label,feature_path,'other',result);
@@ -42,11 +42,12 @@ $(function() {
       }
       if(!popupsSet){
         jQuery('#relation_details .popover-kmaps').kmapsPopup({
-          featuresPath: $('#related_js_data').data('featurePath'),
+          featuresPath: $('#related_js_data').data('featuresPath'),
           domain: $('#related_js_data').data('domain'),
           featureId:  "",
           mandalaURL: $('#related_js_data').data('mandalaPath'),
-          solrUtils: relatedSolrUtils
+          solrUtils: relatedSolrUtils,
+          language: $('#related_js_data').data('language'),
         });
         popupsSet = true;
        }
@@ -83,11 +84,13 @@ $(function() {
     perspective: $('#related_js_data').data('perspective'),
     tree: $('#related_js_data').data('tree'), //places
     domain: $('#related_js_data').data('domain'), //places
-    seedTree: {
-      descendants: true,
-      directAncestors: false,
-    },
+    descendants: true,
+    directAncestors: true,
+    descendantsFullDetail: true,
+    sortBy: "related_"+$('#related_js_data').data('domain')+"_header_s+ASC",
     displayPopup: true,
-    solrUtils: relatedSolrUtils
+    solrUtils: relatedSolrUtils,
+    language: $('#related_js_data').data('language'),
+    featuresPath: $('#menu_js_data').data('featuresPath'),
   });
 });

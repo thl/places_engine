@@ -42,7 +42,6 @@
 		</div>
 	</div> <!-- Tab Panes end -->
 </div> <!-- myTabs end -->
-
 <%= content_tag :div, "", id: 'related_js_data', data: {
  term_index: Feature.config.url,
  asset_index: Flare.config.asset_url,
@@ -51,9 +50,10 @@
  perspective: current_perspective.code,
  tree: Feature.uid_prefix,
  feature_label: feature_label,
- feature_path: "#{features_path}/%%ID%%",
+ features_path: "#{features_path}/%%ID%%",
  mandala_path: "https://mandala.shanti.virginia.edu/%%APP%%/%%ID%%/%%REL%%/nojs",
- feature_fid: @feature.fid
+ feature_fid: @feature.fid,
+ language: Language.current.code
 } %>
 <%= javascript_include_tag 'kmaps_engine/kmaps_relations_tree' %>
 <%= javascript_include_tag 'places_engine/related-section-initializer' %>

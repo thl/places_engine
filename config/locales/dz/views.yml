@@ -1,9 +1,9 @@
 # Places engine view localization file for Dzongkha.
 dz:
     app:
-        short: 'THL Place Dictionary'
-        this: 'THL Place Dictionary of Tibet & the Himalayas'
-    entry: 'THL Place Dictionary Entry'
+        short: 'Places'
+        this: 'Places Dictionary'
+    entry: 'Places Entry'
     feature:
         detail:
             one: 'Feature Detail'

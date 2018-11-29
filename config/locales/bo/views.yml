@@ -1,7 +1,7 @@
 # Places engine view localization file for Tibetan.
 bo:
     app:
-        short: 'THLས་མིང་གི་ཚིག་མཛོད།'
+        short: 'ས་མིང་གི་ཚིག་མཛོད།'
         this: 'བོད་དང་ཧི་མ་ལ་ཡའི་རྒྱུད་ཀྱི་ས་མིང་གི་ཚིག་མཛོད།'
     entry: 'ས་མིང་ཚིག་མཛོད་ཀྱི་ས་བཅད།'
     feature:
