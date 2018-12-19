@@ -54,7 +54,7 @@ module PlacesEngine
       task = ImportationTask.create(:task_code => task_code) if task.nil?
       self.log = ActiveSupport::Logger.new("log/import_#{task_code}_#{Rails.env}.log")
       self.log.level = log_level.nil? ? Rails.logger.level : log_level.to_i
-      self.log.debug "#{Time.now}: Starting importation."
+      self.log.debug { "#{Time.now}: Starting importation." }
       self.spreadsheet = task.spreadsheets.find_by(filename: filename)
       self.spreadsheet = task.spreadsheets.create(:filename => filename, :imported_at => Time.now) if self.spreadsheet.nil?
       interval = 100
@@ -76,15 +76,11 @@ module PlacesEngine
           begin
             self.log.debug { "#{Time.now}: Spawning sub-process #{Process.pid}." }
             ipc_reader.close
-            feature_ids_with_changed_relations = Array.new
-            feature_ids_with_object_types_added = Array.new
-            features_ids_to_cache = Array.new
             for i in current...limit
               row = rows[i]
               self.fields = row.to_hash.delete_if{ |key, value| value.blank? }
               self.fields.each_value(&:strip!)
               next unless self.get_feature(i+1)
-              self.progress_bar(num: i, total: to_i, current: self.feature.pid)
               features_ids_to_cache << self.feature.id
               self.process_feature
               self.process_names(44)
@@ -98,6 +94,7 @@ module PlacesEngine
               self.process_captions(2)
               self.process_summaries(2)
               self.feature.update_attributes({:is_blank => false, :is_public => true})
+              self.progress_bar(num: i, total: to_i, current: self.feature.pid)
               #rescue  Exception => e
               #  puts "Something went wrong with feature #{self.feature.pid}!"
               #  puts e.to_s
@@ -126,9 +123,9 @@ module PlacesEngine
         size = ipc_reader.gets
         data = ipc_reader.read(size.to_i)
         ipc_hash = Marshal.load(data)
-        feature_ids_with_changed_relations += ipc_hash[:for_relations]
-        feature_ids_with_object_types_added += ipc_hash[:for_object_types]
-        features_ids_to_cache += ipc_hash[:to_cache]
+        feature_ids_with_changed_relations = ipc_hash[:for_relations]
+        feature_ids_with_object_types_added = ipc_hash[:for_object_types]
+        features_ids_to_cache = ipc_hash[:to_cache]
         self.update_progress_bar(bar: ipc_hash[:bar], num_errors: ipc_hash[:num_errors], valid_point: ipc_hash[:valid_point])
         current = limit
       end
@@ -149,10 +146,10 @@ module PlacesEngine
           feature_ids_with_changed_relations.each_index do |i|
             id = feature_ids_with_changed_relations[i]
             feature = Feature.find(id)
-            self.progress_bar(num: i, total: feature_ids_with_changed_relations.size, current: feature.pid)
             #this has to be added to places dictionary!!!
             #feature.update_cached_feature_relation_categories
             feature.update_hierarchy
+            self.progress_bar(num: i, total: feature_ids_with_changed_relations.size, current: feature.pid)
             self.log.debug { "#{Time.now}: Updated hierarchy for #{feature.fid}." }
           end
           puts "#{Time.now}: Updating object type positions..."
@@ -161,11 +158,10 @@ module PlacesEngine
           feature_ids_with_object_types_added.each_index do |i|
             id = feature_ids_with_object_types_added[i]
             feature = Feature.find(id)
-            self.progress_bar(num: i, total: feature_ids_with_object_types_added.size, current: feature.pid)
-            
             # have to add this to places dictionary!!!
             # feature.update_cached_feature_relation_categories if !feature_ids_with_changed_relations.include? id
             feature.update_object_type_positions
+            self.progress_bar(num: i, total: feature_ids_with_object_types_added.size, current: feature.pid)
             self.log.debug { "#{Time.now}: Updated object type positions for #{feature.fid}." }
           end
           puts "#{Time.now}: Reindexing changed features..."
@@ -173,8 +169,8 @@ module PlacesEngine
           features_ids_to_cache.each_index do |i|
             id = features_ids_to_cache[i]
             feature = Feature.find(id)
-            self.progress_bar(num: i, total: features_ids_to_cache.size, current: feature.pid)
             feature.index
+            self.progress_bar(num: i, total: features_ids_to_cache.size, current: feature.pid)
             self.log.debug "#{Time.now}: Reindexed feature #{feature.fid}."
           end
           Feature.commit
