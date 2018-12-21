@@ -2,7 +2,7 @@
 en:
     app:
         short: 'Places'
-        this: 'Place Dictionary'
+        this: 'Places Dictionary'
     entry: 'Places Entry'
     feature:
         detail:

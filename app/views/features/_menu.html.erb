@@ -80,19 +80,6 @@
       </div>
 	</section>
 <%  end %>
-<%= javascript_on_load do %>
-  $("#kmaps-explorer-search-term").focusin(function(){
-   $(".view-section .nav.nav-tabs a[href='.listview']").tab("show");
-  });
-  $("#kmaps-explorer-search-term").flyoutKmapsTypeahead({
-    hostname: "<%= Feature.config.url %>",
-    hostname_assets: "<%= Flare.config.asset_url %>",
-    domain: "<%= Feature.uid_prefix %>",//"places",
-    filters_domain: 'subjects',
-    root_kmap_path: null,
-    features_path: "<%= (defined?(admin) && admin) ? admin_features_path : features_path %>/%%ID%%",
-  });
-<% end %>
   </section>
   <!-- END input section -->
   <!-- BEGIN view section -->
@@ -113,29 +100,71 @@
 	  </div>
   </section>
 </section>
-<% feature = contextual_feature %>
-    <script type='text/javascript'>
-$(document).ready(function(){
-        $("#tree").kmapsTree({
-          termindex_root: "<%= Feature.config.url %>",
-          kmindex_root: "<%= MmsIntegration::Picture.config.url %>",
-          type: "<%= Feature.uid_prefix %>", //places
-          root_kmap_path: '',
-          //baseUrl: "<%= features_path %>",
-          baseUrl: "<%= (defined?(admin) && admin) ? admin_features_path : features_path %>/%%ID%%",
-          expand_path: "",
-          perspective: "<%= current_perspective.code %>",
-          view: "<%= current_view.code %>",
-<%        unless feature.nil? %>
-          activeNodeId: "<%= feature.fid %>",
-<%        end %>
-        });
-});
-    </script>
+<% feature = contextual_feature
+   fid = feature.nil? ? nil : feature.fid
+   uid = !fid.nil? ? "#{Feature.uid_prefix}-#{fid}" : "";
+%>
+<%= content_tag :div, "", id: 'menu_js_data', data: {
+ term_index: Feature.config.url,
+ asset_index: Flare.config.asset_url,
+ feature_id: uid,
+ domain: Feature.uid_prefix,
+ perspective: current_perspective.code,
+ tree: Feature.uid_prefix,
+ features_path: "#{(defined?(admin) && admin) ? admin_features_path : features_path}/%%ID%%",
+ mandala_path: "https://mandala.shanti.virginia.edu/%%APP%%/%%ID%%/%%REL%%/nojs",
+ feature_fid: uid,
+ language: Language.current.code,
+ view: current_view.code,
+ activeNodeId: fid,
+} %>
+<%= javascript_include_tag 'kmaps_engine/kmaps_relations_tree' %>
 <%= javascript_on_load do %>
-      var session_search = Cookies.getJSON('search_<%= Feature.uid_prefix %>');
-      if(session_search) {
-        $("#kmaps-explorer-search-term").flyoutKmapsTypeahead('restoreSavedSearch', session_search,'kmaps-explorer');
-				Cookies.remove('search_<%= Feature.uid_prefix %>');
-      }
+  var menuSolrUtils = kmapsSolrUtils.init({
+    termIndex: $('#menu_js_data').data('termIndex'),
+    assetIndex: $('#menu_js_data').data('assetIndex'),
+    featureId: $('#menu_js_data').data('featureId'),
+    domain: $('#menu_js_data').data('domain'),
+    perspective: $('#menu_js_data').data('perspective'),
+    tree: $('#menu_js_data').data('tree'), //places
+    featuresPath: $('#menu_js_data').data('featuresPath'),
+  });
+
+  $("#kmaps-explorer-search-term").focusin(function(){
+   $(".view-section .nav.nav-tabs a[href='.listview']").tab("show");
+  });
+
+  $("#kmaps-explorer-search-term").flyoutKmapsTypeahead({
+    hostname: $('#menu_js_data').data('termIndex'),
+    hostname_assets: $('#menu_js_data').data('assetIndex'),
+    domain: $('#menu_js_data').data('domain'),
+    filters_domain: 'subjects',
+    root_kmap_path: null,
+    features_path: "<%= (defined?(admin) && admin) ? admin_features_path : features_path %>/%%ID%%",
+    solrUtils: menuSolrUtils,
+    language: $('#menu_js_data').data('language'),
+  });
+
+  $("#tree").kmapsRelationsTree({
+    featureId: $('#menu_js_data').data('featureFid'),
+    termIndex: $('#menu_js_data').data('termIndex'),
+    assetIndex: $('#menu_js_data').data('assetIndex'),
+    perspective: $('#menu_js_data').data('perspective'),
+    tree: $('#menu_js_data').data('tree'), //places
+    domain: $('#menu_js_data').data('domain'), //places
+    descendants: true,
+    directAncestors: false,
+    descendantsFullDetail: false,
+    initialScrollToActive: true,
+    displayPopup: true,
+    solrUtils:  menuSolrUtils,
+    language: $('#menu_js_data').data('language'),
+    featuresPath: $('#menu_js_data').data('featuresPath'),
+  });
+
+  var session_search = Cookies.getJSON('search_<%= Feature.uid_prefix %>');
+  if(session_search) {
+  $("#kmaps-explorer-search-term").flyoutKmapsTypeahead('restoreSavedSearch', session_search,'kmaps-explorer');
+  Cookies.remove('search_<%= Feature.uid_prefix %>');
+  }
 <% end %>

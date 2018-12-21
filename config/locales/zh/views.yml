@@ -1,9 +1,9 @@
 # Places engine view localization file for Chinese.
 zh:
     app:
-        short: 'THL地名词典'
-        this: '西藏和喜马拉雅地区THL地名词典'
-    entry: 'THL地名词典词条'
+        short: '地名词典'
+        this: '西藏和喜马拉雅地区地名词典'
+    entry: '地名词典词条'
     feature:
         detail:
             one: '特征细节'
