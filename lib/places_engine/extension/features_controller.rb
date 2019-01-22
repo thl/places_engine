@@ -168,17 +168,17 @@ module PlacesEngine
         # Find the proper instance of GeoServer, based on the current environment
         geoserver_base = PlacesEngine::Configuration.geoserver_url
         if service.nil?
-          render :nothing => true
+          render plain: ''
         else
           url = geoserver_base+service+"?"+general_params+params
           begin
             send_data(open(url).read, :filename => name, :type => type, :disposition => 'attachment')
           rescue => e
-            render :nothing => true
+            render plain: ''
           rescue OpenURI::HTTPError => e
-            render :nothing => true
+            render plain: ''
           rescue Timeout::Error => e
-            render :nothing => true
+            render plain: ''
           end
         end
       end

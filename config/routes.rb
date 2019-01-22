@@ -38,6 +38,7 @@ Rails.application.routes.draw do
       resources :time_units do
         get :new_form, on: :collection
       end
+      post :set_priorities, on: :collection
     end
     resources :shapes do
       resources :citations
@@ -58,7 +59,6 @@ Rails.application.routes.draw do
   end
   resources :feature_object_types do
     resources :notes, :citations
-    post :set_priorities, on: :collection
   end
   resources :shapes do
     resources :notes, :citations
