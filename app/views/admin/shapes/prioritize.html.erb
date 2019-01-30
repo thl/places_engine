@@ -1,8 +1,8 @@
 <%= javascript_include_tag 'kmaps_engine/jquery.ajax.sortable' %>
 <%= javascript_on_load do %>
   jQuery('#featureShapesList').ajaxSortable({
-    action: '<%= "/admin/shapes/set_priorities" %>',
-    object_id: <%= @feature.id.to_s %>
+    action: '<%= set_priorities_admin_shapes_path %>',
+    object_id: <%= @feature.id %>
   });
 <% end
    add_breadcrumb_item feature_link(@feature)
@@ -28,10 +28,10 @@
        <th><%= ts 'priorit.y' %></th>
      </tr>
 <%   list.each do |item| %>
-     <tr id="feature_shape_<%= item.id.to_s %>">
-       <td><%= item.gid.to_s %></td>
+     <tr id="shape_<%= item.id %>">
+       <td><%= item.gid %></td>
        <td><%=h shape_display_string(item) %></td>
-       <td class="sortable-priority-value"><%= item.position.to_s %></td>
+       <td class="sortable-priority-value"><%= item.position %></td>
      </tr>
 <%   end %>
    </table>

@@ -46,8 +46,9 @@ class Admin::ShapesController < ResourceController::Base
   
   def set_priorities
     feature = Feature.find(params[:id])
-    feature.shapes.each { |shape| shape.update_attribute(:position, params['feature_shape'].index(shape.id.to_s) + 1) }
-    render :nothing => true
+    shape_ids_params = params[:shape]
+    feature.shapes.each { |shape| shape.update_attribute(:position, shape_ids_params.index(shape.id.to_s) + 1) }
+    render plain: ''
   end
   
   protected

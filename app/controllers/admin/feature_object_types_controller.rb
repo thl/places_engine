@@ -14,7 +14,7 @@ class Admin::FeatureObjectTypesController < AclController
   end
   
   def create
-    mca_hash = params[:feature_object_type]
+    mca_hash = feature_object_type_params
     mca_cats = mca_hash[:category_id]
     errors = []
     @feature = Feature.find(params[:feature_id])
@@ -52,7 +52,12 @@ class Admin::FeatureObjectTypesController < AclController
   
   def set_priorities
     feature = Feature.find(params[:id])
-    feature.feature_object_types.each { |fot| fot.update_attribute(:position, params['feature_object_type'].index(fot.id.to_s) + 1) }
-    render :nothing => true
+    feature_object_type_ids_params = params[:feature_object_type]
+    feature.feature_object_types.each { |fot| fot.update_attribute(:position, feature_object_type_ids_params.index(fot.id.to_s) + 1) }
+    render plain: ''
+  end
+
+  def feature_object_type_params
+    params.require(:feature_object_type).permit(:string_value, :numeric_value, :show_parent, :show_root, :label, :prefix_label, category_id: [])
   end
 end
