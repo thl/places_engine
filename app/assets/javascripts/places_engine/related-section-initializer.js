@@ -20,7 +20,7 @@ $(function() {
       var feature_path = $('#related_js_data').data('featuresPath');
       relatedSolrUtils.addPlacesSummaryItems(feature_label,feature_path,'parent',result);
       relatedSolrUtils.addPlacesSummaryItems(feature_label,feature_path,'child',result);
-      //relatedSolrUtils.addPlacesSummaryItems(feature_label,feature_path,'other',result);
+      relatedSolrUtils.addPlacesSummaryItems(feature_label,feature_path,'other',result);
 
       if(!collapsibleApplied){
         $('ul.collapsibleList').kmapsCollapsibleList();
