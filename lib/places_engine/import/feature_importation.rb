@@ -48,12 +48,10 @@ module PlacesEngine
     # Note fields:
     # .note, .title
 
-    def do_feature_import(filename:, task_code:, from:, to:, log_level:)
+    def do_feature_import(filename:, task_code:, from:, to:)
       puts "#{Time.now}: Starting importation."
       task = ImportationTask.find_by(task_code: task_code)
       task = ImportationTask.create(:task_code => task_code) if task.nil?
-      self.log = ActiveSupport::Logger.new("log/import_#{task_code}_#{Rails.env}.log")
-      self.log.level = log_level.nil? ? Rails.logger.level : log_level.to_i
       self.log.debug { "#{Time.now}: Starting importation." }
       self.spreadsheet = task.spreadsheets.find_by(filename: filename)
       self.spreadsheet = task.spreadsheets.create(:filename => filename, :imported_at => Time.now) if self.spreadsheet.nil?

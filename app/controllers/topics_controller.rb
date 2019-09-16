@@ -1,5 +1,5 @@
 class TopicsController < ApplicationController
-  caches_page :feature_descendants
+  #caches_page :feature_descendants
   
   # GET /topics/1
   # GET /topics/1.xml
@@ -50,7 +50,13 @@ class TopicsController < ApplicationController
       format.txt do
         perspective_code = params[:perspective_code]
         @features_with_parents = perspective_code.blank? ? Feature.descendants_by_topic_with_parent(fids, topic_ids) : Feature.descendants_by_perspective_and_topics_with_parent(fids, Perspective.get_by_code(perspective_code), topic_ids)
-        @view = params[:view_code].nil? ? current_view : View.get_by_code(params[:view_code])
+        view_code_str = params[:view_code]
+        if view_code_str.blank?
+          @view = current_view
+        else
+          @view = view_code_str.split(',').collect{ |code| View.get_by_code(code) }
+          @view = @view.first if @view.size==1
+        end
         render 'features/descendants'
       end
       format.csv do

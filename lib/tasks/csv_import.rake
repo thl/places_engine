@@ -15,7 +15,7 @@ namespace :db do
       if source.blank? || task.blank?
         puts csv_desc
       else
-        PlacesEngine::FeatureImportation.new.do_feature_import(filename: source, task_code: task, from: from, to: to, log_level: log_level)
+        PlacesEngine::FeatureImportation.new("log/import_#{task}_#{Rails.env}.log", log_level.nil? ? Rails.logger.level : log_level.to_i).do_feature_import(filename: source, task_code: task, from: from, to: to)
       end
     end
   end
