@@ -1,4 +1,5 @@
 class FeatureObjectType < CategoryFeature
+  BRANCH_ID=20
   
   #
   #

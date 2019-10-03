@@ -6,11 +6,11 @@ class Admin::FeatureObjectTypesController < AclController
   belongs_to :feature
   
   new_action.before do
-    @parent_object_type = SubjectsIntegration::Feature.find(20) # feature thesaurus id in topical map builder
+    @parent_object_type = SubjectsIntegration::Feature.find(FeatureObjectType::BRANCH_ID) # feature thesaurus id in topical map builder
   end
 
   edit.before do
-    @parent_object_type = SubjectsIntegration::Feature.find(20) # feature thesaurus id in topical map builder
+    @parent_object_type = SubjectsIntegration::Feature.find(FeatureObjectType::BRANCH_ID) # feature thesaurus id in topical map builder
   end
   
   def create

@@ -5,13 +5,13 @@ module PlacesEngine
       include Rails.application.routes.url_helpers
       
       included do
-        has_many :altitudes, :dependent => :destroy
-        has_many :category_features, :dependent => :destroy
-        has_many :contestations, :dependent => :destroy
-        has_many :cumulative_category_feature_associations, :dependent => :destroy
-        has_many :feature_object_types, -> { order :position }, :dependent => :destroy
-        has_many :shapes, :foreign_key => 'fid', :primary_key => 'fid'
-        has_many :cached_feature_relation_categories, :dependent => :destroy
+        has_many :altitudes, dependent: :destroy
+        has_many :category_features, dependent: :destroy
+        has_many :contestations, dependent: :destroy
+        has_many :cumulative_category_feature_associations, dependent: :destroy
+        has_many :feature_object_types, -> { order :position }, dependent: :destroy
+        has_many :shapes, foreign_key: 'fid', primary_key: 'fid'
+        has_many :cached_feature_relation_categories, dependent: :destroy
         self.associated_models << FeatureObjectType
       end
       
@@ -27,7 +27,7 @@ module PlacesEngine
 
       # Options take :logged_in?
       def closest_feature_with_shapes(options = {})
-        feature_id = Rails.cache.fetch("features/#{self.fid}/closest_feature_with_shapes", :expires_in => 1.hour) do
+        feature_id = Rails.cache.fetch("features/#{self.fid}/closest_feature_with_shapes", expires_in: 1.hour) do
           break self.id if self.has_shapes?(options)
           # check if geographical parent has shapes (township)
           geo_rel = Perspective.get_by_code('geo.rel')
@@ -68,7 +68,7 @@ module PlacesEngine
       end
       
       def update_object_type_positions
-        feature_object_types.where(:position => 0).order('created_at').inject(feature_object_types.maximum(:position)+1) do |pos, fot|
+        feature_object_types.where(position: 0).order('created_at').inject(feature_object_types.maximum(:position)+1) do |pos, fot|
           fot.update_attribute(:position, pos)
           pos + 1
         end
@@ -81,24 +81,24 @@ module PlacesEngine
       	self.all_relations.each do |relation|
       		relation.child_node.feature_object_types.each do |fot|
       		  CachedFeatureRelationCategory.create({
-      		    :feature_id => relation.parent_node_id,
-      		    :related_feature_id => relation.child_node_id,
-      		    :category_id => fot.category_id,
-      		    :feature_relation_type_id => relation.feature_relation_type_id,
-      		    :feature_is_parent => true,
-      		    :perspective_id => relation.perspective_id
+      		    feature_id: relation.parent_node_id,
+      		    related_feature_id: relation.child_node_id,
+      		    category_id: fot.category_id,
+      		    feature_relation_type_id: relation.feature_relation_type_id,
+      		    feature_is_parent: true,
+      		    perspective_id: relation.perspective_id
       		  })
       		end
       		parent_node = relation.parent_node
       		if !parent_node.nil?
       		  parent_node.feature_object_types.each do |fot|
         		  CachedFeatureRelationCategory.create({
-        		    :feature_id => relation.child_node_id,
-        		    :related_feature_id => relation.parent_node_id,
-        		    :category_id => fot.category_id,
-        		    :feature_relation_type_id => relation.feature_relation_type_id,
-        		    :feature_is_parent => false,
-        		    :perspective_id => relation.perspective_id
+        		    feature_id: relation.child_node_id,
+        		    related_feature_i: relation.parent_node_id,
+        		    category_id: fot.category_id,
+        		    feature_relation_type_id: relation.feature_relation_type_id,
+        		    feature_is_parent: false,
+        		    perspective_id: relation.perspective_id
         		  })
         		end
     		  end
@@ -106,12 +106,12 @@ module PlacesEngine
       end
 
       def category_count
-        CategoryFeature.where(:feature_id => self.id).count
+        CategoryFeature.where(feature_id: self.id).count
       end
       
       def media_count(options = {})
-        media_count_hash = Rails.cache.fetch("#{self.cache_key}/media_count", :expires_in => 1.day) do
-          media_place_count = MmsIntegration::MediaPlaceCount.find(:all, :params => {:place_id => self.fid}).to_a
+        media_count_hash = Rails.cache.fetch("#{self.cache_key}/media_count", expires_in: 1.day) do
+          media_place_count = MmsIntegration::MediaPlaceCount.find(:all, params: {place_id: self.fid}).to_a
           media_count_hash = { 'Medium' => media_place_count.shift.count.to_i }
           media_place_count.each{|count| media_count_hash[count.medium_type] = count.count.to_i }
           media_count_hash
@@ -163,7 +163,7 @@ module PlacesEngine
           cd
         end
         
-        category_features = self.category_features.where(:type => nil)
+        category_features = self.category_features.where(type: nil)
         # REVISAR DE AQUI EN ADELANTE!!!
         
         child_documents = child_documents + category_features.collect do |cf|
@@ -263,13 +263,13 @@ module PlacesEngine
                 has_shapes: self.has_shapes?,
                 has_altitudes: self.altitudes.count>0,
                 block_type: ['parent'],
-                '_childDocuments_'  => child_documents }
+                '_childDocuments_' => child_documents }
         closest = self.closest_feature_with_shapes
         closest_fid = closest.nil? ? nil : closest.fid
         url = closest_fid.nil? ? nil : "#{InterfaceUtils::Server.get_thl_url}/places/maps/interactive/#fid:#{closest_fid}"
         doc[:interactive_map_url] = url unless url.nil?
 
-        url = closest_fid.nil? ? nil : gis_resources_url(:fids => closest_fid, :host => InterfaceUtils::Server.get_url, :format => 'kmz')
+        url = closest_fid.nil? ? nil : gis_resources_url(fids: closest_fid, host: InterfaceUtils::Server.get_url, format: 'kmz')
         doc[:kmz_url] = url unless url.nil?
 
         closest = self.closest_feature_with_shapes
@@ -289,7 +289,7 @@ module PlacesEngine
           des_ids = pending.collect(&:id)
           while !pending.empty?
             e = pending.pop
-            FeatureRelation.where(:parent_node_id => e.id).each do |r|
+            FeatureRelation.where(parent_node_id: e.id).each do |r|
               c = r.child_node
               if !des_ids.include? c.id
                 des_ids << c.id
@@ -299,7 +299,21 @@ module PlacesEngine
             end
           end
           topic_ids = topic_ids.first if topic_ids.size==1
-          des.select{ |d| !CumulativeCategoryFeatureAssociation.where(:category_id => topic_ids, :feature_id => d[0].id).first.nil? }
+          des_fids = des.collect{ |d| d.first.fid }
+          sh_fids = Shape.find_by_sql('select fid from shapes where ST_INTERSECTS((SELECT ST_UNION(geometry) FROM shapes WHERE fid IN (2,428,430,431,432, 13734, 24107)), shapes.geometry)').collect(&:fid)
+          des.uniq { |d| d.first.id }
+          sh_fids.each do |fid|
+            if !des_fids.include?(fid)
+              f = Feature.get_by_fid(fid)
+              if !f.nil?
+                r = FeatureRelation.where(child_node_id: f.id).first
+                e = r.nil? ? nil : r.parent_node
+                des << [f, e, r]
+              end
+            end
+          end
+          des.select! { |d| !CumulativeCategoryFeatureAssociation.where(category_id: topic_ids, feature_id: d.first.id).first.nil? } if topic_ids != FeatureObjectType::BRANCH_ID
+          des
         end
         
         def descendants_by_perspective_and_topics_with_parent(fids, perspective, topic_ids)
@@ -312,7 +326,7 @@ module PlacesEngine
           des = []
           while !pending.empty?
             e = pending.pop
-            FeatureRelation.select('child_node_id').where(:parent_node_id => e, :feature_relation_type_id => FeatureRelationType.hierarchy_ids + [FeatureRelationType.get_by_code('is.contained.by').id]).each do |r|
+            FeatureRelation.select('child_node_id').where(parent_node_id: e, feature_relation_type_id: FeatureRelationType.hierarchy_ids + [FeatureRelationType.get_by_code('is.contained.by').id]).each do |r|
               c = r.child_node_id
               if !des.include? c
                 des << c
@@ -332,7 +346,7 @@ module PlacesEngine
           des = []
           while !pending.empty?
             e = pending.pop
-            FeatureRelation.select('child_node_id').where(:parent_node_id => e, :feature_relation_type_id => FeatureRelationType.hierarchy_ids + [FeatureRelationType.get_by_code('is.contained.by').id]).each do |r|
+            FeatureRelation.select('child_node_id').where(parent_node_id: e, feature_relation_type_id: FeatureRelationType.hierarchy_ids + [FeatureRelationType.get_by_code('is.contained.by').id]).each do |r|
               c = r.child_node_id
               if !des.include? c
                 des << c
