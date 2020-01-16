@@ -95,7 +95,7 @@
 <%=     feature_name_ul(feature,false) %>
         <dl class="no-style">
 <%      feature.names.roots.order('position').each do |name| %>
-<%=       "<dt><strong>#{ts(:for, :what => FeatureName.human_attribute_name(:etymology), :whom => name.name.to_s)}:</dt></strong><dd>#{name.etymology.to_s.s}</dd>".html_safe unless name.etymology.blank? %>
+<%=       "<dt><strong>#{ts(:for, :what => FeatureName.human_attribute_name(:etymology), :whom => name.name.to_s)}:</dt></strong><dd>#{name.etymology.s}</dd>".html_safe unless name.etymology.blank? %>
 <%      end %>
         </dl>
 <%=     note_popup_link_list_for(feature, {:association_type => FeatureName.name}) %>

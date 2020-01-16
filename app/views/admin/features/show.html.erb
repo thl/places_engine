@@ -183,7 +183,7 @@
       <div id="collapseTwelve" class="panel-collapse collapse">
         <div class="panel-body">
      <div class="left highlight">
-<%=    new_item_link new_admin_feature_path(parent_id: object.fid), ts('new.record', :what => t(:child)) %> |
+<%=    new_item_link new_admin_feature_path(parent_id: object.fid), ts('new.record', :what => t(:child, :count => 1)) %> |
 <%=    new_item_link locate_for_relation_admin_feature_path(object.fid), ts('new.record', :what => FeatureRelation.model_name.human) %>
      </div>
      <br class="clear"/>

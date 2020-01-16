@@ -94,7 +94,7 @@ module PlacesEngine
       		  parent_node.feature_object_types.each do |fot|
         		  CachedFeatureRelationCategory.create({
         		    feature_id: relation.child_node_id,
-        		    related_feature_i: relation.parent_node_id,
+        		    related_feature_id: relation.parent_node_id,
         		    category_id: fot.category_id,
         		    feature_relation_type_id: relation.feature_relation_type_id,
         		    feature_is_parent: false,
