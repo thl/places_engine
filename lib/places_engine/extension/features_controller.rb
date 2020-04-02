@@ -126,6 +126,13 @@ module PlacesEngine
       def characteristics_list
         render :json => CategoryFeature.get_json_data
       end
+
+      def geojson_data
+        f = Feature.get_by_fid(params[:id])
+        shapes = f.shapes.collect(&:as_geojson)
+        response.headers['Content-Type'] = 'application/javascript'
+        render plain: shapes
+      end
       
       def gis_resources
         fids = params[:fids].split(/\D+/)

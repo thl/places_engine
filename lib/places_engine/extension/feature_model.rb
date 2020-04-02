@@ -164,7 +164,6 @@ module PlacesEngine
         end
         
         category_features = self.category_features.where(type: nil)
-        # REVISAR DE AQUI EN ADELANTE!!!
         
         child_documents = child_documents + category_features.collect do |cf|
           c = cf.category
@@ -255,6 +254,32 @@ module PlacesEngine
             block_type: ['child'] }
         end.flatten
         associated_subjects = category_features.collect(&:category).compact
+
+        child_documents = child_documents + self.altitudes.collect do |altitude|
+          {id: "#{self.uid}_altitude_#{altitude.id}",
+           block_child_type: ['places_altitude'],
+           block_type: ['child'],
+           maximum_i: altitude.maximum,
+           minimum_i: altitude.minimum,
+           average_i: altitude.average,
+           estimate_s: altitude.estimate,
+           unit_s: altitude.unit.title,
+          }
+        end
+        child_documents = child_documents +
+          self.shapes.where(is_public: true).collect do |shape|
+          #self.shapes.where("is_public = true AND ST_GeometryType(geometry) != 'ST_Point'").collect do |shape|
+            {id: "#{self.uid}_shape_#{shape.id}",
+             block_child_type: ['places_shape'],
+             block_type: ['child'],
+             geometry_grptgeom: shape.as_geojson,
+             geometry_type_s: shape.geo_type_text,
+             area_f: shape.area,
+             altitude_i: shape.altitude,
+             position_i: shape.position,
+            }
+          end
+
         doc = { tree: 'places',
                 feature_types: object_types.collect(&:header),
                 feature_type_ids: object_types.collect(&:id),
@@ -268,6 +293,8 @@ module PlacesEngine
         closest_fid = closest.nil? ? nil : closest.fid
         url = closest_fid.nil? ? nil : "#{InterfaceUtils::Server.get_thl_url}/places/maps/interactive/#fid:#{closest_fid}"
         doc[:interactive_map_url] = url unless url.nil?
+        centroid = Shape.shapes_centroid_by_feature(self)
+        doc[:shapes_centroid_grptgeom] = centroid unless centroid.nil?
 
         url = closest_fid.nil? ? nil : gis_resources_url(fids: closest_fid, host: InterfaceUtils::Server.get_url, format: 'kmz')
         doc[:kmz_url] = url unless url.nil?

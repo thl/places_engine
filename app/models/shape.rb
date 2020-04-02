@@ -45,12 +45,39 @@ class Shape < ActiveRecord::Base
     # If done directly from db:
     Shape.select('ST_GeometryType(geometry) as geometry_type').find(self.id).geometry_type
   end
+
+  def geo_type_text
+    # if done with rgeo:
+    # self.geometry.geometry_type
+    # If done directly from db:
+    Shape.select('GeometryType(geometry) as geometry_type').find(self.id).geometry_type
+
+  end
   
   def as_text
     # if done with rgeo:
     # self.geometry.as_text
     # If done directly from db:
     Shape.select('ST_AsText(geometry) as astext').find(self.id).astext
+  end
+
+  def as_geojson
+    # if done with rgeo:
+    # self.geometry.as_text
+    # If done directly from db:
+    shape = Shape.select("json_build_object(
+             'type',       'Feature',
+             'id',         gid, -- the GeoJson spec includes an 'id' field, but it is optional
+             'geometry',   ST_AsGeoJSON(ST_ForcePolygonCCW(geometry))::json,
+             'properties', json_build_object(
+                 -- list of fields
+                 'area', area,
+                 'altitude', altitude,
+                 'type', ST_GeometryType(geometry)
+             )
+         )
+    ").find(self.id)
+    shape.nil? ? nil : shape.json_build_object.to_json
   end
   
   def as_ewkt
@@ -64,6 +91,12 @@ class Shape < ActiveRecord::Base
   def self.find_all_by_feature(feature)
     Shape.where(fid: feature.fid).order('position, gid')
   end
+
+  def self.shapes_centroid_by_feature(feature)
+    centroid = Shape.where(fid: feature.fid).pluck('ST_AsGeoJSON(ST_centroid(ST_collect(geometry))) as asgeojson').first
+    centroid.nil? ? nil : {type: 'FeatureCollection', features: [ type: 'Feature', geometry: JSON.parse(centroid) ]}.to_json
+  end
+
   
   def self.find_all_by_feature_id(feature_id)
     self.where(feature_id: Feature.find(feature_id).id)
