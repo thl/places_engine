@@ -167,7 +167,7 @@ module PlacesEngine
           features_ids_to_cache.each_index do |i|
             id = features_ids_to_cache[i]
             feature = Feature.find(id)
-            feature.index
+            feature.queued_index
             self.progress_bar(num: i, total: features_ids_to_cache.size, current: feature.pid)
             self.log.debug "#{Time.now}: Reindexed feature #{feature.fid}."
           end
