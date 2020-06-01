@@ -44,7 +44,7 @@
 </div> <!-- myTabs end -->
 <%= content_tag :div, "", id: 'related_js_data', data: {
  term_index: Feature.config.url,
- asset_index: Flare.config.asset_url,
+ asset_index: ShantiIntegration::Source.config.url,
  feature_id: "#{Feature.uid_prefix}-#{@feature.fid}",
  domain: Feature.uid_prefix,
  perspective: current_perspective.code,

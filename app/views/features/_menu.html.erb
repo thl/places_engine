@@ -106,7 +106,7 @@
 %>
 <%= content_tag :div, "", id: 'menu_js_data', data: {
  term_index: Feature.config.url,
- asset_index: Flare.config.asset_url,
+ asset_index: ShantiIntegration::Source.config.url,
  feature_id: uid,
  domain: Feature.uid_prefix,
  perspective: current_perspective.code,
