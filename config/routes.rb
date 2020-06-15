@@ -67,6 +67,7 @@ Rails.application.routes.draw do
     get ':id/topics', to: 'features#topics', as: :topics_feature
     get ':feature_id/locations', to: 'locations#index', as: :feature_locations
     get 'gis_resources/:fids.:format', to: 'features#gis_resources', as: :gis_resources
+    get 'geojson_data/:id.:format', to: 'features#geojson_data', as: :geojson_data
     get ':feature_id/by_topic/:id.:format', to: 'topics#feature_descendants'
   end
   resources :topics, only: 'show'
