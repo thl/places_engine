@@ -1,16 +1,37 @@
 <%= error_messages_for model_name %>
-<%= category_fields({
-		subject: {display: f_label(object.feature), label: f.label(:feature, Feature.model_name.human.titleize.s) },
-		root: nil,
-		var_name: :category_feature,
-		include_js: false,
-		include_styles: false,
-		selectable: true,
-		single_selection: single_selection,
-		extra_fields: [
-			{field: f.text_field(:string_value, style: 'padding:3px; width: 300px', class: [:text, 'text-full form-control form-text']), label: f.label(:string_value).s},
-			{field: f.text_field(:numeric_value, style: 'padding:3px; width: 300px',class: [:text, 'text-full form-control form-text'] ), label: f.label(:numeric_value).s},
-			{field: f.check_box(:show_parent), label: f.label(:show_parent).s },
-			{field: f.check_box(:show_root), label: f.label(:show_root).s },
-			{field: "#{f.text_field(:label,class: [:text, 'text-full form-text'])} #{f.radio_button(:prefix_label, true)} #{ts('prefix.with', what: '&gt;')} &nbsp;&nbsp;&nbsp;&nbsp;#{f.radio_button(:prefix_label, false)} #{ts('suffix.record', what: 'SPACE')}", label: f.label(:label).s }]
-}) %>
+<%=   f.hidden_field 'category_id' %>
+<div id="subject_name"></div>
+<div class="view-wrap" id="subject_tree_container"></div>
+  <tr><td style='text-align:right;white-space:nowrap'><%= f.label(:text_value)%></td>
+    <td><%= f.text_field(:string_value, style: 'padding:3px; width: 300px', class: [:text, 'text-full form-control form-text'])%></td>
+  </tr>
+  <tr><td style='text-align:right;white-space:nowrap'><%= f.label(:numeric_value)%></td>
+    <td><%= f.text_field(:numeric_value, style: 'padding:3px; width: 300px', class: [:text, 'text-full form-control form-text'])%></td>
+  </tr>
+  <tr><td style='text-align:right;white-space:nowrap'><%= f.label(:show_parent)%></td>
+    <td><%= f.check_box(:show_parent)%></td>
+  </tr>
+  <tr><td style='text-align:right;white-space:nowrap'><%= f.label(:show_root)%></td>
+    <td><%= f.check_box(:show_root)%></td>
+  </tr>
+  <tr><td style='text-align:right;white-space:nowrap'><%= CategoryFeature.human_attribute_name(:label)%></td>
+    <td>
+      <%= f.text_field(:label, class: [:text, 'text-full form-text']) %>
+      <%= f.radio_button(:prefix_label, true)%>
+      <%= ts('prefix.with', what: '&gt;')%>&nbsp;&nbsp;&nbsp;&nbsp;
+      <%= f.radio_button(:prefix_label, false)%>
+      <%= ts('suffix.record', what: 'SPACE')%>
+    </td>
+  </tr>
+<%= content_tag :div, '', id: 'category_features_association_js_data', data: {
+ term_index: Feature.config.url,
+ asset_index: ShantiIntegration::Source.config.url,
+ feature_id: object.category_id,
+ domain: 'subjects',
+ perspective: 'gen',
+ tree: 'subjects',
+ features_path: new_admin_feature_path(parent_id: '%%ID%%'),
+ mandala_path: 'https://mandala.shanti.virginia.edu/%%APP%%/%%ID%%/%%REL%%/nojs',
+ feature_type_name: (object.category.header if !object.category.blank?),
+} %>
+<%= javascript_include_tag 'places_engine/category_features_associations_admin' %>
