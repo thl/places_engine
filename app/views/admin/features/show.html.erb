@@ -58,8 +58,8 @@
     <dl class="no-style">
 <%  object.names.roots.order('position').each do |name|
 	  path = admin_feature_feature_name_path(name.feature, name) %>
-<%=   ("<dt><strong>Etymology of #{name.name} (" + list_actions_for_item(name, :delete_path => path, :manage_path => path,
-        :edit_path => edit_admin_feature_feature_name_path(name.feature, name), :hide_view => true, :hide_delete => true
+<%=   ("<dt><strong>Etymology of #{name.name} (" + list_actions_for_item(name, :delete_path => path, :view_path => path,
+        :edit_path => edit_admin_feature_feature_name_path(name.feature, name), :hide_delete => true
       ) + "):</strong></dt><dd>#{name.etymology}</dd>").html_safe unless name.etymology.blank? %>
 <%  end %>
     </dl>
