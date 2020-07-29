@@ -5,6 +5,7 @@ $(function() {
     featureId: $('#related_js_data').data('featureId'),
     domain: $('#related_js_data').data('domain'),
     perspective: $('#related_js_data').data('perspective'),
+    view: $('#related_js_data').data('view'),
     tree: $('#related_js_data').data('tree'), //places
   });
   var summaryLoaded = false;
