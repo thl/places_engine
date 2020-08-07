@@ -13,6 +13,23 @@ class CategoryFeature < ActiveRecord::Base
 
   validates_presence_of :feature_id
   validates_presence_of :category_id
+  validate :correct_master_parent_selection
+
+  def correct_master_parent_selection
+    category = SubjectsIntegration::Feature.find(self.category_id)
+    # selected show parent and Category is top level
+    if (self.show_parent && category.ancestors.count <= 1)
+      errors.add(:base, 'Show immediate parent is not valid for root nodes.')
+    end
+    # selected show root and Category is top level
+    if (self.show_root && category.ancestors.count <= 1)
+      errors.add(:base, 'Show master subject is not valid for root nodes.')
+    end
+    # selected show parent and root for Category in second level
+    if (self.show_root && self.show_parent && category.ancestors.count == 2 )
+      errors.add(:base, 'Can not select both show immediate parent and show master subject for category in second level, choose one.')
+    end
+  end
 
   after_destroy do |record|
     feature = record.feature

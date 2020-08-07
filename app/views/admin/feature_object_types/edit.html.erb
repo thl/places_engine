@@ -7,11 +7,14 @@
     <h6><%= FeatureObjectType.model_name.human.titleize.s %></h6>
   </div>
   <div class="panel-body">
-<%= form_for [:admin, object] do |f| %>
-<%=   hidden_field_tag 'feature_id', object.feature.id %>
-<%=	  category_form_table form_partial: 'form_fields',
-        footer: "#{link_to ts('cancel.this'), object_path, class: 'btn btn-primary form-submit', id: 'edit-cancel'} | #{globalized_submit_tag 'update.this', class: 'btn btn-primary form-submit'}",
-        locals: { f: f, object: object, single_selection: true } %>
+<%= form_for [:admin, parent_object, object] do |f| %>
+      <table class='mobj' border='0' cellspacing='0'>
+        <%=   render partial: 'form_fields', locals: {f: f, object: object} %>
+        <tr>
+          <td></td>
+          <td><%= link_to ts('cancel.this'), admin_feature_path(parent_object.fid), class: 'btn btn-primary form-submit', id: 'edit-cancel'%> | <%= globalized_submit_tag 'update.this', class: 'btn btn-primary form-submit' %> </td>
+        </tr>
+      </table>
 <%  end %>
   </div> <!-- END panel-body -->
 </section> <!-- END panel -->
