@@ -4,7 +4,7 @@ class Altitude < ActiveRecord::Base
   include KmapsEngine::IsNotable
   
   belongs_to :feature
-  belongs_to :unit
+  #belongs_to :unit
   has_many :imports, :as => 'item', :dependent => :destroy
   
   def unit

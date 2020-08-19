@@ -36,7 +36,7 @@
 #   def test_features_exist
 #     feature = Feature.find_by_pid("f0")
 #     assert_not_nil feature
-#     fa = Feature.find(:all)
+#     fa = Feature.all
 #     #assert fa.size == 5
 #   end
 #   
@@ -87,7 +87,7 @@
 #     # This test can't pass right now because we aren't using a full data set
 #     # Put it back in once we're ready to test all the data 
 #     # ensure every feature has an object type
-#     #eos#features = Feature.find(:all)
+#     #eos#features = Feature.all
 #     #eos#features.each do |f|
 #     #eos#    assert f.object_types.size > 0, "#{f.pid} has no ObjectType"
 #     #eos#end
@@ -160,7 +160,7 @@
 #     assert Citation.find(:all, :conditions => ["citable_type='FeatureName'"]).size > 0
 #     
 #     # Check for the things all objects should have 
-#     features = Feature.find(:all)
+#     features = Feature.all
 #     ## add this back in after we've loaded all the features
 #     #features.each do |feature|
 #       #assert_not_nil feature.xml_document, "feature #{feature.pid} doesn't have an xml document"

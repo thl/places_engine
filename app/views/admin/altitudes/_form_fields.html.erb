@@ -18,6 +18,6 @@
     </div>
 	<div class="row">
 <%= f.label(:unit).s %>
-<%= f.collection_select(:unit_id, Unit.options, :id, :title, { :include_blank => false }, class: 'form-control form-select ss-select selectpicker') %>
+<%= f.collection_select(:unit_id, Unit.order(:order), :id, :title, { :include_blank => false }, class: 'form-control form-select ss-select selectpicker') %>
 	</div>
 </fieldset>
