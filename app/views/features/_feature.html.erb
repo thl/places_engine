@@ -14,14 +14,14 @@
 <%=   summary.content.html_safe %>
       </div>
 <%  end %>
-<%= render :partial => 'feature_types', :locals => {:feature => feature} %><br/>
-<%  closest_fid_with_shapes = feature.closest_feature_with_shapes(:logged_in? => logged_in?)
+<%= render partial: 'feature_types', locals: {feature: feature} %><br/>
+<%  closest_fid_with_shapes = feature.closest_feature_with_shapes(logged_in?: logged_in?)
     if closest_fid_with_shapes.nil?
       shapes = []
       map_fid = nil
     else
       shapes = closest_fid_with_shapes.shapes
-      shapes = shapes.where(:is_public => true) if !logged_in?
+      shapes = shapes.where(is_public: true) if !logged_in?
       map_fid = closest_fid_with_shapes.fid
     end
 	illustration = feature.illustration
@@ -30,9 +30,9 @@
 	  rendered_width = picture.width.nil? || picture.width>576 ? 576 : picture.width %>
       <div class='resource-overview-image'>
 <%    if picture.instance_of?(MmsIntegration::Picture) %>
-<%=     link_to image_tag(picture.url, :width => rendered_width), MmsIntegration::Medium.element_url(picture.id, :format => 'html') %>
+<%=     link_to image_tag(picture.url, width: rendered_width), MmsIntegration::Medium.element_url(picture.id, format: '') %>
 <%    else %>
-<%=     link_to image_tag(picture.url, :width => rendered_width), picture.url %>
+<%=     link_to image_tag(picture.url, width: rendered_width), picture.url %>
 <%    end
       place = illustration.place
       if place.nil?
@@ -64,52 +64,52 @@
             InsetMap.init({geoserverUrl: '<%= geoserver_url %>' });
 <%        end %>
           <p class = "view-on-map">
-<%=         link_to "#{image_tag("#{InterfaceUtils::Server.get_thl_url}/global/images/icon-map-simple.gif", :alt => "")} #{ts 'map.full'}".html_safe, "#{InterfaceUtils::Server.get_thl_url}/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}" %>
-<%=         link_to "#{image_tag("#{InterfaceUtils::Server.get_thl_url}/global/images/icon-google-maps.png", :alt => "")}#{ts 'map.google'}".html_safe, "http://maps.google.com/maps?q=http://places.thlib.org"+url_for(:action => :gis_resources, :fids => map_fid, :format => "kmz"), :target => "_blank" %>&nbsp;
-<%=         link_to "#{image_tag("#{InterfaceUtils::Server.get_thl_url}/global/images/icon-google-earth.png", :alt => "")} #{ts 'map.earth'}".html_safe, {:action => :gis_resources, :fids => map_fid, :format => "kmz"}, :target => "_blank" %>
+<%=         link_to "#{image_tag("#{InterfaceUtils::Server.get_thl_url}/global/images/icon-map-simple.gif", alt: '')} #{ts 'map.full'}".html_safe, "#{InterfaceUtils::Server.get_thl_url}/places/maps/interactive/#fid:#{map_fid};language:#{current_view.code}" %>
+<%=         link_to "#{image_tag("#{InterfaceUtils::Server.get_thl_url}/global/images/icon-google-maps.png", alt: '')}#{ts 'map.google'}".html_safe, 'http://maps.google.com/maps?q=http://places.thlib.org' + url_for(action: :gis_resources, fids: map_fid, format: 'kmz'), target: '_blank' %>&nbsp;
+<%=         link_to "#{image_tag("#{InterfaceUtils::Server.get_thl_url}/global/images/icon-google-earth.png", alt: '')} #{ts 'map.earth'}".html_safe, {action: :gis_resources, fids: map_fid, format: 'kmz'}, target: '_blank' %>
           </p>
         </div> <!-- END map-canvas -->
      </div> <!-- END map-renditions -->
 <%  end %>
     <div style="clear: both;"></div>
 <div id="accordion" class="panel-group">
-<% category_features = feature.category_features.where(:type => nil) %>
+<% category_features = feature.category_features.where(type: nil) %>
 <% if !category_features.empty? %>
   <section class="panel panel-default">
     <div class="panel-heading">
-      <h6><a href="#collapseOne" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle"><span class="glyphicon glyphicon-plus"></span><%= CategoryFeature.model_name.human(:count => category_features.size).titleize.s %></a></h6>
+      <h6><a href="#collapseOne" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle"><span class="glyphicon glyphicon-plus"></span><%= CategoryFeature.model_name.human(count: category_features.size).titleize.s %></a></h6>
     </div>
     <div id="collapseOne" class="panel-collapse collapse in">
       <div class="panel-body">
-<%=     render :partial => 'topics', :locals => {feature: feature, category_features: category_features} %>
+<%=     render partial: 'topics', locals: {feature: feature, category_features: category_features} %>
       </div>
     </div>
   </section>
 <% end %>
   <section class="panel panel-default">
     <div class="panel-heading">
-      <h6><a class="accordion-toggle collapsed" data-parent="#accordion" data-toggle="collapse" href="#collapseTwo" aria-expanded="true"><span class="glyphicon glyphicon-plus"></span><%= FeatureName.model_name.human(:count => feature.names.size).titleize.s %></a></h6>
+      <h6><a class="accordion-toggle collapsed" data-parent="#accordion" data-toggle="collapse" href="#collapseTwo" aria-expanded="true"><span class="glyphicon glyphicon-plus"></span><%= FeatureName.model_name.human(count: feature.names.size).titleize.s %></a></h6>
     </div>
     <div id="collapseTwo" class="panel-collapse collapse">
       <div class="panel-body">
 <%=     feature_name_ul(feature,false) %>
         <dl class="no-style">
 <%      feature.names.roots.order('position').each do |name| %>
-<%=       "<dt><strong>#{ts(:for, :what => FeatureName.human_attribute_name(:etymology), :whom => name.name.to_s)}:</dt></strong><dd>#{name.etymology.s}</dd>".html_safe unless name.etymology.blank? %>
+<%=       "<dt><strong>#{ts(:for, what: FeatureName.human_attribute_name(:etymology), whom: name.name.to_s)}:</dt></strong><dd>#{name.etymology.s}</dd>".html_safe unless name.etymology.blank? %>
 <%      end %>
         </dl>
-<%=     note_popup_link_list_for(feature, {:association_type => FeatureName.name}) %>
+<%=     note_popup_link_list_for(feature, {association_type: FeatureName.name}) %>
       </div>
     </div>
   </section>
   <section class="panel panel-default">
     <div class="panel-heading">
-      <h6><a href="#collapseThree" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= ts 'id.this', :count => :many %></a></h6>
+      <h6><a href="#collapseThree" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= ts 'id.this', count: :many %></a></h6>
     </div>
     <div id="collapseThree" class="panel-collapse collapse">
       <div class="panel-body">
 <%      if show_old_pid %>
-          <p><%= "#{ts :current, :what => Feature.human_attribute_name(:pid)}: #{feature.pid}" %></p>
+          <p><%= "#{ts :current, what: Feature.human_attribute_name(:pid)}: #{feature.pid}" %></p>
           <p><%= "#{Feature.human_attribute_name(:old_pid).s}: #{feature.old_pid}" %></p>
 <%      else %>
           <p><%= "#{Feature.human_attribute_name(:pid).s}: #{feature.pid}" %></p>
@@ -121,7 +121,7 @@
 <%=       time_units_for(geo_code) %>
         </p>
 <%      end %>
-<%=     note_popup_link_list_for(feature, {:association_type => FeatureGeoCode.name}) %>
+<%=     note_popup_link_list_for(feature, {association_type: FeatureGeoCode.name}) %>
       </div>
     </div>
   </section>
@@ -131,7 +131,7 @@
     if altitude_size > 0 %>
     <section class="panel panel-default">
       <div class="panel-heading">
-        <h6><a href="#collapseFour" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= Altitude.model_name.human(:count => altitude_size).titleize.s %></a></h6>
+        <h6><a href="#collapseFour" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= Altitude.model_name.human(count: altitude_size).titleize.s %></a></h6>
       </div>
       <div id="collapseFour" class="panel-collapse collapse">
         <div class="panel-body">
@@ -155,13 +155,13 @@
       </div>
     </section>
 <%  end
-    #feature.closest_feature_with_shapes(:logged_in? => logged_in?)
+    #feature.closest_feature_with_shapes(logged_in?: logged_in?)
     #if !shapes.empty? 
-  if feature.has_shapes?(:logged_in? => logged_in?)
+  if feature.has_shapes?(logged_in?: logged_in?)
     if !shapes.empty? %>
     <section class="panel panel-default">
       <div class="panel-heading">
-        <h6><a href="#collapseFive" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= Shape.model_name.human(:count => shapes.size).titleize.s %></a></h6>
+        <h6><a href="#collapseFive" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= Shape.model_name.human(count: shapes.size).titleize.s %></a></h6>
       </div>
       <div id="collapseFive" class="panel-collapse collapse">
         <div class="panel-body">
@@ -185,24 +185,24 @@
 <%    end %>
 <%=   content_tag :h3, ts('resource.gis.feature_alone') %>
       <ul>
-        <li><%= link_to 'GML', gis_resources_url(:fids => feature.fid, :format => 'gml') %></li>
-        <li><%= link_to 'KML', gis_resources_url(:fids => feature.fid, :format => 'kml') %></li>
-        <li><%= link_to 'Shapefile', gis_resources_url(:fids => feature.fid, :format => 'shp') %></li>
+        <li><%= link_to 'GML', gis_resources_url(fids: feature.fid, format: 'gml') %></li>
+        <li><%= link_to 'KML', gis_resources_url(fids: feature.fid, format: 'kml') %></li>
+        <li><%= link_to 'Shapefile', gis_resources_url(fids: feature.fid, format: 'shp') %></li>
       </ul>
 <%    if !feature.descendants.empty? %>
 <%=     content_tag :h3, ts('resource.gis.contained_features') %>
 <%      # For features with roughly > 300 descendants, we're getting a timeout, so we'll temporarily fix this by not allowing these to be downloaded.
         if feature.descendants.length < 300 %>
         <ul>
-          <li><%= link_to 'GML', gis_resources_url(:fids => feature.fid, :format => 'gml', :contained => '1') %></li>
-          <li><%= link_to 'KML', gis_resources_url(:fids => feature.fid, :format => 'kml', :contained => '1') %></li>
-          <li><%= link_to 'Shapefile', gis_resources_url(:fids => feature.fid, :format => 'shp', :contained => '1') %></li>
+          <li><%= link_to 'GML', gis_resources_url(fids: feature.fid, format: 'gml', contained: '1') %></li>
+          <li><%= link_to 'KML', gis_resources_url(fids: feature.fid, format: 'kml', contained: '1') %></li>
+          <li><%= link_to 'Shapefile', gis_resources_url(fids: feature.fid, format: 'shp', contained: '1') %></li>
         </ul>
 <%      else %>
           <p><%= ts 'snippet.feature.too_many' %></p>
 <%      end
       end %>
-<%=   note_popup_link_list_for(feature, {:association_type => Shape.name}) %>
+<%=   note_popup_link_list_for(feature, {association_type: Shape.name}) %>
         </div>
       </div>
     </section>
