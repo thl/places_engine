@@ -57,6 +57,7 @@ Rails.application.routes.draw do
   resources :category_features do
     resources :notes, :citations
   end
+  resources :media, only: 'show', path: 'media_objects'
   resources :feature_object_types do
     resources :notes, :citations
   end

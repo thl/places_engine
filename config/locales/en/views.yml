@@ -45,7 +45,6 @@ en:
             not:
                 contains: 'This Feature does not contain other Features.'
                 found: 'Sorry, this feature couldn''t be found. Please use the menu on the right to search or browse for a feature.'
-                related: 'Currently not related to any other Feature Names.'
             return: 'Return to this feature''s home page'
             too_many: 'Sorry, this feature contains too many features for us to currently be able to provide this data.'
             type:
