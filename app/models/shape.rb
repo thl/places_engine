@@ -65,19 +65,7 @@ class Shape < ActiveRecord::Base
     # if done with rgeo:
     # self.geometry.as_text
     # If done directly from db:
-    shape = Shape.select("json_build_object(
-             'type',       'Feature',
-             'id',         gid, -- the GeoJson spec includes an 'id' field, but it is optional
-             'geometry',   ST_AsGeoJSON(ST_ForcePolygonCCW(geometry))::json,
-             'properties', json_build_object(
-                 -- list of fields
-                 'area', area,
-                 'altitude', altitude,
-                 'type', ST_GeometryType(geometry)
-             )
-         )
-    ").find(self.id)
-    shape.nil? ? nil : shape.json_build_object.to_json
+    Shape.select('ST_AsGeoJSON(geometry) as geojson').find(self.id).geojson
   end
   
   def as_ewkt

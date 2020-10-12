@@ -272,7 +272,7 @@ module PlacesEngine
             {id: "#{self.uid}_shape_#{shape.id}",
              block_child_type: ['places_shape'],
              block_type: ['child'],
-             geometry_grptgeom: shape.as_geojson,
+             geometry_rptgeom: shape.as_geojson,
              geometry_type_s: shape.geo_type_text,
              area_f: shape.area,
              altitude_i: shape.altitude,
