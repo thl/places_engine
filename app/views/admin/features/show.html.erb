@@ -4,177 +4,172 @@
 </div>
 <br class="clear"/>
 <div id="featureShow">
-<div id="accordion" class="panel-group">
-  <section class="panel panel-default">
-    <div class="panel-heading">
-      <h6><a href="#collapseOne" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle"><span class="glyphicon glyphicon-plus"></span><%= ts 'information.general' %></a></h6>
-    </div>
-    <div id="collapseOne" class="panel-collapse collapse in">
-      <div class="panel-body">
-       <legend><%= ts 'information.general' %> <%= edit_item_link object.fid %></legend>
-       <div class="row">
-       <label><%= Feature.human_attribute_name(:pid).s %></label> <span><%= object.pid %></span>
+  <div id="accordion" class="panel-group">
+    <section class="panel panel-default">
+      <div class="panel-heading">
+        <h6><a href="#collapseOne" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle"><span class="glyphicon glyphicon-plus"></span><%= ts 'information.general' %></a></h6>
       </div>
-<%   if !object.old_pid.blank? %>
-      <div class="row">
-        <label><%= Feature.human_attribute_name(:old_pid).s %></label> <span><%= object.old_pid %></span>
-      </div>
-<%    end %>
-      <div class="row">
-        <label><%= Feature.human_attribute_name(:is_public).s %></label> <span><%= object.is_public? ? "Yes" : "No" %></span>
-      </div>
-    </div> <!-- END panel-body -->
-  </div> <!-- END collapseOne -->
-</section> <!-- END panel -->
+      <div id="collapseOne" class="panel-collapse collapse in">
+        <div class="panel-body">
+          <legend><%= ts 'information.general' %> <%= edit_item_link object.fid %></legend>
+          <div class="row">
+            <label><%= Feature.human_attribute_name(:pid).s %></label> <span><%= object.pid %></span>
+          </div>
+<%      if !object.old_pid.blank? %>
+          <div class="row">
+            <label><%= Feature.human_attribute_name(:old_pid).s %></label> <span><%= object.old_pid %></span>
+          </div>
+<%      end %>
+          <div class="row">
+            <label><%= Feature.human_attribute_name(:is_public).s %></label> <span><%= object.is_public? ? "Yes" : "No" %></span>
+          </div>
+        </div> <!-- END panel-body -->
+      </div> <!-- END collapseOne -->
+    </section> <!-- END panel -->
 <% if current_user.admin? %>
-  <section class="panel panel-default">
-    <div class="panel-heading">
-      <h6><a href="#collapseTwo" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= Collection.model_name.human(count: :many).titleize.s %></a></h6>
-    </div>
-    <div id="collapseTwo" class="panel-collapse collapse">
-      <div class="panel-body">
-     <div class="left highlight">
-<%=    new_item_link [object, :affiliation] %>
-     </div>
-     <br class="clear"/>
-<%=  render :partial => 'admin/affiliations/list', :locals => { :list => object.affiliations } %>
-	</div> <!-- END panel-body -->
-	</div> <!-- END collapseTwo -->
-</section>
+    <section class="panel panel-default">
+      <div class="panel-heading">
+        <h6><a href="#collapseTwo" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= Collection.model_name.human(count: :many).titleize.s %></a></h6>
+      </div>
+      <div id="collapseTwo" class="panel-collapse collapse">
+        <div class="panel-body">
+          <div class="left highlight">
+<%=         new_item_link [object, :affiliation] %>
+          </div>
+          <br class="clear"/>
+<%=       render :partial => 'admin/affiliations/list', :locals => { :list => object.affiliations } %>
+        </div> <!-- END panel-body -->
+      </div> <!-- END collapseTwo -->
+    </section>
 <% end %>
-  <section class="panel panel-default">
-    <div class="panel-heading">
-      <h6><a href="#collapseThree" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= FeatureName.model_name.human(:count => :many).titleize.s %></a></h6>
-    </div>
-    <div id="collapseThree" class="panel-collapse collapse">
-      <div class="panel-body">
-    <legend><%= FeatureName.model_name.human(:count => :many).titleize.s %> <%= link_to ts('change.record', :what => t('priorit.ization_of.names')), prioritize_feature_names_admin_features_path(object) %></legend>
-    <div class="left highlight">
-<%= new_item_link [object, :feature_name] %> |
-<%= link_to ts('clone.into', :what => FeatureName.model_name.human(:count => :many), :whom => t('new.record', :what => Feature.model_name.human)), clone_admin_feature_path(object.fid), :method => :post, :class => 'item-icon-new', :title => 'Clone feature names into new feature' %>
-    </div>
-    <br class="clear"/>
-<%= render :partial => 'admin/feature_names/feature_names', :locals => { :list => object.names } %>
-    <dl class="no-style">
-<%  object.names.roots.order('position').each do |name|
-	  path = admin_feature_feature_name_path(name.feature, name) %>
-<%=   ("<dt><strong>Etymology of #{name.name} (" + list_actions_for_item(name, :delete_path => path, :view_path => path,
-        :edit_path => edit_admin_feature_feature_name_path(name.feature, name), :hide_delete => true
-      ) + "):</strong></dt><dd>#{name.etymology}</dd>").html_safe unless name.etymology.blank? %>
-<%  end %>
-    </dl>
-<%= association_note_list_fieldset(FeatureName.name) %>
-		</div> <!-- END paneld-body -->
-		</div> <!-- END collapseThree -->
-	</section>
+    <section class="panel panel-default">
+      <div class="panel-heading">
+        <h6><a href="#collapseThree" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= FeatureName.model_name.human(:count => :many).titleize.s %></a></h6>
+      </div>
+      <div id="collapseThree" class="panel-collapse collapse">
+        <div class="panel-body">
+          <legend><%= FeatureName.model_name.human(:count => :many).titleize.s %> <%= link_to ts('change.record', :what => t('priorit.ization_of.names')), prioritize_feature_names_admin_features_path(object) %></legend>
+          <div class="left highlight">
+<%=         new_item_link [object, :feature_name] %> |
+<%=         link_to ts('clone.into', :what => FeatureName.model_name.human(:count => :many), :whom => t('new.record', :what => Feature.model_name.human)), clone_admin_feature_path(object.fid), :method => :post, :class => 'item-icon-new', :title => 'Clone feature names into new feature' %>
+          </div>
+          <br class="clear"/>
+<%=       render :partial => 'admin/feature_names/feature_names', :locals => { :list => object.names } %>
+          <dl class="no-style">
+<%          object.names.roots.order('position').each do |name|
+              path = admin_feature_feature_name_path(name.feature, name) %>
+<%=           ("<dt><strong>Etymology of #{name.name} (" + list_actions_for_item(name, :delete_path => path, :view_path => path,
+              :edit_path => edit_admin_feature_feature_name_path(name.feature, name), :hide_delete => true
+              ) + "):</strong></dt><dd>#{name.etymology}</dd>").html_safe unless name.etymology.blank? %>
+<%          end %>
+          </dl>
+<%=       association_note_list_fieldset(FeatureName.name) %>
+        </div> <!-- END paneld-body -->
+      </div> <!-- END collapseThree -->
+    </section>
     <section class="panel panel-default">
       <div class="panel-heading">
         <h6><a href="#collapseFour" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= Caption.model_name.human(:count => :many).titleize.s %></a></h6>
       </div>
       <div id="collapseFour" class="panel-collapse collapse">
         <div class="panel-body">
-<%= highlighted_new_item_link [object, :caption] %>
-    <br class="clear"/>
-<%= render :partial => 'admin/captions/list', :locals => { :list => object.captions } %>
-		</div> <!-- END panel-body -->
-	</div> <!-- END collapseFour -->
-</section>
-<section class="panel panel-default">
+<%=       highlighted_new_item_link [object, :caption] %>
+          <br class="clear"/>
+<%=       render :partial => 'admin/captions/list', :locals => { :list => object.captions } %>
+        </div> <!-- END panel-body -->
+      </div> <!-- END collapseFour -->
+    </section>
+    <section class="panel panel-default">
       <div class="panel-heading">
         <h6><a href="#collapseFive" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= Summary.model_name.human(:count => :many).titleize.s %></a></h6>
       </div>
       <div id="collapseFive" class="panel-collapse collapse">
         <div class="panel-body">
-<%= highlighted_new_item_link [object, :summary] %>
-    <br class="clear"/>
-<%= render :partial => 'admin/summaries/list', :locals => { :list => object.summaries } %>
-</div> <!-- END panel-body -->
-</div> <!-- END collapseFive -->
-</section>
+<%=       highlighted_new_item_link [object, :summary] %>
+          <br class="clear"/>
+<%=       render :partial => 'admin/summaries/list', :locals => { :list => object.summaries } %>
+        </div> <!-- END panel-body -->
+      </div> <!-- END collapseFive -->
+    </section>
     <section class="panel panel-default">
       <div class="panel-heading">
         <h6><a href="#collapseSix" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= Illustration.model_name.human(:count => :many).titleize.s %></a></h6>
       </div>
       <div id="collapseSix" class="panel-collapse collapse">
         <div class="panel-body">
-<%= highlighted_new_item_link [object, :illustration] %>
-    <br class="clear"/>
-<%= render :partial => 'admin/illustrations/list', :locals => { :list => object.illustrations } %>
-		</div> <!-- END panel-body -->
-	</div> <!-- END collapseSix -->
-</section>
+<%=       highlighted_new_item_link [object, :illustration] %>
+          <br class="clear"/>
+<%=       render :partial => 'admin/illustrations/list', :locals => { :list => object.illustrations } %>
+        </div> <!-- END panel-body -->
+      </div> <!-- END collapseSix -->
+    </section>
     <section class="panel panel-default">
       <div class="panel-heading">
         <h6><a href="#collapseSeven" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= Feature.human_attribute_name(:object_type, :count => :many).s %></a></h6>
       </div>
       <div id="collapseSeven" class="panel-collapse collapse">
         <div class="panel-body">
-    <legend><%= Feature.human_attribute_name(:object_type, :count => :many).s %> <%= link_to ts('change.record', :what => t('priorit.ization_of.feature_types')), prioritize_feature_object_types_admin_features_path(object) %></legend>
-<%= highlighted_new_item_link [object, :feature_object_type] %>
-    <br class="clear"/>
-<%= render :partial => 'admin/feature_object_types/list', :locals => { :list => object.feature_object_types.order(:position), :hide_feature_id => true } %>
-<%= association_note_list_fieldset(FeatureObjectType.name) %>
-		</div> <!-- END panel-body -->
-	</div> <!-- END collapseSeven -->
-</section>
-
+          <legend><%= Feature.human_attribute_name(:object_type, :count => :many).s %> <%= link_to ts('change.record', :what => t('priorit.ization_of.feature_types')), prioritize_feature_object_types_admin_features_path(object) %></legend>
+<%=       highlighted_new_item_link [object, :feature_object_type] %>
+          <br class="clear"/>
+<%=       render :partial => 'admin/feature_object_types/list', :locals => { :list => object.feature_object_types.order(:position), :hide_feature_id => true } %>
+<%=       association_note_list_fieldset(FeatureObjectType.name) %>
+        </div> <!-- END panel-body -->
+      </div> <!-- END collapseSeven -->
+    </section>
     <section class="panel panel-default">
       <div class="panel-heading">
         <h6><a href="#collapseEight" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= CategoryFeature.model_name.human(:count => :many).titleize.s %></a></h6>
       </div>
       <div id="collapseEight" class="panel-collapse collapse">
         <div class="panel-body">
-<%= highlighted_new_item_link [object, :category_feature] %>
-    <br class="clear"/>
-<%= render :partial => 'admin/category_features/list', :locals => { :list => object.category_features.where(:type => nil), :hide_feature_id => true } %>
-<%= association_note_list_fieldset(CategoryFeature.name) %>
-		</div> <!-- END panel-body -->
-	</div> <!-- END collapseEight -->
-</section>
-
+<%=       highlighted_new_item_link [object, :category_feature] %>
+          <br class="clear"/>
+<%=       render :partial => 'admin/category_features/list', :locals => { :list => object.category_features.where(:type => nil), :hide_feature_id => true } %>
+<%=       association_note_list_fieldset(CategoryFeature.name) %>
+        </div> <!-- END panel-body -->
+      </div> <!-- END collapseEight -->
+    </section>
     <section class="panel panel-default">
       <div class="panel-heading">
         <h6><a href="#collapseNine" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= FeatureGeoCode.model_name.human(:count => :many).titleize.s %></a></h6>
       </div>
       <div id="collapseNine" class="panel-collapse collapse">
         <div class="panel-body">
-<%= highlighted_new_item_link [object, :feature_geo_code] %>
-    <br class="clear"/>
-<%= render :partial => 'admin/feature_geo_codes/list', :locals => { :list => object.geo_codes } %>
-<%= association_note_list_fieldset(FeatureGeoCode.name) %>
-		</div> <!-- END panel-body -->
-	</div> <!-- END collapseNine -->
-</section>
-
+<%=       highlighted_new_item_link [object, :feature_geo_code] %>
+          <br class="clear"/>
+<%=       render :partial => 'admin/feature_geo_codes/list', :locals => { :list => object.geo_codes } %>
+<%=       association_note_list_fieldset(FeatureGeoCode.name) %>
+        </div> <!-- END panel-body -->
+      </div> <!-- END collapseNine -->
+    </section>
     <section class="panel panel-default">
       <div class="panel-heading">
         <h6><a href="#collapseTen" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= Shape.model_name.human(:count => :many).titleize.s %></a></h6>
       </div>
       <div id="collapseTen" class="panel-collapse collapse">
         <div class="panel-body">
-    <legend><%= Shape.model_name.human(:count => :many).titleize.s %> <%= link_to ts('change.record', :what => t('priorit.ization_of.locations')), prioritize_feature_shapes_admin_features_path(object) %></legend>
-<%= highlighted_new_item_link [object, :shape] %>
-    <br class="clear"/>
-<%= render :partial => 'admin/shapes/list', :locals => { :list => object.shapes.order(:position) } %>
-<%= association_note_list_fieldset(Shape.name) %>
-		</div> <!-- END panel-body -->
-	</div> <!-- END collapseTen -->
-</section>
-
+          <legend><%= Shape.model_name.human(:count => :many).titleize.s %> <%= link_to ts('change.record', :what => t('priorit.ization_of.locations')), prioritize_feature_shapes_admin_features_path(object) %></legend>
+<%=       highlighted_new_item_link [object, :shape] %>
+          <br class="clear"/>
+<%=       render :partial => 'admin/shapes/list', :locals => { :list => object.shapes.order(:position) } %>
+<%=       association_note_list_fieldset(Shape.name) %>
+        </div> <!-- END panel-body -->
+      </div> <!-- END collapseTen -->
+    </section>
     <section class="panel panel-default">
       <div class="panel-heading">
         <h6><a href="#collapseEleven" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= Altitude.model_name.human(:count => :many).titleize.s %></a></h6>
       </div>
       <div id="collapseEleven" class="panel-collapse collapse">
         <div class="panel-body">
-<%= highlighted_new_item_link [object, :altitude] %>
-    <br class="clear"/>
-<%= render :partial => 'admin/altitudes/list', :locals => { :list => object.altitudes } %>
-<%= association_note_list_fieldset(Altitude.name) %>
-		</div> <!-- END panel-body -->
-	</div> <!-- END collapseEleven -->
-</section>
-
+<%=       highlighted_new_item_link [object, :altitude] %>
+          <br class="clear"/>
+<%=       render :partial => 'admin/altitudes/list', :locals => { :list => object.altitudes } %>
+<%=       association_note_list_fieldset(Altitude.name) %>
+        </div> <!-- END panel-body -->
+      </div> <!-- END collapseEleven -->
+    </section>
 <% if current_user.admin? || object.authorized_for_descendants?(current_user) %>
     <section class="panel panel-default">
       <div class="panel-heading">
@@ -182,30 +177,43 @@
       </div>
       <div id="collapseTwelve" class="panel-collapse collapse">
         <div class="panel-body">
-     <div class="left highlight">
-<%=    new_item_link new_admin_feature_path(parent_id: object.fid), ts('new.record', :what => t(:child, :count => 1)) %> |
-<%=    new_item_link locate_for_relation_admin_feature_path(object.fid), ts('new.record', :what => FeatureRelation.model_name.human) %>
-     </div>
-     <br class="clear"/>
-<%=  render :partial => 'admin/feature_relations/list', :locals => { :list => object.all_relations, :object => object, :use_first => false, :use_names => true } %>
-<%=  association_note_list_fieldset(FeatureRelation.name) %>
-		</div> <!-- END panel-body -->
-	</div> <!-- END collapseTwelve -->
-</section>
-<%  end %>
-
+          <div class="left highlight">
+<%=         new_item_link new_admin_feature_path(parent_id: object.fid), ts('new.record', :what => t(:child, :count => 1)) %> |
+<%=         new_item_link locate_for_relation_admin_feature_path(object.fid), ts('new.record', :what => FeatureRelation.model_name.human) %>
+          </div>
+          <br class="clear"/>
+<%=       render :partial => 'admin/feature_relations/list', :locals => { :list => object.all_relations, :object => object, :use_first => false, :use_names => true } %>
+<%=       association_note_list_fieldset(FeatureRelation.name) %>
+        </div> <!-- END panel-body -->
+      </div> <!-- END collapseTwelve -->
+    </section>
+<% end %>
     <section class="panel panel-default">
       <div class="panel-heading">
         <h6><a href="#collapseThirteen" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= Description.model_name.human(:count => :many).titleize.s %></a></h6>
       </div>
       <div id="collapseThirteen" class="panel-collapse collapse">
         <div class="panel-body">
-<%= highlighted_new_item_link [object, :description] %>
-    <br class="clear"/>
-<%= render :partial => 'admin/descriptions/descriptions_list', :locals => { :list => object.descriptions.order('is_primary DESC, title') } %>
-<%= association_note_list_fieldset(Description.name) %>
-		</div> <!-- END panel-body -->
-	</div> <!-- END collapseThirteen -->
-</section>
-</div> <!-- END accordion -->
+<%=       highlighted_new_item_link [object, :description] %>
+          <br class="clear"/>
+<%=       render :partial => 'admin/descriptions/descriptions_list', :locals => { :list => object.descriptions.order('is_primary DESC, title') } %>
+<%=       association_note_list_fieldset(Description.name) %>
+        </div> <!-- END panel-body -->
+      </div> <!-- END collapseThirteen -->
+    </section>
+    <section class="panel panel-default">
+      <div class="panel-heading">
+        <h6><a href="#collapseEssays" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= Essay.model_name.human(:count => :many).titleize.s %></a></h6>
+      </div>
+      <div id="collapseEssays" class="panel-collapse collapse">
+        <div class="panel-body">
+          <p>Homepage texts appear on the main overview place for the <%= Feature.model_name.human %>. Add texts to Mandala Texts first; see <a href="https://confluence.its.virginia.edu/display/KB/Texts+in+Mandala">this guide</a> for help. Homepage texts also need to be labeled using the <%= Feature.model_name.human %>; see <a href="https://confluence.its.virginia.edu/display/KB/Join+Related+Resources">this guide</a> for help.</p>
+          <br class="clear"/>
+<%=       highlighted_new_item_link [object, :essay], ts('new.record', what: t(Essay.model_name.human.titleize.s, count: 1)) %>
+          <br class="clear"/>
+<%=       render :partial => 'admin/essays/list', :locals => { :list => object.essays } %>
+        </div> <!-- END panel-body -->
+      </div> <!-- END collapseNine -->
+    </section>
+  </div> <!-- END accordion -->
 </div> <!-- END featureShow -->

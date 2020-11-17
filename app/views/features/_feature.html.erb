@@ -1,19 +1,7 @@
 <% edit_link_options = {target: true} %>
 <%= content_tag :h6, "#{feature_name_header(feature)} #{edit_item_link(admin_feature_path(feature.fid),"",edit_link_options) if logged_in? && object_authorized?(feature)}".html_safe %>
 <%= time_units_for(feature) %>
-<%  summary = feature.summary
-    if summary.nil?
-      caption = feature.caption
-      if !caption.nil? %>
-        <div class="summary-overview">
-<%=     caption.content.html_safe %>
-        </div>
-<%      end
-    else %>
-      <div class="summary-overview">
-<%=   summary.content.html_safe %>
-      </div>
-<%  end %>
+<%= render partial: 'summaries', locals: { feature: feature } %>
 <%= render partial: 'feature_types', locals: {feature: feature} %><br/>
 <%  closest_fid_with_shapes = feature.closest_feature_with_shapes(logged_in?: logged_in?)
     if closest_fid_with_shapes.nil?
@@ -24,10 +12,10 @@
       shapes = shapes.where(is_public: true) if !logged_in?
       map_fid = closest_fid_with_shapes.fid
     end
-	illustration = feature.illustration
+    illustration = feature.illustration
     if !illustration.nil?
       picture = feature.illustration.picture
-	  rendered_width = picture.width.nil? || picture.width>576 ? 576 : picture.width %>
+      rendered_width = picture.width.nil? || picture.width>576 ? 576 : picture.width %>
       <div class='resource-overview-image'>
 <%    if picture.instance_of?(MmsIntegration::Picture) %>
 <%=     link_to image_tag(picture.url, width: rendered_width), MmsIntegration::Medium.element_url(picture.id, format: '') %>
@@ -72,68 +60,31 @@
      </div> <!-- END map-renditions -->
 <%  end %>
     <div style="clear: both;"></div>
+<%= render partial: 'essays', locals: { feature: feature } %>
 <div id="accordion" class="panel-group">
 <% category_features = feature.category_features.where(type: nil) %>
 <% if !category_features.empty? %>
   <section class="panel panel-default">
     <div class="panel-heading">
-      <h6><a href="#collapseOne" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle"><span class="glyphicon glyphicon-plus"></span><%= CategoryFeature.model_name.human(count: category_features.size).titleize.s %></a></h6>
+      <h6><a href="#collapseTopics" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle"><span class="glyphicon glyphicon-plus"></span><%= CategoryFeature.model_name.human(count: category_features.size).titleize.s %></a></h6>
     </div>
-    <div id="collapseOne" class="panel-collapse collapse in">
+    <div id="collapseTopics" class="panel-collapse collapse in">
       <div class="panel-body">
 <%=     render partial: 'topics', locals: {feature: feature, category_features: category_features} %>
       </div>
     </div>
   </section>
 <% end %>
-  <section class="panel panel-default">
-    <div class="panel-heading">
-      <h6><a class="accordion-toggle collapsed" data-parent="#accordion" data-toggle="collapse" href="#collapseTwo" aria-expanded="true"><span class="glyphicon glyphicon-plus"></span><%= FeatureName.model_name.human(count: feature.names.size).titleize.s %></a></h6>
-    </div>
-    <div id="collapseTwo" class="panel-collapse collapse">
-      <div class="panel-body">
-<%=     feature_name_ul(feature,false) %>
-        <dl class="no-style">
-<%      feature.names.roots.order('position').each do |name| %>
-<%=       "<dt><strong>#{ts(:for, what: FeatureName.human_attribute_name(:etymology), whom: name.name.to_s)}:</dt></strong><dd>#{name.etymology.s}</dd>".html_safe unless name.etymology.blank? %>
-<%      end %>
-        </dl>
-<%=     note_popup_link_list_for(feature, {association_type: FeatureName.name}) %>
-      </div>
-    </div>
-  </section>
-  <section class="panel panel-default">
-    <div class="panel-heading">
-      <h6><a href="#collapseThree" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= ts 'id.this', count: :many %></a></h6>
-    </div>
-    <div id="collapseThree" class="panel-collapse collapse">
-      <div class="panel-body">
-<%      if show_old_pid %>
-          <p><%= "#{ts :current, what: Feature.human_attribute_name(:pid)}: #{feature.pid}" %></p>
-          <p><%= "#{Feature.human_attribute_name(:old_pid).s}: #{feature.old_pid}" %></p>
-<%      else %>
-          <p><%= "#{Feature.human_attribute_name(:pid).s}: #{feature.pid}" %></p>
-<%      end %>
-<%      feature.geo_codes.each do |geo_code| %>
-        <p>
-<%=       geo_code %>: <%= geo_code.geo_code_value %>
-<%=       note_popup_link_for(geo_code) %>
-<%=       time_units_for(geo_code) %>
-        </p>
-<%      end %>
-<%=     note_popup_link_list_for(feature, {association_type: FeatureGeoCode.name}) %>
-      </div>
-    </div>
-  </section>
+<%= render partial: 'common_accordions', locals: { feature: feature, show_old_pid: show_old_pid } %>
 <%  simple_altitudes = feature.shapes.collect(&:altitude).select{|a| !a.nil? }
     altitudes = feature.altitudes
     altitude_size = simple_altitudes.size + altitudes.size
     if altitude_size > 0 %>
     <section class="panel panel-default">
       <div class="panel-heading">
-        <h6><a href="#collapseFour" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= Altitude.model_name.human(count: altitude_size).titleize.s %></a></h6>
+        <h6><a href="#collapseAltitudes" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= Altitude.model_name.human(count: altitude_size).titleize.s %></a></h6>
       </div>
-      <div id="collapseFour" class="panel-collapse collapse">
+      <div id="collapseAltitudes" class="panel-collapse collapse">
         <div class="panel-body">
 <%=   altitude_size>1 ? '<ul>'.html_safe : '<p>'.html_safe %>
 <%    if simple_altitudes.size == 1 %>
@@ -161,9 +112,9 @@
     if !shapes.empty? %>
     <section class="panel panel-default">
       <div class="panel-heading">
-        <h6><a href="#collapseFive" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= Shape.model_name.human(count: shapes.size).titleize.s %></a></h6>
+        <h6><a href="#collapseShapes" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed"><span class="glyphicon glyphicon-plus"></span><%= Shape.model_name.human(count: shapes.size).titleize.s %></a></h6>
       </div>
-      <div id="collapseFive" class="panel-collapse collapse">
+      <div id="collapseShapes" class="panel-collapse collapse">
         <div class="panel-body">
 <%    if shapes.size>1 %>
         <ul>
@@ -207,7 +158,7 @@
       </div>
     </section>
 <%  end
-    end %>
+  end %>
 </div>
 <%= javascript_on_load do %>
       jQuery('[data-js-kmaps-popup]').kmapsPopup({
