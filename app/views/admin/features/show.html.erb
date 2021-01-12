@@ -11,7 +11,12 @@
       </div>
       <div id="collapseOne" class="panel-collapse collapse in">
         <div class="panel-body">
-          <legend><%= ts 'information.general' %> <%= edit_item_link object.fid %></legend>
+<%        path = object_path(object.fid) %>
+          <legend><%= ts 'information.general' %> <span class="listActions"><%= edit_item_link object.fid %>
+<%          if authorized?(path, :action => 'destroy') %>
+              | <%= delete_item_link path %>
+<%          end %></span>
+          </legend>
           <div class="row">
             <label><%= Feature.human_attribute_name(:pid).s %></label> <span><%= object.pid %></span>
           </div>
