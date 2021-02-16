@@ -146,7 +146,8 @@ module PlacesEngine
 
         object_types = self.object_types
 
-        child_documents = object_types.collect do |ft|
+        child_documents = self.feature_object_types.collect do |fot|
+          ft = fot.category
           cd = { id: "#{self.uid}_featureType_#{ft.id}",
                  related_uid_s: "subjects-#{ft.id}",
                  origin_uid_s: self.uid,
@@ -160,11 +161,10 @@ module PlacesEngine
                  feature_type_caption_t: ft.nested_captions.collect(&:content)
                }
           cd[:feature_type_caption_s] = ft.caption.content if !ft.caption.nil?
+          fot.notes.each { |n| n.rsolr_document_tags(cd, 'feature_type') }
           cd
         end
-        
         category_features = self.category_features.where(type: nil)
-        
         child_documents = child_documents + category_features.collect do |cf|
           c = cf.category
           next if c.nil?
@@ -189,9 +189,9 @@ module PlacesEngine
                }
           cd[:related_subjects_caption_s] = c.caption.content if !c.caption.nil?
           cd[:related_subjects_parent_title_s] = c.parent.header if !c.parent.nil?
+          cf.notes.each { |n| n.rsolr_document_tags(cd, 'related_subjects') }
           cd
         end.compact
-        
 				parent_relations = self.all_parent_relations
 				child_documents = child_documents + parent_relations.collect do |r|
           rf = r.parent_node
@@ -203,7 +203,7 @@ module PlacesEngine
           relation_type = r.feature_relation_type
           label = relation_type.asymmetric_label
           label = relation_type.label if label.blank?
-          { id: "#{self.uid}_#{relation_type.code}_#{rf.fid}",
+          relation_tag = { id: "#{self.uid}_#{relation_type.code}_#{rf.fid}",
             related_uid_s: rf.uid,
             origin_uid_s: self.uid,
             block_child_type: ['related_places'],
@@ -220,9 +220,11 @@ module PlacesEngine
             related_places_relation_label_s: label,
             related_places_relation_code_s: relation_type.code,
             related_kmaps_node_type: 'parent',
-            block_type: ['child'] }
+            block_type: ['child']
+          }
+          r.notes.each { |n| n.rsolr_document_tags(relation_tag, 'related_places') }
+          relation_tag
 				end.flatten
-        
 				child_relations = self.all_child_relations
         child_documents = child_documents + child_relations.collect do |r|
           rf = r.child_node
@@ -234,7 +236,7 @@ module PlacesEngine
           relation_type = r.feature_relation_type
           code = relation_type.asymmetric_code
           code = relation_type.code if code.blank?
-          { id: "#{self.uid}_#{code}_#{rf.fid}",
+          relation_tag = { id: "#{self.uid}_#{code}_#{rf.fid}",
             related_uid_s: rf.uid,
             origin_uid_s: self.uid,
             block_child_type: ['related_places'],
@@ -251,12 +253,14 @@ module PlacesEngine
             related_places_relation_label_s: relation_type.label,
             related_places_relation_code_s: code,
             related_kmaps_node_type: 'child',
-            block_type: ['child'] }
+            block_type: ['child']
+          }
+          r.notes.each { |n| n.rsolr_document_tags(relation_tag, 'related_places') }
+          relation_tag
         end.flatten
         associated_subjects = category_features.collect(&:category).compact
-
         child_documents = child_documents + self.altitudes.collect do |altitude|
-          {id: "#{self.uid}_altitude_#{altitude.id}",
+          altitude_tag = { id: "#{self.uid}_altitude_#{altitude.id}",
            block_child_type: ['places_altitude'],
            block_type: ['child'],
            maximum_i: altitude.maximum,
@@ -265,21 +269,23 @@ module PlacesEngine
            estimate_s: altitude.estimate,
            unit_s: altitude.unit.title,
           }
+          altitude.notes.each { |n| n.rsolr_document_tags(altitude_tag) }
+          altitude_tag
         end
-        child_documents = child_documents +
-          self.shapes.where(is_public: true).collect do |shape|
+        child_documents = child_documents + self.shapes.where(is_public: true).collect do |shape|
           #self.shapes.where("is_public = true AND ST_GeometryType(geometry) != 'ST_Point'").collect do |shape|
-            {id: "#{self.uid}_shape_#{shape.id}",
-             block_child_type: ['places_shape'],
-             block_type: ['child'],
-             geometry_rptgeom: shape.as_geojson,
-             geometry_type_s: shape.geo_type_text,
-             area_f: shape.area,
-             altitude_i: shape.altitude,
-             position_i: shape.position,
-            }
-          end
-
+          shape_tag = { id: "#{self.uid}_shape_#{shape.id}",
+            block_child_type: ['places_shape'],
+            block_type: ['child'],
+            geometry_rptgeom: shape.as_geojson,
+            geometry_type_s: shape.geo_type_text,
+            area_f: shape.area,
+            altitude_i: shape.altitude,
+            position_i: shape.position
+          }
+          shape.notes.each { |n| n.rsolr_document_tags(shape_tag) }
+          shape_tag
+        end
         doc = { tree: 'places',
                 feature_types: object_types.collect(&:header),
                 feature_type_ids: object_types.collect(&:id),
