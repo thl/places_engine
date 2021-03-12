@@ -143,9 +143,6 @@ module PlacesEngine
       def document_for_rsolr
         v = View.get_by_code(KmapsEngine::ApplicationSettings.default_view_code)
         per = Perspective.get_by_code(KmapsEngine::ApplicationSettings.default_perspective_code)
-
-        object_types = self.object_types
-
         child_documents = self.feature_object_types.collect do |fot|
           ft = fot.category
           cd = { id: "#{self.uid}_featureType_#{ft.id}",
@@ -159,9 +156,14 @@ module PlacesEngine
                  feature_type_id_i: ft.id,
                  feature_type_caption_s: ft.caption,
                  feature_type_caption_t: ft.nested_captions.collect(&:content)
-               }
-          cd[:feature_type_caption_s] = ft.caption.content if !ft.caption.nil?
-          fot.notes.each { |n| n.rsolr_document_tags(cd, 'feature_type') }
+          }
+          prefix = 'feature_type'
+          cd["#{prefix}_caption_s"] = ft.caption.content if !ft.caption.nil?
+          citations = fot.citations.collect { |c| c.bibliographic_reference }
+          cd["#{prefix}_citation_references_ss"] = citations if !citations.blank?
+          time_units = fot.time_units_ordered_by_date.collect { |t| t.to_s }
+          cd["#{prefix}_time_units_ss"] = time_units if !time_units.blank?
+          fot.notes.each { |n| n.rsolr_document_tags(cd, prefix) }
           cd
         end
         category_features = self.category_features.where(type: nil)
@@ -186,10 +188,15 @@ module PlacesEngine
                  related_subjects_numeric_value_i: cf.numeric_value,
                  related_subjects_string_value_s: cf.string_value,
                  related_subjects_time_units_t: cf.time_units.collect(&:to_s)
-               }
-          cd[:related_subjects_caption_s] = c.caption.content if !c.caption.nil?
-          cd[:related_subjects_parent_title_s] = c.parent.header if !c.parent.nil?
-          cf.notes.each { |n| n.rsolr_document_tags(cd, 'related_subjects') }
+          }
+          prefix = 'related_subjects'
+          cd["#{prefix}_caption_s"] = c.caption.content if !c.caption.nil?
+          cd["#{prefix}_parent_title_s"] = c.parent.header if !c.parent.nil?
+          citations = cf.citations.collect { |c| c.bibliographic_reference }
+          cd["#{prefix}_citation_references_ss"] = citations if !citations.blank?
+          time_units = cf.time_units_ordered_by_date.collect { |t| t.to_s }
+          cd["#{prefix}_time_units_ss"] = time_units if !time_units.blank?
+          cf.notes.each { |n| n.rsolr_document_tags(cd, prefix) }
           cd
         end.compact
 				parent_relations = self.all_parent_relations
@@ -222,7 +229,12 @@ module PlacesEngine
             related_kmaps_node_type: 'parent',
             block_type: ['child']
           }
-          r.notes.each { |n| n.rsolr_document_tags(relation_tag, 'related_places') }
+          prefix = 'related_places'
+          citations = r.citations.collect { |c| c.bibliographic_reference }
+          relation_tag["#{prefix}_citation_references_ss"] = citations if !citations.blank?
+          time_units = r.time_units_ordered_by_date.collect { |t| t.to_s }
+          relation_tag["#{prefix}_time_units_ss"] = time_units if !time_units.blank?
+          r.notes.each { |n| n.rsolr_document_tags(relation_tag, prefix) }
           relation_tag
 				end.flatten
 				child_relations = self.all_child_relations
@@ -255,7 +267,12 @@ module PlacesEngine
             related_kmaps_node_type: 'child',
             block_type: ['child']
           }
-          r.notes.each { |n| n.rsolr_document_tags(relation_tag, 'related_places') }
+          prefix = 'related_places'
+          citations = r.citations.collect { |c| c.bibliographic_reference }
+          relation_tag["#{prefix}_citation_references_ss"] = citations if !citations.blank?
+          time_units = r.time_units_ordered_by_date.collect { |t| t.to_s }
+          relation_tag["#{prefix}_time_units_ss"] = time_units if !time_units.blank?
+          r.notes.each { |n| n.rsolr_document_tags(relation_tag, prefix) }
           relation_tag
         end.flatten
         associated_subjects = category_features.collect(&:category).compact
@@ -269,6 +286,10 @@ module PlacesEngine
            estimate_s: altitude.estimate,
            unit_s: altitude.unit.title,
           }
+          citations = altitude.citations.collect { |c| c.bibliographic_reference }
+          altitude_tag['citation_references_ss'] = citations if !citations.blank?
+          time_units = altitude.time_units_ordered_by_date.collect { |t| t.to_s }
+          altitude_tag['time_units_ss'] = time_units if !time_units.blank?
           altitude.notes.each { |n| n.rsolr_document_tags(altitude_tag) }
           altitude_tag
         end
@@ -283,6 +304,10 @@ module PlacesEngine
             altitude_i: shape.altitude,
             position_i: shape.position
           }
+          citations = shape.citations.collect { |c| c.bibliographic_reference }
+          shape_tag['citation_references_ss'] = citations if !citations.blank?
+          time_units = shape.time_units_ordered_by_date.collect { |t| t.to_s }
+          shape_tag['time_units_ss'] = time_units if !time_units.blank?
           shape.notes.each { |n| n.rsolr_document_tags(shape_tag) }
           shape_tag
         end
