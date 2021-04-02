@@ -154,7 +154,6 @@ module PlacesEngine
                  feature_type_name_s: ft.header,
                  related_names_t: ft.names.collect(&:name).uniq,
                  feature_type_id_i: ft.id,
-                 feature_type_caption_s: ft.caption,
                  feature_type_caption_t: ft.nested_captions.collect(&:content)
           }
           prefix = 'feature_type'
@@ -187,7 +186,6 @@ module PlacesEngine
                  related_subjects_display_string_s: cf.display_string,
                  related_subjects_numeric_value_i: cf.numeric_value,
                  related_subjects_string_value_s: cf.string_value,
-                 related_subjects_time_units_t: cf.time_units.collect(&:to_s)
           }
           prefix = 'related_subjects'
           cd["#{prefix}_caption_s"] = c.caption.content if !c.caption.nil?

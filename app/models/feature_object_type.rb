@@ -1,15 +1,6 @@
 class FeatureObjectType < CategoryFeature
   BRANCH_ID=20
   
-  #
-  #
-  # Associations
-  #
-  #
-  belongs_to :perspective, optional: true
-  has_many :imports, :as => 'item', :dependent => :destroy
-  has_many :citations, :as => :citable, :dependent => :destroy
-  validates_presence_of :category_id
   
   after_save do |record|
     record.feature.update_object_type_positions if !record.skip_update
