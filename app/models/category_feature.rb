@@ -1,7 +1,7 @@
 class CategoryFeature < ActiveRecord::Base
   attr_accessor :skip_update
   
-  belongs_to :feature
+  belongs_to :feature, touch: true
   belongs_to :perspective, optional: true
   has_many :imports, :as => 'item', :dependent => :destroy
   # belongs_to :category
@@ -33,7 +33,7 @@ class CategoryFeature < ActiveRecord::Base
 
   after_destroy do |record|
     feature = record.feature
-    CategoryFeature.delete_cumulative_information(record.category, feature.id)
+    CategoryFeature.delete_cumulative_information(record.category, feature.id) if !feature.nil?
     # feature.touch
   end
   

@@ -10,6 +10,10 @@ class LocationSweeper < ActionController::Caching::Sweeper
     expire_cache(record)
   end
   
+  def after_touch(record)
+    expire_cache(record)
+  end
+  
   def after_destroy(record)
     expire_cache(record)
   end

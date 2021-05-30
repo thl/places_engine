@@ -1,7 +1,9 @@
 class Admin::CategoryFeaturesController < AclController
   include KmapsEngine::ResourceObjectAuthentication
   resource_controller
-
+  
+  cache_sweeper :category_feature_sweeper, :only => [:update, :destroy]
+  
   belongs_to :feature
   
   def collection

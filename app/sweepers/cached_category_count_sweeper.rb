@@ -1,10 +1,15 @@
 class CachedCategoryCountSweeper < ActiveRecord::Observer
   include InterfaceUtils::Extensions::Sweeper
+  include ActionController::Caching::Pages
   
   observe CachedCategoryCount
   
   def after_save(cf)
     expire_cache(cf.category_id)
+  end
+  
+  def after_touch(record)
+    expire_cache(record)
   end
   
   def after_destroy(cf)

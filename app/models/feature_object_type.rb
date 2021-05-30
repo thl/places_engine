@@ -1,7 +1,6 @@
 class FeatureObjectType < CategoryFeature
   BRANCH_ID=20
   
-  
   after_save do |record|
     record.feature.update_object_type_positions if !record.skip_update
   end

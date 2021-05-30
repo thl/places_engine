@@ -3,7 +3,7 @@ class Shape < ActiveRecord::Base
   include KmapsEngine::IsNotable
   include KmapsEngine::IsCitable
   
-  belongs_to :feature, :foreign_key => 'fid', :primary_key => 'fid'
+  belongs_to :feature, foreign_key: 'fid', primary_key: 'fid', touch: true
   
   # after_save { |record| record.feature.touch if !record.feature.nil? }
   # after_destroy { |record| record.feature.touch if !record.feature.nil? }

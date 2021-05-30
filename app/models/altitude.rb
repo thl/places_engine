@@ -3,7 +3,7 @@ class Altitude < ActiveRecord::Base
   extend IsDateable
   include KmapsEngine::IsNotable
   
-  belongs_to :feature
+  belongs_to :feature, touch: true
   #belongs_to :unit
   has_many :imports, :as => 'item', :dependent => :destroy
   

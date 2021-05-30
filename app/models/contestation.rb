@@ -1,8 +1,8 @@
 class Contestation < ActiveRecord::Base
   #attr_accessible :administrator, :claimant, :contested
-  belongs_to :administrator, :class_name => 'Feature'
-  belongs_to :claimant, :class_name => 'Feature'
-  belongs_to :feature
+  belongs_to :administrator, class_name: 'Feature', touch: true
+  belongs_to :claimant, class_name: 'Feature', touch: true
+  belongs_to :feature, touch: true
   has_many :imports, :as => 'item', :dependent => :destroy
 end
 # == Schema Information
