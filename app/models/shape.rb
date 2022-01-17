@@ -7,6 +7,9 @@ class Shape < ActiveRecord::Base
   
   # after_save { |record| record.feature.touch if !record.feature.nil? }
   # after_destroy { |record| record.feature.touch if !record.feature.nil? }
+  def after_save
+    self.feature.update_shape_positions
+  end
   
   self.primary_key = 'gid'
   
@@ -84,16 +87,10 @@ class Shape < ActiveRecord::Base
     centroid = Shape.where(fid: feature.fid).pluck('ST_AsGeoJSON(ST_centroid(ST_collect(geometry))) as asgeojson').first
     centroid.nil? ? nil : {type: 'FeatureCollection', features: [ type: 'Feature', geometry: JSON.parse(centroid) ]}.to_json
   end
-
   
   def self.find_all_by_feature_id(feature_id)
     self.where(feature_id: Feature.find(feature_id).id)
   end
-  
-  def after_save
-    self.feature.update_shape_positions
-  end
-  
 end
 # == Schema Information
 #

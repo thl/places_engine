@@ -158,8 +158,10 @@ module PlacesEngine
           }
           prefix = 'feature_type'
           cd["#{prefix}_caption_s"] = ft.caption.content if !ft.caption.nil?
-          citations = fot.citations.collect { |c| c.bibliographic_reference }
-          cd["#{prefix}_citation_references_ss"] = citations if !citations.blank?
+          citations = fot.citations
+          citation_references = citations.collect { |c| c.bibliographic_reference }
+          cd["#{prefix}_citation_references_ss"] = citation_references if !citation_references.blank?
+          citations.each{ |ci| ci.rsolr_document_tags_for_notes(cd, prefix) }
           time_units = fot.time_units_ordered_by_date.collect { |t| t.to_s }
           cd["#{prefix}_time_units_ss"] = time_units if !time_units.blank?
           fot.notes.each { |n| n.rsolr_document_tags(cd, prefix) }
@@ -190,8 +192,10 @@ module PlacesEngine
           prefix = 'related_subjects'
           cd["#{prefix}_caption_s"] = c.caption.content if !c.caption.nil?
           cd["#{prefix}_parent_title_s"] = c.parent.header if !c.parent.nil?
-          citations = cf.citations.collect { |c| c.bibliographic_reference }
-          cd["#{prefix}_citation_references_ss"] = citations if !citations.blank?
+          citations = cf.citations
+          citation_references = citations.collect { |c| c.bibliographic_reference }
+          cd["#{prefix}_citation_references_ss"] = citation_references if !citation_references.blank?
+          citations.each{ |ci| ci.rsolr_document_tags_for_notes(cd, prefix) }
           time_units = cf.time_units_ordered_by_date.collect { |t| t.to_s }
           cd["#{prefix}_time_units_ss"] = time_units if !time_units.blank?
           cf.notes.each { |n| n.rsolr_document_tags(cd, prefix) }
@@ -228,8 +232,10 @@ module PlacesEngine
             block_type: ['child']
           }
           prefix = 'related_places'
-          citations = r.citations.collect { |c| c.bibliographic_reference }
-          relation_tag["#{prefix}_citation_references_ss"] = citations if !citations.blank?
+          citations = r.citations
+          citation_references = citations.collect { |c| c.bibliographic_reference }
+          relation_tag["#{prefix}_citation_references_ss"] = citation_references if !citation_references.blank?
+          citations.each{ |ci| ci.rsolr_document_tags_for_notes(relation_tag, prefix) }
           time_units = r.time_units_ordered_by_date.collect { |t| t.to_s }
           relation_tag["#{prefix}_time_units_ss"] = time_units if !time_units.blank?
           r.notes.each { |n| n.rsolr_document_tags(relation_tag, prefix) }
@@ -266,8 +272,10 @@ module PlacesEngine
             block_type: ['child']
           }
           prefix = 'related_places'
-          citations = r.citations.collect { |c| c.bibliographic_reference }
-          relation_tag["#{prefix}_citation_references_ss"] = citations if !citations.blank?
+          citations = r.citations
+          citation_references = citations.collect { |c| c.bibliographic_reference }
+          relation_tag["#{prefix}_citation_references_ss"] = citation_references if !citation_references.blank?
+          citations.each{ |ci| ci.rsolr_document_tags_for_notes(relation_tag, prefix) }
           time_units = r.time_units_ordered_by_date.collect { |t| t.to_s }
           relation_tag["#{prefix}_time_units_ss"] = time_units if !time_units.blank?
           r.notes.each { |n| n.rsolr_document_tags(relation_tag, prefix) }
