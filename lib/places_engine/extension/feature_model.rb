@@ -299,7 +299,8 @@ module PlacesEngine
           altitude.notes.each { |n| n.rsolr_document_tags(altitude_tag) }
           altitude_tag
         end
-        child_documents = child_documents + self.shapes.where(is_public: true).collect do |shape|
+        shapes = self.shapes.where(is_public: true).select{|s| s.valid_range?}
+        child_documents = child_documents + shapes.collect do |shape|
           #self.shapes.where("is_public = true AND ST_GeometryType(geometry) != 'ST_Point'").collect do |shape|
           shape_tag = { id: "#{self.uid}_shape_#{shape.id}",
             block_child_type: ['places_shape'],

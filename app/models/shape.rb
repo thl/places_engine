@@ -54,7 +54,10 @@ class Shape < ActiveRecord::Base
     # self.geometry.geometry_type
     # If done directly from db:
     Shape.select('GeometryType(geometry) as geometry_type').find(self.id).geometry_type
-
+  end
+  
+  def valid_range?
+    Shape.select('(ST_XMin(geometry) >= -180 AND ST_XMax(geometry) <= 180 AND ST_YMin(geometry) >= -90 AND ST_YMax(geometry) <= 90) as is_valid').find(self.id).is_valid
   end
   
   def as_text
@@ -62,6 +65,11 @@ class Shape < ActiveRecord::Base
     # self.geometry.as_text
     # If done directly from db:
     Shape.select('ST_AsText(geometry) as astext').find(self.id).astext
+  end
+    
+  def as_centroid
+    centroid = Shape.select('ST_AsGeoJSON(ST_centroid(ST_collect(geometry))) as geojson').find(self.id).geojson
+    {type: 'FeatureCollection', features: [ type: 'Feature', geometry: JSON.parse(centroid) ]}.to_json
   end
 
   def as_geojson
@@ -84,8 +92,10 @@ class Shape < ActiveRecord::Base
   end
 
   def self.shapes_centroid_by_feature(feature)
-    centroid = Shape.where(fid: feature.fid).pluck('ST_AsGeoJSON(ST_centroid(ST_collect(geometry))) as asgeojson').first
-    centroid.nil? ? nil : {type: 'FeatureCollection', features: [ type: 'Feature', geometry: JSON.parse(centroid) ]}.to_json
+    s = Shape.where(fid: feature.fid).select{ |s| s.valid_range? }.first
+    s.nil? ? nil : s.as_centroid
+    #centroid = Shape.where(fid: feature.fid).pluck('ST_AsGeoJSON(ST_centroid(ST_collect(geometry))) as asgeojson').first
+    #centroid.nil? ? nil : {type: 'FeatureCollection', features: [ type: 'Feature', geometry: JSON.parse(centroid) ]}.to_json
   end
   
   def self.find_all_by_feature_id(feature_id)
