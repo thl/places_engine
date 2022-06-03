@@ -1,4 +1,4 @@
-<% edit_link_options = {target: true} %>
+<%  edit_link_options = {target: true} %>
 <%= content_tag :h6, "#{feature_name_header(feature)} #{edit_item_link(admin_feature_path(feature.fid),"",edit_link_options) if logged_in? && object_authorized?(feature)}".html_safe %>
 <%= time_units_for(feature) %>
 <%= render partial: 'summaries', locals: { feature: feature } %>
@@ -15,12 +15,18 @@
     illustration = feature.illustration
     if !illustration.nil?
       picture = feature.illustration.picture
-      rendered_width = picture.width.nil? || picture.width>576 ? 576 : picture.width %>
+			if picture.instance_of? ShantiIntegration::Image
+				rendered_width = 200
+			else
+	      rendered_width = picture.width.nil? || picture.width>576 ? 576 : picture.width
+			end %>
       <div class='resource-overview-image'>
-<%    if picture.instance_of?(MmsIntegration::Picture) %>
-<%=     link_to image_tag(picture.url, width: rendered_width), MmsIntegration::Medium.element_url(picture.id, format: '') %>
+<%    html_options = { class: 'img-responsive img-thumbnail' }
+      html_options[:width] = rendered_width
+      if picture.instance_of?(ExternalPicture) %>
+<%=     link_to image_tag(picture.url, html_options), picture.url %>
 <%    else %>
-<%=     link_to image_tag(picture.url, width: rendered_width), picture.url %>
+<%=     link_to image_tag(illustration.thumb_url, html_options), illustration.picture_url %>
 <%    end
       place = illustration.place
       if place.nil?

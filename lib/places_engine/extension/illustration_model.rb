@@ -8,7 +8,13 @@ module PlacesEngine
       
       def place
         pic = self.picture
-        fid = pic.instance_of?(ExternalPicture) ? pic.place_id : pic.locations.first
+        if pic.instance_of?(ExternalPicture)
+          fid = pic.place_id
+        elsif pic.instance_of?(MmsIntegration::Picture)
+          fid = pic.locations.first
+        else
+          fid = nil
+        end
         fid.nil? ? nil : Feature.get_by_fid(fid.to_i)
       end
             

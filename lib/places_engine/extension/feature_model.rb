@@ -342,7 +342,11 @@ module PlacesEngine
         doc[:closest_fid_with_shapes] = closest_fid unless closest_fid.nil?
         doc
       end
-
+      
+      def solr_url
+        URI.join(PlacesIntegration::Feature.get_url, "solr/#{self.fid}.json")
+      end
+      
       module ClassMethods
         def find_by_shape(shape)
           Feature.find_by(fid: shape.fid)
