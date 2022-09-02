@@ -72,6 +72,9 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
       if picture.instance_of?(MmsIntegration::Picture)
         options[:url] = MmsIntegration::Medium.element_url(picture.id, :format => params['format'])
         options[:type] = 'mms'
+      elsif picture.instance_of?(ShantiIntegration::Image)
+        options[:url] = picture.url_html
+        options[:type] = 'mandala'
       else
         options[:width] = picture.width
         options[:height] = picture.height
