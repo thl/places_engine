@@ -53,10 +53,10 @@
       </div>
       <div id="collapseThree" class="panel-collapse collapse">
         <div class="panel-body">
-          <legend><%= FeatureName.model_name.human(:count => :many).titleize.s %> <%= link_to ts('change.record', :what => t('priorit.ization_of.names')), prioritize_feature_names_admin_features_path(object) %></legend>
           <div class="left highlight">
 <%=         new_item_link [object, :feature_name] %> |
-<%=         link_to ts('clone.into', :what => FeatureName.model_name.human(:count => :many), :whom => t('new.record', :what => Feature.model_name.human)), clone_admin_feature_path(object.fid), :method => :post, :class => 'item-icon-new', :title => 'Clone feature names into new feature' %>
+<%=         link_to ts('clone.into', :what => FeatureName.model_name.human(:count => :many), :whom => t('new.record', :what => Feature.model_name.human)), clone_admin_feature_path(object.fid), :method => :post, :class => 'item-icon-new', :title => 'Clone feature names into new feature' %> |
+<%=         edit_item_link(prioritize_feature_names_admin_features_path(object), ts('change.record', what: t('priorit.ization_of', what: FeatureName.model_name.human(count: :many)))) %>
           </div>
           <br class="clear"/>
 <%=       render :partial => 'admin/feature_names/feature_names', :locals => { :list => object.names } %>
