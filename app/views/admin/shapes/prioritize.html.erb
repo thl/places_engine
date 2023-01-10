@@ -6,14 +6,14 @@
   });
 <% end
    add_breadcrumb_item feature_link(@feature)
-   add_breadcrumb_item ts('change.record', :what => t('priorit.ization_of.shapes')) %>
+   add_breadcrumb_item ts('change.record', :what => t('priorit.ization_of', what: Shape.model_name.human(count: :many))) %>
  <section class="panel panel-content">
   <div class="panel-heading">
-    <h6><%= ts('change.record', :what => t('priorit.ization_of.locations')) %></h6>
+    <h6><%= ts('change.record', :what => t('priorit.ization_of', what: Shape.model_name.human(count: :many))) %></h6>
   </div>
   <div class="panel-body">
 <div>
-  <h1><%= ts('change.record', :what => t('priorit.ization_of.locations')) %>: <%= f_label(@feature) %></h1>
+  <h1><%= ts('change.record', :what => t('priorit.ization_of', what: Shape.model_name.human(count: :many))) %>: <%= f_label(@feature) %></h1>
 </div>
 <p class="page-tip"><%= ts 'snippet.location.drag_priority' %></p>
 <% list = @feature.shapes.order(:position)

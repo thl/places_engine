@@ -23,11 +23,6 @@ zh:
         full: '完整地图'
         google: '谷歌地图'
         this: '地图'
-    priorit:
-        ization_of:
-            feature_types: '按特征类型优先化'
-            locations: '按地理位置优先化'
-            shapes: '按形状优先化'
     resource:
         gis:
             contained_features: 'GIS资源（包含复合特征）'

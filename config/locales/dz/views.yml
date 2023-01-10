@@ -23,11 +23,6 @@ dz:
         full: 'Full map'
         google: 'Google Maps'
         this: 'Map'
-    priorit:
-        ization_of:
-            feature_types: 'Prioritization of Feature Types'
-            locations: 'Prioritization of Locations'
-            shapes: 'Prioritization of Shapes'
     resource:
         gis:
             contained_features: 'GIS Resources (including contained features)'

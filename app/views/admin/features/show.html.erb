@@ -114,7 +114,7 @@
       </div>
       <div id="collapseSeven" class="panel-collapse collapse">
         <div class="panel-body">
-          <legend><%= Feature.human_attribute_name(:object_type, :count => :many).s %> <%= link_to ts('change.record', :what => t('priorit.ization_of.feature_types')), prioritize_feature_object_types_admin_features_path(object) %></legend>
+          <legend><%= Feature.human_attribute_name(:object_type, :count => :many).s %> <%= link_to ts('change.record', :what => t('priorit.ization_of', what: FeatureObjectType.model_name.human(count: :many))), prioritize_feature_object_types_admin_features_path(object) %></legend>
 <%=       highlighted_new_item_link [object, :feature_object_type] %>
           <br class="clear"/>
 <%=       render :partial => 'admin/feature_object_types/list', :locals => { :list => object.feature_object_types.order(:position), :hide_feature_id => true } %>
@@ -154,7 +154,7 @@
       </div>
       <div id="collapseTen" class="panel-collapse collapse">
         <div class="panel-body">
-          <legend><%= Shape.model_name.human(:count => :many).titleize.s %> <%= link_to ts('change.record', :what => t('priorit.ization_of.locations')), prioritize_feature_shapes_admin_features_path(object) %></legend>
+          <legend><%= Shape.model_name.human(:count => :many).titleize.s %> <%= link_to ts('change.record', :what => t('priorit.ization_of', what: Shape.model_name.human(count: :many))), prioritize_feature_shapes_admin_features_path(object) %></legend>
 <%=       highlighted_new_item_link [object, :shape] %>
           <br class="clear"/>
 <%=       render :partial => 'admin/shapes/list', :locals => { :list => object.shapes.order(:position) } %>
