@@ -1,5 +1,5 @@
 <%  edit_link_options = {target: true} %>
-<%= content_tag :h6, "#{feature_name_header(feature)} #{edit_item_link(admin_feature_path(feature.fid),"",edit_link_options) if logged_in? && object_authorized?(feature)}".html_safe %>
+<%= content_tag :h6, "#{feature_name_header(feature)} #{edit_item_link(admin_feature_path(feature.fid),"", **edit_link_options) if logged_in? && object_authorized?(feature)}".html_safe %>
 <%= time_units_for(feature) %>
 <%= render partial: 'summaries', locals: { feature: feature } %>
 <%= render partial: 'feature_types', locals: {feature: feature} %><br/>
@@ -159,7 +159,7 @@
           <p><%= ts 'snippet.feature.too_many' %></p>
 <%      end
       end %>
-<%=   note_popup_link_list_for(feature, {association_type: Shape.name}) %>
+<%=   note_popup_link_list_for(feature, association_type: Shape.name) %>
         </div>
       </div>
     </section>

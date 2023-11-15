@@ -6,5 +6,5 @@ xml.feature(id: feature.fid, db_id: feature.id, header: header) do # , :pid => f
     feature.object_types.each { |type| xml.feature_type(id: type.id, title: type.header) } #, :id => type.id
   end
   xml.has_shapes(feature.has_shapes? ? 1 : 0, :type => 'integer')
-  xml << render(partial: 'relation.xml.builder', object: relation) if defined? relation
+  xml << render(partial: 'relation', format: 'xml', object: relation) if defined? relation
 end

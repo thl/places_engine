@@ -22,12 +22,12 @@ class TopicsController < ApplicationController
         format.xml do
           @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
           @view ||= View.get_by_code(default_view_code)
-          render 'paginated_show.xml.builder'
+          render 'paginated_show', format: 'xml'
         end
         format.json do
           @view = params[:view_code].nil? ? nil : View.get_by_code(params[:view_code])
           @view ||= View.get_by_code(default_view_code)
-          render json: Hash.from_xml(render_to_string(:action => 'paginated_show.xml.builder'))
+          render json: Hash.from_xml(render_to_string(action: 'paginated_show', format: 'xml'))
         end
       end
     end
@@ -45,7 +45,7 @@ class TopicsController < ApplicationController
       end
       format.json do
         @features = Feature.descendants_by_topic(fids, topic_ids)
-        render json: Hash.from_xml(render_to_string(template: 'features/index.xml.builder'))
+        render json: Hash.from_xml(render_to_string(template: 'features/index', format: 'xml'))
       end
       format.txt do
         perspective_code = params[:perspective_code]

@@ -91,7 +91,7 @@ module PlacesEngine
               self.process_descriptions(3)
               self.process_captions(2)
               self.process_summaries(2)
-              self.feature.update_attributes({:is_blank => false, :is_public => true})
+              self.feature.update(is_blank: false, is_public: true)
               self.progress_bar(num: i, total: to_i, current: self.feature.pid)
               #rescue  Exception => e
               #  puts "Something went wrong with feature #{self.feature.pid}!"
@@ -350,7 +350,7 @@ module PlacesEngine
         #if category_feature.nil?
         category_feature = category_features.create(values)
         #else
-          #category_feature.update_attributes(values)
+          #category_feature.update(values)
         #end
         self.spreadsheet.imports.create(:item => category_feature) if category_feature.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
         next if category_feature.nil?
@@ -390,7 +390,7 @@ module PlacesEngine
         if category_feature.nil?
           category_feature = category_features.create(conditions.merge(values))
         else
-          category_feature.update_attributes(values)
+          category_feature.update(values)
         end
         self.spreadsheet.imports.create(:item => category_feature) if category_feature.imports.find_by(spreadsheet_id: self.spreadsheet.id).nil?
         0.upto(3) do |j|

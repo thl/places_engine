@@ -2,5 +2,5 @@
   <ul id="CategoryFeaturesList">
     <%= category_feature_list(category_features).html_safe %>
   </ul>
-  <%= note_popup_link_list_for(feature, {:association_type => CategoryFeature.name}) %>
+  <%= note_popup_link_list_for(feature, association_type: CategoryFeature.name) %>
 <% end %>

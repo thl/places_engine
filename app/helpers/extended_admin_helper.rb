@@ -2,7 +2,7 @@ module ExtendedAdminHelper
   #
   # Express the relationship relative to the "feature" arg node
   #
-  def feature_relation_role_label(feature, relation, opts={})
+  def feature_relation_role_label(feature, relation, **opts)
     options={
       :use_first=>true,:use_second=>true,:use_relation=>true,
       :link_first=>true,:link_second=>true,:link_relation=>true

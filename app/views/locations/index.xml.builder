@@ -9,9 +9,9 @@ xml.feature do
         xml.estimate(altitude.estimate)
         xml.maximum(altitude.maximum, :type => 'integer')
         xml.minimum(altitude.minimum, :type => 'integer')
-        xml << render(partial: 'time_units/index.xml.builder', locals: {time_units: altitude.time_units})
-        xml << render(partial: 'citations/index.xml.builder', locals: {citations: altitude.citations})
-        xml << render(partial: 'notes/index.xml.builder', locals: {notes: altitude.notes})
+        xml << render(partial: 'time_units/index', format: 'xml', locals: {time_units: altitude.time_units})
+        xml << render(partial: 'citations/index', format: 'xml', locals: {citations: altitude.citations})
+        xml << render(partial: 'notes/index', format: 'xml', locals: {notes: altitude.notes})
       end
     end
   end
@@ -21,9 +21,9 @@ xml.feature do
       xml.shape do
         xml.altitude(shape.altitude, :type => 'integer')
         xml.display(shape_display_string(shape))
-        xml << render(partial: 'time_units/index.xml.builder', locals: {time_units: shape.time_units})
-        xml << render(partial: 'citations/index.xml.builder', locals: {citations: shape.citations})
-        xml << render(partial: 'notes/index.xml.builder', locals: {notes: shape.notes})
+        xml << render(partial: 'time_units/index', format: 'xml', locals: {time_units: shape.time_units})
+        xml << render(partial: 'citations/index', format: 'xml', locals: {citations: shape.citations})
+        xml << render(partial: 'notes/index', format: 'xml', locals: {notes: shape.notes})
       end
     end
   end

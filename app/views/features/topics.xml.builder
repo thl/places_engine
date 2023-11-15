@@ -1,6 +1,6 @@
 xml.instruct!
 xml.feature do
-  xml << render(partial: 'feature_types.xml.builder', object: @feature.feature_object_types)
+  xml << render(partial: 'feature_types', format: 'xml', object: @feature.feature_object_types)
   xml.category_features(type: 'array') do
     @feature.category_features.order(:position).each do |association| 
       if !association.instance_of? FeatureObjectType
@@ -23,9 +23,9 @@ xml.feature do
           xml.numeric_value(association.numeric_value, type: 'integer')
           xml.string_value(association.string_value, type: 'string')
           xml.display_string(association.display_string)
-          xml << render(partial: 'time_units/index.xml.builder', locals: {time_units: association.time_units})
-          xml << render(partial: 'citations/index.xml.builder', locals: {citations: association.citations})
-          xml << render(partial: 'notes/index.xml.builder', locals: {notes: association.notes})
+          xml << render(partial: 'time_units/index', format: 'xml', locals: {time_units: association.time_units})
+          xml << render(partial: 'citations/index', format: 'xml', locals: {citations: association.citations})
+          xml << render(partial: 'notes/index', format: 'xml', locals: {notes: association.notes})
         end
       end
     end

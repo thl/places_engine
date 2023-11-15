@@ -1,6 +1,6 @@
 <%  header_options = { class: 'html not-front logged-in no-sidebars page-places kmaps rails', javascript_files: ['kmaps_engine/admin'], stylesheet_files: ['kmaps_engine/admin'] }
     header_options[:title] = "#{model_name.classify.constantize.model_name.human.titleize}: #{controller.action_name.humanize}" if defined?(model_name) && !model_name.blank? %>
-<%= header(header_options) %>
+<%= header(**header_options) %>
 <!-- Banner Region -->
 <main class="main-wrapper container-fluid">
 	<article class="main-content" role="main">

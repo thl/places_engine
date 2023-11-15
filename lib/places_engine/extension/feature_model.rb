@@ -2,7 +2,7 @@ module PlacesEngine
   module Extension
     module FeatureModel
       extend ActiveSupport::Concern
-      include Rails.application.routes.url_helpers
+      #include Rails.application.routes.url_helpers
       
       included do
         has_many :altitudes, dependent: :destroy
@@ -19,22 +19,22 @@ module PlacesEngine
         "F#{self.fid}"
       end
 
-      def has_shapes?(options = {})
+      def has_shapes?(**options)
         use_log_in_status = options.has_key? :logged_in?
         shapes = self.shapes
         return use_log_in_status ? (options[:logged_in?] ? !shapes.empty? : shapes.any?(&:is_public?)) : !shapes.empty?
       end
 
       # Options take :logged_in?
-      def closest_feature_with_shapes(options = {})
+      def closest_feature_with_shapes(**options)
         feature_id = Rails.cache.fetch("features/#{self.fid}/closest_feature_with_shapes", expires_in: 1.hour) do
-          break self.id if self.has_shapes?(options)
+          break self.id if self.has_shapes?(**options)
           # check if geographical parent has shapes (township)
           geo_rel = Perspective.get_by_code('geo.rel')
           first_township_relation = self.all_parent_relations.find_by(perspective_id: geo_rel.id)
           if !first_township_relation.nil?
             node = first_township_relation.parent_node
-            break node.id if node.has_shapes?(options)
+            break node.id if node.has_shapes?(**options)
           end
           # check if county parent has shapes (county)
           pol_admin = Perspective.get_by_code(KmapsEngine::ApplicationSettings.default_perspective_code)
@@ -56,8 +56,8 @@ module PlacesEngine
         Feature.descendants_by_topic_with_parent([self.fid], topic_ids)
       end
       
-      def faceted_descendants(options = Hash.new)
-        Feature.faceted_descendants(options.merge(fids: [self.fid]))
+      def faceted_descendants(**options)
+        Feature.faceted_descendants(**options.merge(fids: [self.fid]))
       end
       
       #
@@ -109,7 +109,7 @@ module PlacesEngine
         CategoryFeature.where(feature_id: self.id).count
       end
       
-      def media_count(options = {})
+      def media_count(**options)
         media_count_hash = Rails.cache.fetch("#{self.cache_key}/media_count", expires_in: 1.day) do
           media_place_count = MmsIntegration::MediaPlaceCount.find(:all, params: {place_id: self.fid}).to_a
           media_count_hash = { 'Medium' => media_place_count.shift.count.to_i }
@@ -404,7 +404,7 @@ module PlacesEngine
           des.select{ |f_id| !CumulativeCategoryFeatureAssociation.find_by(category_id: topic_ids, feature_id: f_id).nil? }.collect{|f_id| Feature.find(f_id)}
         end
         
-        def faceted_descendants(options = Hash.new)
+        def faceted_descendants(**options)
           #fids, topic_ids, include_range, exclude_ranges
           fids = options[:fids]
           return nil if fids.nil?

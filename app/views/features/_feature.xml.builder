@@ -3,7 +3,7 @@
 name = feature.prioritized_name(@view)
 header = name.nil? ? feature.pid : name.name
 xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
-  xml << render(:partial => 'feature_types.xml.builder', :object => feature.feature_object_types)
+  xml << render(:partial => 'feature_types', format: 'xml', :object => feature.feature_object_types)
   xml.names(:type => 'array') do
     View.all.each do |v|
       name = feature.prioritized_name(v)
@@ -21,20 +21,20 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
     end
   end
   parents = feature.all_parent_relations
-  xml.parents(:type => 'array') { xml << render(:partial => 'stripped_parent_relation.xml.builder', :collection => parents, :as => :parent_relation) if !parents.empty? }
+  xml.parents(:type => 'array') { xml << render(partial: 'stripped_parent_relation', format: 'xml', collection: parents, as: :parent_relation) if !parents.empty? }
   children = feature.all_child_relations
-  xml.children(:type => 'array') { xml << render(:partial => 'stripped_child_relation.xml.builder', :collection => children, :as => :child_relation) if !children.empty? }
+  xml.children(:type => 'array') { xml << render(partial: 'stripped_child_relation', format: 'xml', collection: children, as: :child_relation) if !children.empty? }
   xml.perspectives(:type => 'array') do
     per = Perspective.get_by_code(default_perspective_code)
     hierarchy = feature.closest_ancestors_by_perspective(per)
     xml.perspective(:id => per.id, :code => per.code) do
-      xml.ancestors(:type => 'array') { xml << render(:partial => 'stripped_feature.xml.builder', :collection => hierarchy, :as => :feature) if !hierarchy.empty? }
+      xml.ancestors(:type => 'array') { xml << render(partial: 'stripped_feature', format: 'xml', collection: hierarchy, as: :feature) if !hierarchy.empty? }
     end
     per = Perspective.get_by_code('cult.reg')
     if !per.nil?
       hierarchy = feature.closest_ancestors_by_perspective(per)
       xml.perspective(:id => per.id, :code => per.code) do
-        xml.ancestors(:type => 'array') { xml << render(:partial => 'stripped_feature.xml.builder', :collection => hierarchy, :as => :feature) if !hierarchy.empty? }
+        xml.ancestors(:type => 'array') { xml << render(partial: 'stripped_feature', format: 'xml', collection: hierarchy, as: :feature) if !hierarchy.empty? }
       end
     end
   end
@@ -52,7 +52,7 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
         xml.id(s.id, :type => 'integer')
         xml.language(s.language.code)
         xml.content(s.content)
-        xml << render(partial: 'citations/index.xml.builder', locals: {citations: s.citations})
+        xml << render(partial: 'citations/index', format: 'xml', locals: {citations: s.citations})
       end
     end
   end
@@ -102,8 +102,8 @@ xml.feature(:id => feature.fid, :db_id => feature.id, :header => header) do
     xml.video_count(feature.media_count(:type => 'Video').to_s, :type => 'integer')
     xml.document_count(feature.media_count(:type => 'Document').to_s, :type => 'integer')
   end
-  xml << render(partial: 'time_units/index.xml.builder', locals: {time_units: feature.time_units})
-  xml << render(partial: 'citations/index.xml.builder', locals: {citations: feature.citations})
+  xml << render(partial: 'time_units/index', format: 'xml', locals: {time_units: feature.time_units})
+  xml << render(partial: 'citations/index', format: 'xml', locals: {citations: feature.citations})
   xml.created_at(feature.created_at, :type => 'datetime')
   xml.updated_at(feature.updated_at, :type => 'datetime')
 end
