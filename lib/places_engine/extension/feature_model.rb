@@ -2,7 +2,6 @@ module PlacesEngine
   module Extension
     module FeatureModel
       extend ActiveSupport::Concern
-      #include Rails.application.routes.url_helpers
       
       included do
         has_many :altitudes, dependent: :destroy
@@ -13,6 +12,7 @@ module PlacesEngine
         has_many :shapes, foreign_key: 'fid', primary_key: 'fid'
         has_many :cached_feature_relation_categories, dependent: :destroy
         self.associated_models << FeatureObjectType
+        include Rails.application.routes.url_helpers
       end
       
       def pid
