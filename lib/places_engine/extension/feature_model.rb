@@ -41,7 +41,7 @@ module PlacesEngine
           first_county_relation = self.all_parent_relations.find_by(perspective_id: pol_admin.id)
           if !first_county_relation.nil?
             node = first_county_relation.parent_node
-            break node.id if node.has_shapes?(options)
+            break node.id if node.has_shapes?(**options)
           end
           nil
         end
