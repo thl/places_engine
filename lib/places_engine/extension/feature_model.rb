@@ -12,7 +12,7 @@ module PlacesEngine
         has_many :shapes, foreign_key: 'fid', primary_key: 'fid'
         has_many :cached_feature_relation_categories, dependent: :destroy
         self.associated_models << FeatureObjectType
-        include Rails.application.routes.url_helpers
+        #include Rails.application.routes.url_helpers
       end
       
       def pid
@@ -331,7 +331,7 @@ module PlacesEngine
         centroid = Shape.shapes_centroid_by_feature(self)
         doc[:shapes_centroid_grptgeom] = centroid unless centroid.nil?
 
-        url = closest_fid.nil? ? nil : gis_resources_url(fids: closest_fid, host: InterfaceUtils::Server.get_url, format: 'kmz')
+        url = closest_fid.nil? ? nil : Rails.application.routes.url_helpers.gis_resources_url(fids: closest_fid, host: InterfaceUtils::Server.get_url, format: 'kmz')
         doc[:kmz_url] = url unless url.nil?
 
         closest = self.closest_feature_with_shapes
