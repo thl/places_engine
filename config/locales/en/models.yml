@@ -6,6 +6,9 @@ en:
             altitude:
                 one: 'altitude'
                 other: 'altitudes'
+            category_feature:
+                one: 'subject'
+                other: 'subjects'
             feature:
                 one: 'place'
                 other: 'places'
@@ -38,6 +41,12 @@ en:
                 maximum: 'Maximum'
                 minimum: 'Minimum'
                 unit: 'Unit'
+            category_feature:
+                label: 'Label'
+                numeric_value: 'Numeric Value'
+                show_parent: 'Show Subject''s Immediate Parent'
+                show_root: 'Show Master Subject'
+                string_value: 'Text Value'
             feature:
                 descendant:
                     one: 'Contained Feature'

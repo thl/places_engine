@@ -6,6 +6,9 @@ zh:
             altitude:
                 one: '海拔'
                 other: '海拔'
+            category_feature:
+                one: '主题或特点'
+                other: '主题和特点'
             feature:
                 one: '特征'
                 other: '特征'
@@ -38,6 +41,12 @@ zh:
                 maximum: '最大值'
                 minimum: '最小值'
                 unit: '单位'
+            category_feature:
+                label: '数值'
+                numeric_value: '优先权'
+                show_parent: '显示类别中的父系'
+                show_root: '显示知识库最上层'
+                string_value: '文本值'
             feature:
                 descendant:
                     one: '包含的特征'

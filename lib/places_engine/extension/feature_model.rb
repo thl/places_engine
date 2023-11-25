@@ -344,6 +344,32 @@ module PlacesEngine
         URI.join(PlacesIntegration::Feature.get_url, "solr/#{self.fid}.json")
       end
       
+      def calculate_prioritized_name(current_view)
+        all_names = prioritized_names
+        case current_view.code
+        when 'roman.scholar'
+          name = scholarly_prioritized_name(all_names)
+        when 'pri.tib.sec.roman'
+          name = tibetan_prioritized_name(all_names)
+        when 'pri.tib.sec.chi'
+          # If a writing system =tibt or writing system =Dzongkha name is available, show it
+          name = tibetan_prioritized_name(all_names)
+          name = FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hans').id) if name.nil?
+        when 'simp.chi'
+          # If a writing system =hans name is available, show it
+          name = FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hans').id)
+          name = FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hant').id) if name.nil?
+        when 'trad.chi'
+          # If a writing system=hant name is available, show it
+          name = FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hant').id)
+          name = FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hans').id) if name.nil?
+        when 'deva'
+          # If a writing system =deva name is available, show it
+          name = FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('deva').id)
+        end
+        name || popular_prioritized_name(all_names)
+      end
+      
       module ClassMethods
         def find_by_shape(shape)
           Feature.find_by(fid: shape.fid)

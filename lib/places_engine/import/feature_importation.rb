@@ -15,7 +15,7 @@ module PlacesEngine
     # feature_relations.delete, [i.]feature_relations.related_feature.fid, [i.]feature_relations.type.code,
     # [i.]perspectives.code/name, feature_relations.replace
     # [i.]contestations.contested, [i.]contestations.administrator, [i.]contestations.claimant
-    # i.kmaps.id, [i.]kXXX, kmaps.delete
+    # i.kmaps.id, [i.]kXXX, [i.]kmaps.delete, [i.]kmaps.show_parent, [i.]kmaps.show_root
     # [i.]shapes.lat, [i.]shapes.lng, [i.]shapes.altitude,
     # [i.]shapes.altitude.estimate, [i.]shapes.altitude.minimum, [i.]shapes.altitude.maximum,
     # [i.]shapes.altitude.average, [i.]shapes.altitude.delete
@@ -326,6 +326,7 @@ module PlacesEngine
       end
     end
 
+    # i.kmaps.id, [i.]kXXX, [i.]kmaps.delete, [i.]kmaps.show_parent, [i.]kmaps.show_root
     def process_kmaps(n)
       # Now deal with i.kmaps.id
       category_features = self.feature.category_features

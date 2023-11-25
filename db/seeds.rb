@@ -12,3 +12,11 @@
   { is_symmetric: false, label: 'has as an instantiation', asymmetric_label: 'is an instantiation of', code: 'is.an.instantiation.of', is_hierarchical: false, asymmetric_code: 'has.as.an.instantiation'},
   { is_symmetric: false, label: 'has as a part',           asymmetric_label: 'is part of',             code: 'is.part.of',             is_hierarchical: true,  asymmetric_code: 'has.as.a.part'}
 ].each{|a| FeatureRelationType.update_or_create(a)}
+
+[ { name: 'Popular Standard (romanization)',         code: 'roman.popular' },
+  { name: 'Scholarly Standard (romanization)',       code: 'roman.scholar' },
+  { name: 'Chinese Characters (simplified)',         code: 'simp.chi' },
+  { name: 'Tibetan Script (secondary romanization)', code: 'pri.tib.sec.roman' },
+  { name: 'Tibetan Script (secondary Chinese)',      code: 'pri.tib.sec.chi' },
+  { name: 'Devanagari Script',                       code: 'deva' }
+].each{|a| View.update_or_create(a)}
