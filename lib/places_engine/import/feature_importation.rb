@@ -70,7 +70,7 @@ module PlacesEngine
         limit = current + interval
         limit = to_i if limit > to_i
         limit = rows.size if limit > rows.size
-        sid = Spawnling.new do
+        sid = Spawnling.new(kill: true) do
           begin
             self.log.debug { "#{Time.now}: Spawning sub-process #{Process.pid}." }
             ipc_reader.close
@@ -128,7 +128,7 @@ module PlacesEngine
         current = limit
       end
       ipc_writer.close
-      sid = Spawnling.new do
+      sid = Spawnling.new(kill: true) do
         begin
           self.log.debug { "#{Time.now}: Spawning sub-process #{Process.pid}." }
           puts "#{Time.now}: Updating hierarchies for changed relations..."
@@ -146,7 +146,7 @@ module PlacesEngine
             feature = Feature.find(id)
             #this has to be added to places dictionary!!!
             #feature.update_cached_feature_relation_categories
-            feature.update_hierarchy
+            feature.queued_update_hierarchy
             self.progress_bar(num: i, total: feature_ids_with_changed_relations.size, current: feature.pid)
             self.log.debug { "#{Time.now}: Updated hierarchy for #{feature.fid}." }
           end
@@ -237,7 +237,7 @@ module PlacesEngine
         if administrator_name.blank?
           administrator = nil
         else
-          administrator = Feature.where(['feature_names.name = ? AND feature_object_types.category_id = ?', administrator_name, country_type_id]).includes([:names, :feature_object_types]).references([:names, :feature_object_types]).first
+          administrator = Feature.where(['feature_names.name = ? AND feature_object_types.category_id = ?', administrator_name, country_type_id]).joins([:names, :feature_object_types]).references([:names, :feature_object_types]).first
           if administrator.nil?
             self.say "Administrator country #{administrator_name} not found."
           else
@@ -248,7 +248,7 @@ module PlacesEngine
         if claimant_name.blank?
           claimant = nil
         else
-          claimant = Feature.includes([:names, :feature_object_types]).references([:names, :feature_object_types]).where(['feature_names.name = ? AND feature_object_types.category_id = ?', claimant_name, country_type_id]).first
+          claimant = Feature.joins([:names, :feature_object_types]).references([:names, :feature_object_types]).where(['feature_names.name = ? AND feature_object_types.category_id = ?', claimant_name, country_type_id]).first
           if claimant.nil?
             self.say "Claimant country #{claimant_name} not found."
           else

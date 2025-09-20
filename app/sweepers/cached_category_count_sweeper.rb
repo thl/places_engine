@@ -1,5 +1,5 @@
 class CachedCategoryCountSweeper < ActiveRecord::Observer
-  include InterfaceUtils::Extensions::Sweeper
+  include InterfaceUtils::SweeperExtensions
   include ActionController::Caching::Pages
   
   observe CachedCategoryCount

@@ -6,7 +6,7 @@ class MediaController < ApplicationController
     if @medium.nil?
       redirect_to features_url
     else
-      @features = Feature.where('features.fid' => MmsIntegration::Medium.find(@medium.id).feature_ids, 'cached_feature_names.view_id' => current_view.id).includes(cached_feature_names: :feature_name).references(cached_feature_names: :feature_name).paginate(page: params[:page] || 1, per_page: 15).order('feature_names.name')
+      @features = Feature.where('features.fid' => MmsIntegration::Medium.find(@medium.id).feature_ids, 'cached_feature_names.view_id' => current_view.id).joins(cached_feature_names: :feature_name).references(cached_feature_names: :feature_name).paginate(page: params[:page] || 1, per_page: 15).order('feature_names.name')
       @object_type = "Media"
       @object_title = "Medium #{@medium.id}"
       @object_url = MmsIntegration::Medium.element_url(@medium.id, format: '')

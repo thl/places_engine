@@ -12,6 +12,7 @@ gemspec
 # your gem to rubygems.org.
 
 gem 'activeresource', require: 'active_resource'
+gem 'hpricot', github: 'ycorredius/hpricot'#, '>= 0.8.6'
 
 # To use debugger
 # gem 'ruby-debug'
