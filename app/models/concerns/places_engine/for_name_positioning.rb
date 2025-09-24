@@ -1,5 +1,13 @@
 module PlacesEngine
   module ForNamePositioning
+    extend ActiveSupport::Concern
+
+    included do
+      LANG_CODES_BY_FIDS = {5244 => 'urd', 427 => 'dzo', 426 => 'nep', 425 => 'hin', 2 => 'bod', 431 => 'bod', 432 => 'bod', 428 => 'bod', 430 => 'bod', 1 => 'zho'}
+      LANG_CODES_BY_FEATURE_IDS = {}
+      LANG_CODES_BY_FIDS.each_key{|fid| LANG_CODES_BY_FEATURE_IDS[Feature.get_by_fid(fid).id] = LANG_CODES_BY_FIDS[fid] }
+    end
+    
     def figure_out_name_by_country(names)
       # order matters, that is why I am using ancestor_ids instead of ancestors
       ordered_ancestors = self.ancestor_ids.blank? ? [] : self.ancestor_ids.split('.').delete_if{|id| id.blank?}.collect(&:to_i)
@@ -47,16 +55,8 @@ module PlacesEngine
       end
       sorted_names.keys.sort.inject(sorted_names.dup) {|names, i| names.merge(calculate_name_positions(sorted_names[i].children.order('feature_names.created_at'), names.keys.max + 1)) }
     end
-
-    extend ActiveSupport::Concern
-
-    included do
-      LANG_CODES_BY_FIDS = {5244 => 'urd', 427 => 'dzo', 426 => 'nep', 425 => 'hin', 2 => 'bod', 431 => 'bod', 432 => 'bod', 428 => 'bod', 430 => 'bod', 1 => 'zho'}
-      LANG_CODES_BY_FEATURE_IDS = {}
-      LANG_CODES_BY_FIDS.each_key{|fid| LANG_CODES_BY_FEATURE_IDS[Feature.get_by_fid(fid).id] = LANG_CODES_BY_FIDS[fid] }
-    end
-
-    module ClassMethods
+    
+    class_methods do
     end
   end
 end

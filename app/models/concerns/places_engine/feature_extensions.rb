@@ -165,7 +165,7 @@ module PlacesEngine
       name || popular_prioritized_name(all_names)
     end
     
-    module ClassMethods
+    class_methods do
       def find_by_shape(shape)
         Feature.find_by(fid: shape.fid)
       end

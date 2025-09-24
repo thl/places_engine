@@ -17,7 +17,7 @@ module PlacesEngine
       fid.nil? ? nil : Feature.get_by_fid(fid.to_i)
     end
           
-    module ClassMethods
+    class_methods do
     end
   end
 end
