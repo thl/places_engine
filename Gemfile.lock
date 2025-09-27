@@ -94,7 +94,7 @@ GIT
 PATH
   remote: .
   specs:
-    places_engine (5.5.1)
+    places_engine (5.5.3)
       rails
 
 GEM
