@@ -39,7 +39,7 @@
      </thead>
 <%     features.each do |f|
          caption = f.caption 
-         caption_str = caption.nil? ? nil : caption.content.strip_tags %>
+         caption_str = caption&.content.strip_tags %>
        <tr class="featureRow" id="feature_<%= f.id %>">
          <td class="leftText">
 <%=      link_to feature_name_header(f), feature_path(f.fid), :title => caption_str %>

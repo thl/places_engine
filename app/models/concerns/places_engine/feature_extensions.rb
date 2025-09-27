@@ -194,7 +194,7 @@ module PlacesEngine
             f = Feature.get_by_fid(fid)
             if !f.nil?
               r = FeatureRelation.where(child_node_id: f.id).first
-              e = r.nil? ? nil : r.parent_node
+              e = r&.parent_node
               des << [f, e, r]
             end
           end

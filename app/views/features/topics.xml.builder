@@ -7,7 +7,7 @@ xml.feature do
         xml.category_feature do
           c = association.category
           caption = c.caption
-          xml.category(title: c.header, id: c.id, caption: caption.nil? ? nil : caption.content)
+          xml.category(title: c.header, id: c.id, caption: caption&.content)
           perspective = association.perspective
           xml.perspective(perspective.code) if !perspective.nil?
           xml.label(association.label)
@@ -16,10 +16,10 @@ xml.feature do
           xml.show_root(association.show_root, type: 'boolean')
           parent = c.parent
           caption = parent.caption
-          xml.parent(title: parent.header, id: parent.id, caption: caption.nil? ? nil : caption.content)
+          xml.parent(title: parent.header, id: parent.id, caption: caption&.content)
           root = c.sub_root
           caption = root.caption
-          xml.root(title: root.header, id: root.id, caption: caption.nil? ? nil : caption.content)
+          xml.root(title: root.header, id: root.id, caption: caption&.content)
           xml.numeric_value(association.numeric_value, type: 'integer')
           xml.string_value(association.string_value, type: 'string')
           xml.display_string(association.display_string)

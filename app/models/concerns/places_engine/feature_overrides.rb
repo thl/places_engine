@@ -67,7 +67,7 @@ module PlacesEngine
         rf = r.parent_node
         related_subjects = rf.category_features.collect(&:category).select{|c| c}
         name = rf.prioritized_name(v)
-        name_str = name.nil? ? nil : name.name
+        name_str = name&.name
         all_feature_types = rf.feature_object_types.collect(&:category).select{|c| c}
         main_feature_type = all_feature_types.first
         relation_type = r.feature_relation_type
@@ -80,7 +80,7 @@ module PlacesEngine
           related_names_t: rf.names.collect(&:name).uniq,
           related_places_path_s: rf.closest_ancestors_by_perspective(per).collect(&:fid).join('/'),
           related_places_feature_type_s: main_feature_type.nil? ? '' : main_feature_type.header,
-          related_places_feature_type_id_i: main_feature_type.nil? ? nil : main_feature_type.id,
+          related_places_feature_type_id_i: main_feature_type&.id,
           related_subjects_t: related_subjects.collect(&:header),
           related_subject_ids: related_subjects.collect(&:id),
           related_places_feature_types_t: all_feature_types.collect(&:header),
@@ -105,7 +105,7 @@ module PlacesEngine
         rf = r.child_node
         related_subjects = rf.category_features.collect(&:category).select{|c| c}
         name = rf.prioritized_name(v)
-        name_str = name.nil? ? nil : name.name
+        name_str = name&.name
         all_feature_types = rf.feature_object_types.collect(&:category).select{|c| c}
         main_feature_type = all_feature_types.first
         relation_type = r.feature_relation_type
@@ -119,7 +119,7 @@ module PlacesEngine
           related_names_t: rf.names.collect(&:name).uniq,
           related_places_path_s: rf.closest_ancestors_by_perspective(per).collect(&:fid).join('/'),
           related_places_feature_type_s: main_feature_type.nil? ? '' : main_feature_type.header,
-          related_places_feature_type_id_i: main_feature_type.nil? ? nil : main_feature_type.id,
+          related_places_feature_type_id_i: main_feature_type&.id,
           related_subjects_t: related_subjects.collect(&:header),
           related_subject_ids: related_subjects.collect(&:id),
           related_places_feature_types_t: all_feature_types.collect(&:header),
@@ -186,7 +186,7 @@ module PlacesEngine
               block_type: ['parent'],
               '_childDocuments_' => child_documents }
       closest = self.closest_feature_with_shapes
-      closest_fid = closest.nil? ? nil : closest.fid
+      closest_fid = closest&.fid
       url = closest_fid.nil? ? nil : "#{InterfaceUtils::Server.get_thl_url}/places/maps/interactive/#fid:#{closest_fid}"
       doc[:interactive_map_url] = url unless url.nil?
       centroid = Shape.shapes_centroid_by_feature(self)
@@ -196,7 +196,7 @@ module PlacesEngine
       doc[:kmz_url] = url unless url.nil?
 
       closest = self.closest_feature_with_shapes
-      closest_fid = closest.nil? ? nil : closest.fid
+      closest_fid = closest&.fid
       doc[:closest_fid_with_shapes] = closest_fid unless closest_fid.nil?
       doc
     end

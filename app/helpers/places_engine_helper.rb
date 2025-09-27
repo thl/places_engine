@@ -12,7 +12,7 @@ module PlacesEngineHelper
   # Creates a breadcrumb trail to the feature
   #
   def f_places_breadcrumb
-    ancestor_list = @feature.nil? ? nil : @feature.closest_ancestors_by_perspective(current_perspective).drop(1)
+    ancestor_list = @feature&.closest_ancestors_by_perspective(current_perspective).drop(1)
     f_breadcrumb(ancestor_list)
   end
 

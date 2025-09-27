@@ -15,14 +15,14 @@ class Shape < ActiveRecord::Base
   
   def lat
     # if done with rgeo:
-    # self.geometry.nil? ? nil : self.geometry.y
+    # self.geometry&.geometry.y
     # If done directly from db:
     self.geometry.nil? ? nil : Shape.select('ST_Y(geometry) as st_y').find(self.id).st_y
   end
   
   def lng
     # if done with rgeo:
-    # self.geometry.nil? ? nil : self.geometry.x
+    # self.geometry&.x
     # If done directly from db:
     self.geometry.nil? ? nil : Shape.select('ST_X(geometry) as st_x').find(self.id).st_x
   end
@@ -93,7 +93,7 @@ class Shape < ActiveRecord::Base
 
   def self.shapes_centroid_by_feature(feature)
     s = Shape.where(fid: feature.fid).select{ |s| s.valid_range? }.first
-    s.nil? ? nil : s.as_centroid
+    s&.as_centroid
     #centroid = Shape.where(fid: feature.fid).pluck('ST_AsGeoJSON(ST_centroid(ST_collect(geometry))) as asgeojson').first
     #centroid.nil? ? nil : {type: 'FeatureCollection', features: [ type: 'Feature', geometry: JSON.parse(centroid) ]}.to_json
   end

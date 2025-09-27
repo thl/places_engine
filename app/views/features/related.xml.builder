@@ -19,7 +19,7 @@ xml.feature_relation_types(type: 'array') do
             xml.id(category.id, type: 'integer')
             xml.header(category.header)
             caption = category.caption
-            xml.caption(caption.nil? ? nil : caption.content)
+            xml.caption(caption&.content)
             xml.ancestors { category.ancestors.each { |ancestor| xml.feature_type(title: ancestor.header, id: ancestor.id) } }
             xml.count(cr.count, type: 'integer')
             features = @feature.cached_feature_relation_categories.select('related_feature_id').where(feature_relation_type_id: rt.id, feature_is_parent: is_parent, category_id: category.id).collect(&:related_feature)
@@ -31,7 +31,7 @@ xml.feature_relation_types(type: 'array') do
                   name = feature.prioritized_name(@view)
                   xml.header(name.nil? ? feature.pid : name.name)
                   caption = feature.caption
-                  xml.caption(caption.nil? ? nil : caption.content)
+                  xml.caption(caption&.content)
                   xml.ancestors(type: 'array') do
                     hierarchy = feature.closest_ancestors_by_perspective(per)
                     hierarchy.each do |ancestor|
