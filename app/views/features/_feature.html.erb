@@ -1,15 +1,15 @@
 <%  edit_link_options = {target: true} %>
-<%= content_tag :h6, "#{feature_name_header(feature)} #{edit_item_link(admin_feature_path(feature.fid),"", **edit_link_options) if logged_in? && object_authorized?(feature)}".html_safe %>
+<%= content_tag :h6, "#{feature_name_header(feature)} #{edit_item_link(admin_feature_path(feature.fid),"", **edit_link_options) if authenticated? && object_authorized?(feature)}".html_safe %>
 <%= time_units_for(feature) %>
 <%= render partial: 'summaries', locals: { feature: feature } %>
 <%= render partial: 'feature_types', locals: {feature: feature} %><br/>
-<%  closest_fid_with_shapes = feature.closest_feature_with_shapes(logged_in?: logged_in?)
+<%  closest_fid_with_shapes = feature.closest_feature_with_shapes(authenticated?: authenticated?)
     if closest_fid_with_shapes.nil?
       shapes = []
       map_fid = nil
     else
       shapes = closest_fid_with_shapes.shapes
-      shapes = shapes.where(is_public: true) if !logged_in?
+      shapes = shapes.where(is_public: true) if !authenticated?
       map_fid = closest_fid_with_shapes.fid
     end
     illustration = feature.illustration
@@ -112,9 +112,9 @@
       </div>
     </section>
 <%  end
-    #feature.closest_feature_with_shapes(logged_in?: logged_in?)
+    #feature.closest_feature_with_shapes(authenticated?: authenticated?)
     #if !shapes.empty? 
-  if feature.has_shapes?(logged_in?: logged_in?)
+  if feature.has_shapes?(authenticated?: authenticated?)
     if !shapes.empty? %>
     <section class="panel panel-default">
       <div class="panel-heading">

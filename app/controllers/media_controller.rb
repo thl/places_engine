@@ -1,4 +1,6 @@
 class MediaController < ApplicationController
+  allow_unauthenticated_access
+  
   # GET /media/1
   # GET /media/1.xml
   def show

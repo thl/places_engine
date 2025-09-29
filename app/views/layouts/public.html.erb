@@ -1,4 +1,4 @@
-<%= header(class: "html not-front #{logged_in? ? 'logged-in' : 'not-logged-in'} no-sidebars page-places kmaps rails", stylesheet_files: ["kmaps_engine/#{current_view.code=='roman.scholar' ? 'scholar' : 'popular'}", 'kmaps_engine/xml-books'], javascript_files: ['https://openlayers.org/api/OpenLayers.js','places_engine/THLWMS','places_engine/inset-map',"https://maps.googleapis.com/maps/api/js?key=#{google_maps_key}&v=3.49"]) %>
+<%= header(class: "html not-front #{authenticated? ? 'logged-in' : 'not-logged-in'} no-sidebars page-places kmaps rails", stylesheet_files: ["kmaps_engine/#{current_view.code=='roman.scholar' ? 'scholar' : 'popular'}", 'kmaps_engine/xml-books'], javascript_files: ['https://openlayers.org/api/OpenLayers.js','places_engine/THLWMS','places_engine/inset-map',"https://maps.googleapis.com/maps/api/js?key=#{google_maps_key}&v=3.49"]) %>
 <!-- Begin Content Region -->
 <main class="main-wrapper container-fluid">
 	<article class="main-content" role="main">

@@ -19,12 +19,12 @@ module PlacesEngine
     end
 
     def has_shapes?(**options)
-      use_log_in_status = options.has_key? :logged_in?
+      use_log_in_status = options.has_key? :authenticated?
       shapes = self.shapes
-      return use_log_in_status ? (options[:logged_in?] ? !shapes.empty? : shapes.any?(&:is_public?)) : !shapes.empty?
+      return use_log_in_status ? (options[:authenticated?] ? !shapes.empty? : shapes.any?(&:is_public?)) : !shapes.empty?
     end
 
-    # Options take :logged_in?
+    # Options take :authenticated?
     def closest_feature_with_shapes(**options)
       feature_id = Rails.cache.fetch("features/#{self.fid}/closest_feature_with_shapes", expires_in: 1.hour) do
         break self.id if self.has_shapes?(**options)

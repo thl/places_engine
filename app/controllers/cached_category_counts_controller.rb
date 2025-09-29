@@ -1,4 +1,5 @@
 class CachedCategoryCountsController < ApplicationController
+  allow_unauthenticated_access
   caches_page :index
   
   # GET /cached_category_counts.json

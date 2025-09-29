@@ -1,4 +1,5 @@
-class Admin::FeatureObjectTypesController < AclController
+class Admin::FeatureObjectTypesController < ApplicationController
+  allow_unauthenticated_access only: %i[ index show ]
   include KmapsEngine::ResourceObjectAuthentication
   resource_controller
   

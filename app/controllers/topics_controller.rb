@@ -1,4 +1,5 @@
 class TopicsController < ApplicationController
+  allow_unauthenticated_access
   #caches_page :feature_descendants
   
   # GET /topics/1
