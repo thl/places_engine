@@ -149,18 +149,18 @@ module PlacesEngine
       when 'pri.tib.sec.chi'
         # If a writing system =tibt or writing system =Dzongkha name is available, show it
         name = tibetan_prioritized_name(all_names)
-        name = FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hans').id) if name.nil?
+        name = KmapsEngine::FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hans').id) if name.nil?
       when 'simp.chi'
         # If a writing system =hans name is available, show it
-        name = FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hans').id)
-        name = FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hant').id) if name.nil?
+        name = KmapsEngine::FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hans').id)
+        name = KmapsEngine::FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hant').id) if name.nil?
       when 'trad.chi'
         # If a writing system=hant name is available, show it
-        name = FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hant').id)
-        name = FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hans').id) if name.nil?
+        name = KmapsEngine::FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hant').id)
+        name = KmapsEngine::FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('hans').id) if name.nil?
       when 'deva'
         # If a writing system =deva name is available, show it
-        name = FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('deva').id)
+        name = KmapsEngine::FeatureExtensionForNamePositioning::HelperMethods.find_name_for_writing_system(all_names, WritingSystem.get_by_code('deva').id)
       end
       name || popular_prioritized_name(all_names)
     end
