@@ -218,7 +218,7 @@ module PlacesEngine
           format.html
           format.xml
           format.js
-          format.json { render json: Hash.from_xml(render_to_string(action: 'topics', format: 'xml')) }
+          format.json { render json: Hash.from_xml(render_to_string(action: 'topics', formats: [:xml])) }
         end
       end
     end

@@ -6,7 +6,7 @@ class LocationsController < ApplicationController
   def index
     respond_to do |format|
       format.xml
-      format.json { render json: Hash.from_xml(render_to_string(action: 'index', format: 'xml')) }
+      format.json { render json: Hash.from_xml(render_to_string(action: 'index', formats: [:xml])) }
     end
   end
   

@@ -7,9 +7,9 @@ xml.feature_types(type: 'array') do
       xml.id(type.id, type: 'integer')
       xml.caption(caption&.content)
       xml.ancestors { type.ancestors.each { |ancestor| xml.feature_type(title: ancestor.header, id: ancestor.id) } }
-      xml << render(partial: 'time_units/index', format: 'xml', locals: {time_units: feature_type.time_units})
-      xml << render(partial: 'citations/index', format: 'xml', locals: {citations: feature_type.citations})
-      xml << render(partial: 'notes/index', format: 'xml', locals: {notes: feature_type.notes})
+      xml << render(partial: 'time_units/index', formats: [:xml], locals: {time_units: feature_type.time_units})
+      xml << render(partial: 'citations/index', formats: [:xml], locals: {citations: feature_type.citations})
+      xml << render(partial: 'notes/index', formats: [:xml], locals: {notes: feature_type.notes})
     end
   end
 end
