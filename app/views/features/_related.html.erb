@@ -43,7 +43,7 @@
 	</div> <!-- Tab Panes end -->
 </div> <!-- myTabs end -->
 <%= content_tag :div, "", id: 'related_js_data', data: {
- term_index: Feature.config.url,
+ term_index: Feature.config.public_url,
  asset_index: ShantiIntegration::Source.config.url,
  feature_id: "#{Feature.uid_prefix}-#{@feature.fid}",
  domain: Feature.uid_prefix,
