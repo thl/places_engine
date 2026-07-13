@@ -28,6 +28,10 @@ module PlacesEngineHelper
   def geoserver_url
     PlacesEngine::Configuration.geoserver_url
   end
+  
+  def google_maps_key
+    PlacesEngine::ApplicationSettings.google_maps_key
+  end
 
   def feature_relation_tree(feature, show_siblings = false)
     v = current_view

@@ -117,16 +117,17 @@ var InsetMap = {
 			'ascending': false
 		}));*/
 		
-		var gsat = new OpenLayers.Layer.Google(
-			"Google Satellite",
+		var imagery = new OpenLayers.Layer.XYZ(
+			"World Imagery",
+			"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${y}/${x}",
 			{
-				type: google.maps.MapTypeId.SATELLITE,
 				sphericalMercator: true,
-				isBaseLayer: true
+				isBaseLayer: true,
+				wrapDateLine: true
 			}
 		);
 	
-		InsetMap.map.addLayers([gsat]);
+		InsetMap.map.addLayers([imagery]);
 	
 		InsetMap.map.zoomToExtent(new OpenLayers.Bounds(4370000, 290000, 14230000, 5670000));
 		InsetMap.map.zoomIn();
